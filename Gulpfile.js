@@ -18,6 +18,8 @@ var gulp        = require('gulp'),                   // Base gulp package
     watchify    = require('watchify')                // Watchify for source changes
 ;
 
+var package_json = require('./package.json');
+
 var paths = {
   develop:             './build/develop',
   release:             './build/release',
@@ -43,31 +45,39 @@ function mapError(err) {
   }
 }
 
-var EXTERNALS = [
-  'lodash',
-  'react',
-  'react-dom',
-  'react/addons'
-];
+var options = {
+  application: {
+    js:  merge(watchify.args, { debug: true  }),
+    css: merge(watchify.args, { debug: true  })
+  },
+  vendortools: {
+    js:  merge(watchify.args, { debug: false }),
+    css: merge(watchify.args, { debug: false })
+  }
+}
 
-var bundle_args_app    = merge(watchify.args, { debug: true  });
-var bundle_args_vendor = merge(watchify.args, { debug: false });
+var EXTERNALS = Object.keys(package_json.dependencies).map(function(dependency) {
+  return dependency;
+});
+
 var bundlers = {
-  'js:Application': browserify(paths.application_infile, bundle_args_app)
-                      .plugin(resolutions, '*')
-                      .plugin(function(bundle) {
-                        EXTERNALS.forEach(function(tool) {
-                          bundle.external(tool);
-                        });
-                      })
-                      .transform(babelify, { presets: ['es2015', 'react']})
-, 'js:VendorTools': browserify(paths.vendortools_infile, bundle_args_vendor)
-                      .plugin(resolutions, '*')
-                      .plugin(function(bundle) {
-                        EXTERNALS.forEach(function(tool) {
-                          bundle.require(tool);
-                        })
-                      })
+  'js:Application': browserify(paths.application_infile, options.application.js)
+    .plugin(resolutions, '*')
+    .plugin(function(bundle) {
+      EXTERNALS.forEach(function(tool) {
+        bundle.external(tool);
+      });
+    })
+    .transform(babelify, { presets: ['es2015', 'react']})
+, 'js:VendorTools': browserify(paths.vendortools_infile, options.vendortools.js)
+    .plugin(resolutions, '*')
+    .plugin(function(bundle) {
+      EXTERNALS.forEach(function(tool) {
+        bundle.require(tool);
+      })
+    })
+, 'css:Application': browserify(paths.application_css_start, options.application.css)
+, 'css:VendorTools': browserify(paths.vendortools_css_start, options.vendortools.css)
 };
 
 var build_js = function(bundler, infile, outfile) {
