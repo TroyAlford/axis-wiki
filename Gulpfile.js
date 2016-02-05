@@ -21,13 +21,20 @@ var gulp        = require('gulp'),                   // Base gulp package
 var package_json = require('./package.json');
 
 var paths = {
-  develop:             './build/develop',
-  release:             './build/release',
+  develop_folder:  './build/develop',
+  release_folder:  './build/release',
 
-  application_infile:  'app/Application.jsx',
-  vendortools_infile:  'app/Packages.jsx',
-  application_outfile: 'application.js',
-  vendortools_outfile: 'vendors.js'
+  app_js_develop:  'app/Application.jsx',
+  app_js_release:  'js/application.js',
+
+  app_css_develop: 'styles/Application.sass',
+  app_css_release: 'styles/application.css',
+
+  pkg_js_develop:  'app/Packages.jsx',
+  pkg_js_release:  'js/dependencies.js',
+
+  pkg_css_develop: 'styles/Dependencies.sass',
+  pkg_css_release: 'styles/dependencies.css'
 };
 
 function mapError(err) {
@@ -50,34 +57,36 @@ var options = {
     js:  merge(watchify.args, { debug: true  }),
     css: merge(watchify.args, { debug: true  })
   },
-  vendortools: {
+  dependencies: {
     js:  merge(watchify.args, { debug: false }),
     css: merge(watchify.args, { debug: false })
   }
 }
 
-var EXTERNALS = Object.keys(package_json.dependencies).map(function(dependency) {
+var DEPENDENCIES = Object.keys(package_json.dependencies).map(function(dependency) {
   return dependency;
 });
 
 var bundlers = {
-  'js:Application': browserify(paths.application_infile, options.application.js)
+  'js:Application': browserify(paths.app_js_develop, options.application.js)
     .plugin(resolutions, '*')
     .plugin(function(bundle) {
-      EXTERNALS.forEach(function(tool) {
+      // remove all dependencies from the Application.js build
+      DEPENDENCIES.forEach(function(tool) {
         bundle.external(tool);
       });
     })
     .transform(babelify, { presets: ['es2015', 'react']})
-, 'js:VendorTools': browserify(paths.vendortools_infile, options.vendortools.js)
+, 'js:Dependencies': browserify(paths.pkg_js_develop, options.dependencies.js)
     .plugin(resolutions, '*')
     .plugin(function(bundle) {
-      EXTERNALS.forEach(function(tool) {
+      // add all dependencies to the dependencies.js build
+      DEPENDENCIES.forEach(function(tool) {
         bundle.require(tool);
       })
     })
-, 'css:Application': browserify(paths.application_css_start, options.application.css)
-, 'css:VendorTools': browserify(paths.vendortools_css_start, options.vendortools.css)
+, 'css:Application': browserify(paths.app_css_develop, options.application.css)
+, 'css:Dependencies': browserify(paths.pkg_css_develop, options.dependencies.css)
 };
 
 var build_js = function(bundler, infile, outfile) {
@@ -88,10 +97,10 @@ var build_js = function(bundler, infile, outfile) {
     .pipe(source(infile))      // start with main app .jsx file
     .pipe(buffer())            // convert to a gulp pipeline
     .pipe(rename(outfile))     // rename the output file
-    .pipe(gulp.dest(paths.develop + '/js'))
+    .pipe(gulp.dest(paths.develop_folder))
     .pipe(notify({ message: 'DEVELOP: <%= file.relative %> created.' }))
     .pipe(streamify(uglify())) // uglify/minify the output
-    .pipe(gulp.dest(paths.release + '/js'))
+    .pipe(gulp.dest(paths.release_folder))
     .pipe(notify({ message: 'RELEASE: <%= file.relative %> created.' }))
     .pipe(bundleTimer)         // output build timing
     .pipe(livereload())        // reload the view in the browser
@@ -101,14 +110,14 @@ var build_js = function(bundler, infile, outfile) {
 bundlers['js:Application'].run = build_js.bind(
   this, 
   bundlers['js:Application'], 
-  paths.application_infile, 
-  paths.application_outfile
+  paths.app_js_develop, 
+  paths.app_js_release
 );
-bundlers['js:VendorTools'].run = build_js.bind(
+bundlers['js:Dependencies'].run = build_js.bind(
   this, 
-  bundlers['js:VendorTools'],
-  paths.vendortools_infile,
-  paths.vendortools_outfile
+  bundlers['js:Dependencies'],
+  paths.pkg_js_develop,
+  paths.pkg_js_release
 );
 
 gulp.task('clean', function() {
