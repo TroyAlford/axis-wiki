@@ -14,6 +14,7 @@ var gulp        = require('gulp'),                   // Base gulp package
     rename      = require('gulp-rename'),            // Rename sources
     resolutions = require('browserify-resolutions'), // Resolve duplicate dependencies
     sass        = require('gulp-sass'),              // Compile .scss CSS files
+    sass_glob   = require('gulp-sass-glob'),         // SCSS with wildcard @imports
     source      = require('vinyl-source-stream'),    // Vinyl stream support
     streamify   = require('gulp-streamify'),         // Creates gulp streams
     uglify      = require('gulp-uglify'),            // Minifies JavaScript
@@ -107,6 +108,7 @@ var build_js = function(bundler, infile, outfile) {
 var build_sass = function(infile, outfile) {
   var bundleTimer = duration(outfile + ' bundle time');
   return gulp.src(infile)
+    .pipe(sass_glob())
     .pipe(sass().on('error', sass.logError))
     .pipe(rename(outfile))
     .pipe(gulp.dest(paths.develop_folder))
