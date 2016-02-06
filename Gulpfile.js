@@ -20,9 +20,21 @@ var gulp        = require('gulp'),                   // Base gulp package
     uglify      = require('gulp-uglify'),            // Minifies JavaScript
     watchify    = require('watchify')                // Watchify for source changes
 ;
-
-var package_json = require('./package.json');
-
+var DEPENDENCIES = Object.keys(require('./package.json').dependencies)
+  .map(function(dependency) {
+    return dependency;
+  }
+);
+var options = {
+  application: {
+    js:  merge(watchify.args, { debug: true  }),
+    css: merge(watchify.args, { debug: true  })
+  },
+  dependencies: {
+    js:  merge(watchify.args, { debug: false }),
+    css: merge(watchify.args, { debug: false })
+  }
+}
 var paths = {
   develop_folder:  './build/develop',
   release_folder:  './build/release',
@@ -38,54 +50,6 @@ var paths = {
 
   pkg_css_develop: 'styles/Dependencies.scss',
   pkg_css_release: 'styles/dependencies.css'
-};
-
-function mapError(err) {
-  if (err.filename) { // General error
-    gutil.log(chalk.red(err.name)
-      + ': ' + chalk.yellow(err.filename.replace(__dirname, ''))
-      + ': ' + 'Line ' + chalk.magenta(err.lineNumber || err.line)
-      + ', ' + 'Column ' + chalk.magenta(err.columnNumber || err.column)
-      + ': ' + chalk.blue(err.description || err.message)
-    );
-  } else { // Browserify error
-    gutil.log(chalk.red(err.name)
-      + ': ' + chalk.yellow(err.message)
-    );
-  }
-}
-
-var options = {
-  application: {
-    js:  merge(watchify.args, { debug: true  }),
-    css: merge(watchify.args, { debug: true  })
-  },
-  dependencies: {
-    js:  merge(watchify.args, { debug: false }),
-    css: merge(watchify.args, { debug: false })
-  }
-}
-
-var DEPENDENCIES = Object.keys(package_json.dependencies).map(function(dependency) {
-  return dependency;
-});
-
-var bundlers = {
-  'js:Application': browserify(paths.app_js_develop, options.application.js)
-    .plugin(function(bundle) {
-      // remove all dependencies from the Application.js build
-      DEPENDENCIES.forEach(function(tool) {
-        bundle.external(tool);
-      });
-    })
-    .transform(babelify, { presets: ['es2015', 'react']})
-, 'js:Dependencies': browserify(paths.pkg_js_develop, options.dependencies.js)
-    .plugin(function(bundle) {
-      // add all dependencies to the dependencies.js build
-      DEPENDENCIES.forEach(function(tool) {
-        bundle.require(tool);
-      })
-    })
 };
 
 var build_js = function(bundler, infile, outfile) {
@@ -118,20 +82,32 @@ var build_sass = function(infile, outfile) {
     .pipe(notify({ message: 'RELEASE: <%= file.relative %> created.' }))
     .pipe(bundleTimer)         // output build timing
     .pipe(livereload())        // reload the view in the browser
-  ;
+    ;
 };
 
-// Build file outputs
+var bundlers = {
+  'js:Application': browserify(paths.app_js_develop, options.application.js)
+    .plugin(function(bundle) {
+      // remove all dependencies from the Application.js build
+      DEPENDENCIES.forEach(function(tool) {
+        bundle.external(tool);
+      });
+    })
+    .transform(babelify, { presets: ['es2015', 'react']})
+, 'js:Dependencies': browserify(paths.pkg_js_develop, options.dependencies.js)
+    .plugin(function(bundle) {
+      // add all dependencies to the dependencies.js build
+      DEPENDENCIES.forEach(function(tool) {
+        bundle.require(tool);
+      })
+    })
+};
 bundlers['js:Application'].run = build_js.bind(
   this, bundlers['js:Application'], paths.app_js_develop, paths.app_js_release
 );
 bundlers['js:Dependencies'].run = build_js.bind(
   this, bundlers['js:Dependencies'], paths.pkg_js_develop, paths.pkg_js_release
 );
-
-gulp.task('clean', function() {
-  return del(['build/**/*', 'build']);
-});
 
 gulp.task('build', ['build_js', 'build_app_css', 'build_pkg_css']);
 gulp.task('build_js', function() {
@@ -148,6 +124,9 @@ gulp.task('build_pkg_css', function() {
   return build_sass(paths.pkg_css_develop, paths.pkg_css_release);
 });
 
+gulp.task('clean', function() {
+  return del(['build/**/*', 'build']);
+});
 gulp.task('listen', function() {
   livereload.listen(); // start livereload server
 
@@ -162,7 +141,22 @@ gulp.task('listen', function() {
     })
   }
   gulp.watch(['styles/**/*.{css,scss}', '!styles/Dependencies.scss'], ['build_app_css']);
-  gulp.watch('styles/Dependencies.scss', ['build_pkg_css'])
+  gulp.watch(['styles/Dependencies.scss'], ['build_pkg_css']);
 });
 
 gulp.task('default', ['clean', 'build', 'listen']);
+
+function mapError(err) {
+  if (err.filename) { // General error
+    gutil.log(chalk.red(err.name)
+      + ': ' + chalk.yellow(err.filename.replace(__dirname, ''))
+      + ': ' + 'Line ' + chalk.magenta(err.lineNumber || err.line)
+      + ', ' + 'Column ' + chalk.magenta(err.columnNumber || err.column)
+      + ': ' + chalk.blue(err.description || err.message)
+    );
+  } else { // Browserify error
+    gutil.log(chalk.red(err.name)
+      + ': ' + chalk.yellow(err.message)
+    );
+  }
+}
