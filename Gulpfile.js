@@ -90,7 +90,7 @@ var bundlers = {
 };
 
 var build_js = function(bundler, infile, outfile) {
-  var bundleTimer = duration('Application JS bundle time');
+  var bundleTimer = duration(outfile + ' bundle time');
   return bundler
     .bundle()
     .on('error', mapError)     // report all errors to console
