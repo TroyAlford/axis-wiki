@@ -68,6 +68,7 @@ var build_js = function(bundler, infile, outfile) {
     .pipe(notify({ message: 'RELEASE: <%= file.relative %> created.' }))
     .pipe(bundleTimer)         // output build timing
     .pipe(livereload())        // reload the view in the browser
+  ;
 };
 var build_sass = function(infile, outfile) {
   var bundleTimer = duration(outfile + ' bundle time');
@@ -82,7 +83,7 @@ var build_sass = function(infile, outfile) {
     .pipe(notify({ message: 'RELEASE: <%= file.relative %> created.' }))
     .pipe(bundleTimer)         // output build timing
     .pipe(livereload())        // reload the view in the browser
-    ;
+  ;
 };
 
 var bundlers = {
