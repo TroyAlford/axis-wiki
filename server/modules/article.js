@@ -1,8 +1,13 @@
 var
   express = require('express'),
   fs      = require('fs'),
+  path    = require('path'),
   textile = require('textile-js')
 ;
+
+var paths = {
+  articles: path.resolve(__dirname, '../../content/articles')
+};
 
 var article = module.exports = express();
 
@@ -16,16 +21,16 @@ article.get('/:slug', function(req, res) {
   }
 
   try {
-    // fs.accessSync(path, fs.F_OK | fs.R_OK);
     var tx = fs.readFileSync(path, 'utf8');
     return res.status('200').send(textile.parse(parse_links(tx)));
   } catch (err) {
+    console.log(err);
     return res.status('404').send('Article not found.');
   }
 });
 
 function article_path(slug) {
-  return '../content/articles/' + slug + '.tx';
+  return path.resolve(paths.articles, slug + '.tx');
 };
 function parse_links(textile) {
   // First, convert [[Slug]] and [[Slug|]] to [[Slug|Text]] format.
