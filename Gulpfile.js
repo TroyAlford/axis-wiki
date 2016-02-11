@@ -52,6 +52,22 @@ var paths = {
   pkg_css_release: 'styles/dependencies.css'
 };
 
+var assetMap = [
+  { name: 'HTML Pages',   src: './app/**/*.html',             dest: ''        },
+  { name: 'Font Assets',  src: './fontello/font/**/*',        dest: '/font'   },
+  { name: 'Image Assets', src: './images/**/*.{gif,jpg,png}', dest: '/images' }
+];
+var build_assets = function() {
+  assetMap.forEach(function(mapping) {
+    gulp.src(mapping.src)
+      .pipe(gulp.dest(paths.develop_folder + (mapping.dest || '')))
+      .pipe(gulp.dest(paths.release_folder + (mapping.dest || '')))
+      .pipe(notify({ onLast: true, message: function() {
+        console.log(mapping.name + ' repackaged.');
+      }}));
+  });
+};
+
 var build_js = function(bundler, infile, outfile) {
   var bundleTimer = duration(outfile + ' bundle time');
   return bundler
@@ -111,14 +127,7 @@ bundlers['js:Dependencies'].run = build_js.bind(
 );
 
 gulp.task('build', ['build_assets', 'build_js', 'build_app_css', 'build_pkg_css']);
-gulp.task('build_assets', function() {
-  return gulp
-    .src(['app/**/*.html'])
-    .pipe(notify({ message: 'Copied: <%= file.relative %>.' }))
-    .pipe(gulp.dest(paths.develop_folder))
-    .pipe(gulp.dest(paths.release_folder))
-  ;
-});
+gulp.task('build_assets', build_assets);
 gulp.task('build_js', function() {
   for (var name in bundlers) {
     if (typeof bundlers[name].run != 'function') continue;
