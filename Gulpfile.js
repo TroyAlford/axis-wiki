@@ -126,7 +126,9 @@ bundlers['js:Dependencies'].run = build_js.bind(
   this, bundlers['js:Dependencies'], paths.pkg_js_develop, paths.pkg_js_release
 );
 
-gulp.task('build', ['build_assets', 'build_js', 'build_app_css', 'build_pkg_css']);
+gulp.task('build', ['clean'], function() {
+  return gulp.start(['build_assets', 'build_js', 'build_app_css', 'build_pkg_css']);
+});
 gulp.task('build_assets', build_assets);
 gulp.task('build_js', function() {
   for (var name in bundlers) {
@@ -145,7 +147,7 @@ gulp.task('build_pkg_css', function() {
 gulp.task('clean', function() {
   return del(['build/**/*', 'build']);
 });
-gulp.task('listen', function() {
+gulp.task('listen', ['build'], function() {
   livereload.listen(); // start livereload server
 
   for (var name in bundlers) {
@@ -158,13 +160,15 @@ gulp.task('listen', function() {
       bundler.run(); // Re-run bundle on source updates
     })
   }
+  assetMap.forEach(function(mapping) {
+    gulp.watch(mapping.src, build_assets);
+  });
   gulp.watch(['app/**/*.{jsx,js}'], ['build_js']);
-  gulp.watch(['app/**/*.html'], ['build_assets']);
   gulp.watch(['styles/**/*.{css,scss}', '!styles/Dependencies.scss'], ['build_app_css']);
   gulp.watch(['styles/Dependencies.scss'], ['build_pkg_css']);
 });
 
-gulp.task('default', ['clean', 'build', 'listen']);
+gulp.task('default', ['listen']);
 
 function mapError(err) {
   if (err.filename) { // General error
