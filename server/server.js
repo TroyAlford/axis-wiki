@@ -14,7 +14,14 @@ var modules = {
 };
 
 var app = express();
-app.use('/w', modules.article);
+app.use('/api/w', modules.article);
+app.use('/js', express.static(path.join(__dirname, '../build/develop/js')));
+app.use('/styles', express.static(path.join(__dirname, '../build/develop/styles')));
+app.get('/', function (req, res) {
+  fs.createReadStream(path.join(__dirname, '../build/develop', 'index.html'))
+    .pipe(res);
+});
+app.get('*', function (req, res) { res.redirect('/'); });
 
 http.createServer(app).listen(port, function() {
   console.log('Express server running on port ' + port);

@@ -22,10 +22,12 @@ article.get('/:slug', function(req, res) {
 
   try {
     var tx = fs.readFileSync(path, 'utf8');
-    return res.status('200').send(textile.parse(parse_links(tx)));
+    if (req.is('text/textile'))
+      return res.status(200).send(tx);
+    else
+      return res.status(200).send(textile.parse(parse_links(tx)));
   } catch (err) {
-    console.log(err);
-    return res.status('404').send('Article not found.');
+    return res.status(404).send('Article not found.');
   }
 });
 

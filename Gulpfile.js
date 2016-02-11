@@ -110,7 +110,15 @@ bundlers['js:Dependencies'].run = build_js.bind(
   this, bundlers['js:Dependencies'], paths.pkg_js_develop, paths.pkg_js_release
 );
 
-gulp.task('build', ['build_js', 'build_app_css', 'build_pkg_css']);
+gulp.task('build', ['build_assets', 'build_js', 'build_app_css', 'build_pkg_css']);
+gulp.task('build_assets', function() {
+  return gulp
+    .src(['app/**/*.html'])
+    .pipe(notify({ message: 'Copied: <%= file.relative %>.' }))
+    .pipe(gulp.dest(paths.develop_folder))
+    .pipe(gulp.dest(paths.release_folder))
+  ;
+});
 gulp.task('build_js', function() {
   for (var name in bundlers) {
     if (typeof bundlers[name].run != 'function') continue;
@@ -141,6 +149,8 @@ gulp.task('listen', function() {
       bundler.run(); // Re-run bundle on source updates
     })
   }
+  gulp.watch(['app/**/*.{jsx,js}'], ['build_js']);
+  gulp.watch(['app/**/*.html'], ['build_assets']);
   gulp.watch(['styles/**/*.{css,scss}', '!styles/Dependencies.scss'], ['build_app_css']);
   gulp.watch(['styles/Dependencies.scss'], ['build_pkg_css']);
 });
