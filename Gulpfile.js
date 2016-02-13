@@ -42,7 +42,7 @@ var paths = {
   app_js_develop:  'app/Application.jsx',
   app_js_release:  'js/application.js',
 
-  app_css_develop: 'styles/Application.scss',
+  app_css_develop: ['styles/**/*.{css,scss}', '!styles/Dependencies.scss'],
   app_css_release: 'styles/application.css',
 
   pkg_js_develop:  'app/Packages.jsx',
@@ -89,6 +89,7 @@ var build_js = function(bundler, infile, outfile) {
 var build_sass = function(infile, outfile) {
   var bundleTimer = duration(outfile + ' bundle time');
   return gulp.src(infile)
+    .pipe(notify({ message: 'Processing <%= file.relative %>.' }))
     .pipe(sass_glob())
     .pipe(sass().on('error', sass.logError))
     .pipe(rename(outfile))
@@ -148,6 +149,8 @@ gulp.task('clean', function() {
   return del(['build/**/*', 'build']);
 });
 gulp.task('listen', ['build'], function() {
+  process.setMaxListeners(0);
+  
   livereload.listen(); // start livereload server
 
   for (var name in bundlers) {
