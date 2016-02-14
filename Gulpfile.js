@@ -61,7 +61,7 @@ var assetMap = [
   { name: 'HTML Pages',   src: './app/**/*.html',             dest: ''        },
   { name: 'Font Assets',  src: './fontello/font/**/*',        dest: '/font'   },
   { name: 'Image Assets', src: './images/**/*.{gif,jpg,png}', dest: '/images' },
-  { name: 'Submodules',   src: './tinymce/tinymce.min.js',    dest: '/js'}
+  { name: 'Submodules',   src: './tinymce/tinymce.min.js',    dest: '/js'     }
 ];
 var build_assets = function() {
   assetMap.forEach(function(mapping) {

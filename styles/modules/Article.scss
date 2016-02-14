@@ -1,8 +1,20 @@
 .cp-article {
-  padding: 10px 20px 0 0;
+  > .tabs {
+    margin-bottom: 5px;
 
-  > .tabs > .mce-panel { display: block!important; }
-  > .wiki-content { margin-top: 38px; }
+    > .mce-panel { display: block!important; }
+    li.is-active {
+      z-index: 70000;
+      a {
+        background: #f0f0f0;
+        padding: 5px 15px 4px;
+      }
+    }
+  }
+  > .wiki-content {
+    &.mode-read { margin-top: 0; }
+    &.mode-edit { margin-top: 30px; }
+  }
 
   .mce-content-body[contenteditable] {
     outline: 1px solid #333;
@@ -11,7 +23,13 @@
   }
 }
 .mce-tinymce-inline.mce-panel {
-  border: 1px outset!important;
-  left: 0!important;
-  width:100%!important;
+  border: 1px solid #ccc!important;
+  display: block!important;
+  margin: -1px 0 0 -1px;
+  //overflow: hidden;
+  right: 10px;
+  height: 32px!important; width: auto!important;
+
+  .mce-flow-layout-item { margin: 0; }
+  .mce-toolbar-grp { padding: 0; }
 }

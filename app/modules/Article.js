@@ -26,6 +26,7 @@ export default class Article extends React.Component {
   }
 
   handleSave() {
+    this.refs.
     console.log('save!!!')
   }
   handleSetMode(mode) {
@@ -53,7 +54,9 @@ export default class Article extends React.Component {
               inline: true,
               fixed_toolbar_container: '.wiki-content > .tabs',
               menubar: false,
-              plugins: 'autolink link image lists save wordcount',
+              plugins:
+                'anchor autosave fullscreen hr image link lists ' +
+                'paste print save searchreplace table',
               readonly: this.state.mode == 'read',
               save_onsavecallback: this.handleSave,
               setup: function(editor) {
@@ -63,10 +66,10 @@ export default class Article extends React.Component {
                 });
               },
               toolbar:
-                'undo redo | ' +
-                'bold italic | ' +
-                'alignleft aligncenter alignright | ' +
-                'fullscreen save'
+                'styleselect | bold italic underline | hr link anchor | ' +
+                'alignleft aligncenter alignright alignjustify | ' +
+                'image table | removeformat | undo redo | print save'
+              //toolbar: false
             }}
             content={this.state.html}
             onChange={this.handleEditorChange}
