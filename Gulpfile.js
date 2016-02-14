@@ -1,5 +1,6 @@
 'use strict';
-var gulp        = require('gulp'),                   // Base gulp package
+var _           = require('lodash'),                 // Lodash
+    gulp        = require('gulp'),                   // Base gulp package
     babelify    = require('babelify'),               // Used to convert ES6 & JSX to ES5
     browserify  = require('browserify'),             // Providers "require" support, CommonJS
     buffer      = require('vinyl-buffer'),           // Vinyl stream support
@@ -8,6 +9,7 @@ var gulp        = require('gulp'),                   // Base gulp package
     cssmin      = require('gulp-cssmin'),            // Minifies CSS files
     del         = require('del'),                    // Deletes files / folders
     duration    = require('gulp-duration'),          // Time aspects of your gulp process
+    fs          = require('fs'),                     // Node file system object
     gutil       = require('gulp-util'),              // Provides gulp utilities, including logging and beep
     livereload  = require('gulp-livereload'),        // Livereload support for the browser
     merge       = require('utils-merge'),            // Object merge tool
@@ -21,11 +23,6 @@ var gulp        = require('gulp'),                   // Base gulp package
     uglify      = require('gulp-uglify'),            // Minifies JavaScript
     watchify    = require('watchify')                // Watchify for source changes
 ;
-var DEPENDENCIES = Object.keys(require('./package.json').dependencies)
-  .map(function(dependency) {
-    return dependency;
-  }
-);
 var options = {
   application: {
     js:  merge(watchify.args, { debug: true  }),
@@ -54,14 +51,25 @@ var paths = {
   pkg_js_release:  'js/dependencies.js',
 
   pkg_css_develop: 'styles/Dependencies.scss',
-  pkg_css_release: 'styles/dependencies.css'
+  pkg_css_release: 'styles/dependencies.css',
+
+  dependencies: './app/dependencies/'
 };
+
+var DEPENDENCIES = Object.keys(require('./package.json').dependencies)
+  .map(function(dependency) {
+    return dependency;
+  })
+  .concat(fs.readdirSync(paths.dependencies).map(function(filename) {
+    if (_(filename).endsWith('.js') && fs.statSync(paths.dependencies + filename).isFile())
+      return (paths.dependencies + filename);
+  }))
+;
 
 var assetMap = [
   { name: 'HTML Pages',   src: './app/**/*.html',             dest: ''        },
   { name: 'Font Assets',  src: './fontello/font/**/*',        dest: '/font'   },
   { name: 'Image Assets', src: './images/**/*.{gif,jpg,png}', dest: '/images' },
-  { name: 'Submodules',   src: './tinymce/tinymce.min.js',    dest: '/js'     }
 ];
 var build_assets = function() {
   assetMap.forEach(function(mapping) {
