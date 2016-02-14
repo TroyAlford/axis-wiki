@@ -12,9 +12,11 @@
     }
   }
   > .wiki-content {
-    &.mode-read { margin-top: 0; }
-    &.mode-edit { margin-top: 30px; }
+    &.reader { margin-top: 0; }
+    &.editor { margin-top: 30px; }
   }
+  &.mode-read > .wiki-content.editor { display: none; }
+  &.mode-edit > .wiki-content.reader { display: none; }
 
   .mce-content-body[contenteditable] {
     outline: 1px solid #333;
@@ -26,7 +28,6 @@
   border: 1px solid #ccc!important;
   display: block!important;
   margin: -1px 0 0 -1px;
-  //overflow: hidden;
   right: 10px;
   height: 32px!important; width: auto!important;
 

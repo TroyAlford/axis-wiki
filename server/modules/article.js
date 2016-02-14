@@ -1,8 +1,10 @@
 var
-  express = require('express'),
-  fs      = require('fs'),
-  path    = require('path'),
-  textile = require('textile-js')
+  bodyParser = require('body-parser'),
+  cheerio    = require('cheerio'),
+  express    = require('express'),
+  fs         = require('fs'),
+  gulp       = require('gulp'),
+  path       = require('path')
 ;
 
 var paths = {
@@ -10,38 +12,51 @@ var paths = {
 };
 
 var article = module.exports = express();
+article.use(bodyParser.json()); // Parses application/json
+article.use(bodyParser.urlencoded({ extended: true })); // Parses application/x-www-form-encoded
 
 article.get('/:slug', function(req, res) {
   var slug = normalize_slug(req.params.slug),
-      path = article_path(slug)
-  ;
+      path = article_path(slug);
 
+  // If the slug is not properly normalized, normalize it and redirect
   if (req.params.slug != slug) {
     return res.redirect(article.path() + '/' + slug);
   }
 
+  // Now, look for the valid slug.
   try {
-    var tx = fs.readFileSync(path, 'utf8');
-    if (req.is('text/textile'))
-      return res.status(200).send(tx);
-    else
-      return res.status(200).send(textile.parse(parse_links(tx)));
+    var $ = cheerio.load(fs.readFileSync(path, 'utf8'));
+
+    // Clean & parse the article's HTML fragment
+    $('script').remove(); // Remove all script tags.
+
+    return res.status(200).send($.html());
   } catch (err) {
+    console.log(err.message);
     return res.status(404).send('Article not found.');
   }
 });
+article.post('/:slug', function(req, res) {
+  var slug = normalize_slug(req.params.slug),
+      path = article_path(slug);
+
+  var $ = cheerio.load(req.body.html);
+  $('script').remove(); // Remove all <script> tags.
+
+  try {
+    fs.writeFileSync(path, $.html(), 'utf8');
+    return res.status(200).send($.html());
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).send('Unable to save article.');
+  }
+
+  console.log($.html());
+});
 
 function article_path(slug) {
-  return path.resolve(paths.articles, slug + '.tx');
-};
-function parse_links(textile) {
-  // First, convert [[Slug]] and [[Slug|]] to [[Slug|Text]] format.
-  var result = textile.replace(/\[\[([ a-zA-Z0-9-_]*)[|]?]]/g, '[[$1|$1]]');
-  // Next, normalize the slug portion, and return the result.
-  return result.replace(/\[\[([ a-zA-Z0-9-_]*)[|](.*)]]/g, function(m, p1, p2) {
-    var slug = normalize_slug(p1), text = p2;
-    return '"' + text + '":/w/' + slug;
-  });
+  return path.resolve(paths.articles, slug + '.html');
 };
 function normalize_slug(slug) {
   return slug.toLowerCase()

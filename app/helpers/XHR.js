@@ -11,7 +11,7 @@ module.exports = window.XHR = {
 
     var xhr = new XMLHttpRequest();
     xhr.open(options.verb.toUpperCase(), encodeURI(url || ''));
-    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     xhr.onload = function() {
       var response = {
         status: xhr.status,
