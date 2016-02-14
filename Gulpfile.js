@@ -4,6 +4,7 @@ var gulp        = require('gulp'),                   // Base gulp package
     browserify  = require('browserify'),             // Providers "require" support, CommonJS
     buffer      = require('vinyl-buffer'),           // Vinyl stream support
     chalk       = require('chalk'),                  // Allows for coloring for logging
+    concat      = require('gulp-concat'),            // Concatenates multiple files into one
     cssmin      = require('gulp-cssmin'),            // Minifies CSS files
     del         = require('del'),                    // Deletes files / folders
     duration    = require('gulp-duration'),          // Time aspects of your gulp process
@@ -42,7 +43,11 @@ var paths = {
   app_js_develop:  'app/Application.jsx',
   app_js_release:  'js/application.js',
 
-  app_css_develop: ['styles/**/*.{css,scss}', '!styles/Dependencies.scss'],
+  app_css_develop: [
+    'styles/Application.scss',
+    'styles/**/*.{css,scss}',
+    '!styles/Dependencies.scss'
+  ],
   app_css_release: 'styles/application.css',
 
   pkg_js_develop:  'app/Packages.jsx',
@@ -55,7 +60,8 @@ var paths = {
 var assetMap = [
   { name: 'HTML Pages',   src: './app/**/*.html',             dest: ''        },
   { name: 'Font Assets',  src: './fontello/font/**/*',        dest: '/font'   },
-  { name: 'Image Assets', src: './images/**/*.{gif,jpg,png}', dest: '/images' }
+  { name: 'Image Assets', src: './images/**/*.{gif,jpg,png}', dest: '/images' },
+  { name: 'Submodules',   src: './tinymce/tinymce.min.js',    dest: '/js'}
 ];
 var build_assets = function() {
   assetMap.forEach(function(mapping) {
@@ -89,10 +95,9 @@ var build_js = function(bundler, infile, outfile) {
 var build_sass = function(infile, outfile) {
   var bundleTimer = duration(outfile + ' bundle time');
   return gulp.src(infile)
-    .pipe(notify({ message: 'Processing <%= file.relative %>.' }))
     .pipe(sass_glob())
     .pipe(sass().on('error', sass.logError))
-    .pipe(rename(outfile))
+    .pipe(concat(outfile))
     .pipe(gulp.dest(paths.develop_folder))
     .pipe(notify({ message: 'DEVELOP: <%= file.relative %> created.' }))
     .pipe(cssmin())

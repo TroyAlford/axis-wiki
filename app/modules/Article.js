@@ -34,7 +34,7 @@ export default class Article extends React.Component {
 
   render() {
     return (
-      <div className="wiki-content">
+      <div className="cp-article wiki-container">
         <div className="tabs is-right is-boxed">
           <ul>
             <li className={classNames({ 'is-active': this.state.mode == 'read' })}>
@@ -46,26 +46,32 @@ export default class Article extends React.Component {
             </li>
           </ul>
         </div>
-        <TinyMCE
-          config={{
-            auto_focus: true,
-            inline: true,
-            fixed_toolbar_container: '.wiki-content > .tabs',
-            menubar: false,
-            plugins: 'autolink link image lists save wordcount',
-            readonly: this.state.mode == 'read',
-            save_onsavecallback: this.handleSave,
-            setup: function(editor) {
-              editor.on('blur', function(ev) {
-                ev.stopPropagation();
-                ev.preventDefault();
-              });
-            },
-            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | save'
-          }}
-          content={this.state.html}
-          onChange={this.handleEditorChange}
-        />
+        <div className={classNames({ 'wiki-content': true, [`mode-${this.state.mode}`]: true })}>
+          <TinyMCE
+            config={{
+              auto_focus: true,
+              inline: true,
+              fixed_toolbar_container: '.wiki-content > .tabs',
+              menubar: false,
+              plugins: 'autolink link image lists save wordcount',
+              readonly: this.state.mode == 'read',
+              save_onsavecallback: this.handleSave,
+              setup: function(editor) {
+                editor.on('blur', function(ev) {
+                  ev.stopPropagation();
+                  ev.preventDefault();
+                });
+              },
+              toolbar:
+                'undo redo | ' +
+                'bold italic | ' +
+                'alignleft aligncenter alignright | ' +
+                'fullscreen save'
+            }}
+            content={this.state.html}
+            onChange={this.handleEditorChange}
+          />
+        </div>
       </div>
     );
   }

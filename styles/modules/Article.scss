@@ -1,3 +1,17 @@
-.wiki-content {
+.cp-article {
+  padding: 10px 20px 0 0;
+
   > .tabs > .mce-panel { display: block!important; }
+  > .wiki-content { margin-top: 38px; }
+
+  .mce-content-body[contenteditable] {
+    outline: 1px solid #333;
+    margin: 0 1px;
+    padding: 5px;
+  }
+}
+.mce-tinymce-inline.mce-panel {
+  border: 1px outset!important;
+  left: 0!important;
+  width:100%!important;
 }
