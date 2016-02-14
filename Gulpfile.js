@@ -22,6 +22,7 @@ var _           = require('lodash'),                 // Lodash
     streamify   = require('gulp-streamify'),         // Creates gulp streams
     uglify      = require('gulp-uglify')             // Minifies JavaScript
 ;
+
 var paths = {
   develop_folder:  './build/develop',
   release_folder:  './build/release',
@@ -64,10 +65,10 @@ var build_assets = function() {
   assetMap.forEach(function(mapping) {
     gulp.src(mapping.src)
       .pipe(gulp.dest(paths.develop_folder + (mapping.dest || '')))
+      .pipe(notify({ onLast: true, message: report_file.bind(this, 'DEVELOP', mapping.name) }))
       .pipe(gulp.dest(paths.release_folder + (mapping.dest || '')))
-      .pipe(notify({ onLast: true, message: function() {
-        console.log(mapping.name + ' repackaged.');
-      }}));
+      .pipe(notify({ onLast: true, message: report_file.bind(this, 'RELEASE', mapping.name) }))
+    ;
   });
 };
 
@@ -80,14 +81,10 @@ var build_js = function(bundler, infile, outfile, minify) {
     .pipe(buffer())            // convert to a gulp pipeline
     .pipe(rename(outfile))     // rename the output file
     .pipe(gulp.dest(paths.develop_folder))
-    .pipe(notify({ message: function() {
-      console.log(chalk.red('DEVELOP: ') + chalk.cyan(outfile) + chalk.red(' created.'))
-    }}))
+    .pipe(notify({ onLast: true, message: report_file.bind(this, 'DEVELOP', outfile) }))
     .pipe(gulpif(minify, uglify()))            // uglify/minify the output
     .pipe(gulp.dest(paths.release_folder))
-    .pipe(notify({ message: function() {
-      console.log(chalk.red('RELEASE: ') + chalk.cyan(outfile) + chalk.red(' created.'))
-    }}))
+    .pipe(notify({ onLast: true, message: report_file.bind(this, 'RELEASE', outfile) }))
   ;
 };
 var build_sass = function(infile, outfile) {
@@ -96,16 +93,15 @@ var build_sass = function(infile, outfile) {
     .pipe(sass().on('error', sass.logError))
     .pipe(concat(outfile))
     .pipe(gulp.dest(paths.develop_folder))
-    .pipe(notify({ message: function() {
-      console.log(chalk.red('DEVELOP: ') + chalk.cyan(outfile) + chalk.red(' created.'))
-    }}))
+    .pipe(notify({ onLast: true, message: report_file.bind(this, 'DEVELOP', outfile) }))
     .pipe(cssmin())
     .pipe(gulp.dest(paths.release_folder))
-    .pipe(notify({ message: function() {
-      console.log(chalk.red('RELEASE: ') + chalk.cyan(outfile) + chalk.red(' created.'))
-    }}))
+    .pipe(notify({ onLast: true, message: report_file.bind(this, 'RELEASE', outfile) }))
   ;
 };
+function report_file(environment, filename) {
+  console.log(chalk.red(environment + ': ') + chalk.cyan(filename) + chalk.red(' created.'))
+}
 
 var bundlers = {
   'js:Application': browserify(paths.app_js_develop, { debug: true })
