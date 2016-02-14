@@ -2,6 +2,7 @@ var
   express = require('express'),
   fs      = require('fs'),
   http    = require('http'),
+  mkdirp  = require('mkdirp'),
   path    = require('path'),
   request = require('request'),
   url     = require('url'),
@@ -10,10 +11,15 @@ var
 ;
 
 var folders = {
-  articles: '../content/articles',
-  config:   '../content/config',
-  media:    '../content/media'
+  articles: './../content/articles',
+  config:   './../content/config',
+  media:    './../content/media'
 };
+
+// Ensure the required folders exist.
+Object.keys(folders).forEach(function(folder) {
+  mkdirp(folders[folder], function(err) { return; });
+});
 
 var modules = {
   article: require('./modules/article.js')
