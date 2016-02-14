@@ -9,6 +9,12 @@ var
   port    = 8080
 ;
 
+var folders = {
+  articles: '../content/articles',
+  config:   '../content/config',
+  media:    '../content/media'
+};
+
 var modules = {
   article: require('./modules/article.js')
 };
@@ -17,11 +23,10 @@ var app = express();
 app.use('/api/w', modules.article);
 app.use('/js', express.static(path.join(__dirname, '../build/develop/js')));
 app.use('/styles', express.static(path.join(__dirname, '../build/develop/styles')));
-app.get('/', function (req, res) {
+app.get('*', function (req, res) {
   fs.createReadStream(path.join(__dirname, '../build/develop', 'index.html'))
     .pipe(res);
 });
-app.get('*', function (req, res) { res.redirect('/'); });
 
 http.createServer(app).listen(port, function() {
   console.log('Express server running on port ' + port);
