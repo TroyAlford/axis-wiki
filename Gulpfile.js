@@ -1,14 +1,17 @@
 'use strict';
-var gulp        = require('gulp'),                   // Base gulp package
+var _           = require('lodash'),                 // Lodash
+    gulp        = require('gulp'),                   // Base gulp package
     babelify    = require('babelify'),               // Used to convert ES6 & JSX to ES5
     browserify  = require('browserify'),             // Providers "require" support, CommonJS
     buffer      = require('vinyl-buffer'),           // Vinyl stream support
     chalk       = require('chalk'),                  // Allows for coloring for logging
+    concat      = require('gulp-concat'),            // Concatenates multiple files into one
     cssmin      = require('gulp-cssmin'),            // Minifies CSS files
     del         = require('del'),                    // Deletes files / folders
     duration    = require('gulp-duration'),          // Time aspects of your gulp process
+    fs          = require('fs'),                     // Node file system object
+    gulpif      = require('gulp-if'),                // Allows conditionals within gulp statements
     gutil       = require('gulp-util'),              // Provides gulp utilities, including logging and beep
-    livereload  = require('gulp-livereload'),        // Livereload support for the browser
     merge       = require('utils-merge'),            // Object merge tool
     notify      = require('gulp-notify'),            // Provides notification to both the console and Growel
     rename      = require('gulp-rename'),            // Rename sources
@@ -17,24 +20,8 @@ var gulp        = require('gulp'),                   // Base gulp package
     sass_glob   = require('gulp-sass-glob'),         // SCSS with wildcard @imports
     source      = require('vinyl-source-stream'),    // Vinyl stream support
     streamify   = require('gulp-streamify'),         // Creates gulp streams
-    uglify      = require('gulp-uglify'),            // Minifies JavaScript
-    watchify    = require('watchify')                // Watchify for source changes
+    uglify      = require('gulp-uglify')             // Minifies JavaScript
 ;
-var DEPENDENCIES = Object.keys(require('./package.json').dependencies)
-  .map(function(dependency) {
-    return dependency;
-  }
-);
-var options = {
-  application: {
-    js:  merge(watchify.args, { debug: true  }),
-    css: merge(watchify.args, { debug: true  })
-  },
-  dependencies: {
-    js:  merge(watchify.args, { debug: false }),
-    css: merge(watchify.args, { debug: false })
-  }
-}
 var paths = {
   develop_folder:  './build/develop',
   release_folder:  './build/release',
@@ -42,20 +29,36 @@ var paths = {
   app_js_develop:  'app/Application.jsx',
   app_js_release:  'js/application.js',
 
-  app_css_develop: 'styles/Application.scss',
+  app_css_develop: [
+    'styles/Application.scss',
+    'styles/**/*.{css,scss}',
+    '!styles/Dependencies.scss'
+  ],
   app_css_release: 'styles/application.css',
 
   pkg_js_develop:  'app/Packages.jsx',
   pkg_js_release:  'js/dependencies.js',
 
   pkg_css_develop: 'styles/Dependencies.scss',
-  pkg_css_release: 'styles/dependencies.css'
+  pkg_css_release: 'styles/dependencies.css',
+
+  dependencies: './app/dependencies/'
 };
+
+var DEPENDENCIES = Object.keys(require('./package.json').dependencies)
+  .map(function(dependency) {
+    return dependency;
+  })
+  .concat(fs.readdirSync(paths.dependencies).map(function(filename) {
+    if (_(filename).endsWith('.js') && fs.statSync(paths.dependencies + filename).isFile())
+      return (paths.dependencies + filename);
+  }))
+;
 
 var assetMap = [
   { name: 'HTML Pages',   src: './app/**/*.html',             dest: ''        },
   { name: 'Font Assets',  src: './fontello/font/**/*',        dest: '/font'   },
-  { name: 'Image Assets', src: './images/**/*.{gif,jpg,png}', dest: '/images' }
+  { name: 'Image Assets', src: './images/**/*.{gif,jpg,png}', dest: '/images' },
 ];
 var build_assets = function() {
   assetMap.forEach(function(mapping) {
@@ -68,8 +71,7 @@ var build_assets = function() {
   });
 };
 
-var build_js = function(bundler, infile, outfile) {
-  var bundleTimer = duration(outfile + ' bundle time');
+var build_js = function(bundler, infile, outfile, minify) {
   return bundler
     .plugin(resolutions, '*')
     .bundle()
@@ -78,32 +80,35 @@ var build_js = function(bundler, infile, outfile) {
     .pipe(buffer())            // convert to a gulp pipeline
     .pipe(rename(outfile))     // rename the output file
     .pipe(gulp.dest(paths.develop_folder))
-    .pipe(notify({ message: 'DEVELOP: <%= file.relative %> created.' }))
-    .pipe(streamify(uglify())) // uglify/minify the output
+    .pipe(notify({ message: function() {
+      console.log(chalk.red('DEVELOP: ') + chalk.cyan(outfile) + chalk.red(' created.'))
+    }}))
+    .pipe(gulpif(minify, uglify()))            // uglify/minify the output
     .pipe(gulp.dest(paths.release_folder))
-    .pipe(notify({ message: 'RELEASE: <%= file.relative %> created.' }))
-    .pipe(bundleTimer)         // output build timing
-    .pipe(livereload())        // reload the view in the browser
+    .pipe(notify({ message: function() {
+      console.log(chalk.red('RELEASE: ') + chalk.cyan(outfile) + chalk.red(' created.'))
+    }}))
   ;
 };
 var build_sass = function(infile, outfile) {
-  var bundleTimer = duration(outfile + ' bundle time');
   return gulp.src(infile)
     .pipe(sass_glob())
     .pipe(sass().on('error', sass.logError))
-    .pipe(rename(outfile))
+    .pipe(concat(outfile))
     .pipe(gulp.dest(paths.develop_folder))
-    .pipe(notify({ message: 'DEVELOP: <%= file.relative %> created.' }))
+    .pipe(notify({ message: function() {
+      console.log(chalk.red('DEVELOP: ') + chalk.cyan(outfile) + chalk.red(' created.'))
+    }}))
     .pipe(cssmin())
     .pipe(gulp.dest(paths.release_folder))
-    .pipe(notify({ message: 'RELEASE: <%= file.relative %> created.' }))
-    .pipe(bundleTimer)         // output build timing
-    .pipe(livereload())        // reload the view in the browser
+    .pipe(notify({ message: function() {
+      console.log(chalk.red('RELEASE: ') + chalk.cyan(outfile) + chalk.red(' created.'))
+    }}))
   ;
 };
 
 var bundlers = {
-  'js:Application': browserify(paths.app_js_develop, options.application.js)
+  'js:Application': browserify(paths.app_js_develop, { debug: true })
     .plugin(function(bundle) {
       // remove all dependencies from the Application.js build
       DEPENDENCIES.forEach(function(tool) {
@@ -111,7 +116,7 @@ var bundlers = {
       });
     })
     .transform(babelify, { presets: ['es2015', 'react']})
-, 'js:Dependencies': browserify(paths.pkg_js_develop, options.dependencies.js)
+, 'js:Dependencies': browserify(paths.pkg_js_develop, { debug: false })
     .plugin(function(bundle) {
       // add all dependencies to the dependencies.js build
       DEPENDENCIES.forEach(function(tool) {
@@ -120,10 +125,10 @@ var bundlers = {
     })
 };
 bundlers['js:Application'].run = build_js.bind(
-  this, bundlers['js:Application'], paths.app_js_develop, paths.app_js_release
+  this, bundlers['js:Application'], paths.app_js_develop, paths.app_js_release, true
 );
 bundlers['js:Dependencies'].run = build_js.bind(
-  this, bundlers['js:Dependencies'], paths.pkg_js_develop, paths.pkg_js_release
+  this, bundlers['js:Dependencies'], paths.pkg_js_develop, paths.pkg_js_release, false
 );
 
 gulp.task('build', ['clean'], function() {
@@ -148,18 +153,8 @@ gulp.task('clean', function() {
   return del(['build/**/*', 'build']);
 });
 gulp.task('listen', ['build'], function() {
-  livereload.listen(); // start livereload server
-
-  for (var name in bundlers) {
-    var bundler = bundlers[name]
-      .plugin(watchify, { ignoreWatch: ['**/node_modules/**', '**/bower_components/**'] });
-
-    if (typeof bundler.run != 'function') continue;
-
-    bundler.on('update', function() {
-      bundler.run(); // Re-run bundle on source updates
-    })
-  }
+  gulp.watch(['app/Application.jsx', 'app/**/*.js', '!app/dependencies/*.js'], [bundlers['js:Application'].run]);
+  gulp.watch(['app/Dependencies.jsx', 'app/dependencies/*.js'], [bundlers['js:Dependencies'].run]);
   assetMap.forEach(function(mapping) {
     gulp.watch(mapping.src, build_assets);
   });
@@ -176,7 +171,7 @@ function mapError(err) {
       + ': ' + chalk.yellow(err.filename.replace(__dirname, ''))
       + ': ' + 'Line ' + chalk.magenta(err.lineNumber || err.line)
       + ', ' + 'Column ' + chalk.magenta(err.columnNumber || err.column)
-      + ': ' + chalk.blue(err.description || err.message)
+      + ': ' + chalk.cyan(err.description || err.message)
     );
   } else { // Browserify error
     gutil.log(chalk.red(err.name)

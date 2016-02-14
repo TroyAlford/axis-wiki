@@ -1,0 +1,20 @@
+$size-header-y: 50px;
+$size-left-column-x: 160px;
+
+.cp-layout {
+  .cp-layout-head {
+    height: $size-header-y;
+  }
+  .cp-layout-left {
+    position: absolute;
+    left: 0; bottom: 0; top: $size-header-y; width: $size-left-column-x;
+    padding: 10px;
+    border: 0 solid #42afe3;
+    border-right-width: 1px;
+  }
+  .cp-layout-main {
+    position: absolute;
+    right: 0; bottom: 0; top: $size-header-y; left: $size-left-column-x;
+    padding: 10px;
+  }
+}
