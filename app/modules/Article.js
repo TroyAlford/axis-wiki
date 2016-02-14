@@ -2,9 +2,12 @@
 import classNames from 'classnames';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TinyMCE from 'react-tinymce';
 
 import XHR from '../helpers/XHR';
+
+import Icon from './Icon';
+import Tag from './Tag';
+import TinyMCE from 'react-tinymce';
 
 let cn = classNames;
 
@@ -44,8 +47,8 @@ export default class Article extends React.Component {
   }
 
   render() {
-    var viewer = <div dangerouslySetInnerHTML={{ __html: this.state.html }}></div>;
-    var editor = <TinyMCE
+    let viewer = <div dangerouslySetInnerHTML={{ __html: this.state.html }}></div>;
+    let editor = <TinyMCE
       config={{
         auto_focus: true,
         inline: true,
@@ -66,6 +69,10 @@ export default class Article extends React.Component {
       ref="editor"
     />;
 
+    let tags = (this.state.tags || [this.props.params.slug]).map(function(tag) {
+      return <Tag key={tag} name={tag} />;
+    });
+
     return (
       <div className={`cp-article wiki-container mode-${this.state.mode}`}>
         <div className="tabs is-right is-boxed">
@@ -80,6 +87,9 @@ export default class Article extends React.Component {
         </div>
         <div className="wiki-content reader">{viewer}</div>
         <div className="wiki-content editor">{editor}</div>
+        <div className="tags">
+          <Icon name="tags" /> {tags}
+        </div>
       </div>
     );
   }

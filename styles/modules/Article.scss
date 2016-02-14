@@ -13,23 +13,44 @@
   }
   > .wiki-content {
     &.reader { margin-top: 0; }
-    &.editor { margin-top: 30px; }
+    &.editor {
+      border: 1px solid #ccc;
+      margin-top: 28px;
+      padding: 0 5px;
+
+      .mce-edit-focus { outline: none; }
+    }
   }
   &.mode-read > .wiki-content.editor { display: none; }
   &.mode-edit > .wiki-content.reader { display: none; }
 
-  .mce-content-body[contenteditable] {
-    outline: 1px solid #333;
-    margin: 0 1px;
-    padding: 5px;
+  .tags {
+    border-top: 1px solid #42afe3;
+    bottom: 0; left: 0; right: 0;
+    display: block;
+    padding: 5px 5px 5px 35px;
+    position: absolute;
+
+    > .icon:first-child {
+      margin: 0 5px 0 0;
+      position: absolute;
+      left: 5px; top: 5px;
+    }
+    .tag .icon {
+      color: #ccc;
+      font-size: 10px;
+      margin: -1px 0 0 -6px;
+      width: 12px;
+    }
   }
 }
-.mce-tinymce-inline.mce-panel {
+div.mce-tinymce-inline.mce-panel {
   border: 1px solid #ccc!important;
   display: block!important;
-  margin: -1px 0 0 -1px;
+  margin: -11px 0 0 -6px;
   right: 10px;
-  height: 32px!important; width: auto!important;
+  height: 32px!important;
+  width: auto!important;
 
   .mce-flow-layout-item { margin: 0; }
   .mce-toolbar-grp { padding: 0; }

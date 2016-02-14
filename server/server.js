@@ -22,6 +22,7 @@ var modules = {
 var app = express();
 app.use('/api/w', modules.article);
 app.use('/js', express.static(path.join(__dirname, '../build/develop/js')));
+app.use('/font', express.static(path.join(__dirname, '../build/develop/font')));
 app.use('/styles', express.static(path.join(__dirname, '../build/develop/styles')));
 app.get('*', function (req, res) {
   fs.createReadStream(path.join(__dirname, '../build/develop', 'index.html'))
