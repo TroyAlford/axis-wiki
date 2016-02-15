@@ -16,10 +16,8 @@ export default class Article extends React.Component {
     super(props);
     this.state = {
       html: '',
-      meta: {
-        data: [],
-        tags: []
-      },
+      data: [],
+      tags: [],
 
       mode: 'read'
     };
@@ -27,6 +25,8 @@ export default class Article extends React.Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleMode = this.handleMode.bind(this);
 
+    this.handleAddTag = this.handleAddTag.bind(this);
+    this.handleEditTag = this.handleEditTag.bind(this);
     this.handleRemoveTag = this.handleRemoveTag.bind(this);
 
     XHR.get('/api/w/' + this.props.params.slug, {
@@ -34,22 +34,38 @@ export default class Article extends React.Component {
     })
   }
 
-  handleRemoveTag(removed_tag) {
-    var tags = this.state.meta.tags;
-    console.log(JSON.stringify(tags));
-    console.log('removing ' + removed_tag);
-    this.setState({ meta: Object.assign({}, this.state.meta, {
-      tags: tags.filter(function (tag) {
-        return tag.toLowerCase() != removed_tag.toLowerCase();
-      })
-    })});
-    console.log(JSON.stringify(this.state.meta.tags));
+  tagify(tag) {
+    return _.trim(_.lowerCase(tag.replace(/[\s]{2,}/g, ' ')));
   }
+
+  handleAddTag(new_tag) {
+    this.setState({
+      tags: _.union(this.state.tags, [this.tagify(new_tag)])
+    });
+  }
+  handleEditTag(old_tag, new_tag) {
+    old_tag = this.tagify(old_tag);
+    new_tag = this.tagify(new_tag);
+
+    let tags = _.difference(this.state.tags, [old_tag]);
+    if (new_tag.length)
+      tags = _.union(tags, [new_tag]);
+
+    this.setState({ tags: tags });
+  }
+  handleRemoveTag(removed_tag) {
+    var tags = this.state.tags;
+    this.setState({
+      tags: _.difference(this.state.tags, [this.tagify(removed_tag)])
+    });
+  }
+
   handleLoad(response) {
     let msg = JSON.parse(response.message);
     this.setState({
+      data: (msg.meta || {}).data || [],
+      tags: _.map((msg.meta || {}).tags || [], this.tagify),
       html: msg.html,
-      meta: Object.assign({}, { data: [], tags: [] }, msg.meta),
 
       mode: 'read'
     });
@@ -57,8 +73,11 @@ export default class Article extends React.Component {
   handleSave(event) {
     XHR.post('/api/w/' + this.props.params.slug, {
       data: {
-        html: ReactDOM.findDOMNode(this.refs.editor).innerHTML,
-        meta: this.state.meta
+        meta: {
+          data: this.state.data || [],
+          tags: this.state.tags || []
+        },
+        html: ReactDOM.findDOMNode(this.refs.editor).innerHTML
       },
       success: this.handleLoad,
       failure: function(res) {
@@ -91,9 +110,10 @@ export default class Article extends React.Component {
       ref="editor"
     />;
 
-    let tags = this.state.meta.tags.map(function(tag) {
+    let tags = this.state.tags.map(function(tag) {
       return (
         <Tag key={tag} name={tag}
+             onChange={this.handleEditTag}
              onRemove={this.handleRemoveTag.bind(this, tag)}
              editable={this.state.mode == 'edit'} />
       );
