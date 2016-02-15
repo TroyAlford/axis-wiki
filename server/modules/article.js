@@ -28,9 +28,8 @@ article.get('/:slug', function(request, response) {
   // Now, look for the valid slug.
   try {
     var $ = cheerio.load(fs.readFileSync(path + '.html', 'utf8'));
-    var meta = utils.exists(path + '.json') ? utils.readJSONSync(path + '.json') : {
-      data: [], tags: [slug]
-    };
+    var meta = utils.exists(path + '.json') ?
+        utils.readJSONSync(path + '.json') : { data: [], tags: [] };
 
     // Clean & parse the article's HTML fragment
     $('script').remove(); // Remove all script tags.
@@ -58,7 +57,7 @@ article.post('/:slug', function(request, response) {
   var $ = cheerio.load(request.body.html);
   $('script').remove(); // Remove all <script> tags.
 
-  var meta = Object.assign({}, { data: [], tags: [] }, request.body.meta);
+  var meta = Object.assign({ data: [], tags: [] }, request.body.meta);
 
   try {
     fs.writeFileSync(path + '.html', $.html(), 'utf8');

@@ -54,9 +54,12 @@ export default class Article extends React.Component {
       mode: 'read'
     });
   }
-  handleSave() {
+  handleSave(event) {
     XHR.post('/api/w/' + this.props.params.slug, {
-      data: { html: ReactDOM.findDOMNode(this.refs.editor).innerHTML },
+      data: {
+        html: ReactDOM.findDOMNode(this.refs.editor).innerHTML,
+        meta: this.state.meta
+      },
       success: this.handleLoad,
       failure: function(res) {
         console.log('Save Error...', res);
@@ -77,13 +80,12 @@ export default class Article extends React.Component {
         menubar: false,
         plugins:
           'anchor autosave fullscreen hr image link lists ' +
-          'paste print save searchreplace table',
+          'paste print searchreplace table',
         readonly: this.state.mode == 'read',
-        save_onsavecallback: this.handleSave,
         toolbar:
           'styleselect | bold italic underline | hr link anchor | ' +
           'alignleft aligncenter alignright alignjustify | ' +
-          'image table | removeformat | undo redo | print save'
+          'image table | removeformat | undo redo | print'
       }}
       content={this.state.html}
       ref="editor"
@@ -101,6 +103,14 @@ export default class Article extends React.Component {
       <div className={`cp-article wiki-container mode-${this.state.mode}`}>
         <div className="tabs is-right is-boxed">
           <ul>
+            <li className={cn({
+                  'button': true,
+                  'is-pulled-right': true,
+                  'is-hidden': this.state.mode == 'read'
+                })}
+                onClick={this.handleSave}>
+              <Icon name="save" size="small" /> Save
+            </li>
             <li className={cn({ 'is-active': this.state.mode == 'read' })}>
               <a href="#" onClick={this.handleMode.bind(this, 'read')}>Read</a>
             </li>
