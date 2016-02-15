@@ -97,14 +97,24 @@ export default class Article extends React.Component {
         inline: true,
         fixed_toolbar_container: '.wiki-container > .tabs',
         menubar: false,
+
         plugins:
           'anchor autosave fullscreen hr image link lists ' +
           'paste print searchreplace table',
         readonly: this.state.mode == 'read',
+        //setup: function(editor) {
+        //  editor.addButton('font-dropdown', {
+        //    type: 'menubutton', text: 'Font', icon: false,
+        //    menu: [
+        //      { text:
+        //
+        //    }]
+        //  })
+        //},
         toolbar:
-          'styleselect | bold italic underline | hr link anchor | ' +
-          'alignleft aligncenter alignright alignjustify | ' +
-          'image table | removeformat | undo redo | print'
+          'formatselect | bold italic underline | hr link anchor ' +
+          '| alignleft aligncenter alignright alignjustify ' +
+          '| image table | removeformat | undo redo | print'
       }}
       content={this.state.html}
       ref="editor"
