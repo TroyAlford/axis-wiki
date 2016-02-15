@@ -7,6 +7,12 @@
   "ascent": 850,
   "glyphs": [
     {
+      "uid": "517522647a556192fbc78aa391b7b0c2",
+      "css": "remove",
+      "code": 59394,
+      "src": "typicons"
+    },
+    {
       "uid": "630529f03c319c01101aa167181b650e",
       "css": "tag",
       "code": 59392,

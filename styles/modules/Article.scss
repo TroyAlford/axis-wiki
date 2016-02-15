@@ -59,11 +59,15 @@
       position: absolute;
       left: 5px; top: 5px;
     }
-    .tag .icon {
-      color: $color-border-gray;
-      font-size: 10px;
-      margin: -1px 0 0 -6px;
-      width: 12px;
+    .tag {
+      padding: 4px;
+
+      .icon {
+        color: $color-border-gray;
+        font-size: 10px;
+        margin: -1px 1px;
+        width: 16px;
+      }
     }
   }
 }

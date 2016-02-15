@@ -27,14 +27,26 @@ export default class Article extends React.Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleMode = this.handleMode.bind(this);
 
+    this.handleRemoveTag = this.handleRemoveTag.bind(this);
+
     XHR.get('/api/w/' + this.props.params.slug, {
       success: this.handleLoad
     })
   }
 
+  handleRemoveTag(removed_tag) {
+    var tags = this.state.meta.tags;
+    console.log(JSON.stringify(tags));
+    console.log('removing ' + removed_tag);
+    this.setState({ meta: Object.assign({}, this.state.meta, {
+      tags: tags.filter(function (tag) {
+        return tag.toLowerCase() != removed_tag.toLowerCase();
+      })
+    })});
+    console.log(JSON.stringify(this.state.meta.tags));
+  }
   handleLoad(response) {
     let msg = JSON.parse(response.message);
-    console.log('Response Message: ' + msg);
     this.setState({
       html: msg.html,
       meta: Object.assign({}, { data: [], tags: [] }, msg.meta),
@@ -78,8 +90,12 @@ export default class Article extends React.Component {
     />;
 
     let tags = this.state.meta.tags.map(function(tag) {
-      return <Tag key={tag} name={tag} />;
-    });
+      return (
+        <Tag key={tag} name={tag}
+             onRemove={this.handleRemoveTag.bind(this, tag)}
+             editable={this.state.mode == 'edit'} />
+      );
+    }.bind(this));
 
     return (
       <div className={`cp-article wiki-container mode-${this.state.mode}`}>
