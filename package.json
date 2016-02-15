@@ -22,6 +22,7 @@
     "cheerio": "^0.20.0",
     "del": "^2.2.0",
     "express": "^4.13.4",
+    "fs-utils": "^0.7.0",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-cssmin": "^0.1.7",

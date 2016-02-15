@@ -15,9 +15,14 @@ export default class Article extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mode: 'read',
-      html: ''
-    }
+      html: '',
+      meta: {
+        data: [],
+        tags: []
+      },
+
+      mode: 'read'
+    };
     this.handleLoad = this.handleLoad.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleMode = this.handleMode.bind(this);
@@ -28,8 +33,12 @@ export default class Article extends React.Component {
   }
 
   handleLoad(response) {
+    let msg = JSON.parse(response.message);
+    console.log('Response Message: ' + msg);
     this.setState({
-      html: response.message,
+      html: msg.html,
+      meta: Object.assign({}, { data: [], tags: [] }, msg.meta),
+
       mode: 'read'
     });
   }
@@ -38,7 +47,7 @@ export default class Article extends React.Component {
       data: { html: ReactDOM.findDOMNode(this.refs.editor).innerHTML },
       success: this.handleLoad,
       failure: function(res) {
-        console.log('error...', res);
+        console.log('Save Error...', res);
       }
     });
   }
@@ -52,7 +61,7 @@ export default class Article extends React.Component {
       config={{
         auto_focus: true,
         inline: true,
-        fixed_toolbar_container: '.wiki-content > .tabs',
+        fixed_toolbar_container: '.wiki-container > .tabs',
         menubar: false,
         plugins:
           'anchor autosave fullscreen hr image link lists ' +
@@ -65,11 +74,10 @@ export default class Article extends React.Component {
           'image table | removeformat | undo redo | print save'
       }}
       content={this.state.html}
-      onChange={this.handleEditorChange}
       ref="editor"
     />;
 
-    let tags = (this.state.tags || [this.props.params.slug]).map(function(tag) {
+    let tags = this.state.meta.tags.map(function(tag) {
       return <Tag key={tag} name={tag} />;
     });
 

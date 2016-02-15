@@ -1,20 +1,24 @@
-$size-header-y: 50px;
-$size-left-column-x: 160px;
+@import '../Variables';
+
+html, body { overflow: hidden; }
 
 .cp-layout {
   .cp-layout-head {
-    height: $size-header-y;
+    position: fixed;
+    left: 0; right: 0; top: 0; height: $size-header-y;
   }
   .cp-layout-left {
-    position: absolute;
+    position: fixed;
     left: 0; bottom: 0; top: $size-header-y; width: $size-left-column-x;
     padding: 10px;
-    border: 0 solid #42afe3;
+    border: 0 solid $color-border-blue;
     border-right-width: 1px;
   }
   .cp-layout-main {
-    position: absolute;
+    position: fixed;
     right: 0; bottom: 0; top: $size-header-y; left: $size-left-column-x;
     padding: 10px;
+    overflow-x: auto;
+    overflow-y: auto;
   }
 }
