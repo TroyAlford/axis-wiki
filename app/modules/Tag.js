@@ -11,12 +11,17 @@ export default class Tag extends React.Component {
       name: this.props.name || 'new tag'
     };
 
+    this.handleBlur = this.handleBlur.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
   }
 
+  handleBlur() {
+    // Treat this as a Cancel.
+    this.setState({ editing: false, name: this.props.name });
+  }
   handleChange(event) {
     this.setState({ name: event.target.value });
   }
@@ -30,10 +35,7 @@ export default class Tag extends React.Component {
       }
     } else if (event.which == 27) {
       // 27 = Escape. Cancel.
-      this.setState({
-        editing: false,
-        name: this.props.name
-      });
+      this.handleBlur();
     }
   }
   handleDoubleClick() {
@@ -45,10 +47,19 @@ export default class Tag extends React.Component {
       this.props.onRemove();
   }
 
+  componentDidUpdate() {
+    var editor = ReactDOM.findDOMNode(this.refs.editor);
+    if (this.state.editing && editor !== document.activeElement) {
+      editor.focus();
+      editor.select();
+    }
+  }
+
   render() {
     var read = <span className="name" onDoubleClick={this.handleDoubleClick}>{this.props.name}</span>;
     var edit = <input type="text" className="name" value={this.state.name}
                       ref="editor"
+                      onBlur={this.handleBlur}
                       onChange={this.handleChange}
                       onKeyDown={this.handleKeyDown} />;
 

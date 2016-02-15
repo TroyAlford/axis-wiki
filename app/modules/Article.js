@@ -129,13 +129,13 @@ export default class Article extends React.Component {
                   'is-hidden': this.state.mode == 'read'
                 })}
                 onClick={this.handleSave}>
-              <Icon name="save" size="small" /> Save
+              <Icon name="save" size="small" />Save
             </li>
             <li className={cn({ 'is-active': this.state.mode == 'read' })}>
-              <a href="#" onClick={this.handleMode.bind(this, 'read')}>Read</a>
+              <a onClick={this.handleMode.bind(this, 'read')}><Icon name={'read'} size={'small'} />Read</a>
             </li>
             <li className={cn({ 'is-active': this.state.mode == 'edit' })}>
-              <a href="#" onClick={this.handleMode.bind(this, 'edit')}>Edit</a>
+              <a onClick={this.handleMode.bind(this, 'edit')}><Icon name={'edit'} size={'small'} />Edit</a>
             </li>
           </ul>
         </div>
@@ -143,6 +143,7 @@ export default class Article extends React.Component {
         <div className="wiki-content editor">{editor}</div>
         <div className="tags">
           <Icon name="tags" /> {tags}
+          <Icon name="add" onClick={this.handleAddTag.bind(this, 'new tag')} />
         </div>
       </div>
     );

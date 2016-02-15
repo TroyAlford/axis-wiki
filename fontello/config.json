@@ -7,16 +7,34 @@
   "ascent": 850,
   "glyphs": [
     {
+      "uid": "a66cdc7278e6b33b8bd44a141f5e1a8d",
+      "css": "add",
+      "code": 59396,
+      "src": "entypo"
+    },
+    {
       "uid": "191bcf63575a78def53c907c3d3bf7f0",
       "css": "save",
       "code": 59395,
       "src": "entypo"
     },
     {
-      "uid": "517522647a556192fbc78aa391b7b0c2",
+      "uid": "3327862df439988139b61814143b7a42",
       "css": "remove",
       "code": 59394,
       "src": "typicons"
+    },
+    {
+      "uid": "jqzwo6i8oicjbn049sh2856d8anrqoli",
+      "css": "edit",
+      "code": 59397,
+      "src": "typicons"
+    },
+    {
+      "uid": "8fc56819afcd07e2786e34f18d39b71b",
+      "css": "read",
+      "code": 59398,
+      "src": "iconic"
     },
     {
       "uid": "630529f03c319c01101aa167181b650e",
