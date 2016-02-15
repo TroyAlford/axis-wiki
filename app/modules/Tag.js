@@ -64,7 +64,7 @@ export default class Tag extends React.Component {
                       onKeyDown={this.handleKeyDown} />;
 
     return (
-      <span className="tag">
+      <span className={`tag ${this.props.editable ? 'editable' : ''}`}>
         <Icon name="tag" size="small" />
         {this.state.editing ? edit : read}
         {this.props.editable ? <Icon name="remove" size="small" onClick={this.handleRemove} /> : ''}

@@ -10,10 +10,16 @@
     margin: -1px 1px;
     width: 16px;
   }
-  span.name, .icon-remove { cursor: pointer; }
+  .icon-remove { display: none; }
+
+  &.editable {
+    span.name, .icon-remove {
+      cursor: pointer;
+    }
+    .icon-remove { display: inline-block; }
+  }
 
   input[type=text] {
-    background: transparent;
     border: 0;
     position: relative;
     top: -1px;
