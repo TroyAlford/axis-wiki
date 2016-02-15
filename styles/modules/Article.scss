@@ -17,6 +17,12 @@
 
       .mce-flow-layout-item { margin: 0; }
       .mce-toolbar-grp { padding: 0; }
+      .mce-btn-group { padding: 2px 3px; }
+      .mce-btn > button { padding: 2px 4px; }
+      .mce-btn.mce-listbox > button {
+        padding-right: 18px;
+        > .mce-caret { right: 5px; }
+      }
     }
 
     .icon.is-small {

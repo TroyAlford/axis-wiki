@@ -102,15 +102,6 @@ export default class Article extends React.Component {
           'anchor autosave fullscreen hr image link lists ' +
           'paste print searchreplace table',
         readonly: this.state.mode == 'read',
-        //setup: function(editor) {
-        //  editor.addButton('font-dropdown', {
-        //    type: 'menubutton', text: 'Font', icon: false,
-        //    menu: [
-        //      { text:
-        //
-        //    }]
-        //  })
-        //},
         toolbar:
           'formatselect | bold italic underline | hr link anchor ' +
           '| alignleft aligncenter alignright alignjustify ' +
