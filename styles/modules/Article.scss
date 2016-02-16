@@ -51,6 +51,11 @@
       top: -3px;
     }
 
+    ul, ol { list-style-position: inside; }
+    ul { list-style-type: disc; }
+    li { padding-left: 10px; }
+    li > ul, li ol { padding-left: 10px; }
+
     &.reader, &.editor {
       border-top: 1px solid $color-border-gray;
       left: 10px; right: 0; top: 45px; bottom: 35px;
@@ -58,7 +63,6 @@
       padding: 10px;
       position: absolute;
     }
-
     &.editor {
       border-right: 1px solid $color-border-gray;
       top: 75px;
