@@ -39,6 +39,10 @@
     }
   }
   > .wiki-content {
+    &.reader a.wiki-missing {
+      color: $color-missing-link;
+    }
+
     &.reader, &.editor {
       border-top: 1px solid $color-border-gray;
       left: 10px; right: 0; top: 45px; bottom: 35px;

@@ -15,8 +15,9 @@ export default class Article extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      html: '',
       data: [],
+      html: '',
+      missing_links: [],
       tags: [],
 
       mode: 'read'
@@ -64,8 +65,9 @@ export default class Article extends React.Component {
     let msg = JSON.parse(response.message);
     this.setState({
       data: (msg.meta || {}).data || [],
-      tags: _.map((msg.meta || {}).tags || [], this.tagify),
       html: msg.html,
+      missing_links: msg.missing_links || [],
+      tags: _.map((msg.meta || {}).tags || [], this.tagify),
 
       mode: 'read'
     });

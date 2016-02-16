@@ -24,60 +24,53 @@ article.get('/:slug', function(request, response) {
   var slug = Slug.normalize(request.params.slug),
       path = article_path(slug);
 
-  // If the slug is not properly normalized, normalize it and redirect
-  if (request.params.slug != slug) {
+  if (request.params.slug != slug) // Redirect to normalized slug link
     return response.redirect(path);
-  }
 
   // Now, look for the valid slug.
-  try {
-    var $ = cheerio.load(fs.readFileSync(path + '.html', 'utf8'));
-    var meta = utils.exists(path + '.json') ?
-        utils.readJSONSync(path + '.json') : { data: [], tags: [] };
+  var article = load_article(slug);
+  if (!article)
+    return response.status(404).send('Article not found');
 
-    // Clean & parse the article's HTML fragment
-    $('script').remove(); // Remove all script tags.
+  var $ = cheerio.load(article.html);
+  mark_missing_links($, article.missing_links, URL.parse(request_url(request)));
 
-    return response
-      .status(200)
-      .format({
-        '*/*': function() {
-          response.send({
-            html: $.html(),
-            meta: meta,
-            missing_links: Links.missing_for(slug)
-          });
-        }
-      })
-    ;
-  } catch (err) {
-    console.log(err.message);
-    return response.status(404).send('Article not found.');
-  }
+  article.html = $.html();
+
+  return response.status(200).send(article);
 });
 article.post('/:slug', function(request, response) {
   var slug = Slug.normalize(request.params.slug),
-      path = article_path(slug);
+      path = article_path(slug),
+      wiki_url = URL.parse(request_url(request));
 
-  var $ = cheerio.load(request.body.html);
+  var article = {
+    html: request.body.html,
+    meta: Object.assign({ data: [], tags: [] }, request.body.meta)
+  };
+
+  var $ = cheerio.load(article.html);
   $('script').remove(); // Remove all <script> tags.
+  $('a').removeClass('wiki-missing'); // Remove 'wiki-missing' class before write
+  $('a').each(function() {
+    var wiki_link = to_wiki_link(URL.parse(request_url(request)), URL.parse(this.attribs.href));
+    if (wiki_link && wiki_link != this.attribs.href)
+      $(this).attr('href', wiki_link);
+  }); // Reduce local links to slug-only.
+  article.html = $.html();
 
-  var wiki_links = extract_wiki_links(
-    URL.parse(request.protocol + '://' + request.get('host') + request.originalUrl), $
-  );
-  Links.set(slug, wiki_links);
-
-  var meta = Object.assign({ data: [], tags: [] }, request.body.meta);
+  Links.set(slug, extract_wiki_links(wiki_url, $));
 
   try {
-    fs.writeFileSync(path + '.html', $.html(), 'utf8');
-    fs.writeFileSync(path + '.json', JSON.stringify(meta), 'utf8');
+    fs.writeFileSync(path + '.html', article.html);
+    fs.writeFileSync(path + '.json', JSON.stringify(article.meta));
 
-    return response.status(200).send({
-      html: $.html(),
-      meta: meta,
-      missing_links: Links.missing_for(slug)
-    });
+    // Before sending back to the client, update the missing_links
+    article.missing_links = Links.missing_for(slug);
+    mark_missing_links($, article.missing_links, wiki_url);
+    article.html = $.html();
+
+    return response.status(200).send(article);
   } catch (err) {
     console.log(err.message);
     return response.status(500).send('Unable to save article.');
@@ -86,14 +79,42 @@ article.post('/:slug', function(request, response) {
 
 function article_path(slug) {
   return path.resolve(paths.articles, slug);
-};
+}
 function extract_wiki_links(request_url, $) {
-  var wiki_url = URL.parse(request_url);
   return _.difference(_.uniq(_.map($('a'), function(link) {
-    var link_url = URL.parse(link.attribs.href);
-    return (!link_url.hostname || link_url.hostname == wiki_url.hostname)
-      ? Slug.normalize(link_url.pathname)
-      : ''
-    ;
+    return to_wiki_link(request_url, URL.parse(link.attribs.href));
   })), ['']); // << remove any blank entries (blanks are created for external links)
-};
+}
+function load_article(slug) {
+  var path = article_path(slug);
+  try {
+    var html = fs.readFileSync(path + '.html');
+    var meta = utils.exists(path + '.json') ?
+      utils.readJSONSync(path + '.json') : { data: [], tags: [] };
+
+    return {
+      html: html,
+      meta: meta,
+      missing_links: Links.missing_for(slug)
+    };
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}
+function mark_missing_links($, missing_links, wiki_url) {
+  $('a').each(function() { // Add 'wiki-missing' class, where appropriate, before send
+    var url = to_wiki_link(wiki_url, URL.parse($(this).attr('href')));
+    if (_.includes(missing_links, url))
+      $(this).addClass('wiki-missing');
+  });
+}
+function request_url(request) {
+  return URL.parse(request.protocol + '://' + request.get('host') + request.originalUrl);
+}
+function to_wiki_link(wiki_url, link_url) {
+  return (!link_url.hostname || link_url.hostname == wiki_url.hostname)
+    ? Slug.normalize(link_url.pathname)
+    : ''
+  ;
+}
