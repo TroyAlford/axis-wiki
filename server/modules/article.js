@@ -33,7 +33,7 @@ article.get('/:slug', function(request, response) {
     return response.status(404).send('Article not found');
 
   var $ = cheerio.load(article.html);
-  mark_missing_links($, article.missing_links, URL.parse(request_url(request)));
+  decorate_links($, article.missing_links, URL.parse(request_url(request)));
 
   article.html = $.html();
 
@@ -51,7 +51,7 @@ article.post('/:slug', function(request, response) {
 
   var $ = cheerio.load(article.html);
   $('script').remove(); // Remove all <script> tags.
-  $('a').removeClass('wiki-missing'); // Remove 'wiki-missing' class before write
+  $('a').removeAttr('target').removeClass('wiki-missing wiki-external');
   $('a').each(function() {
     var wiki_link = to_wiki_link(URL.parse(request_url(request)), URL.parse(this.attribs.href));
     if (wiki_link && wiki_link != this.attribs.href)
@@ -67,7 +67,7 @@ article.post('/:slug', function(request, response) {
 
     // Before sending back to the client, update the missing_links
     article.missing_links = Links.missing_for(slug);
-    mark_missing_links($, article.missing_links, wiki_url);
+    decorate_links($, article.missing_links, wiki_url);
     article.html = $.html();
 
     return response.status(200).send(article);
@@ -102,11 +102,14 @@ function load_article(slug) {
     return null;
   }
 }
-function mark_missing_links($, missing_links, wiki_url) {
+function decorate_links($, missing_links, wiki_url) {
   $('a').each(function() { // Add 'wiki-missing' class, where appropriate, before send
-    var url = to_wiki_link(wiki_url, URL.parse($(this).attr('href')));
-    if (_.includes(missing_links, url))
+    var link_url = URL.parse($(this).attr('href'));
+    if (link_url.hostname && link_url.hostname != wiki_url.hostname) {
+      $(this).attr('target', '_new').addClass('wiki-external');
+    } else if (_.includes(missing_links, to_wiki_link(wiki_url, link_url))) {
       $(this).addClass('wiki-missing');
+    }
   });
 }
 function request_url(request) {

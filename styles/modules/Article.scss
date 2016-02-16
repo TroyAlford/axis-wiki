@@ -42,6 +42,14 @@
     &.reader a.wiki-missing {
       color: $color-missing-link;
     }
+    &.reader a.wiki-external:after {
+      content: '\e807';
+      font-family: axis-wiki;
+      font-size: .7rem;
+      margin-left: 3px;
+      position: relative;
+      top: -3px;
+    }
 
     &.reader, &.editor {
       border-top: 1px solid $color-border-gray;

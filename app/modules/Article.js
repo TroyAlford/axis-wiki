@@ -102,12 +102,12 @@ export default class Article extends React.Component {
 
         plugins:
           'anchor autosave fullscreen hr image link lists ' +
-          'paste print searchreplace table',
+          'paste searchreplace table',
         readonly: this.state.mode == 'read',
         toolbar:
           'formatselect | bold italic underline | hr link anchor ' +
           '| alignleft aligncenter alignright alignjustify ' +
-          '| image table | removeformat | undo redo | print'
+          '| image table | removeformat | undo redo'
       }}
       content={this.state.html}
       ref="editor"
