@@ -1,15 +1,19 @@
 var
+  _          = require('lodash'),
   bodyParser = require('body-parser'),
   cheerio    = require('cheerio'),
   express    = require('express'),
   fs         = require('fs'),
-  gulp       = require('gulp'),
   path       = require('path'),
-  utils      = require('fs-utils')
+  URL        = require('url'),
+  utils      = require('fs-utils'),
+
+  Links      = require('./links'),
+  Slug       = require('./slug')
 ;
 
 var paths = {
-  articles: path.resolve(__dirname, '../../content/articles')
+  articles: path.resolve(__dirname, '../../content/articles'),
 };
 
 var article = module.exports = express();
@@ -17,7 +21,7 @@ article.use(bodyParser.json()); // Parses application/json
 article.use(bodyParser.urlencoded({ extended: true })); // Parses application/x-www-form-encoded
 
 article.get('/:slug', function(request, response) {
-  var slug = normalize_slug(request.params.slug),
+  var slug = Slug.normalize(request.params.slug),
       path = article_path(slug);
 
   // If the slug is not properly normalized, normalize it and redirect
@@ -40,7 +44,8 @@ article.get('/:slug', function(request, response) {
         '*/*': function() {
           response.send({
             html: $.html(),
-            meta: meta
+            meta: meta,
+            missing_links: Links.missing_for(slug)
           });
         }
       })
@@ -51,11 +56,16 @@ article.get('/:slug', function(request, response) {
   }
 });
 article.post('/:slug', function(request, response) {
-  var slug = normalize_slug(request.params.slug),
+  var slug = Slug.normalize(request.params.slug),
       path = article_path(slug);
 
   var $ = cheerio.load(request.body.html);
   $('script').remove(); // Remove all <script> tags.
+
+  var wiki_links = extract_wiki_links(
+    URL.parse(request.protocol + '://' + request.get('host') + request.originalUrl), $
+  );
+  Links.set(slug, wiki_links);
 
   var meta = Object.assign({ data: [], tags: [] }, request.body.meta);
 
@@ -65,7 +75,8 @@ article.post('/:slug', function(request, response) {
 
     return response.status(200).send({
       html: $.html(),
-      meta: meta
+      meta: meta,
+      missing_links: Links.missing_for(slug)
     });
   } catch (err) {
     console.log(err.message);
@@ -76,11 +87,13 @@ article.post('/:slug', function(request, response) {
 function article_path(slug) {
   return path.resolve(paths.articles, slug);
 };
-function normalize_slug(slug) {
-  return slug.toLowerCase()
-    .replace(/([ ]{1,})/g, '_')                  // replace all spaces with _'s
-    .replace(/([^\w\d_]{1,})/g, '-')             // replace all non-alphanumerics (other than _'s) with -'s
-    .replace(/--/g, '-')                         // remove all double -'s
-    .replace(/(^[-_ ]{1,})|([-_ ]{1,}$)/gmi, '') // remove any leading or trailing -'s
-  ;
+function extract_wiki_links(request_url, $) {
+  var wiki_url = URL.parse(request_url);
+  return _.difference(_.uniq(_.map($('a'), function(link) {
+    var link_url = URL.parse(link.attribs.href);
+    return (!link_url.hostname || link_url.hostname == wiki_url.hostname)
+      ? Slug.normalize(link_url.pathname)
+      : ''
+    ;
+  })), ['']); // << remove any blank entries (blanks are created for external links)
 };

@@ -13,7 +13,8 @@ var
 var folders = {
   articles: './../content/articles',
   config:   './../content/config',
-  media:    './../content/media'
+  media:    './../content/media',
+  metadata: './../content/metadata'
 };
 
 // Ensure the required folders exist.
