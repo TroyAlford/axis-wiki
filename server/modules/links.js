@@ -67,7 +67,7 @@ function load_from_disk() {
   links = utils.exists(paths.links_metadata) ? utils.readJSONSync(paths.links_metadata) : {};
 }
 function save_to_disk() {
-  fs.writeFile(paths.links_metadata, JSON.stringify(links, null, 2));
+  fs.writeFile(paths.links_metadata, JSON.stringify(links));
 }
 load_from_disk(); // Load the links initially.
 
