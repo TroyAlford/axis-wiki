@@ -7,6 +7,7 @@
 
   > .tabs {
     margin-bottom: 5px;
+    overflow: visible;
 
     .mce-tinymce-inline.mce-panel {
       border: solid $color-border-gray;
@@ -30,7 +31,15 @@
       top: 2px;
     }
 
-    > ul { padding: 0 10px; }
+    > ul {
+      padding: 0 10px;
+
+      .button {
+        height: 28px;
+        margin-top: 3px;
+        padding: 1px 4px;
+      }
+    }
     li.is-active {
       z-index: 70000;
       a {

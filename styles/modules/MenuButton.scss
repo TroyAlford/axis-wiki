@@ -1,0 +1,55 @@
+@import '../Variables';
+
+.cp-menubutton {
+  padding: 3px;
+  position: relative;
+
+  &:before {
+    background: #fff;
+    border-radius: 2px;
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    z-index: 1001;
+  }
+
+  > li.cp-menuitem {
+    margin: 0;
+    padding: 0;
+
+    > * {
+      z-index: 1002;
+    }
+
+    > ul {
+      background: #fff;
+      display: none;
+    }
+  }
+  > li > ul {
+    display: none;
+    position: absolute;
+    right: 0;
+  }
+
+  .cp-menuitem, .cp-menuitem + .cp-menuitem {
+    display: block;
+    margin: 0;
+    padding: 2px 8px;
+    text-align: left;
+  }
+
+  &.cp-menu-expanded {
+    border-color: $color-border-gray;
+    border-radius: 2px 2px 0 0;
+
+    > .cp-menuitem > ul {
+      border: 1px solid $color-border-gray;
+      border-radius: 5px 0 5px 5px;
+      display: inline-block;
+      margin: -2px -1px 0 0;
+      top: 100%;
+      z-index: 1000;
+    }
+  }
+}

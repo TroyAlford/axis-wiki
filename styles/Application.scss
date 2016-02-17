@@ -26,3 +26,9 @@ h5, h6 { font-size: 1.2em; line-height: 1.2em; }
 
 .is-hidden { display: none!important; }
 .button:not(.is-disabled) { cursor: pointer; }
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  margin: 0;
+  padding: 0;
+}

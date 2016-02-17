@@ -2,12 +2,14 @@
 import classNames from 'classnames';
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import XHR from '../helpers/XHR';
+import TinyMCE from 'react-tinymce';
 
 import Icon from './Icon';
+import MenuButton from './MenuButton';
+import MenuItem from './MenuItem';
 import Tag from './Tag';
-import TinyMCE from 'react-tinymce';
+
+import XHR from '../helpers/XHR';
 
 let cn = classNames;
 
@@ -108,8 +110,12 @@ export default class Article extends React.Component {
       }
     });
   }
+
   handleMode(mode) {
     this.setState({ mode: mode });
+  }
+  handleSettings() {
+
   }
 
   render() {
@@ -152,6 +158,13 @@ export default class Article extends React.Component {
                 })}
                 onClick={this.handleSave}>
               <Icon name="save" size="small" />Save
+            </li>
+            <li>
+              <MenuButton icon={{ name: 'settings', size: 'small' }}>
+                <MenuItem caption="Aliases" />
+                <MenuItem caption="Rename..." />
+                <MenuItem caption="Redirect to..." />
+              </MenuButton>
             </li>
             <li className={cn({ 'is-active': this.state.mode == 'read' })}>
               <a onClick={this.handleMode.bind(this, 'read')}><Icon name={'read'} size={'small'} />Read</a>
