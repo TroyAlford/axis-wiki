@@ -40,6 +40,10 @@ export default class Article extends React.Component {
       }.bind(this)
     })
   }
+  componentDidUpdate() {
+    if (this.state.mode == 'edit')
+      ReactDOM.findDOMNode(this.refs.editor).focus();
+  }
 
   tagify(tag) {
     return _.trim(_.lowerCase(tag.replace(/[\s]{2,}/g, ' ')));
@@ -116,11 +120,9 @@ export default class Article extends React.Component {
         inline: true,
         fixed_toolbar_container: '.wiki-container > .tabs',
         menubar: false,
-
         plugins:
           'anchor advlist autosave fullscreen hr image ' +
           'link lists paste searchreplace table',
-        readonly: this.state.mode == 'read',
         toolbar:
           'formatselect | bold italic underline | bullist numlist ' +
           '| hr link anchor | alignleft aligncenter alignright alignjustify ' +

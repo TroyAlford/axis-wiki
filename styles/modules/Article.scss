@@ -11,7 +11,6 @@
     .mce-tinymce-inline.mce-panel {
       border: solid $color-border-gray;
       border-width: 1px 0;
-      display: block!important;
       margin: -2px 0 0 0;
       height: 32px!important;
       width: auto!important;
@@ -74,6 +73,10 @@
   }
   &.mode-read > .wiki-content.editor,
   &.mode-edit > .wiki-content.reader { display: none; }
+
+  &.mode-edit > .tabs .mce-tinymce-inline.mce-panel {
+    display: block!important;
+  }
 
   .tags {
     background: #fff;
