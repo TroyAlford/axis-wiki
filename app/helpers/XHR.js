@@ -18,7 +18,7 @@ module.exports = window.XHR = {
         message: xhr.responseText
       };
 
-      if (xhr.status === 200)
+      if (_.includes([200, 201, 202, 203, 204, 205, 206], xhr.status))
         options.success(response);
       else
         options.failure(response);

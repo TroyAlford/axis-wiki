@@ -98,8 +98,12 @@ function load_article(slug) {
       missing_links: Links.missing_for(slug)
     };
   } catch (err) {
-    console.log(err);
-    return null;
+    if (err.code == 'ENOENT') {
+      console.log('404: Article "' + slug + '" not found.');
+      return null;
+    } else {
+      console.log(err);
+    }
   }
 }
 function decorate_links($, missing_links, wiki_url) {

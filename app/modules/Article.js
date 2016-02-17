@@ -22,6 +22,8 @@ export default class Article extends React.Component {
 
       mode: 'read'
     };
+
+    this.handleNew = this.handleNew.bind(this);
     this.handleLoad = this.handleLoad.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleMode = this.handleMode.bind(this);
@@ -31,7 +33,11 @@ export default class Article extends React.Component {
     this.handleRemoveTag = this.handleRemoveTag.bind(this);
 
     XHR.get('/api/w/' + this.props.params.slug, {
-      success: this.handleLoad
+      success: this.handleLoad,
+      failure: function(error) {
+        if (error.status == 404)
+          this.handleNew();
+      }.bind(this)
     })
   }
 
@@ -70,6 +76,17 @@ export default class Article extends React.Component {
       tags: _.map((msg.meta || {}).tags || [], this.tagify),
 
       mode: 'read'
+    });
+  }
+  handleNew() {
+    this.setState({
+      data: [],
+      html: "\
+        <h1>" + _.startCase(this.props.params.slug) + "</h1>\
+        <p>This article does not exist! Click <strong>edit</strong> to create it!</p>\
+      ",
+      missing_links: [],
+      tags: []
     });
   }
   handleSave(event) {
