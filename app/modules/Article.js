@@ -25,14 +25,18 @@ export default class Article extends React.Component {
       mode: 'read'
     };
 
+    this.handleAddTag = this.handleAddTag.bind(this);
+    this.handleEditTag = this.handleEditTag.bind(this);
+    this.handleRemoveTag = this.handleRemoveTag.bind(this);
+
     this.handleNew = this.handleNew.bind(this);
     this.handleLoad = this.handleLoad.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleMode = this.handleMode.bind(this);
 
-    this.handleAddTag = this.handleAddTag.bind(this);
-    this.handleEditTag = this.handleEditTag.bind(this);
-    this.handleRemoveTag = this.handleRemoveTag.bind(this);
+    this.handleAliasMenu = this.handleAliasMenu.bind(this);
+    this.handleRenameMenu = this.handleRenameMenu.bind(this);
+    this.handleRedirectMenu = this.handleRedirectMenu.bind(this);
 
     XHR.get('/api/w/' + this.props.params.slug, {
       success: this.handleLoad,
@@ -110,12 +114,18 @@ export default class Article extends React.Component {
       }
     });
   }
-
   handleMode(mode) {
     this.setState({ mode: mode });
   }
-  handleSettings() {
 
+  handleAliasMenu() {
+    console.log('Alias clicked.');
+  }
+  handleRenameMenu() {
+    console.log('Rename clicked.');
+  }
+  handleRedirectMenu() {
+    console.log('Redirect clicked.');
   }
 
   render() {
@@ -161,9 +171,9 @@ export default class Article extends React.Component {
             </li>
             <li>
               <MenuButton icon={{ name: 'settings', size: 'small' }}>
-                <MenuItem caption="Aliases" />
-                <MenuItem caption="Rename..." />
-                <MenuItem caption="Redirect to..." />
+                <MenuItem caption="Aliases" onClick={this.handleAliasMenu} />
+                <MenuItem caption="Rename..." onClick={this.handleRenameMenu} />
+                <MenuItem caption="Redirect to..." onClick={this.handleRedirectMenu} />
               </MenuButton>
             </li>
             <li className={cn({ 'is-active': this.state.mode == 'read' })}>
