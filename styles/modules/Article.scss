@@ -61,10 +61,12 @@
       top: -3px;
     }
 
-    ul, ol { list-style-position: inside; }
+    ul, ol {
+      list-style-position: outside;
+      padding-left: 25px;
+    }
     ul { list-style-type: disc; }
-    li { padding-left: 10px; }
-    li > ul, li ol { padding-left: 10px; }
+    li { padding: 0 0 5px 0; }
 
     &.reader, &.editor {
       border-top: 1px solid $color-border-gray;
@@ -113,4 +115,7 @@
 
     > .icon:last-child { display: none; }
   }
+}
+.mce-floatpanel, .mce-floatpanel * {
+  box-sizing: content-box!important;
 }
