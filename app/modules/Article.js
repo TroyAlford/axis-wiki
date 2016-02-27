@@ -100,13 +100,16 @@ export default class Article extends React.Component {
     });
   }
   handleSave(event) {
+    var html = window.tinyMCE.activeEditor.getContent();
+      //ReactDOM.findDOMNode(this.refs.editor).innerHTML;
+
     XHR.post('/api/w/' + this.props.params.slug, {
       data: {
         meta: {
           data: this.state.data || [],
           tags: this.state.tags || []
         },
-        html: ReactDOM.findDOMNode(this.refs.editor).innerHTML
+        html: html
       },
       success: this.handleLoad,
       failure: function(res) {
@@ -138,11 +141,14 @@ export default class Article extends React.Component {
         menubar: false,
         plugins:
           'anchor advlist autosave fullscreen hr image ' +
-          'link lists paste searchreplace table',
+          'link lists paste table',
         toolbar:
           'formatselect | bold italic underline | bullist numlist ' +
           '| hr link anchor | alignleft aligncenter alignright alignjustify ' +
-          '| image table | removeformat | undo redo'
+          '| image table | removeformat | undo redo',
+        valid_elements:
+          '@[class|style],-h1,-h2,-h3,-h4,-h5,-h6,br,hr,-p,-b/strong,-i/em,' +
+          'table,-tr,th,td,-ul,-ol,-li'
       }}
       content={this.state.html}
       ref="editor"

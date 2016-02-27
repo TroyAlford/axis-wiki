@@ -1,4 +1,5 @@
 var
+  _       = require('lodash'),
   express = require('express'),
   fs      = require('fs'),
   http    = require('http'),
@@ -28,9 +29,9 @@ var modules = {
 
 var app = express();
 app.use('/api/w', modules.article);
-app.use('/js', express.static(path.join(__dirname, '../build/develop/js')));
-app.use('/font', express.static(path.join(__dirname, '../build/develop/font')));
-app.use('/styles', express.static(path.join(__dirname, '../build/develop/styles')));
+_.forEach(['js', 'font', 'images', 'styles'], function(el) {
+  app.use('/' + el, express.static(path.join(__dirname, '../build/develop/' + el)));
+})
 app.get('*', function (req, res) {
   fs.createReadStream(path.join(__dirname, '../build/develop', 'index.html'))
     .pipe(res);
