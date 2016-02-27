@@ -49,6 +49,9 @@ article.post('/:slug', function(request, response) {
     meta: Object.assign({ data: [], tags: [] }, request.body.meta)
   };
 
+  if (article.meta.tags.length)
+    article.meta.tags = _.sortBy(_.uniq(article.meta.tags));
+
   var $ = cheerio.load(article.html);
   $('script').remove(); // Remove all <script> tags.
   $('a').removeAttr('target').removeClass('wiki-missing wiki-external');
