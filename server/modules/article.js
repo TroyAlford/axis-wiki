@@ -9,7 +9,8 @@ var
   utils      = require('fs-utils'),
 
   Links      = require('./links'),
-  Slug       = require('./slug')
+  Slug       = require('./slug'),
+  Tags       = require('./tags')
 ;
 
 var paths = {
@@ -63,6 +64,7 @@ article.post('/:slug', function(request, response) {
   article.html = $.html();
 
   Links.set(slug, extract_wiki_links(wiki_url, $));
+  Tags.set(slug, article.meta.tags);
 
   try {
     fs.writeFileSync(path + '.html', article.html);
