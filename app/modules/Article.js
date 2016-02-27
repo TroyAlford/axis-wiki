@@ -136,6 +136,7 @@ export default class Article extends React.Component {
     let editor = <TinyMCE
       config={{
         auto_focus: true,
+        autosave_ask_before_unload: false,
         inline: true,
         fixed_toolbar_container: '.wiki-container > .tabs',
         menubar: false,
@@ -147,8 +148,8 @@ export default class Article extends React.Component {
           '| hr link anchor | alignleft aligncenter alignright alignjustify ' +
           '| image table | removeformat | undo redo',
         valid_elements:
-          '@[class|style],-h1,-h2,-h3,-h4,-h5,-h6,br,hr,-p,-b/strong,-i/em,' +
-          'table,-tr,th,td,-ul,-ol,-li'
+          'a[href|target|class|style],@[class|style],-h1,-h2,-h3,-h4,-h5,-h6,' +
+          'br,hr,-p,-b/strong,-i/em,table,-tr,th,td,-ul,-ol,-li'
       }}
       content={this.state.html}
       ref="editor"
