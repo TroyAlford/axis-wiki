@@ -26,13 +26,14 @@ export default class Tag extends React.Component {
     this.setState({ name: event.target.value });
   }
   handleKeyDown(event) {
-    //ReactDOM.findDOMNode(this.refs.editor).focus();
     if (event.which == 9 || event.which == 13) {
       // 9 = Tab, 13 = Enter. Save.
       if (typeof this.props.onChange == 'function') {
         this.props.onChange(this.props.name, this.state.name);
         this.setState({ editing: false });
       }
+      event.stopPropagation();
+      event.preventDefault();
     } else if (event.which == 27) {
       // 27 = Escape. Cancel.
       this.handleBlur();
