@@ -139,6 +139,9 @@ export default class Article extends React.Component {
         autosave_ask_before_unload: false,
         inline: true,
         fixed_toolbar_container: '.wiki-container > .tabs',
+        formats: {
+          underline: { inline: 'u', exact: true }
+        },
         menubar: false,
         plugins:
           'anchor advlist autosave fullscreen hr image ' +
@@ -152,7 +155,7 @@ export default class Article extends React.Component {
           '@[class|style],' +
           '-h1,-h2,-h3,-h4,-h5,-h6,' +
           '-table,-tr,th,td,br,hr,' +
-          '-p,-ul,-ol,-li,-b/strong,-i/em'
+          '-p,-ul,-ol,-li,-b/strong,-i/em,-u'
       }}
       content={this.state.html}
       ref="editor"
