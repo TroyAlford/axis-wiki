@@ -24,6 +24,7 @@ var paths = {
 };
 
 var Tags = {
+  articles_tagged: function(tag) { return index.tags[tag]; },
   set: function(slug, tags) {
     slug = Slug.normalize(slug);
     if (!slug || !Array.isArray(tags) || !utils.exists(path.resolve(paths.articles, slug + '.html'))) return false;

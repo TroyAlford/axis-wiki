@@ -91,10 +91,12 @@
     }
 
     table {
+      th { padding: 5px 10px; }
+      td { padding: 10px; }
       th, td {
-        border: 1px solid $color-border-gray;
+        border-color: $color-border-gray;
+        border-style: solid;
         border-width: 0 0 1px 1px;
-        padding: 3px;
       }
     }
     table.note[class*="note-"] {

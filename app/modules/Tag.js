@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router';
 
 import Icon from './Icon';
 
@@ -13,7 +14,7 @@ export default class Tag extends React.Component {
 
     this.handleBlur = this.handleBlur.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleDoubleClick = this.handleDoubleClick.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
   }
@@ -39,10 +40,13 @@ export default class Tag extends React.Component {
       this.handleBlur();
     }
   }
-  handleDoubleClick() {
+  handleClick() {
     if (this.props.editable && !this.state.editing)
       this.setState({ editing: true });
+    //else
+    //  navigate();
   }
+
   handleRemove() {
     if (typeof this.props.onRemove == 'function')
       this.props.onRemove();
@@ -57,7 +61,10 @@ export default class Tag extends React.Component {
   }
 
   render() {
-    var read = <span className="name" onDoubleClick={this.handleDoubleClick}>{this.props.name}</span>;
+    var read = this.props.editable
+      ? <span className="name" onClick={this.handleClick}>{this.props.name}</span>
+      : <Link to={`/tagged/${this.props.name}`}>{this.props.name}</Link>
+    ;
     var edit = <input type="text" className="name" value={this.state.name}
                       ref="editor"
                       onBlur={this.handleBlur}

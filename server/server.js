@@ -20,18 +20,22 @@ var folders = {
 
 // Ensure the required folders exist.
 Object.keys(folders).forEach(function(folder) {
-  mkdirp(folders[folder], function(err) { return; });
+  mkdirp(folders[folder], function(){});
 });
 
 var modules = {
-  article: require('./modules/article.js')
+  article: require('./modules/article.js'),
+  search:  require('./modules/search.js')
 };
 
 var app = express();
 app.use('/api/w', modules.article);
+app.use('/api/search', modules.search);
+
 _.forEach(['js', 'font', 'images', 'styles'], function(el) {
   app.use('/' + el, express.static(path.join(__dirname, '../build/develop/' + el)));
-})
+});
+
 app.get('*', function (req, res) {
   fs.createReadStream(path.join(__dirname, '../build/develop', 'index.html'))
     .pipe(res);
