@@ -128,7 +128,7 @@ function request_url(request) {
 }
 function to_wiki_link(wiki_url, link_url) {
   return (!link_url.hostname || link_url.hostname == wiki_url.hostname)
-    ? Slug.normalize(link_url.pathname)
+    ? Slug.normalize(link_url.pathname, true)
     : ''
   ;
 }
