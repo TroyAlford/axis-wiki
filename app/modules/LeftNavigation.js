@@ -43,7 +43,7 @@ export default class LeftNavigation extends React.Component {
   }
 
   renderLink(link) {
-    return <li key={link.url}>
+    return <li>
       {link.url ? <Link to={link.url}>{link.text}</Link> : link.text}
       {this.renderLinks(link.children)}
     </li>;
