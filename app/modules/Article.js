@@ -28,6 +28,7 @@ export default class Article extends React.Component {
     this.handleAddTag = this.handleAddTag.bind(this);
     this.handleEditTag = this.handleEditTag.bind(this);
     this.handleRemoveTag = this.handleRemoveTag.bind(this);
+    this.handleSourceChange = this.handleSourceChange.bind(this);
 
     this.handleNew = this.handleNew.bind(this);
     this.handleLoad = this.handleLoad.bind(this);
@@ -76,6 +77,9 @@ export default class Article extends React.Component {
       tags: _.difference(this.state.tags, [this.tagify(removed_tag)])
     });
   }
+  handleSourceChange(event) {
+    this.setState({ html: event.target.value })
+  }
 
   handleLoad(response) {
     let msg = JSON.parse(response.message);
@@ -99,9 +103,14 @@ export default class Article extends React.Component {
       tags: []
     });
   }
-  handleSave(event) {
-    var html = window.tinyMCE.activeEditor.getContent();
-      //ReactDOM.findDOMNode(this.refs.editor).innerHTML;
+  handleSave() {
+    var html = '';
+    if (this.state.mode == 'edit')
+      html = window.tinyMCE.activeEditor.getContent();
+    else if (this.state.mode == 'source')
+      html = this.refs.source.value;
+    else
+      return false;
 
     XHR.post('/api/w/' + this.props.params.slug, {
       data: {
@@ -133,6 +142,7 @@ export default class Article extends React.Component {
 
   render() {
     let viewer = <div dangerouslySetInnerHTML={{ __html: this.state.html }}></div>;
+    let source = <textarea ref="source" onChange={this.handleSourceChange} value={this.state.html} />;
     let editor = <TinyMCE
       config={{
         auto_focus: true,
@@ -189,16 +199,20 @@ export default class Article extends React.Component {
                 <MenuItem caption="Redirect to..." onClick={this.handleRedirectMenu} />
               </MenuButton>
             </li>
-            <li className={cn({ 'is-active': this.state.mode == 'read' })}>
-              <a onClick={this.handleMode.bind(this, 'read')}><Icon name={'read'} size={'small'} />Read</a>
+            <li className={this.state.mode == 'read' ? 'is-active' : ''}>
+              <a onClick={this.handleMode.bind(this, 'read')}><Icon name="read" size="small" />Read</a>
             </li>
-            <li className={cn({ 'is-active': this.state.mode == 'edit' })}>
-              <a onClick={this.handleMode.bind(this, 'edit')}><Icon name={'edit'} size={'small'} />Edit</a>
+            <li className={this.state.mode == 'edit' ? 'is-active' : ''}>
+              <a onClick={this.handleMode.bind(this, 'edit')}><Icon name="edit" size="small" />Edit</a>
+            </li>
+            <li className={this.state.mode == 'source' ? 'is-active': ''}>
+              <a onClick={this.handleMode.bind(this, 'source')}><Icon name="html" size="small" />HTML</a>
             </li>
           </ul>
         </div>
         <div className="wiki-content reader">{viewer}</div>
         <div className="wiki-content editor">{editor}</div>
+        <div className="wiki-content source">{source}</div>
         <div className="tags">
           <Icon name="tags" /> {tags}
           <Icon name="add" onClick={this.handleAddTag.bind(this, 'new tag')} />

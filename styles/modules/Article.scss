@@ -120,8 +120,8 @@
       position: relative;
       top: -3px;
     }
-    &.reader, &.editor {
-      border-top: 1px solid $color-border-gray;
+    &.reader, &.editor, &.source {
+      //border-top: 1px solid $color-border-gray;
       left: 0px; right: 0; top: 45px; bottom: 35px;
       overflow: auto;
       padding: 10px;
@@ -133,9 +133,20 @@
 
       .mce-edit-focus { outline: none; }
     }
+    &.source {
+      textarea {
+        border: none;
+        font-family: monospace;
+        padding: 10px;
+        position: absolute;
+        resize: none;
+        left: 0; top: 0; bottom: 0; width: 100%;
+      }
+    }
   }
-  &.mode-read > .wiki-content.editor,
-  &.mode-edit > .wiki-content.reader { display: none; }
+  &:not(.mode-read)   { .wiki-content.reader { display: none; } }
+  &:not(.mode-edit)   { .wiki-content.editor { display: none; } }
+  &:not(.mode-source) { .wiki-content.source { display: none; } }
 
   &.mode-edit > .tabs .mce-tinymce-inline.mce-panel {
     display: block!important;

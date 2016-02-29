@@ -1,5 +1,6 @@
 var
   _          = require('lodash'),
+  beautify   = require('js-beautify').html,
   bodyParser = require('body-parser'),
   cheerio    = require('cheerio'),
   express    = require('express'),
@@ -36,7 +37,7 @@ article.get('/:slug', function(request, response) {
   var $ = cheerio.load(article.html);
   decorate_links($, article.missing_links, URL.parse(request_url(request)));
 
-  article.html = $.html();
+  article.html = beautify($.html(), beauty_options);
 
   return response.status(200).send(article);
 });
@@ -73,7 +74,7 @@ article.post('/:slug', function(request, response) {
     // Before sending back to the client, update the missing_links
     article.missing_links = Links.missing_for(slug);
     decorate_links($, article.missing_links, wiki_url);
-    article.html = $.html();
+    article.html = beautify($.html(), beauty_options);
 
     return response.status(200).send(article);
   } catch (err) {
@@ -130,3 +131,13 @@ function to_wiki_link(wiki_url, link_url) {
     : ''
   ;
 }
+
+var beauty_options = {
+  indent_size: 2,
+  indent_char: ' ',
+  eol: '\n',
+  indent_level: 0,
+  indent_with_tabs: false,
+  max_preserve_newlines: 0,
+  end_with_newline: true
+};
