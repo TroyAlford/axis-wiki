@@ -6,7 +6,8 @@
   box-sizing: border-box!important;
 }
 html, body {
-  background: #fff;
+  background: $color-bg-page;
+  color: $color-text;
 }
 
 h1, h2, h3, h4, h5, h6 {
