@@ -90,6 +90,10 @@
         background-color: $color-system;
         background-image: $image-system;
       }
+      &.note-book:before {
+        background-color: $color-book;
+        background-image: $image-book;
+      }
     }
 
     table {
@@ -102,6 +106,9 @@
         border-width: 0 0 1px 1px;
         padding: 10px;
       }
+      tr:last-child {
+        th, td { border-bottom: 0; }
+      }
     }
     table.note[class*="note-"], table.tip[class*="tip-"] {
       border-collapse: separate;
@@ -109,6 +116,7 @@
       padding: 0 0 0 22px;
 
       &.note-system th { background-color: lighten($color-system, 2.5%); }
+      &.note-book   th { background-color: lighten($color-book, 2.5%); }
     }
     table.progression {
       tr:nth-child(even) { background-color: $color-table-bg-even; }

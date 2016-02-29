@@ -14,8 +14,9 @@ module.exports = window.XHR = {
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     xhr.onload = function() {
       var response = {
+        message: xhr.responseText,
         status: xhr.status,
-        message: xhr.responseText
+        url: xhr.responseURL
       };
 
       if (_.includes([200, 201, 202, 203, 204, 205, 206], xhr.status))

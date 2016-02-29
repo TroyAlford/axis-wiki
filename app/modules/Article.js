@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TinyMCE from 'react-tinymce';
+import { browserHistory } from 'react-router';
 
 import Icon from './Icon';
 import MenuButton from './MenuButton';
@@ -44,7 +45,14 @@ export default class Article extends React.Component {
       failure: function(error) {
         if (error.status == 404)
           this.handleNew();
-      }.bind(this)
+      }.bind(this),
+      done: function(response) {
+        let regex = /[\w\d-_]{1,}$/;
+        let response_slug = regex.exec(response.url),
+            current_slug = regex.exec(window.location.pathname);
+        if (response_slug != current_slug)
+          browserHistory.push(`/w/${response_slug}`);
+      }
     })
   }
   componentDidUpdate() {
@@ -81,7 +89,7 @@ export default class Article extends React.Component {
     this.setState({ html: event.target.value })
   }
 
-  handleLoad(response) {
+  handleLoad(response, b, c, d) {
     let msg = JSON.parse(response.message);
     this.setState({
       data: (msg.meta || {}).data || [],

@@ -13,8 +13,12 @@ $color-border-blue: #42afe3;
 $color-default-link: #08f;
 $color-missing-link: #c44;
 
+$color-table-bg-even: #fff;
+$color-table-bg-odds: $color-bg-light;
+
+// Special Icons for Content Types
 $color-system: #fdf5e6;
 $image-system: url(/images/dice.gif);
 
-$color-table-bg-even: #fff;
-$color-table-bg-odds: $color-bg-light;
+$color-book: #f2ffff;
+$image-book: url(/images/book.png);

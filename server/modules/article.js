@@ -26,8 +26,9 @@ article.get('/:slug', function(request, response) {
   var slug = Slug.normalize(request.params.slug),
       path = article_path(slug);
 
-  if (request.params.slug != slug) // Redirect to normalized slug link
-    return response.redirect(path);
+  if (request.params.slug != slug) {// Redirect to normalized slug link
+    return response.redirect(slug);
+  }
 
   // Now, look for the valid slug.
   var article = load_article(slug);

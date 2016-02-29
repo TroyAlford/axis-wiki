@@ -2,15 +2,17 @@ var
   _ = require('lodash')
 ;
 
-var Slug = {
-  normalize: function (slug) {
-    return _.toLower(slug)
-      .replace(/^[/]?[w]?[/\s]*/, '')              // remove leading /'s, whitespace &/or /w/
-      .replace(/([ ]{1,})/g, '_')                  // replace all remaining spaces with _'s
-      .replace(/([^\w\d_-]{1,})/g, '')             // remove all non-alphanumerics (other than _ & -)
-      .replace(/(^[-_ ]{1,})|([-_ ]{1,}$)/gmi, '') // remove any leading or trailing _ & -
+var Slug = module.exports = {
+  normalize: function (value, retain_path) {
+    var parsed = (/([/]?[\w\d -_]{1,}[/])?(.*)/g).exec(_.toLower(value));
+
+    var path = parsed[1] || '';
+    var slug = parsed[2]
+      .replace(/[^\w\d/-_]/g, '-')         // replace all non-valid characters with -'s
+      .replace(/-{2,}/g, '-')              // replace all sequential -'s with a single -
+      .replace(/(^[-]{1,})|(-$){1,}/g, '') // remove all leading or trailing -'s
     ;
+
+    return retain_path ? path + slug : slug;
   }
 }
-
-module.exports = Slug;
