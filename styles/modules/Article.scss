@@ -115,7 +115,6 @@
       tr:nth-child(odd)  { background-color: $color-table-bg-odds; }
     }
 
-    &.reader a.wiki-missing { color: $color-missing-link; }
     &.reader a.wiki-external:after {
       content: '\e807';
       font-family: axis-wiki;

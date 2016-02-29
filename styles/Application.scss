@@ -24,7 +24,10 @@ h1, h2 { font-size: 2em; line-height: 2em; }
 h3, h4 { font-size: 1.6em; line-height: 1.6em; }
 h5, h6 { font-size: 1.2em; line-height: 1.2em; }
 
-b, em { font-weight: bold;  }
+a { color: $color-default-link; }
+a.wiki-missing { color: $color-missing-link; }
+
+b, em, strong { font-weight: bold;  }
 
 table th { font-weight: bold; text-align: center; }
 
