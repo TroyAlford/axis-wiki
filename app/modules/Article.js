@@ -26,6 +26,8 @@ export default class Article extends React.Component {
       mode: 'read'
     };
 
+    this.loadArticle = this.loadArticle.bind(this);
+
     this.handleAddTag = this.handleAddTag.bind(this);
     this.handleEditTag = this.handleEditTag.bind(this);
     this.handleRemoveTag = this.handleRemoveTag.bind(this);
@@ -40,7 +42,19 @@ export default class Article extends React.Component {
     this.handleRenameMenu = this.handleRenameMenu.bind(this);
     this.handleRedirectMenu = this.handleRedirectMenu.bind(this);
 
-    XHR.get('/api/w/' + this.props.params.slug, {
+    this.loadArticle(this.props.params.slug);
+  }
+  componentDidUpdate() {
+    if (this.state.mode == 'edit')
+      ReactDOM.findDOMNode(this.refs.editor).focus();
+  }
+  componentWillReceiveProps(newProps) {
+    if (newProps.params.slug != this.props.params.slug)
+      this.loadArticle(newProps.params.slug);
+  }
+
+  loadArticle(slug) {
+    XHR.get(`/api/w/${slug}`, {
       success: this.handleLoad,
       failure: function(error) {
         if (error.status == 404)
@@ -49,15 +63,11 @@ export default class Article extends React.Component {
       done: function(response) {
         let regex = /[\w\d-_]{1,}$/;
         let response_slug = regex.exec(response.url),
-            current_slug = regex.exec(window.location.pathname);
+          current_slug = regex.exec(window.location.pathname);
         if (response_slug != current_slug)
           browserHistory.push(`/w/${response_slug}`);
       }
     })
-  }
-  componentDidUpdate() {
-    if (this.state.mode == 'edit')
-      ReactDOM.findDOMNode(this.refs.editor).focus();
   }
 
   tagify(tag) {

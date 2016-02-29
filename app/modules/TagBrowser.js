@@ -21,26 +21,27 @@ export default class TagBrowser extends React.Component {
       html: ''
     };
 
+    this.handle404 = this.handle404.bind(this);
     this.handleLoad = this.handleLoad.bind(this);
 
     XHR.get(`/api/search/tagged/${this.props.params.tag}`, {
       success: this.handleLoad,
       failure: function(error) {
         if (error.status == 404)
-          this.handleNew();
+          this.handle404();
       }.bind(this)
     })
   }
 
+  handle404() {
+    this.setState({
+      articles: []
+    });
+  }
   handleLoad(response) {
     let results = JSON.parse(response.message) || [];
     this.setState({
       articles: results
-    });
-  }
-  handleNew() {
-    this.setState({
-      articles: []
     });
   }
 
