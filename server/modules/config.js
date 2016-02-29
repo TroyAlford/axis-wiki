@@ -10,12 +10,17 @@ var
   Tags       = require('./tags')
 ;
 
+var paths = {
+  config_folder: path.resolve(__dirname, '../../content/config')
+};
+
 
 var search = module.exports = express();
 search.use(bodyParser.json()); // Parses application/json
 search.use(bodyParser.urlencoded({ extended: true })); // Parses application/x-www-form-encoded
 
-search.get('/tagged/:tag', function(request, response) {
-  var tag = _.trim(_.toLower(request.params.tag || ''));
-  return response.status(200).send(Tags.articles_tagged(tag));
+search.get('/navigation', function(request, response) {
+  var json_path = path.resolve(paths.config_folder, 'navigation.json');
+  var json = utils.exists(json_path) ? utils.readJSONSync(json_path) : [{ text: 'Home', url: '/w/home' }];
+  return response.status(200).send(json);
 });

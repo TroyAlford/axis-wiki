@@ -16,7 +16,7 @@ var
   path  = require('path'),
   utils = require('fs-utils'),
   Slug  = require('./slug')
-  ;
+;
 
 var paths = {
   articles: path.resolve(__dirname, '../../content/articles'),

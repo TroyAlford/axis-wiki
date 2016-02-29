@@ -25,11 +25,13 @@ Object.keys(folders).forEach(function(folder) {
 
 var modules = {
   article: require('./modules/article.js'),
+  config:  require('./modules/config.js'),
   search:  require('./modules/search.js')
 };
 
 var app = express();
 app.use('/api/w', modules.article);
+app.use('/api/config', modules.config);
 app.use('/api/search', modules.search);
 
 _.forEach(['js', 'font', 'images', 'styles'], function(el) {
