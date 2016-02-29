@@ -3,6 +3,8 @@
 $size-header-y: 50px;
 $size-left-column-x: 160px;
 
+$color-bg-light: #f6f6f6;
+
 $color-border-gray: #d3d6db;
 $color-border-blue: #42afe3;
 
@@ -12,4 +14,4 @@ $color-system: #fdf5e6;
 $image-system: url(/images/dice.gif);
 
 $color-table-bg-even: #fff;
-$color-table-bg-odds: #f6f6f6;
+$color-table-bg-odds: $color-bg-light;

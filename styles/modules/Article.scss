@@ -66,8 +66,10 @@
     li { padding: 0 0 5px 0; }
 
     .note, .tip {
+      background-color: lighten($color-bg-light, 2.5%);
       border: 1px solid $color-border-gray;
       overflow: hidden;
+      padding: 5px;
       text-align: justify;
     }
     .note[class*="note-"] {
@@ -91,18 +93,20 @@
     }
 
     table {
-      th { padding: 5px 10px; }
-      td { padding: 10px; }
+      border: 1px solid $color-border-gray;
+      border-collapse: collapse;
+
       th, td {
         border-color: $color-border-gray;
         border-style: solid;
         border-width: 0 0 1px 1px;
+        padding: 10px;
       }
     }
-    table.note[class*="note-"] {
+    table.note[class*="note-"], table.tip[class*="tip-"] {
       border-collapse: separate;
       border-spacing: 0;
-      padding-left: 22px;
+      padding: 0 0 0 22px;
 
       &.note-system th { background-color: lighten($color-system, 2.5%); }
     }
@@ -121,7 +125,6 @@
       top: -3px;
     }
     &.reader, &.editor, &.source {
-      //border-top: 1px solid $color-border-gray;
       left: 0px; right: 0; top: 45px; bottom: 35px;
       overflow: auto;
       padding: 10px;
