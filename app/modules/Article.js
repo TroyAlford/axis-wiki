@@ -226,21 +226,17 @@ export default class Article extends React.Component {
                 onClick={this.handleSave}>
               <Icon name="save" size="small" />Save
             </li>
-            <li>
-              <MenuButton icon={{ name: 'settings', size: 'small' }}>
-                <MenuItem caption="Aliases" onClick={this.handleAliasMenu} />
-                <MenuItem caption="Rename..." onClick={this.handleRenameMenu} />
-                <MenuItem caption="Redirect to..." onClick={this.handleRedirectMenu} />
-              </MenuButton>
-            </li>
             <li className={this.state.mode == 'read' ? 'is-active' : ''}>
-              <a onClick={this.handleMode.bind(this, 'read')}><Icon name="read" size="small" />Read</a>
+              <a title="Read" onClick={this.handleMode.bind(this, 'read')}><Icon name="read" size="small" /></a>
             </li>
             <li className={this.state.mode == 'edit' ? 'is-active' : ''}>
-              <a onClick={this.handleMode.bind(this, 'edit')}><Icon name="edit" size="small" />Edit</a>
+              <a title="Editor" onClick={this.handleMode.bind(this, 'edit')}><Icon name="edit" size="small" /></a>
             </li>
-            <li className={this.state.mode == 'source' ? 'is-active': ''}>
-              <a onClick={this.handleMode.bind(this, 'source')}><Icon name="html" size="small" />HTML</a>
+            <li className={this.state.mode == 'source' ? 'is-active' : ''}>
+              <a title="Source" onClick={this.handleMode.bind(this, 'source')}><Icon name="html" size="small" /></a>
+            </li>
+            <li className={this.state.mode == 'settings' ? 'is-active' : ''}>
+              <a title="Settings" onClick={this.handleMode.bind(this, 'settings')}><Icon name="settings" size="small" /></a>
             </li>
           </ul>
         </div>
