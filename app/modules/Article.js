@@ -33,8 +33,9 @@ export default class Article extends React.Component {
     this.handleRemoveTag = this.handleRemoveTag.bind(this);
     this.handleSourceChange = this.handleSourceChange.bind(this);
 
-    this.handleNew = this.handleNew.bind(this);
+    this.handleLinks = this.handleLinks.bind(this);
     this.handleLoad = this.handleLoad.bind(this);
+    this.handleNew = this.handleNew.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleMode = this.handleMode.bind(this);
 
@@ -43,6 +44,15 @@ export default class Article extends React.Component {
     this.handleRedirectMenu = this.handleRedirectMenu.bind(this);
 
     this.loadArticle(this.props.params.slug);
+  }
+  componentDidMount() {
+    var viewer = ReactDOM.findDOMNode(this.refs.viewer);
+    if (viewer.addEventListener)
+      viewer.addEventListener('click', this.handleLinks, false);
+    else if (el.attachEvent)
+      viewer.attachEvent('onclick', this.handleLinks);
+    else
+      viewer['onclick'] = this.handleLinks;
   }
   componentDidUpdate() {
     if (this.state.mode == 'edit')
@@ -62,10 +72,10 @@ export default class Article extends React.Component {
       }.bind(this),
       done: function(response) {
         let regex = /[\w\d-_]{1,}$/;
-        let response_slug = regex.exec(response.url),
-          current_slug = regex.exec(window.location.pathname);
+        let response_slug = regex.exec(response.url)[0],
+            current_slug = regex.exec(window.location.pathname)[0];
         if (response_slug != current_slug)
-          browserHistory.push(`/w/${response_slug}`);
+          browserHistory.replace(`/w/${response_slug}`);
       }
     })
   }
@@ -99,6 +109,12 @@ export default class Article extends React.Component {
     this.setState({ html: event.target.value })
   }
 
+  handleLinks(event) {
+    if (event.which == 1 && event.target.nodeName == "A" && event.target.hostname == window.location.hostname) {
+      event.preventDefault();
+      browserHistory.push(event.target.pathname);
+    }
+  }
   handleLoad(response, b, c, d) {
     let msg = JSON.parse(response.message);
     this.setState({
@@ -159,7 +175,7 @@ export default class Article extends React.Component {
   }
 
   render() {
-    let viewer = <div dangerouslySetInnerHTML={{ __html: this.state.html }}></div>;
+    let viewer = <div ref="viewer" dangerouslySetInnerHTML={{ __html: this.state.html }}></div>;
     let source = <textarea ref="source" onChange={this.handleSourceChange} value={this.state.html} />;
     let editor = <TinyMCE
       config={{
@@ -183,7 +199,7 @@ export default class Article extends React.Component {
           '@[class|style],' +
           '-h1,-h2,-h3,-h4,-h5,-h6,' +
           '-table,-tr,th,td,br,hr,' +
-          '-p,-ul,-ol,-li,-b/strong,-i/em,-u'
+          '-div,-span,-p,-ul,-ol,-li,-b/strong,-i/em,-u'
       }}
       content={this.state.html}
       ref="editor"
