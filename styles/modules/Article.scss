@@ -132,6 +132,7 @@
       top: -3px;
     }
     &.reader, &.editor, &.source {
+      border-top: 1px solid $color-border-gray;
       left: 0px; right: 0; top: 45px; bottom: 35px;
       overflow: auto;
       padding: 10px;
