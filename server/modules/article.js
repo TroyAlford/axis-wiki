@@ -23,12 +23,11 @@ article.use(bodyParser.json()); // Parses application/json
 article.use(bodyParser.urlencoded({ extended: true })); // Parses application/x-www-form-encoded
 
 article.get('/:slug', function(request, response) {
-  var slug = Slug.normalize(request.params.slug),
+  var slug = Links.resolve(Slug.normalize(request.params.slug)),
       path = article_path(slug);
 
-  if (request.params.slug != slug) {// Redirect to normalized slug link
+  if (request.params.slug != slug) // Redirect to normalized slug link
     return response.redirect(slug);
-  }
 
   // Now, look for the valid slug.
   var article = load_article(slug);

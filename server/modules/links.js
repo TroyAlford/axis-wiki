@@ -42,6 +42,12 @@ var Links = {
       return (!links[link] || !links[link].exists) ? link : ''
     }), ['']);
   },
+  resolve: function(slug) {
+    slug = Slug.normalize(slug);
+    var entry = Links.ensure(slug);
+
+    return (entry && entry.alias_for) ? Links.resolve(entry.alias_for) : slug;
+  },
   set: function(slug, links_to) {
     slug = Slug.normalize(slug);
     if (!slug || !Array.isArray(links_to)) return false;
@@ -59,7 +65,7 @@ var Links = {
       Links.add_from(link, slug)
     });
     save_to_disk();
-  },
+  }
 };
 
 var links = {};
