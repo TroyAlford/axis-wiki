@@ -133,11 +133,9 @@ function to_wiki_link(wiki_url, link_url) {
 }
 
 var beauty_options = {
-  indent_size: 2,
-  indent_char: ' ',
-  eol: '\n',
-  indent_level: 0,
-  indent_with_tabs: false,
-  max_preserve_newlines: 0,
-  end_with_newline: true
+  indent_size: 2,                            // force 2-space indentation
+  indent_char: ' ', indent_with_tabs: false, // force indentation with spaces
+  max_preserve_newlines: 0,                  // don't allow multiple newlines
+  eol: '\n', end_with_newline: true,         // force trailing \n
+  wrap_line_length: 80                       // enable forced wrapping
 };
