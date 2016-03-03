@@ -26,6 +26,30 @@ var Links = {
     var entry = Links.ensure(to);
     entry.from = _.union(entry.from, [from]);
   },
+  alias: function(slug, aliases) {
+    if (aliases === undefined)
+      return this.ensure(slug).aliases;
+
+    slug = Slug.normalize(slug);
+    aliases = _.sortBy(_.difference(_.uniq(_.map(aliases, Slug.normalize)),['',slug]));
+
+    var entry = this.ensure(slug);
+    if (entry.aliases && entry.aliases.length) {
+      _.forEach(_.difference(entry.aliases, aliases), function(alias_to_remove) {
+        var entry = links[alias_to_remove];
+        if (entry && entry.alias_for == slug)
+          delete entry.alias_for;
+      });
+    }
+    entry.aliases = aliases;
+
+    _.forEach(aliases, function(alias) {
+      var entry = this.ensure(alias);
+      entry.alias_for = slug;
+    }.bind(this));
+
+    save_to_disk();
+  },
   ensure: function(slug) {
     slug = Slug.normalize(slug);
     if (typeof slug != 'string' || !slug.length) return false;

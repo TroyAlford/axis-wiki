@@ -18,6 +18,7 @@ export default class Article extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      aliases: [],
       data: [],
       html: '',
       missing_links: [],
@@ -29,19 +30,16 @@ export default class Article extends React.Component {
     this.loadArticle = this.loadArticle.bind(this);
 
     this.handleAddTag = this.handleAddTag.bind(this);
+    this.handleSetAliases = this.handleSetAliases.bind(this);
     this.handleEditTag = this.handleEditTag.bind(this);
     this.handleRemoveTag = this.handleRemoveTag.bind(this);
     this.handleSourceChange = this.handleSourceChange.bind(this);
 
     this.handleLinks = this.handleLinks.bind(this);
     this.handleLoad = this.handleLoad.bind(this);
+    this.handleMode = this.handleMode.bind(this);
     this.handleNew = this.handleNew.bind(this);
     this.handleSave = this.handleSave.bind(this);
-    this.handleMode = this.handleMode.bind(this);
-
-    this.handleAliasMenu = this.handleAliasMenu.bind(this);
-    this.handleRenameMenu = this.handleRenameMenu.bind(this);
-    this.handleRedirectMenu = this.handleRedirectMenu.bind(this);
 
     this.loadArticle(this.props.params.slug);
   }
@@ -89,6 +87,12 @@ export default class Article extends React.Component {
       tags: _.union(this.state.tags, [this.tagify(new_tag)])
     });
   }
+  handleSetAliases(event) {
+    let slugs = _.map(_.split(_.toLower(event.target.value), ','), function(slug) {
+      return slug.replace(/[^\w\d/_]/g, '-').replace(/-{2,}/g, '-');
+    });
+    this.setState({ aliases: slugs });
+  }
   handleEditTag(old_tag, new_tag) {
     old_tag = this.tagify(old_tag);
     new_tag = this.tagify(new_tag);
@@ -118,6 +122,7 @@ export default class Article extends React.Component {
   handleLoad(response, b, c, d) {
     let msg = JSON.parse(response.message);
     this.setState({
+      aliases: (msg.meta || {}).aliases || [],
       data: (msg.meta || {}).data || [],
       html: msg.html,
       missing_links: msg.missing_links || [],
@@ -126,8 +131,12 @@ export default class Article extends React.Component {
       mode: 'read'
     });
   }
+  handleMode(mode) {
+    this.setState({ mode: mode });
+  }
   handleNew() {
     this.setState({
+      aliases: [],
       data: [],
       html: "\
         <h1>" + _.startCase(this.props.params.slug) + "</h1>\
@@ -141,14 +150,13 @@ export default class Article extends React.Component {
     var html = '';
     if (this.state.mode == 'edit')
       html = window.tinyMCE.activeEditor.getContent();
-    else if (this.state.mode == 'source')
-      html = this.refs.source.value;
     else
-      return false;
+      html = this.refs.source.value;
 
     XHR.post('/api/w/' + this.props.params.slug, {
       data: {
         meta: {
+          aliases: this.state.aliases || [],
           data: this.state.data || [],
           tags: this.state.tags || []
         },
@@ -160,24 +168,11 @@ export default class Article extends React.Component {
       }
     });
   }
-  handleMode(mode) {
-    this.setState({ mode: mode });
-  }
-
-  handleAliasMenu() {
-    console.log('Alias clicked.');
-  }
-  handleRenameMenu() {
-    console.log('Rename clicked.');
-  }
-  handleRedirectMenu() {
-    console.log('Redirect clicked.');
-  }
 
   render() {
     let viewer = <div ref="viewer" dangerouslySetInnerHTML={{ __html: this.state.html }}></div>;
     let source = <textarea ref="source" onChange={this.handleSourceChange} value={this.state.html} />;
-    let editor = <TinyMCE
+    let editor = <TinyMCE ref="editor"
       config={{
         auto_focus: true,
         autosave_ask_before_unload: false,
@@ -199,18 +194,31 @@ export default class Article extends React.Component {
           '@[class|style],' +
           '-h1,-h2,-h3,-h4,-h5,-h6,' +
           '-table,-tr,th,td,br,hr,' +
-          '-div,-span,-p,-ul,-ol,-li,-b/strong,-i/em,-u'
+          '-div,-p,-ul,-ol,-li,-b/strong,-i/em,-u,-s/strike'
       }}
       content={this.state.html}
-      ref="editor"
     />;
+    let settings = <div ref="settings">
+      <h5>Settings</h5>
+      <table className="settings">
+        <tr>
+          <th>Aliases</th>
+          <td>
+            <div>
+              <textarea ref="aliases" value={_.join(this.state.aliases, ',')}
+                          onChange={this.handleSetAliases}></textarea>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>;
 
     let tags = this.state.tags.map(function(tag) {
       return (
         <Tag key={tag} name={tag}
              onChange={this.handleEditTag}
              onRemove={this.handleRemoveTag.bind(this, tag)}
-             editable={this.state.mode == 'edit'} />
+             editable={this.state.mode != 'read'} />
       );
     }.bind(this));
 
@@ -218,13 +226,9 @@ export default class Article extends React.Component {
       <div className={`cp-article wiki-container mode-${this.state.mode}`}>
         <div className="tabs is-right is-boxed">
           <ul>
-            <li className={cn({
-                  'button': true,
-                  'is-pulled-right': true,
-                  'is-hidden': this.state.mode == 'read'
-                })}
+            <li className={`button is-primary ${this.state.mode == 'read' ? 'is-hidden' : ''}`}
                 onClick={this.handleSave}>
-              <Icon name="save" size="small" />Save
+              <Icon name="save" size="small" />
             </li>
             <li className={this.state.mode == 'read' ? 'is-active' : ''}>
               <a title="Read" onClick={this.handleMode.bind(this, 'read')}><Icon name="read" size="small" /></a>
@@ -240,9 +244,10 @@ export default class Article extends React.Component {
             </li>
           </ul>
         </div>
-        <div className="wiki-content reader">{viewer}</div>
-        <div className="wiki-content editor">{editor}</div>
-        <div className="wiki-content source">{source}</div>
+        <div className="wiki-article-tab reader">{viewer}</div>
+        <div className="wiki-article-tab editor">{editor}</div>
+        <div className="wiki-article-tab source">{source}</div>
+        <div className="wiki-article-tab settings">{settings}</div>
         <div className="tags">
           <Icon name="tags" /> {tags}
           <Icon name="add" onClick={this.handleAddTag.bind(this, 'new tag')} />

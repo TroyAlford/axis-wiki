@@ -46,16 +46,17 @@ export default class TagBrowser extends React.Component {
   }
 
   render() {
+    let colcount = 4;
     let articles   = this.state.articles,
         columns    = [],
-        size       = Math.ceil(articles.length / 3)
+        size       = Math.ceil(articles.length / colcount)
     ;
-    for (let i = 0; i <= 2; i++) {
+    for (let i = 0; i < colcount; i++) {
       let slice = this.state.articles.slice(i * size, (i * size) + size);
       columns[i] =
-        <div key={`column-${i}`} className="column is-third">{
+        <div key={`column-${i}`} className="column is-3">{
           _.map(slice, function(el) {
-            return <Link key={el} to={`/w/${el}`}>{_.startCase(el)}</Link>;
+            return <div><Link key={el} to={`/w/${el}`}>{_.startCase(el)}</Link></div>;
           })
         }</div>;
     }

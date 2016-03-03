@@ -48,7 +48,7 @@ article.post('/:slug', function(request, response) {
 
   var article = {
     html: request.body.html,
-    meta: Object.assign({ data: [], tags: [] }, request.body.meta)
+    meta: Object.assign({ aliases: [], data: [], tags: [] }, request.body.meta)
   };
 
   if (article.meta.tags.length)
@@ -56,7 +56,7 @@ article.post('/:slug', function(request, response) {
 
   var $ = cheerio.load(article.html);
   $('script').remove(); // Remove all <script> tags.
-  $('a').removeAttr('target').removeClass('wiki-missing wiki-external');
+  $('a').removeAttr('target').removeAttr('class');
   $('a').each(function() {
     var wiki_link = to_wiki_link(URL.parse(request_url(request)), URL.parse(this.attribs.href));
     if (wiki_link && wiki_link != this.attribs.href)
@@ -64,6 +64,7 @@ article.post('/:slug', function(request, response) {
   }); // Reduce local links to slug-only.
   article.html = $.html();
 
+  Links.alias(slug, article.meta.aliases);
   Links.set(slug, extract_wiki_links(wiki_url, $));
   Tags.set(slug, article.meta.tags);
 
@@ -75,6 +76,7 @@ article.post('/:slug', function(request, response) {
     article.missing_links = Links.missing_for(slug);
     decorate_links($, article.missing_links, wiki_url);
     article.html = beautify($.html(), beauty_options);
+    article.meta.aliases = Links.alias(slug);
 
     return response.status(200).send(article);
   } catch (err) {
@@ -137,5 +139,5 @@ var beauty_options = {
   indent_char: ' ', indent_with_tabs: false, // force indentation with spaces
   max_preserve_newlines: 0,                  // don't allow multiple newlines
   eol: '\n', end_with_newline: true,         // force trailing \n
-  wrap_line_length: 80                       // enable forced wrapping
+  wrap_line_length: 0                        // enable forced wrapping
 };
