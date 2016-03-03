@@ -193,7 +193,7 @@ export default class Article extends React.Component {
           'a[href|target|class|style],img[src|class|style],' +
           '@[class|style],' +
           '-h1,-h2,-h3,-h4,-h5,-h6,' +
-          '-table,-tr,th,td,br,hr,' +
+          '-table,-tr,th,td,br,hr,-blockquote,' +
           '-div,-p,-ul,-ol,-li,-b/strong,-i/em,-u,-s/strike'
       }}
       content={this.state.html}
