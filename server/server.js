@@ -26,6 +26,7 @@ Object.keys(folders).forEach(function(folder) {
 var modules = {
   article: require('./modules/article.js'),
   config:  require('./modules/config.js'),
+  media:   require('./modules/media.js'),
   search:  require('./modules/search.js')
 };
 
@@ -33,6 +34,7 @@ var app = express();
 app.use('/api/w', modules.article);
 app.use('/api/config', modules.config);
 app.use('/api/search', modules.search);
+app.use('/media', modules.media);
 
 _.forEach(['js', 'font', 'images', 'styles'], function(el) {
   app.use('/' + el, express.static(path.join(__dirname, '../build/develop/' + el)));
