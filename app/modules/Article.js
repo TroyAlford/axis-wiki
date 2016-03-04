@@ -138,10 +138,10 @@ export default class Article extends React.Component {
     this.setState({
       aliases: [],
       data: [],
-      html: "\
-        <h1>" + _.startCase(this.props.params.slug) + "</h1>\
-        <p>This article does not exist! Click <strong>edit</strong> to create it!</p>\
-      ",
+      html: 
+        `<h1>${_.startCase(this.props.params.slug)}</h1>\n` +
+        `<p>This article does not exist! Click <strong>edit</strong> to create it!</p>`
+      ,
       missing_links: [],
       tags: []
     });
