@@ -38,12 +38,6 @@ table th { font-weight: bold; text-align: center; }
 .is-hidden { display: none!important; }
 .button:not(.is-disabled) { cursor: pointer; }
 
-.icon,
-.icon.is-small,
-.icon.is-medium,
-.icon.is-large {
-  vertical-align: baseline;
-}
 [class^="icon-"]:before,
 [class*=" icon-"]:before {
   margin: 0;
