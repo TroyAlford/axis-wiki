@@ -12,10 +12,10 @@ var
 ;
 
 var folders = {
-  articles: './../content/articles',
-  config:   './../content/config',
-  media:    './../content/media',
-  metadata: './../content/metadata'
+  articles: path.join(__dirname, '../content/articles'),
+  config:   path.join(__dirname, '../content/config'),
+  media:    path.join(__dirname, '../content/media'),
+  metadata: path.join(__dirname, '../content/metadata')
 };
 
 // Ensure the required folders exist.
