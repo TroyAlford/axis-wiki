@@ -43,3 +43,8 @@ table th { font-weight: bold; text-align: center; }
   margin: 0;
   padding: 0;
 }
+
+body .mce-tab {
+  height: 31px;
+  &.mce-active { height: 32px; }
+}
