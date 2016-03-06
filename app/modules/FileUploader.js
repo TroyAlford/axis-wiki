@@ -13,7 +13,6 @@ export default class FileUploader extends React.Component {
   }
 
   handleChange(event) {
-    console.log(event.target.files);
     this.setState({ files: event.target.files })
   }
 
@@ -21,7 +20,7 @@ export default class FileUploader extends React.Component {
     return (
       <div className="cp-fileuploader">
         <form ref="upload_form" action={this.props.url || '/media'}
-              enctype="multipart/form-data" method="POST">
+              encType="multipart/form-data" method="POST">
           <input type="submit" value="Save" />
           <FileInput name="Image" accept=".png,.gif,.jpg"
                      placeholder="Choose an Image..."

@@ -6,9 +6,8 @@ var
   fs         = require('fs'),
   multer     = require('multer'),
   path       = require('path'),
-  utils      = require('fs-utils'),
 
-  Tags       = require('./tags')
+  Slug       = require('./slug')
 ;
 
 var paths = {
@@ -19,15 +18,23 @@ var media = module.exports = express();
 media.use(bodyParser.json()); // Parses application/json
 media.use(bodyParser.urlencoded({ extended: true })); // Parses application/x-www-form-encoded
 
-var storage = multer.diskStorage({ 
-  destination: function(req, file, cb) { 
-    cb(null, path.join(paths.media, file.name));
-  },
-  filename: function() {}
-});
-var upload = multer({ storage: storage });
+media.get('*', express.static(paths.media));
 
-media.post('/', upload.single("Image"), function(request, response, next) {
-  
+var storage = multer.diskStorage({
+  destination: function(request, file, cb) {
+    cb(null, paths.media);
+  },
+  filename: function(request, file, cb) {
+    var ext  = path.extname(file.originalname),
+        name = Slug.normalize(path.basename(file.originalname, ext));
+
+    request._filename = `${name}${ext}`;
+    cb(null, request._filename);
+  }
 });
-media.get('/', express.static(paths.media));
+media.post('/', multer({ storage: storage })
+  .single("Image"), function(request, response) {
+    var json = JSON.stringify({ filename: request._filename });
+    response.status(204).end(json);
+  })
+;
