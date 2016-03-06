@@ -190,7 +190,7 @@ export default class Article extends React.Component {
           '| hr link anchor | alignleft aligncenter alignright alignjustify ' +
           '| image table | removeformat | undo redo',
         valid_elements:
-          'a[href|target|class|style],img[src|class|style],' +
+          'a[href|target|class|style],img[src|class|style|height|width],' +
           '@[class|style],' +
           '-h1,-h2,-h3,-h4,-h5,-h6,' +
           '-table,-tr,th,td,br,hr,-blockquote,' +
