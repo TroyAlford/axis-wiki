@@ -34,7 +34,6 @@ var storage = multer.diskStorage({
 });
 media.post('/', multer({ storage: storage })
   .single("Image"), function(request, response) {
-    var json = JSON.stringify({ filename: request._filename });
-    response.status(204).end(json);
+    response.redirect(`/media/${request._filename}`);
   })
 ;
