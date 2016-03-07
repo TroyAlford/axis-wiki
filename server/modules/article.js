@@ -23,8 +23,7 @@ article.use(bodyParser.json()); // Parses application/json
 article.use(bodyParser.urlencoded({ extended: true })); // Parses application/x-www-form-encoded
 
 article.get('/:slug', function(request, response) {
-  var slug = Links.resolve(Slug.normalize(request.params.slug)),
-      path = article_path(slug);
+  var slug = Links.resolve(Slug.normalize(request.params.slug));
 
   if (request.params.slug != slug) // Redirect to normalized slug link
     return response.redirect(slug);
@@ -34,10 +33,7 @@ article.get('/:slug', function(request, response) {
   if (!article)
     return response.status(404).send('Article not found');
 
-  //var $ = cheerio.load(article.html);
-  //decorate_links($, article.missing_links, URL.parse(request_url(request)));
-
-  article.html = this.html(slug, URL.parse(request_url(request))); // beautify($.html(), beauty_options);
+  article.html = this.html(slug, URL.parse(request_url(request)));
 
   return response.status(200).send(article);
 }.bind(article));
