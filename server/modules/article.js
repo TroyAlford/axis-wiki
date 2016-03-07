@@ -34,13 +34,13 @@ article.get('/:slug', function(request, response) {
   if (!article)
     return response.status(404).send('Article not found');
 
-  var $ = cheerio.load(article.html);
-  decorate_links($, article.missing_links, URL.parse(request_url(request)));
+  //var $ = cheerio.load(article.html);
+  //decorate_links($, article.missing_links, URL.parse(request_url(request)));
 
-  article.html = beautify($.html(), beauty_options);
+  article.html = this.html(slug, URL.parse(request_url(request))); // beautify($.html(), beauty_options);
 
   return response.status(200).send(article);
-});
+}.bind(article));
 article.post('/:slug', function(request, response) {
   var slug = Slug.normalize(request.params.slug),
       path = article_path(slug),
@@ -84,6 +84,17 @@ article.post('/:slug', function(request, response) {
     return response.status(500).send('Unable to save article.');
   }
 });
+
+article.html = function(slug, url) {
+  var path = article_path(slug),
+      article = load_article(slug);
+
+  if (!article) return null;
+
+  var $ = cheerio.load(article.html);
+  decorate_links($, article.missing_links, url)
+  return beautify($.html(), beauty_options);
+}
 
 function article_path(slug) {
   return path.resolve(paths.articles, slug);

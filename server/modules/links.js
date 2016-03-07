@@ -61,6 +61,9 @@ var Links = {
 
     return links[slug];
   },
+  get: function(slug) {
+    return links[Links.resolve(slug)];
+  },
   missing_for: function(slug) {
     return _.difference(_.map(Links.ensure(slug).to, function(link) {
       return (!links[link] || !links[link].exists) ? link : ''
