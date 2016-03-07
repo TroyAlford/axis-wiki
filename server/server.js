@@ -11,18 +11,6 @@ var
   port    = 8080
 ;
 
-var folders = {
-  articles: path.join(__dirname, '../content/articles'),
-  config:   path.join(__dirname, '../content/config'),
-  media:    path.join(__dirname, '../content/media'),
-  metadata: path.join(__dirname, '../content/metadata')
-};
-
-// Ensure the required folders exist.
-Object.keys(folders).forEach(function(folder) {
-  mkdirp(folders[folder], function(){});
-});
-
 var modules = {
   article: require('./modules/article.js'),
   config:  require('./modules/config.js'),
