@@ -6,17 +6,19 @@
 //}
 
 var
-  _     = require('lodash'),
-  fs    = require('fs'),
-  path  = require('path'),
-  utils = require('fs-utils'),
-  Slug  = require('./slug')
+  _       = require('lodash'),
+  fs      = require('fs'),
+  path    = require('path'),
+  utils   = require('fs-utils'),
+
+  config  = require('./config'),
+  Slug    = require('./slug')
 ;
 
-var paths = {
-  articles: path.resolve(__dirname, '../../content/articles'),
-  links_metadata: path.resolve(__dirname, '../../content/metadata', 'links.json')
-};
+var folders = config.folders();
+var files = {
+  links: path.resolve(folders.metadata, 'links.json')
+}
 
 var Links = {
   add_from: function(to, from) {
@@ -56,7 +58,7 @@ var Links = {
 
     if (!links[slug])
       links[slug] = {
-        exists: utils.exists(path.resolve(paths.articles, slug + '.html'))
+        exists: utils.exists(path.resolve(folders.articles, slug + '.html'))
       };
 
     return links[slug];
@@ -83,7 +85,7 @@ var Links = {
     var entry = Links.ensure(slug);
     if (!entry) return false;
 
-    entry.exists = utils.exists(path.resolve(paths.articles, slug + '.html'));
+    entry.exists = utils.exists(path.resolve(folders.articles, slug + '.html'));
     entry.to = _.difference(_.uniq(_.map(links_to, function(link) {
       var link_slug = Slug.normalize(link);
       return (link_slug && link_slug.length) ? link_slug : '';
@@ -98,10 +100,10 @@ var Links = {
 
 var links = {};
 function load_from_disk() {
-  links = utils.exists(paths.links_metadata) ? utils.readJSONSync(paths.links_metadata) : {};
+  links = utils.exists(files.links) ? utils.readJSONSync(files.links) : {};
 }
 function save_to_disk() {
-  fs.writeFile(paths.links_metadata, JSON.stringify(links));
+  fs.writeFile(files.links, JSON.stringify(links));
 }
 load_from_disk(); // Load the links initially.
 

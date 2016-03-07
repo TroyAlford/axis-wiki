@@ -7,22 +7,21 @@ var
   multer     = require('multer'),
   path       = require('path'),
 
+  config     = require('./config'),
   Slug       = require('./slug')
 ;
 
-var paths = {
-  media: path.resolve(__dirname, '../../content/media')
-};
+var folders = config.folders();
 
 var media = module.exports = express();
 media.use(bodyParser.json()); // Parses application/json
 media.use(bodyParser.urlencoded({ extended: true })); // Parses application/x-www-form-encoded
 
-media.get('*', express.static(paths.media));
+media.get('*', express.static(folders.media));
 
 var storage = multer.diskStorage({
   destination: function(request, file, cb) {
-    cb(null, paths.media);
+    cb(null, folders.media);
   },
   filename: function(request, file, cb) {
     var ext  = path.extname(file.originalname),

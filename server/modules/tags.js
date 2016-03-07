@@ -11,23 +11,25 @@
 //}
 
 var
-  _     = require('lodash'),
-  fs    = require('fs'),
-  path  = require('path'),
-  utils = require('fs-utils'),
-  Slug  = require('./slug')
+  _       = require('lodash'),
+  fs      = require('fs'),
+  path    = require('path'),
+  utils   = require('fs-utils'),
+
+  config  = require('./config'),
+  Slug    = require('./slug')
 ;
 
-var paths = {
-  articles: path.resolve(__dirname, '../../content/articles'),
-  tags_metadata: path.resolve(__dirname, '../../content/metadata', 'tags.json')
+var folders = config.folders();
+var files = {
+  tags: path.resolve(folders.metadata, 'tags.json')
 };
 
 var Tags = {
   articles_tagged: function(tag) { return index.tags[tag]; },
   set: function(slug, tags) {
     slug = Slug.normalize(slug);
-    if (!slug || !Array.isArray(tags) || !utils.exists(path.resolve(paths.articles, slug + '.html'))) return false;
+    if (!slug || !Array.isArray(tags) || !utils.exists(path.resolve(folders.articles, slug + '.html'))) return false;
 
     tags = _.difference(_.uniq(_.map(tags, function(link) {
       var link_slug = Slug.normalize(link);
@@ -64,10 +66,10 @@ function clean_empty_nodes(and_save) {
   return and_save && save_to_disk();
 }
 function load_from_disk() {
-  index = utils.exists(paths.tags_metadata) ? utils.readJSONSync(paths.tags_metadata) : {articles:{},tags:{}};
+  index = utils.exists(files.tags) ? utils.readJSONSync(files.tags) : {articles:{},tags:{}};
 }
 function save_to_disk() {
-  fs.writeFile(paths.tags_metadata, JSON.stringify(index));
+  fs.writeFile(files.tags, JSON.stringify(index));
 }
 load_from_disk(); // Load the links initially.
 

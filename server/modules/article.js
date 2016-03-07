@@ -9,14 +9,13 @@ var
   URL        = require('url'),
   utils      = require('fs-utils'),
 
+  config     = require('./config'),
   Links      = require('./links'),
   Slug       = require('./slug'),
   Tags       = require('./tags')
 ;
 
-var paths = {
-  articles: path.resolve(__dirname, '../../content/articles'),
-};
+var folders = config.folders();
 
 var article = module.exports = express();
 article.use(bodyParser.json()); // Parses application/json
@@ -93,7 +92,7 @@ article.html = function(slug, url) {
 }
 
 function article_path(slug) {
-  return path.resolve(paths.articles, slug);
+  return path.resolve(folders.articles, slug);
 }
 function extract_wiki_links(request_url, $) {
   return _.difference(_.uniq(_.map($('a'), function(link) {
