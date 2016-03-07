@@ -142,7 +142,7 @@
       width: auto;
 
       thead, tbody, tfoot { border: none; }
-      th, td { padding: 5px 10px }
+      th, td { padding: 5px 10px; }
       th { background-color: #eeeeee; }
       td { background-color: #f9f9f9; }
 
@@ -162,6 +162,7 @@
       tr:last-child {
         th, td { border-bottom: 0; }
       }
+      td { text-align: justify; }
     }
     table.note[class*="note-"], table.tip[class*="tip-"] {
       border-collapse: separate;
