@@ -1,0 +1,8 @@
+{
+  "navigation": {
+    "default_links": [
+      { "text": "Home", "url": "/w/home" }, 
+      { "text": "Upload", "url": "/upload" }
+    ]
+  }
+}

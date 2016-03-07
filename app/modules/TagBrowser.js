@@ -18,13 +18,24 @@ export default class TagBrowser extends React.Component {
     super(props);
     this.state = {
       articles: [],
-      html: ''
+      html: null
     };
 
     this.handle404 = this.handle404.bind(this);
     this.handleLoad = this.handleLoad.bind(this);
 
-    XHR.get(`/api/search/tagged/${this.props.params.tag}`, {
+    this.loadTag = this.loadTag.bind(this);
+
+    this.loadTag(this.props.params.tag);
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.params.tag != this.props.params.tag)
+      this.loadTag(newProps.params.tag);
+  }
+
+  loadTag(slug) {
+    XHR.get(`/api/search/tagged/${slug}`, {
       success: this.handleLoad,
       failure: function(error) {
         if (error.status == 404)
@@ -35,13 +46,15 @@ export default class TagBrowser extends React.Component {
 
   handle404() {
     this.setState({
-      articles: []
+      articles: [],
+      html: null
     });
   }
   handleLoad(response) {
     let results = JSON.parse(response.message) || [];
     this.setState({
-      articles: results
+      articles: results.links,
+      html: results.html
     });
   }
 
@@ -63,6 +76,7 @@ export default class TagBrowser extends React.Component {
 
     return (
       <div className="cp-tagbrowser">
+        <p dangerouslySetInnerHTML={{ __html: this.state.html ? this.state.html : '' }}></p>
         <h1>Articles tagged: <Icon name="tag" />{_.startCase(this.props.params.tag)}</h1>
         <div className="columns">{columns}</div>
       </div>

@@ -92,7 +92,7 @@
       }
     }
 
-    .note, .tip {
+    .note, .info, .tip, .data {
       background-color: lighten($color-bg-light, 2.5%);
       border: 1px solid $color-border-gray;
       overflow: hidden;
@@ -121,6 +121,32 @@
         background-color: $color-book;
         background-image: $image-book;
       }
+    }
+    .info[class*="info-"] {
+      float: right;
+
+      &.info-box {
+        font-size: .9rem;
+        margin: 0 0 10px 10px;
+        width: 275px;
+
+        th, td { padding: 5px; }
+        th { background-color: #eeeeee; }
+        td { background-color: #f9f9f9; }
+        th:not([colspan]) { width: 30%; }
+      }
+    }
+    .data {
+      border-collapse: collapse;
+      margin: 0 auto;
+      width: auto;
+
+      thead, tbody, tfoot { border: none; }
+      th, td { padding: 5px 10px }
+      th { background-color: #eeeeee; }
+      td { background-color: #f9f9f9; }
+
+      &.center, .center * { text-align: center; }
     }
 
     table {
