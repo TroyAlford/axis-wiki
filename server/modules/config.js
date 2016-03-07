@@ -6,20 +6,36 @@ var
   fs         = require('fs'),
   mkdirp     = require('mkdirp'),
   path       = require('path'),
-  utils      = require('fs-utils'),
-
-  json       = require('../config.json')
+  utils      = require('fs-utils')
 ;
 
 var _this = module.exports = express();
+
+_this.settings = function() {
+  var 
+    argv       = require('minimist')(process.argv.slice(2)),
+    defaults   = require('../defaults.json'),
+    arg_path   = argv.c || argv.config,
+    adj_path   = path.isAbsolute(arg_path) ? arg_path : path.join(__dirname, '../', arg_path),
+    cfg_exists = utils.exists(adj_path),     
+    config     = cfg_exists ? require(adj_path) : {}
+  ;
+
+  if (cfg_exists)
+    console.log(`Loading configuration from ${adj_path}`);
+
+  return Object.assign({}, defaults, config);
+}();
+
 
 var _folders = null;
 _this.folders = function() {
   if (_folders) return _folders;
 
-  var basePath = path.isAbsolute(json.storage.path) 
-      ? json.storage.path
-      : path.join(__dirname, '../', json.storage.path);
+  var storage = _this.settings.storage,
+      basePath = path.isAbsolute(storage.path) 
+        ? storage.path 
+        : path.join(__dirname, '../', storage.path);
 
   _folders = {
     articles: path.join(basePath, './articles'),
@@ -47,7 +63,7 @@ _this.get('/navigation', function(request, response) {
   return response.status(200).send(
     utils.exists(files.navigation) 
       ? utils.readJSONSync(files.navigation) 
-      : json.default_links
+      : _this.settings.default_links
   );
 });
 

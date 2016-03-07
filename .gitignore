@@ -1,5 +1,6 @@
 .idea/
 build/
+config/
 content/
 node_modules/
 npm-debug.log
