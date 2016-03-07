@@ -92,7 +92,7 @@
       }
     }
 
-    .note, .tip {
+    .note, .info, .tip {
       background-color: lighten($color-bg-light, 2.5%);
       border: 1px solid $color-border-gray;
       overflow: hidden;
@@ -120,6 +120,20 @@
       &.note-book:before {
         background-color: $color-book;
         background-image: $image-book;
+      }
+    }
+    .info[class*="info-"] {
+      float: right;
+
+      &.info-box {
+        font-size: .9rem;
+        margin: 0 0 10px 10px;
+        width: 275px;
+
+        th, td { padding: 5px; }
+        th { background-color: #eeeeee; }
+        td { background-color: #f9f9f9; }
+        th:not([colspan]) { width: 30%; }
       }
     }
 

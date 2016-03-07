@@ -191,9 +191,10 @@ export default class Article extends React.Component {
           '| image table | removeformat | undo redo',
         valid_elements:
           'a[href|target|class|style],img[src|class|style|height|width],' +
+          '@[class,colspan,style],th,td,' +
           '@[class|style],' +
           '-h1,-h2,-h3,-h4,-h5,-h6,' +
-          '-table,-tr,th,td,br,hr,-blockquote,' +
+          '-table,-tr,br,hr,-blockquote,' +
           '-div,-p,-ul,-ol,-li,-b/strong,-i/em,-u,-s/strike'
       }}
       content={this.state.html}
