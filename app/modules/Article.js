@@ -1,16 +1,16 @@
 // modules/Article.js
-import classNames from 'classnames';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import TinyMCE from 'react-tinymce';
+import classNames         from 'classnames';
+import React              from 'react';
+import ReactDOM           from 'react-dom';
+import TinyMCE            from 'react-tinymce';
 import { browserHistory } from 'react-router';
 
-import Icon from './Icon';
-import MenuButton from './MenuButton';
-import MenuItem from './MenuItem';
-import Tag from './Tag';
+import Icon               from './Icon';
+import MenuButton         from './MenuButton';
+import MenuItem           from './MenuItem';
+import Tag                from './Tag';
 
-import XHR from '../helpers/XHR';
+import XHR                from '../helpers/XHR';
 
 let cn = classNames;
 
