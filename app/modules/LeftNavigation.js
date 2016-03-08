@@ -1,14 +1,13 @@
 // modules/TopNavigation.js
 import React from 'react';
 import { Link } from 'react-router';
-import { navigation } from '../../server/config.json'
 
 export default class LeftNavigation extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      links: navigation.default_links
+      links: {}
     };
 
     this.handle404 = this.handle404.bind(this);
@@ -28,7 +27,7 @@ export default class LeftNavigation extends React.Component {
 
   handle404() {
     this.setState({
-      links: navigation.default_links
+      links: {}
     });
   }
   handleLoad(response) {
