@@ -1,6 +1,6 @@
 export default class Slug {
   static normalize(value, retain_path) {
-     var parsed = (/([/]?[\w\d -_]{1,}[/])?(.*)/g).exec(value.toLowerCase());
+    var parsed = (/([/]?[\w\d -_]{1,}[/])?(.*)/g).exec(value.toLowerCase());
 
     var path = parsed[1] || '';
     var slug = parsed[2]

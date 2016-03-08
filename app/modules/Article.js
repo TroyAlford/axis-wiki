@@ -195,7 +195,7 @@ export default class Article extends React.Component {
           '@[class|style],' +
           '-h1,-h2,-h3,-h4,-h5,-h6,' +
           '-table,-tr,br,hr,-blockquote,' +
-          '-div,-p,-ul,-ol,-li,-b/strong,-i/em,-u,-s/strike'
+          '-div,-p,-ul,-ol,-li,-b/strong,-i/em,-u,-s/strike,-sup,-sub'
       }}
       content={this.state.html}
     />;
