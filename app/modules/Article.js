@@ -30,7 +30,8 @@ export default class Article extends React.Component {
     this.loadArticle = this.loadArticle.bind(this);
 
     this.handleAddTag = this.handleAddTag.bind(this);
-    this.handleSetAliases = this.handleSetAliases.bind(this);
+    this.handleAlias = this.handleAlias.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
     this.handleEditTag = this.handleEditTag.bind(this);
     this.handleRemoveTag = this.handleRemoveTag.bind(this);
     this.handleSourceChange = this.handleSourceChange.bind(this);
@@ -87,11 +88,14 @@ export default class Article extends React.Component {
       tags: _.union(this.state.tags, [this.tagify(new_tag)])
     });
   }
-  handleSetAliases(event) {
+  handleAlias(event) {
     let slugs = _.map(_.split(_.toLower(event.target.value), ','), function(slug) {
       return slug.replace(/[^\w\d/_]/g, '-').replace(/-{2,}/g, '-');
     });
     this.setState({ aliases: slugs });
+  }
+  handleDelete() {
+    console.log('deleting...');
   }
   handleEditTag(old_tag, new_tag) {
     old_tag = this.tagify(old_tag);
@@ -202,15 +206,24 @@ export default class Article extends React.Component {
     let settings = <div ref="settings">
       <h5>Settings</h5>
       <table className="settings">
+       <tbody>
         <tr>
           <th>Aliases</th>
           <td>
             <div>
               <textarea ref="aliases" value={_.join(this.state.aliases, ',')}
-                          onChange={this.handleSetAliases}></textarea>
+                          onChange={this.handleAlias}></textarea>
             </div>
           </td>
         </tr>
+        <tr>
+          <th>Delete</th>
+          <td>
+            <button className="button is-danger" onClick={this.handleDelete}>Delete this Article</button>
+            <p><i>Warning: This cannot be undone!</i></p>
+          </td>
+        </tr>
+       </tbody>
       </table>
     </div>;
 

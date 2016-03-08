@@ -121,6 +121,10 @@
         background-color: $color-book;
         background-image: $image-book;
       }
+      &.note-info:before {
+        background-color: $color-info;
+        background-image: $image-info;
+      }
     }
     .info[class*="info-"] {
       float: right;

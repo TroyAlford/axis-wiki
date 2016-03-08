@@ -31,6 +31,6 @@ app.get('*', function (req, res) {
     .pipe(res);
 });
 
-http.createServer(app).listen(port, function() {
+app.listen(port, function() {
   console.log('Express server running on port ' + port);
 });
