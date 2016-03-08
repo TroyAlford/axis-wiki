@@ -1,21 +1,19 @@
-var
-  _          = require('lodash'),
-  beautify   = require('js-beautify').html,
-  bodyParser = require('body-parser'),
-  cheerio    = require('cheerio'),
-  express    = require('express'),
-  fs         = require('fs'),
-  path       = require('path'),
-  URL        = require('url'),
-  utils      = require('fs-utils'),
+import _                    from 'lodash'
+import { html as beautify } from 'js-beautify'
+import bodyParser           from 'body-parser'
+import cheerio              from 'cheerio'
+import express              from 'express'
+import fs                   from 'fs'
+import path                 from 'path'
+import URL                  from 'url'
+import utils                from 'fs-utils'
 
-  config     = require('./config'),
-  Links      = require('./links'),
-  Slug       = require('./slug'),
-  Tags       = require('./tags')
-;
+import Config               from './config'
+import Links                from './links'
+import Slug                 from './slug'
+import Tags                 from './tags'
 
-var folders = config.folders();
+var folders = Config.folders();
 
 var article = module.exports = express();
 article.use(bodyParser.json()); // Parses application/json

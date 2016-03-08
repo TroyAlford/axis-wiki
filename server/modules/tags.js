@@ -10,17 +10,15 @@
 //  }
 //}
 
-var
-  _       = require('lodash'),
-  fs      = require('fs'),
-  path    = require('path'),
-  utils   = require('fs-utils'),
+import _            from 'lodash'
+import fs           from 'fs'
+import path         from 'path'
+import utils        from 'fs-utils'
 
-  config  = require('./config'),
-  Slug    = require('./slug')
-;
+import Config       from './config'
+import Slug         from './slug'
 
-var folders = config.folders();
+var folders = Config.folders();
 var files = {
   tags: path.resolve(folders.metadata, 'tags.json')
 };

@@ -4,18 +4,15 @@
 //  to:   ['article_1', 'article_47'], // articles which this article has a link to
 //  from: ['article_25']               // articles which link to this article
 //}
+import _          from 'lodash'
+import fs         from 'fs'
+import path       from 'path'
+import utils      from 'fs-utils'
 
-var
-  _       = require('lodash'),
-  fs      = require('fs'),
-  path    = require('path'),
-  utils   = require('fs-utils'),
+import Config     from './config'
+import Slug       from './slug'
 
-  config  = require('./config'),
-  Slug    = require('./slug')
-;
-
-var folders = config.folders();
+var folders = Config.folders();
 var files = {
   links: path.resolve(folders.metadata, 'links.json')
 }

@@ -1,17 +1,14 @@
-var
-  _          = require('lodash'),
-  bodyParser = require('body-parser'),
-  cheerio    = require('cheerio'),
-  express    = require('express'),
-  fs         = require('fs'),
-  path       = require('path'),
-  utils      = require('fs-utils'),
+import _              from 'lodash'
+import bodyParser     from 'body-parser'
+import cheerio        from 'cheerio'
+import express        from 'express'
+import fs             from 'fs'
+import path           from 'path'
+import utils          from 'fs-utils'
 
-  Article    = require('./article'),
-  Links      = require('./links'),
-  Tags       = require('./tags')
-;
-
+import Article        from './article'
+import Links          from './links'
+import Tags           from './tags'
 
 var search = module.exports = express();
 search.use(bodyParser.json()); // Parses application/json

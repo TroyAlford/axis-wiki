@@ -1,15 +1,13 @@
-var
-  _       = require('lodash'),
-  express = require('express'),
-  fs      = require('fs'),
-  http    = require('http'),
-  mkdirp  = require('mkdirp'),
-  path    = require('path'),
-  request = require('request'),
-  url     = require('url'),
+import _          from 'lodash';
+import express    from 'express';
+import fs         from 'fs';
+import http       from 'http';
+import mkdirp     from 'mkdirp';
+import path       from 'path';
+import request    from 'request';
+import url        from 'url';
 
-  port    = 8080
-;
+var port = 8080;
 
 var modules = {
   article: require('./modules/article.js'),
@@ -24,7 +22,7 @@ app.use('/api/config', modules.config);
 app.use('/api/search', modules.search);
 app.use('/media', modules.media);
 
-_.forEach(['js', 'font', 'images', 'styles'], function(el) {
+['js', 'font', 'images', 'styles'].forEach(function(el) {
   app.use('/' + el, express.static(path.join(__dirname, '../build/develop/' + el)));
 });
 

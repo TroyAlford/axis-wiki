@@ -1,17 +1,16 @@
-var
-  _          = require('lodash'),
-  bodyParser = require('body-parser'),
-  cheerio    = require('cheerio'),
-  express    = require('express'),
-  fs         = require('fs'),
-  multer     = require('multer'),
-  path       = require('path'),
 
-  config     = require('./config'),
-  Slug       = require('./slug')
-;
+import _               from 'lodash'
+import bodyParser      from 'body-parser'
+import cheerio         from 'cheerio'
+import express         from 'express'
+import fs              from 'fs'
+import multer          from 'multer'
+import path            from 'path'
 
-var folders = config.folders();
+import Config          from './config'
+import Slug            from './slug'
+
+var folders = Config.folders();
 
 var media = module.exports = express();
 media.use(bodyParser.json()); // Parses application/json

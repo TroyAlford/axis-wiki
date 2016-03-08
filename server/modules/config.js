@@ -1,13 +1,12 @@
-var
-  _          = require('lodash'),
-  bodyParser = require('body-parser'),
-  cheerio    = require('cheerio'),
-  express    = require('express'),
-  fs         = require('fs'),
-  mkdirp     = require('mkdirp'),
-  path       = require('path'),
-  utils      = require('fs-utils')
-;
+
+import _            from 'lodash'
+import bodyParser   from 'body-parser'
+import cheerio      from 'cheerio'
+import express      from 'express'
+import fs           from 'fs'
+import mkdirp       from 'mkdirp'
+import path         from 'path'
+import utils        from 'fs-utils'
 
 var _this = module.exports = express();
 

@@ -1,6 +1,4 @@
-var
-  _ = require('lodash')
-;
+import _      from 'lodash'
 
 var Slug = module.exports = {
   normalize: function (value, retain_path) {
