@@ -183,6 +183,10 @@ export default class Article extends React.Component {
         inline: true,
         fixed_toolbar_container: '.wiki-container > .tabs',
         formats: {
+          aligncenter: {
+            selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img',
+            classes: 'is-text-centered'
+          },
           underline: { inline: 'u', exact: true }
         },
         menubar: false,
@@ -195,7 +199,7 @@ export default class Article extends React.Component {
           '| image table | removeformat | undo redo',
         valid_elements:
           'a[href|target|class|style],img[src|class|style|height|width],' +
-          '@[class,colspan,style],th,td,' +
+          '@[class|colspan|rowspan|style],th,td,' +
           '@[class|style],' +
           '-h1,-h2,-h3,-h4,-h5,-h6,' +
           '-table,-tr,br,hr,-blockquote,' +
