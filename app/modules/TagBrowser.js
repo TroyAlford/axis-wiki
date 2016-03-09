@@ -53,8 +53,8 @@ export default class TagBrowser extends React.Component {
   handleLoad(response) {
     let results = JSON.parse(response.message) || [];
     this.setState({
-      articles: results.links,
-      html: results.html
+      articles: results.links || [],
+      html: results.html || ''
     });
   }
 
