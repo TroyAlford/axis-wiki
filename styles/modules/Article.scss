@@ -55,10 +55,6 @@
     position: absolute;
     text-align: justify;
 
-    p {
-      margin: 1rem 0;
-      text-align: justify;
-    }
     p:first-child { margin-top: 0; }
     p:last-child  { margin-bottom: 0; }
 
@@ -92,67 +88,6 @@
       }
     }
 
-    .note, .info, .tip, .data {
-      background-color: lighten($color-bg-light, 2.5%);
-      border: 1px solid $color-border-gray;
-      overflow: hidden;
-      padding: 5px;
-      text-align: justify;
-    }
-    .note[class*="note-"] {
-      padding-left: 30px;
-      position: relative;
-
-      &:before {
-        content: '';
-        display: inline-block;
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-size: 16px 16px;
-        border-right: 1px solid $color-border-gray;
-        position: absolute;
-        left: 0; top: 0; height: 100%; width: 24px;
-      }
-      &.note-system:before {
-        background-color: $color-system;
-        background-image: $image-system;
-      }
-      &.note-book:before {
-        background-color: $color-book;
-        background-image: $image-book;
-      }
-      &.note-info:before {
-        background-color: $color-info;
-        background-image: $image-info;
-      }
-    }
-    .info[class*="info-"] {
-      float: right;
-
-      &.info-box {
-        font-size: .9rem;
-        margin: 0 0 10px 10px;
-        width: 275px;
-
-        th, td { padding: 5px; }
-        th { background-color: #eeeeee; }
-        td { background-color: #f9f9f9; }
-        th:not([colspan]) { width: 30%; }
-      }
-    }
-    .data {
-      border-collapse: collapse;
-      margin: 0 auto;
-      width: auto;
-
-      thead, tbody, tfoot { border: none; }
-      th, td { padding: 5px 10px; }
-      th { background-color: #eeeeee; }
-      td { background-color: #f9f9f9; }
-
-      &.center, .center * { text-align: center; }
-    }
-
     table {
       border: 1px solid $color-border-gray;
       border-collapse: collapse;
@@ -166,18 +101,6 @@
       tr:last-child {
         th, td { border-bottom: 0; }
       }
-    }
-    table.note[class*="note-"], table.tip[class*="tip-"] {
-      border-collapse: separate;
-      border-spacing: 0;
-      padding: 0 0 0 22px;
-
-      &.note-system th { background-color: lighten($color-system, 2.5%); }
-      &.note-book   th { background-color: lighten($color-book, 2.5%); }
-    }
-    table.progression {
-      tr:nth-child(even) { background-color: $color-table-bg-even; }
-      tr:nth-child(odd)  { background-color: $color-table-bg-odds; }
     }
 
     &.reader a.wiki-external:after {
