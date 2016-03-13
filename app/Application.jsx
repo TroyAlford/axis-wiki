@@ -9,10 +9,9 @@ import FileUploader from './modules/FileUploader';
 
 ReactDOM.render((
   <Router history={browserHistory}>
-    <Redirect from="/" to="/w/home" />
+    <Redirect from="/" to="/page/home" />
     <Route path="/" component={Layout}>
-      <Route path="/w/:slug" component={Article} />
-      <Route path="/tagged/:tag" component={TagBrowser} />
+      <Route path="/page/:slug" component={Article} />
       <Route path="/upload" component={FileUploader} />
     </Route>
   </Router>
