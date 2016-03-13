@@ -1,10 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import classNames from 'classnames';
 
 import MenuItem from './MenuItem';
-
-let cn = classNames;
 
 export default class MenuButton extends React.Component {
   constructor(props) {
@@ -33,7 +30,7 @@ export default class MenuButton extends React.Component {
 
   render() {
     return (
-      <ul className={cn({ 'cp-menubutton': true, 'button': true, 'cp-menu-expanded': this.state.expanded })}>
+      <ul className={`cp-menubutton button ${this.state.expanded ? 'cp-menu-expanded' : ''}`}>
         <MenuItem icon={this.props.icon} caption={this.caption}
                   onMouseDown={this.handleMouseDown} onClick={this.handleClick}>
           <ul>{this.props.children}</ul>
