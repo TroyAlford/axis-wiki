@@ -11,57 +11,31 @@
 //}
 
 import _            from 'lodash'
+import chokidar     from 'chokidar'
 import fs           from 'fs'
 import path         from 'path'
 import utils        from 'fs-utils'
 
-import Config       from './config'
+import Config       from '../modules/config'
 import Slug         from './slug'
 
 export default class Tags {
   constructor() {
     this.for = this.for.bind(this);
-    this.set = this.set.bind(this);
 
     this.cleanse = this.cleanse.bind(this);
     this.rebuild = this.rebuild.bind(this);
+    this.reindex = this.reindex.bind(this);
     this.reload = this.reload.bind(this);
     this.save = this.save.bind(this);
 
     this.folders = Config.folders();
-    this.files = { tags: path.resolve(this.folders.metadata, 'tags.json') }
+    this.files = { tags: path.resolve(this.folders.metadata, 'tags.json') };
 
     setTimeout(this.rebuild, 0);
   }
 
   for(tag) { return this.tags[tag]; }
-
-  set(slug, tags) {
-    slug = Slug.normalize(slug);
-    if (!slug || !Array.isArray(tags) || !utils.exists(path.resolve(this.folders.articles, slug + '.html'))) return false;
-
-    tags = _.difference(_.uniq(_.map(tags, function(link) {
-      var link_slug = Slug.normalize(link);
-      return (link_slug && link_slug.length) ? link_slug : '';
-    })), ['']); // << Eliminate blank slugs (incl. those we just blanked for invalidity)
-
-    // remove any removed tags
-    _.forEach(_.difference(this.articles[slug], tags), function(tag) {
-      this.tags[tag] = _.difference(this.tags[tag], [slug]);
-    }.bind(this));
-
-    if (tags.length)
-      this.articles[slug] = tags; // set the new tag list for the article
-    else
-      delete this.articles[slug]; // no tags - so delete the node entirely
-
-    // add any new tags
-    _.forEach(tags, function (tag) {
-      this.tags[tag] = _.sortBy(_.union(this.tags[tag], [slug]));
-    }.bind(this));
-
-    setTimeout(this.cleanse, 0); // Asynchronously clean empty nodes and save
-  }
 
   cleanse() {
     for (var article in this.articles) {
@@ -71,6 +45,19 @@ export default class Tags {
       if (!this.tags[tag].length) delete this.tags[tag];
     }
     return this.save();
+  }
+  reindex(slug) {
+    console.log(`${slug} changed: reindexing now.`);
+    let existing = this.tags[slug],
+        updated  = utils.readJSONSync(path.join(this.folders.articles, `${slug}.json`)),
+        in_both  = _.intersection(existing, updated),
+        to_drop  = _.difference(existing, in_both),
+        to_add   = _.difference(updated, in_both);
+
+    to_drop.forEach(drop => { this.tags[drop] = _.difference(this.tags[drop], [slug]); });
+    to_add.forEach(add => { this.tags[add] = _.union(this.tags[add], [slug]); });
+
+    this.articles[slug] = updated;
   }
   rebuild() {
     let rebuilt = { articles: {}, tags: {} };
@@ -89,7 +76,7 @@ export default class Tags {
     this.articles = rebuilt.articles;
     this.tags = rebuilt.tags;
 
-    this.save();
+    setTimeout(this.cleanse, 0); // Will also save.
   }
   reload() {
     let json = utils.exists(this.files.tags) ? utils.readJSONSync(this.files.tags) : {articles:{},tags:{}};
@@ -105,3 +92,10 @@ export default class Tags {
 };
 
 export let Singleton = new Tags();
+
+// File Watcher, to re-index on any .json file change in the Articles directory.
+let reindexer = file => Singleton.reindex(path.basename(file, '.json'))
+chokidar.watch(`${Singleton.folders.articles}/*.json`, { ignoreInitial: true })
+  .on('add', reindexer)
+  .on('change', reindexer)
+;

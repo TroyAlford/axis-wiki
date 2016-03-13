@@ -8,7 +8,7 @@ import multer          from 'multer'
 import path            from 'path'
 
 import Config          from './config'
-import Slug            from './slug'
+import Slug            from '../services/slug'
 
 var folders = Config.folders();
 

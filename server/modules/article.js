@@ -9,9 +9,9 @@ import URL                  from 'url'
 import utils                from 'fs-utils'
 
 import Config               from './config'
-import Links                from './links'
-import Slug                 from './slug'
-import {Singleton as Tags}  from './tags'
+import Links                from '../services/links'
+import Slug                 from '../services/slug'
+import {Singleton as Tags}  from '../services/tags'
 
 var folders = Config.folders();
 
@@ -66,7 +66,6 @@ article.post('/:slug', function(request, response) {
 
   Links.alias(slug, article.aliases);
   Links.set(slug, extract_wiki_links(wiki_url, $));
-  Tags.set(slug, article.tags);
 
   try {
     article.missing_links = Links.missing_for(slug);

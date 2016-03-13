@@ -9,7 +9,7 @@ import fs         from 'fs'
 import path       from 'path'
 import utils      from 'fs-utils'
 
-import Config     from './config'
+import Config     from '../modules/config'
 import Slug       from './slug'
 
 var folders = Config.folders();
