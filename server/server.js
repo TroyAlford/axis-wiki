@@ -13,13 +13,11 @@ var modules = {
   article: require('./modules/article.js'),
   config:  require('./modules/config.js'),
   media:   require('./modules/media.js'),
-  search:  require('./modules/search.js')
 };
 
 var app = express();
 app.use('/api/w', modules.article);
 app.use('/api/config', modules.config);
-app.use('/api/search', modules.search);
 app.use('/media', modules.media);
 
 ['js', 'font', 'images', 'styles'].forEach(function(el) {

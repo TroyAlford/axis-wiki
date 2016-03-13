@@ -2,6 +2,8 @@
 import React from 'react';
 import { Link } from 'react-router';
 
+let render_key = 0;
+
 export default class LeftNavigation extends React.Component {
   constructor(props) {
     super(props);
@@ -35,19 +37,20 @@ export default class LeftNavigation extends React.Component {
   }
 
   render() {
+    render_key = 0;
     return <section className="cp-leftnavigation">
       {this.renderLinks(this.state.links || default_links)}
     </section>;
   }
 
   renderLink(link) {
-    return <li>
+    return <li key={render_key++}>
       {link.url ? <Link to={link.url}>{link.text}</Link> : link.text}
       {this.renderLinks(link.children)}
     </li>;
   }
   renderLinks(links) {
     if (!links || !links.length) return '';
-    return <ul>{_.map(links, this.renderLink)}</ul>;
+    return <ul key={render_key++}>{_.map(links, this.renderLink)}</ul>;
   }
 }

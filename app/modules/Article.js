@@ -1,31 +1,22 @@
-// modules/Article.js
-import classNames         from 'classnames';
-import React              from 'react';
-import ReactDOM           from 'react-dom';
-import TinyMCE            from 'react-tinymce';
-import { browserHistory } from 'react-router';
+import React              from 'react'
+import ReactDOM           from 'react-dom'
+import TinyMCE            from 'react-tinymce'
+import { browserHistory } from 'react-router'
 
-import Icon               from './Icon';
-import MenuButton         from './MenuButton';
-import MenuItem           from './MenuItem';
-import Tag                from './Tag';
+import Icon               from './Icon'
+import MenuButton         from './MenuButton'
+import MenuItem           from './MenuItem'
+import Tag                from './Tag'
+import TagBrowser         from './TagBrowser'
 
-import XHR                from '../helpers/XHR';
-
-let cn = classNames;
+import XHR                from '../helpers/XHR'
 
 export default class Article extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      aliases: [],
-      data: [],
-      html: '',
-      missing_links: [],
-      tags: [],
 
-      mode: 'read'
-    };
+    this.default_state = this.default_state.bind(this);
+    this.state = this.default_state();
 
     this.loadArticle = this.loadArticle.bind(this);
 
@@ -39,7 +30,6 @@ export default class Article extends React.Component {
     this.handleLinks = this.handleLinks.bind(this);
     this.handleLoad = this.handleLoad.bind(this);
     this.handleMode = this.handleMode.bind(this);
-    this.handleNew = this.handleNew.bind(this);
     this.handleSave = this.handleSave.bind(this);
 
     this.loadArticle(this.props.params.slug);
@@ -62,13 +52,23 @@ export default class Article extends React.Component {
       this.loadArticle(newProps.params.slug);
   }
 
+  default_state() {
+    return {
+      aliases: [],
+      children: [],
+      data: [],
+      html: '',
+      missing_links: [],
+      tags: [],
+
+      mode: 'read'
+    }
+  }
+
   loadArticle(slug) {
     XHR.get(`/api/w/${slug}`, {
       success: this.handleLoad,
-      failure: function(error) {
-        if (error.status == 404)
-          this.handleNew();
-      }.bind(this),
+      failure: this.handleLoad,
       done: function(response) {
         let regex = /[\w\d-_]{1,}$/;
         let response_slug = regex.exec(response.url)[0],
@@ -124,31 +124,14 @@ export default class Article extends React.Component {
     }
   }
   handleLoad(response, b, c, d) {
-    let msg = JSON.parse(response.message);
-    this.setState({
-      aliases: (msg.meta || {}).aliases || [],
-      data: (msg.meta || {}).data || [],
-      html: msg.html,
-      missing_links: msg.missing_links || [],
-      tags: _.map((msg.meta || {}).tags || [], this.tagify),
+    let state = Object.assign(this.default_state(), JSON.parse(response.message));
 
-      mode: 'read'
-    });
+    state.tags = _.map(state.tags, this.tagify);
+
+    this.setState(state);
   }
   handleMode(mode) {
     this.setState({ mode: mode });
-  }
-  handleNew() {
-    this.setState({
-      aliases: [],
-      data: [],
-      html: 
-        `<h1>${_.startCase(this.props.params.slug)}</h1>\n` +
-        `<p>This article does not exist! Click <strong>edit</strong> to create it!</p>`
-      ,
-      missing_links: [],
-      tags: []
-    });
   }
   handleSave() {
     var html = '';
@@ -159,11 +142,10 @@ export default class Article extends React.Component {
 
     XHR.post('/api/w/' + this.props.params.slug, {
       data: {
-        meta: {
-          aliases: this.state.aliases || [],
-          data: this.state.data || [],
-          tags: this.state.tags || []
-        },
+        aliases: this.state.aliases || [],
+        children: this.state.children || [],
+        data: this.state.data || [],
+        tags: this.state.tags || [],
         html: html
       },
       success: this.handleLoad,
@@ -174,7 +156,10 @@ export default class Article extends React.Component {
   }
 
   render() {
-    let viewer = <div ref="viewer" dangerouslySetInnerHTML={{ __html: this.state.html }}></div>;
+    let viewer = <div>
+      <div ref="viewer" dangerouslySetInnerHTML={{ __html: this.state.html }}></div>
+      <TagBrowser articles={this.state.children} columns="4" />
+    </div>;
     let source = <textarea ref="source" onChange={this.handleSourceChange} value={this.state.html} />;
     let editor = <TinyMCE ref="editor"
       config={{
@@ -216,7 +201,7 @@ export default class Article extends React.Component {
           <td>
             <div>
               <textarea ref="aliases" value={_.join(this.state.aliases, ',')}
-                          onChange={this.handleAlias}></textarea>
+                        onChange={this.handleAlias}></textarea>
             </div>
           </td>
         </tr>

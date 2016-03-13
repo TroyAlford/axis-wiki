@@ -28,7 +28,12 @@ article.get('/:slug', function(request, response) {
   // Now, look for the valid slug.
   var article = load_article(slug);
   if (!article)
-    return response.status(404).send('Article not found');
+    return response.status(404).send({
+      html: (
+        `<h1>${_.startCase(slug)}</h1>\n` +
+        `<p>This article does not exist! Click <strong>edit</strong> to create it!</p>`
+      )
+    });
 
   article.html = this.html(slug, URL.parse(request_url(request)));
 
@@ -37,15 +42,19 @@ article.get('/:slug', function(request, response) {
 article.post('/:slug', function(request, response) {
   var slug = Slug.normalize(request.params.slug),
       path = article_path(slug),
-      wiki_url = URL.parse(request_url(request));
+      wiki_url = URL.parse(request_url(request)),
+      posted = request.body
+  ;
 
   var article = {
-    html: request.body.html,
-    meta: Object.assign({ aliases: [], data: [], tags: [] }, request.body.meta)
+    html: posted.html || '',
+    aliases: posted.aliases || [],
+    data: posted.data || [],
+    tags: posted.tags || []
   };
 
-  if (article.meta.tags.length)
-    article.meta.tags = _.sortBy(_.uniq(article.meta.tags));
+  if (article.tags.length)
+    article.tags = _.sortBy(_.uniq(article.tags));
 
   var $ = cheerio.load(article.html);
   $('script').remove(); // Remove all <script> tags.
@@ -57,19 +66,22 @@ article.post('/:slug', function(request, response) {
   }); // Reduce local links to slug-only.
   article.html = $.html();
 
-  Links.alias(slug, article.meta.aliases);
+  Links.alias(slug, article.aliases);
   Links.set(slug, extract_wiki_links(wiki_url, $));
-  Tags.set(slug, article.meta.tags);
+  Tags.set(slug, article.tags);
 
   try {
-    fs.writeFileSync(path + '.html', article.html);
-    fs.writeFileSync(path + '.json', JSON.stringify(article.meta));
-
-    // Before sending back to the client, update the missing_links
     article.missing_links = Links.missing_for(slug);
     decorate_links($, article.missing_links, wiki_url);
     article.html = beautify($.html(), beauty_options);
-    article.meta.aliases = Links.alias(slug);
+    article.aliases = Links.alias(slug);
+
+    fs.writeFileSync(`${path}.html`, article.html);
+    fs.writeFileSync(`${path}.json`, JSON.stringify({
+      aliases: article.aliases,
+      data: article.data,
+      tags: article.tags
+    }));
 
     return response.status(200).send(article);
   } catch (err) {
@@ -85,9 +97,9 @@ article.html = function(slug, url) {
   if (!article) return null;
 
   var $ = cheerio.load(article.html);
-  decorate_links($, article.missing_links, url)
+  decorate_links($, article.missing_links, url);
   return beautify($.html(), beauty_options);
-}
+};
 
 function article_path(slug) {
   return path.resolve(folders.articles, slug);
@@ -100,15 +112,15 @@ function extract_wiki_links(request_url, $) {
 function load_article(slug) {
   var path = article_path(slug);
   try {
-    var html = fs.readFileSync(path + '.html');
-    var meta = utils.exists(path + '.json') ?
-      utils.readJSONSync(path + '.json') : { data: [], tags: [] };
+    let meta = utils.exists(path + '.json')
+      ? utils.readJSONSync(path + '.json')
+      : { aliases: [], data: [], tags: [] };
 
-    return {
-      html: html,
-      meta: meta,
+    return Object.assign(meta, {
+      html: fs.readFileSync(path + '.html'),
+      children: Tags.articles_tagged(slug),
       missing_links: Links.missing_for(slug)
-    };
+    });
   } catch (err) {
     if (err.code == 'ENOENT') {
       console.log('404: Article "' + slug + '" not found.');

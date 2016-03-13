@@ -32,7 +32,7 @@ export default class TagBrowser extends React.Component {
       columns[i] =
         <div key={`column-${i}`} className={classes}>{
           _.map(list, function(slug) {
-            return <div><Link key={slug} to={`${slug}`}>{_.startCase(el)}</Link></div>;
+            return <div><Link key={slug} to={`${slug}`}>{_.startCase(slug)}</Link></div>;
           })
         }</div>;
     }
