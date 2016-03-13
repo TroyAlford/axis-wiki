@@ -48,8 +48,8 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
-    "serve": "nodemon --exec babel-node server/server.js -c ../config/config.json",
-    "serve-dev": "nodemon --exec babel-node server/server.js",
+    "serve": "nodemon --watch ./server/* --exec babel-node server/server.js -c ../config/config.json",
+    "serve-dev": "nodemon --watch ./server/* --exec babel-node server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Troy Alford",
