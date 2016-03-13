@@ -62,7 +62,7 @@ _this.get('/navigation', function(request, response) {
   return response.status(200).send(
     utils.exists(files.navigation) 
       ? utils.readJSONSync(files.navigation) 
-      : _this.settings.default_links
+      : _this.settings.navigation.default_links
   );
 });
 
