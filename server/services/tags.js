@@ -16,8 +16,8 @@ import fs           from 'fs'
 import path         from 'path'
 import utils        from 'fs-utils'
 
-import Config       from '../modules/config'
-import Slug         from './slug'
+import Config       from './Config'
+import Slug         from './Slug'
 
 export default class Tags {
   constructor() {
@@ -29,7 +29,7 @@ export default class Tags {
     this.reload = this.reload.bind(this);
     this.save = this.save.bind(this);
 
-    this.folders = Config.folders();
+    this.folders = Config.folders;
     this.files = { tags: path.resolve(this.folders.metadata, 'tags.json') };
 
     setTimeout(this.rebuild, 0);

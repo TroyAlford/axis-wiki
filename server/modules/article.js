@@ -8,12 +8,12 @@ import path                 from 'path'
 import URL                  from 'url'
 import utils                from 'fs-utils'
 
-import Config               from './config'
-import Links                from '../services/links'
-import Slug                 from '../services/slug'
-import {Singleton as Tags}  from '../services/tags'
+import Config               from '../services/Config'
+import Links                from '../services/Links'
+import Slug                 from '../services/Slug'
+import {Singleton as Tags}  from '../services/Tags'
 
-var folders = Config.folders();
+var folders = Config.folders;
 
 var article = module.exports = express();
 article.use(bodyParser.json()); // Parses application/json

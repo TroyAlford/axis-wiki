@@ -9,10 +9,10 @@ import fs         from 'fs'
 import path       from 'path'
 import utils      from 'fs-utils'
 
-import Config     from '../modules/config'
-import Slug       from './slug'
+import Config     from './Config'
+import Slug       from './Slug'
 
-var folders = Config.folders();
+var folders = Config.folders;
 var files = {
   links: path.resolve(folders.metadata, 'links.json')
 }

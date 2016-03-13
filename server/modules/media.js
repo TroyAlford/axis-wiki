@@ -7,10 +7,10 @@ import fs              from 'fs'
 import multer          from 'multer'
 import path            from 'path'
 
-import Config          from './config'
-import Slug            from '../services/slug'
+import Config          from '../services/Config'
+import Slug            from '../services/Slug'
 
-var folders = Config.folders();
+var folders = Config.folders;
 
 var media = module.exports = express();
 media.use(bodyParser.json()); // Parses application/json
