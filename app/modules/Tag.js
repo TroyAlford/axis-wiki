@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Link } from 'react-router';
 
 import Icon from './Icon';
 
@@ -43,8 +42,6 @@ export default class Tag extends React.Component {
   handleClick() {
     if (this.props.editable && !this.state.editing)
       this.setState({ editing: true });
-    //else
-    //  navigate();
   }
 
   handleRemove() {
@@ -63,7 +60,7 @@ export default class Tag extends React.Component {
   render() {
     var read = this.props.editable
       ? <span className="name" onClick={this.handleClick}>{this.props.name}</span>
-      : <Link to={`/tagged/${this.props.name}`}>{this.props.name}</Link>
+      : <a href={`/page/${this.props.name}`}>{this.props.name}</a>
     ;
     var edit = <input type="text" className="name" value={this.state.name}
                       ref="editor"

@@ -21,7 +21,6 @@ export default class App extends React.Component {
       container['onclick'] = this.handleLinks;
   }
   handleLinks(event) {
-    console.log(`link clicked... ${event.target.pathname}`);
     if (event.which == 1 && event.target.nodeName == "A"
       && event.target.hostname == window.location.hostname) {
       event.preventDefault();
