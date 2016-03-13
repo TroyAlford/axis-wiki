@@ -16,7 +16,7 @@ var modules = {
 };
 
 var app = express();
-app.use('/api/w', modules.article);
+app.use('/api/page', modules.article);
 app.use('/api/config', modules.config);
 app.use('/media', modules.media);
 

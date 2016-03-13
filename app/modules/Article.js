@@ -56,7 +56,7 @@ export default class Article extends React.Component {
   }
 
   loadArticle(slug) {
-    XHR.get(`/api/w/${slug}`, {
+    XHR.get(`/api/page/${slug}`, {
       success: this.handleLoad,
       failure: this.handleLoad,
       done: function(response) {
@@ -64,7 +64,7 @@ export default class Article extends React.Component {
         let response_slug = regex.exec(response.url)[0],
             current_slug = regex.exec(window.location.pathname)[0];
         if (response_slug != current_slug)
-          browserHistory.replace(`/w/${response_slug}`);
+          browserHistory.replace(`/page/${response_slug}`);
       }
     })
   }
@@ -122,13 +122,13 @@ export default class Article extends React.Component {
     else
       html = this.refs.source.value;
 
-    XHR.post('/api/w/' + this.props.params.slug, {
+    XHR.post('/api/page/' + this.props.params.slug, {
       data: {
         aliases: this.state.aliases || [],
         children: this.state.children || [],
         data: this.state.data || [],
-        tags: this.state.tags || [],
-        html: html
+        html: html,
+        tags: this.state.tags || []
       },
       success: this.handleLoad,
       failure: function(res) {
