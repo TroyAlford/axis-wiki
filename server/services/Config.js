@@ -5,9 +5,11 @@ import utils        from 'fs-utils'
 class Config {
   constructor() {
     Object.keys(this.folders).forEach(folder => {
-      console.log(`Ensuring folder: ${this.folders[folder]}`);
-      mkdirp(this.folders[folder]);
-    })
+      if (!utils.isDir(this.folders[folder])) {
+        console.log(`Creating missing folder: ${this.folders[folder]}`);
+        mkdirp(this.folders[folder]);
+      }
+    });
   }
 
   get settings() {
@@ -21,7 +23,7 @@ class Config {
     ;
 
     if (cfg_exists)
-      console.log(`Loading configuration from ${adj_path}`);
+      console.log(`Loaded Configuration: ${adj_path}`);
 
     return Object.assign({}, defaults, config);
   }
