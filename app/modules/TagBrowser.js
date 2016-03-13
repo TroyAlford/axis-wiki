@@ -38,9 +38,9 @@ export default class TagBrowser extends React.Component {
     }
 
     return (
-      <div className={`cp-tagbrowser ${this.props.articles.length ? '' : 'is-hidden'}`}>
-        <h1><Icon name="tag" /> Child Articles:</h1>
-        <div className="columns">{columns}</div>
+      <div className={`cp-tagbrowser message is-info ${this.props.articles.length ? '' : 'is-hidden'}`}>
+        <div className="message-header"><Icon name="tag" /> Child Articles:</div>
+        <div className="columns message-body">{columns}</div>
       </div>
     );
   }
