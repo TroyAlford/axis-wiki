@@ -29,10 +29,8 @@ article.get('/:slug', function(request, response) {
   var article = load_article(slug);
   if (!article)
     return response.status(404).send({
-      html: (
-        `<h1>${_.startCase(slug)}</h1>\n` +
-        `<p>This article does not exist! Click <strong>edit</strong> to create it!</p>`
-      )
+      html: `<h1>${_.startCase(slug)}</h1>`,
+      children: Tags.articles_tagged(slug)
     });
 
   article.html = this.html(slug, URL.parse(request_url(request)));
