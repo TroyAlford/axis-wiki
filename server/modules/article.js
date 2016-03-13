@@ -11,7 +11,7 @@ import utils                from 'fs-utils'
 import Config               from './config'
 import Links                from './links'
 import Slug                 from './slug'
-import Tags                 from './tags'
+import {Singleton as Tags}  from './tags'
 
 var folders = Config.folders();
 
@@ -30,7 +30,7 @@ article.get('/:slug', function(request, response) {
   if (!article)
     return response.status(404).send({
       html: `<h1>${_.startCase(slug)}</h1>`,
-      children: Tags.articles_tagged(slug)
+      children: Tags.for(slug)
     });
 
   article.html = this.html(slug, URL.parse(request_url(request)));
@@ -116,12 +116,11 @@ function load_article(slug) {
 
     return Object.assign(meta, {
       html: fs.readFileSync(path + '.html'),
-      children: Tags.articles_tagged(slug),
+      children: Tags.for(slug),
       missing_links: Links.missing_for(slug)
     });
   } catch (err) {
     if (err.code == 'ENOENT') {
-      console.log('404: Article "' + slug + '" not found.');
       return null;
     } else {
       console.log(err);
