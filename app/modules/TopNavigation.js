@@ -1,6 +1,5 @@
 // modules/TopNavigation.js
 import React from 'react';
-import { Link } from 'react-router';
 
 export default class TopNavigation extends React.Component {
   render() {
@@ -12,7 +11,7 @@ export default class TopNavigation extends React.Component {
               <strong>Axis</strong> Wiki
             </div>
             <div className="header-menu">
-              {/*<span className="header-item"><Link to="/w/home">Home</Link></span>*/}
+              {/*<span className="header-item"><a href="/w/home">Home</a></span>*/}
             </div>
           </header>
         </div>

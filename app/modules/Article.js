@@ -27,21 +27,11 @@ export default class Article extends React.Component {
     this.handleRemoveTag = this.handleRemoveTag.bind(this);
     this.handleSourceChange = this.handleSourceChange.bind(this);
 
-    this.handleLinks = this.handleLinks.bind(this);
     this.handleLoad = this.handleLoad.bind(this);
     this.handleMode = this.handleMode.bind(this);
     this.handleSave = this.handleSave.bind(this);
 
     this.loadArticle(this.props.params.slug);
-  }
-  componentDidMount() {
-    var viewer = ReactDOM.findDOMNode(this.refs.viewer);
-    if (viewer.addEventListener)
-      viewer.addEventListener('click', this.handleLinks, false);
-    else if (el.attachEvent)
-      viewer.attachEvent('onclick', this.handleLinks);
-    else
-      viewer['onclick'] = this.handleLinks;
   }
   componentDidUpdate() {
     if (this.state.mode == 'edit')
@@ -117,17 +107,9 @@ export default class Article extends React.Component {
     this.setState({ html: event.target.value })
   }
 
-  handleLinks(event) {
-    if (event.which == 1 && event.target.nodeName == "A" && event.target.hostname == window.location.hostname) {
-      event.preventDefault();
-      browserHistory.push(event.target.pathname);
-    }
-  }
   handleLoad(response, b, c, d) {
     let state = Object.assign(this.default_state(), JSON.parse(response.message));
-
     state.tags = _.map(state.tags, this.tagify);
-
     this.setState(state);
   }
   handleMode(mode) {

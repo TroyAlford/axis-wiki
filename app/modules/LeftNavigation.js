@@ -1,6 +1,5 @@
 // modules/TopNavigation.js
 import React from 'react';
-import { Link } from 'react-router';
 
 let render_key = 0;
 
@@ -45,7 +44,7 @@ export default class LeftNavigation extends React.Component {
 
   renderLink(link) {
     return <li key={render_key++}>
-      {link.url ? <Link to={link.url}>{link.text}</Link> : link.text}
+      {link.url ? <a href={link.url}>{link.text}</a> : link.text}
       {this.renderLinks(link.children)}
     </li>;
   }
