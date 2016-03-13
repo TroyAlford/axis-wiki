@@ -46,5 +46,4 @@ class Config {
   }
 }
 
-let Singleton = new Config();
-export default Singleton;
+export default new Config();
