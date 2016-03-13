@@ -8,15 +8,15 @@ import mkdirp       from 'mkdirp'
 import path         from 'path'
 import utils        from 'fs-utils'
 
-var _this = module.exports = express();
+let _this = module.exports = express();
 
 _this.settings = function() {
-  var 
+  let
     argv       = require('minimist')(process.argv.slice(2)),
     defaults   = require('../defaults.json'),
-    arg_path   = argv.c || argv.config,
+    arg_path   = argv.c || argv.config || 'defaults.json',
     adj_path   = path.isAbsolute(arg_path) ? arg_path : path.join(__dirname, '../', arg_path),
-    cfg_exists = utils.exists(adj_path),     
+    cfg_exists = utils.exists(adj_path),
     config     = cfg_exists ? require(adj_path) : {}
   ;
 
