@@ -24,13 +24,14 @@ export default class Tags {
     this.set = this.set.bind(this);
 
     this.cleanse = this.cleanse.bind(this);
+    this.rebuild = this.rebuild.bind(this);
     this.reload = this.reload.bind(this);
     this.save = this.save.bind(this);
 
     this.folders = Config.folders();
     this.files = { tags: path.resolve(this.folders.metadata, 'tags.json') }
 
-    this.reload();
+    setTimeout(this.rebuild, 0);
   }
 
   for(tag) { return this.tags[tag]; }
@@ -70,6 +71,25 @@ export default class Tags {
       if (!this.tags[tag].length) delete this.tags[tag];
     }
     return this.save();
+  }
+  rebuild() {
+    let rebuilt = { articles: {}, tags: {} };
+    fs.readdirSync(this.folders.articles)
+      .filter(name => { return name.endsWith('.json') })
+      .forEach(file => {
+        let slug = file.replace(/.json/, ''),
+            json = utils.readJSONSync(path.join(this.folders.articles, file));
+
+        rebuilt.articles[slug] = _.union(rebuilt.articles[slug], json.tags);
+        (json.tags || []).forEach(tag => {
+          rebuilt.tags[tag] = _.union(rebuilt.tags[tag], [slug]);
+        });
+      });
+
+    this.articles = rebuilt.articles;
+    this.tags = rebuilt.tags;
+
+    this.save();
   }
   reload() {
     let json = utils.exists(this.files.tags) ? utils.readJSONSync(this.files.tags) : {articles:{},tags:{}};
