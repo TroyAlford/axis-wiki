@@ -2,6 +2,8 @@ import mkdirp       from 'mkdirp'
 import path         from 'path'
 import utils        from 'fs-utils'
 
+let SETTINGS = null;
+
 class Config {
   constructor() {
     Object.keys(this.folders).forEach(folder => {
@@ -13,6 +15,9 @@ class Config {
   }
 
   get settings() {
+    if (SETTINGS)
+      return SETTINGS;
+
     let
       argv       = require('minimist')(process.argv.slice(2)),
       defaults   = require('../defaults.json'),
@@ -22,10 +27,10 @@ class Config {
       config     = cfg_exists ? require(adj_path) : {}
     ;
 
-    if (cfg_exists)
-      console.log(`Loaded Configuration: ${adj_path}`);
+    SETTINGS = Object.assign({}, defaults, config);
+    console.log(`Loaded Configuration: ${adj_path}`);
 
-    return Object.assign({}, defaults, config);
+    return SETTINGS;
   }
 
   get folders() {
