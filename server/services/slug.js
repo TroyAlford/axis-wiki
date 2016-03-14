@@ -18,6 +18,6 @@ export default class Slug {
     return retain_path ? path + slug : slug;
   }
   static normalize_array(values, retain_path) {
-    return _.difference(_.sortBy(_.uniq(values.map(value => Slug.normalize(value, retain_path)))));
+    return _.difference(_.sortBy(_.uniq(values.map(value => Slug.normalize(value, retain_path)))), ['']);
   }
 }
