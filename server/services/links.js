@@ -15,7 +15,7 @@ import Slug       from './Slug'
 var folders = Config.folders;
 var files = {
   links: path.resolve(folders.metadata, 'links.json')
-}
+};
 
 var Links = {
   add_from: function(to, from) {

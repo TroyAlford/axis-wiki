@@ -19,7 +19,7 @@ import utils        from 'fs-utils'
 import Config       from './Config'
 import Slug         from './Slug'
 
-export default class Tags {
+export class Tags {
   constructor() {
     this.for = this.for.bind(this);
 
@@ -91,7 +91,8 @@ export default class Tags {
   }
 };
 
-export let Singleton = new Tags();
+let Singleton = new Tags();
+export default Singleton;
 
 // File Watcher, to re-index on any .json file change in the Articles directory.
 let reindexer = file => Singleton.reindex(path.basename(file, '.json'))

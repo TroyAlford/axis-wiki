@@ -7,5 +7,16 @@
       { "text": "Home", "url": "/page/home" },
       { "text": "Upload", "url": "/upload" }
     ]
+  },
+  "html": {
+    "beautifier": {
+      "end_with_newline": true,
+      "eol": "\n",
+      "indent_char": " ",
+      "indent_size": 2,
+      "indent_with_tabs": false,
+      "max_preserve_newlines": 0,
+      "wrap_line_length": 0
+    }
   }
 }
