@@ -59,6 +59,8 @@ class Links {
   resolve(slug) {
     let norm = Slug.normalize(slug),
         link = this.links[norm];
+
+    if (link && link.alias_for && link.alias_for == norm) delete link.alias_for;
     return (link && link.alias_for) ? this.resolve(link.alias_for) : norm;
   }
 
@@ -74,6 +76,7 @@ class Links {
 
     for (let slug in this.links) {
       let link = Object.assign(Links.default_node, this.links[slug]);
+      if (link && link.alias_for == slug) delete link.alias_for;
       if (!link.exists && !link.to.length && !link.from.length && !link.aliases.length && !link.alias_for)
         delete this.links[slug];
     }
@@ -110,7 +113,13 @@ class Links {
         to_add   = _.difference(updated, in_both);
 
     to_drop.forEach(drop => { delete this.links[drop].alias_for; });
-    to_add.forEach(add => { this.links[add] = Object.assign(Links.default_node, this.links[add], { alias_for: slug }) });
+    to_add.forEach(add => {
+      this.links[add] = Object.assign(
+        Links.default_node,
+        this.links[add]
+      );
+      if (add != slug) this.links[add].alias_for = slug;
+    });
 
     this.links[slug].aliases = updated;
 
@@ -170,9 +179,10 @@ class Links {
         meta.aliases.forEach(alias => {
           rebuilt[alias] = Object.assign(
             Links.default_node,
-            rebuilt[alias] || {},
-            { alias_for: slug }
+            rebuilt[alias] || {}
           );
+          if (alias != slug)
+            rebuilt[alias].alias_for = slug;
         });
       });
 

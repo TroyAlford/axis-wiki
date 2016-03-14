@@ -141,6 +141,9 @@ class Article {
     let base = path.resolve(this.folders.articles, slug),
         html = this.clean_html(article.html),
         meta = this.clean_meta(article);
+
+    meta.aliases = _.difference(meta.aliases, [slug]); // No self-referential aliases.
+
     try {
       fs.writeFileSync(`${base}.html`, html);
       fs.writeFileSync(`${base}.json`, JSON.stringify(meta));
