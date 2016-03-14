@@ -85,7 +85,12 @@ export default class Article extends React.Component {
     this.setState({ aliases: slugs });
   }
   handleDelete() {
-    console.log('deleting...');
+    let slug = this.props.params.slug;
+    XHR.delete(`/api/page/${slug}`, {
+      done: (res) => {
+        this.loadArticle(slug);
+      }
+    })
   }
   handleEditTag(old_tag, new_tag) {
     old_tag = this.tagify(old_tag);

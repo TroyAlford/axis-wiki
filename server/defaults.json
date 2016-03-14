@@ -8,6 +8,9 @@
       { "text": "Upload", "url": "/upload" }
     ]
   },
+  "saving": {
+    "throttle": 5000
+  },
   "html": {
     "beautifier": {
       "end_with_newline": true,

@@ -27,7 +27,7 @@ class Config {
       config     = cfg_exists ? require(adj_path) : {}
     ;
 
-    SETTINGS = Object.assign({}, defaults, config);
+    SETTINGS = Object.assign({ debugging: argv.debugging || false }, defaults, config);
     console.log(`Loaded Configuration: ${adj_path}`);
 
     return SETTINGS;

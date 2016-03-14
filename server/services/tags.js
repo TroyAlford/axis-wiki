@@ -19,6 +19,8 @@ import utils        from 'fs-utils'
 import Config       from './Config'
 import Slug         from './Slug'
 
+const THROTTLE = Config.settings.saving.throttle;
+
 class Tags {
   constructor() {
     this.tags = {};
@@ -40,26 +42,39 @@ class Tags {
   for(tag) { return this.tags[tag]; }
 
   cleanse() {
+    if (this.last_cleanse && (Date.now() - this.last_cleanse < THROTTLE)) {
+      clearTimeout(this.cleanse_queued); // Clear any already queued cleansing, ...
+      this.cleanse_queued = setTimeout(this.cleanse, THROTTLE); // ... and enqueue again ...
+      return; // ... then stop processing.
+    }
+
+    this.last_cleanse = Date.now(); // Update the last cleansed time.
+    this.cleanse_queued = null;     // This should be the queued cleanse, so clear the timer.
+
     for (var article in this.articles) {
       if (!this.articles[article].length) delete this.articles[article];
     }
     for (var tag in this.tags) {
       if (!this.tags[tag].length) delete this.tags[tag];
     }
+
     return this.save();
   }
   reindex(slug) {
     console.log(`${slug} changed: reindexing tags.`);
-    let existing = this.tags[slug],
-        updated  = utils.readJSONSync(path.join(this.folders.articles, `${slug}.json`)),
+    let existing = this.articles[slug],
+        json     = utils.readJSONSync(path.join(this.folders.articles, `${slug}.json`)),
+        updated  = json.tags,
         in_both  = _.intersection(existing, updated),
         to_drop  = _.difference(existing, in_both),
         to_add   = _.difference(updated, in_both);
 
-    to_drop.forEach(drop => { this.tags[drop] = _.difference(this.tags[drop], [slug]); });
-    to_add.forEach(add => { this.tags[add] = _.union(this.tags[add], [slug]); });
+    to_drop.forEach(drop => { this.tags[drop] = _.difference(this.tags[drop], [slug]) });
+    to_add.forEach(add => { this.tags[add] = _.union(this.tags[add], [slug]) });
 
     this.articles[slug] = updated;
+
+    setTimeout(this.cleanse, THROTTLE);
   }
   rebuild() {
     let rebuilt = { articles: {}, tags: {} };
@@ -85,11 +100,26 @@ class Tags {
     this.articles = json.articles;
     this.tags = json.tags;
   }
+
+  unindex(slug) {
+    console.log(`${slug} removed: unindexing tags.`);
+    let existing = this.articles[slug] || [];
+
+    delete this.articles[slug];
+    existing.forEach((tag) => {
+      this.tags[tag] = _.difference(this.tags[tag], [slug]);
+    });
+
+    setTimeout(this.cleanse, THROTTLE);
+  }
   save() {
-    fs.writeFile(this.files.tags, JSON.stringify({
-      articles: this.articles,
-      tags: this.tags
-    }));
+    let obj = { articles: this.articles, tags: this.tags },
+        json = !Config.settings.debugging
+                 ? JSON.stringify(obj)
+                 : JSON.stringify(obj, null, 2);
+
+    console.log(`Saving ${this.files.tags}`);
+    fs.writeFile(this.files.tags, json);
   }
 }
 
@@ -97,8 +127,10 @@ let Singleton = new Tags();
 export default Singleton;
 
 // File Watcher, to re-index on any .json file change in the Articles directory.
-let reindexer = file => Singleton.reindex(path.basename(file, '.json'));
+let reindexer = file => Singleton.reindex(path.basename(file, '.json')),
+    unlinker  = file => Singleton.unindex(path.basename(file, '.json'));
 chokidar.watch(`${Singleton.folders.articles}/*.json`, { ignoreInitial: true })
   .on('add', reindexer)
   .on('change', reindexer)
+  .on('unlink', unlinker)
 ;

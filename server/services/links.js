@@ -18,6 +18,8 @@ import Article    from './Article'
 import Config     from './Config'
 import Slug       from './Slug'
 
+const THROTTLE = Config.settings.saving.throttle;
+
 class Links {
   constructor() {
     this.links = {};
@@ -28,8 +30,12 @@ class Links {
     this.cleanse = this.cleanse.bind(this);
     this.rebuild = this.rebuild.bind(this);
     this.reload = this.reload.bind(this);
+
     this.reindex_html = this.reindex_html.bind(this);
     this.reindex_meta = this.reindex_meta.bind(this);
+    this.unindex_html = this.unindex_html.bind(this);
+    this.unindex_meta = this.unindex_meta.bind(this);
+
     this.save = this.save.bind(this);
 
     this.folders = Config.folders;
@@ -57,9 +63,9 @@ class Links {
   }
 
   cleanse() {
-    if (this.last_cleanse && (Date.now() - this.last_cleanse < 5000)) {
+    if (this.last_cleanse && (Date.now() - this.last_cleanse < THROTTLE)) {
       clearTimeout(this.cleanse_queued); // Clear any already queued cleansing, ...
-      this.cleanse_queued = setTimeout(this.cleanse, 5000); // ... and enqueue in 5 seconds ...
+      this.cleanse_queued = setTimeout(this.cleanse, THROTTLE); // ... and enqueue again ...
       return; // ... then stop processing.
     }
 
@@ -84,13 +90,17 @@ class Links {
         to_add   = _.difference(updated, in_both);
 
     to_drop.forEach(drop => { this.links[drop].from = _.difference(this.links[drop].from, [slug]) });
-    to_add.forEach(add => { this.links[add].from = _.union(this.links[add].from, [slug]) });
+    to_add.forEach(add => {
+      if (!this.links[add]) this.links[add] = Links.default_node;
+      this.links[add].from = _.union(this.links[add].from, [slug])
+    });
 
+    this.links[slug].exists = true;
     this.links[slug].to = updated;
 
-    this.cleanse(); // Also saves.
+    setTimeout(this.cleanse, THROTTLE); // Also saves.
   }
-  reindex_meta(slug, into) {
+  reindex_meta(slug) {
     console.log(`${slug} changed: reindexing aliases.`);
     this.links[slug] = this.links[slug] || Links.default_node;
     let existing = this.links[slug].aliases,
@@ -99,15 +109,39 @@ class Links {
         to_drop  = _.difference(existing, in_both),
         to_add   = _.difference(updated, in_both);
 
-    console.log(`existing: ${existing}, adding: ${to_add}, removing: ${to_drop}`);
-
     to_drop.forEach(drop => { delete this.links[drop].alias_for; });
     to_add.forEach(add => { this.links[add] = Object.assign(Links.default_node, this.links[add], { alias_for: slug }) });
 
     this.links[slug].aliases = updated;
 
-    this.cleanse(); // Also saves.
+    setTimeout(this.cleanse, THROTTLE); // Also saves.
   }
+  unindex_html(slug) {
+    console.log(`${slug} removed: unindexing links.`);
+    this.links[slug] = this.links[slug] || Links.default_node;
+    let existing = this.links[slug].to;
+
+    this.links[slug].exists = false;
+    this.links[slug].to = [];
+    existing.forEach((link) => {
+      this.links[link].from = _.difference(this.links[link].from, [slug]);
+    });
+
+    setTimeout(this.cleanse, THROTTLE); // Also saves.
+  }
+  unindex_meta(slug) {
+    console.log(`${slug} removed: unindexing aliases.`);
+    let existing = this.links[slug].aliases;
+
+    this.links[slug].aliases = [];
+    existing.forEach((link) => {
+      if (this.links[link].alias_for == slug)
+        delete this.links[link].alias_for;
+    });
+
+    setTimeout(this.cleanse, THROTTLE); // Also saves.
+  }
+
   rebuild() {
     let rebuilt = {};
     fs.readdirSync(this.folders.articles)
@@ -144,27 +178,34 @@ class Links {
 
     this.links = rebuilt;
 
-    this.cleanse(); // Also saves.
+    setTimeout(this.cleanse, THROTTLE); // Also saves.
   }
   reload() {
     this.links = utils.exists(this.files.links) ? utils.readJSONSync(this.files.links) : {};
   }
   save() {
-    fs.writeFile(this.files.links, JSON.stringify(this.links, null, 2));
+    var json = !Config.settings.debugging
+      ? JSON.stringify(this.links)
+      : JSON.stringify(this.links, null, 2);
+    fs.writeFile(this.files.links, json);
   }
 }
 
 let Singleton = new Links();
 export default Singleton;
 
-let html_reindexer = file => Singleton.reindex_html(path.basename(file, '.html'));
+let html_reindexer = file => Singleton.reindex_html(path.basename(file, '.html')),
+    html_unindexer = file => Singleton.unindex_html(path.basename(file, '.html'));
 chokidar.watch(`${Singleton.folders.articles}/*.html`, { ignoreInitial: true })
   .on('add', html_reindexer)
   .on('change', html_reindexer)
+  .on('unlink', html_unindexer)
 ;
 
-let meta_reindexer = file => Singleton.reindex_meta(path.basename(file, '.json'));
+let meta_reindexer = file => Singleton.reindex_meta(path.basename(file, '.json')),
+    meta_unindexer = file => Singleton.unindex_meta(path.basename(file, '.json'));
 chokidar.watch(`${Singleton.folders.articles}/*.json`, { ignoreInitial: true })
   .on('add', meta_reindexer)
   .on('change', meta_reindexer)
+  .on('unlink', meta_unindexer)
 ;

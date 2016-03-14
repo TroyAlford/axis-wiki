@@ -24,6 +24,7 @@ class Article {
     this.load_meta = this.load_meta.bind(this);
 
     this.clean = this.clean.bind(this);
+    this.delete = this.delete.bind(this);
     this.build_html = this.build_html.bind(this);
 
     this.save = this.save.bind(this);
@@ -98,6 +99,13 @@ class Article {
       tags:     Slug.normalize(meta.tags    || []),
       data:     meta.data || []
     };
+  }
+
+  delete(slug) {
+    // Removes files only. Reference updates are performed in response to file watchers.
+    let base = path.resolve(this.folders.articles, slug);
+    utils.del(`${base}.{html,json}`);
+    return true;
   }
 
   build_html(html) {
