@@ -1,107 +1,170 @@
 // Links File Example:
-//'home': {
+//'elf': {
 //  exists: true,
-//  to:   ['article_1', 'article_47'], // articles which this article has a link to
-//  from: ['article_25']               // articles which link to this article
+//  to:   ['human', 'orc', 'dwarf'],      // articles which this article has a link to
+//  from: ['many', 'other', 'articles'],  // articles which link to this article
+//  alias_for: 'elf-race',                // this form is for entries which are redirects
+//  aliases: ['elven', 'elves', 'elvish'] // this form is for articles which have other names
 //}
+// Note: If both alias_for and aliases is included, the redirect chain will work - but the other fields are irrelevant.
+
 import _          from 'lodash'
+import chokidar   from 'chokidar'
 import fs         from 'fs'
 import path       from 'path'
 import utils      from 'fs-utils'
 
+import Article    from './Article'
 import Config     from './Config'
 import Slug       from './Slug'
 
-var folders = Config.folders;
-var files = {
-  links: path.resolve(folders.metadata, 'links.json')
-};
+class Links {
+  constructor() {
+    this.links = {};
 
-var Links = {
-  add_from: function(to, from) {
-    to = Slug.normalize(to);
-    from = Slug.normalize(from);
+    this.get = this.get.bind(this);
+    this.resolve = this.resolve.bind(this);
 
-    var entry = Links.ensure(to);
-    entry.from = _.union(entry.from, [from]);
-  },
-  alias: function(slug, aliases) {
-    if (aliases === undefined)
-      return this.ensure(slug).aliases;
+    this.cleanse = this.cleanse.bind(this);
+    this.rebuild = this.rebuild.bind(this);
+    this.reload = this.reload.bind(this);
+    this.reindex_html = this.reindex_html.bind(this);
+    this.reindex_meta = this.reindex_meta.bind(this);
+    this.save = this.save.bind(this);
 
-    slug = Slug.normalize(slug);
-    aliases = _.sortBy(_.difference(_.uniq(_.map(aliases, Slug.normalize)),['',slug]));
+    this.folders = Config.folders;
+    this.files = { links: path.resolve(this.folders.metadata, 'links.json') };
 
-    var entry = this.ensure(slug);
-    if (entry.aliases && entry.aliases.length) {
-      _.forEach(_.difference(entry.aliases, aliases), function(alias_to_remove) {
-        var entry = links[alias_to_remove];
-        if (entry && entry.alias_for == slug)
-          delete entry.alias_for;
-      });
-    }
-    entry.aliases = aliases;
-
-    _.forEach(aliases, function(alias) {
-      var entry = this.ensure(alias);
-      entry.alias_for = slug;
-    }.bind(this));
-
-    save_to_disk();
-  },
-  ensure: function(slug) {
-    slug = Slug.normalize(slug);
-    if (typeof slug != 'string' || !slug.length) return false;
-
-    if (!links[slug])
-      links[slug] = {
-        exists: utils.exists(path.resolve(folders.articles, slug + '.html'))
-      };
-
-    return links[slug];
-  },
-  get: function(slug) {
-    return links[Links.resolve(slug)];
-  },
-  missing_for: function(slug) {
-    return _.difference(_.map(Links.ensure(slug).to, function(link) {
-      var entry = links[link];
-      return !entry || (!entry.exists && !entry.alias_for) ? link : '';
-    }), ['']);
-  },
-  resolve: function(slug) {
-    slug = Slug.normalize(slug);
-    var entry = Links.ensure(slug);
-
-    return (entry && entry.alias_for) ? Links.resolve(entry.alias_for) : slug;
-  },
-  set: function(slug, links_to) {
-    slug = Slug.normalize(slug);
-    if (!slug || !Array.isArray(links_to)) return false;
-
-    var entry = Links.ensure(slug);
-    if (!entry) return false;
-
-    entry.exists = utils.exists(path.resolve(folders.articles, slug + '.html'));
-    entry.to = _.difference(_.uniq(_.map(links_to, function(link) {
-      var link_slug = Slug.normalize(link);
-      return (link_slug && link_slug.length) ? link_slug : '';
-    })), ['']); // << Eliminate blank slugs (incl. those we just blanked for invalidity)
-
-    _.forEach(entry.to, function (link) {
-      Links.add_from(link, slug)
-    });
-    save_to_disk();
+    setTimeout(this.rebuild, 0);
   }
-};
 
-var links = {};
-function load_from_disk() {
-  links = utils.exists(files.links) ? utils.readJSONSync(files.links) : {};
-}
-function save_to_disk() {
-  fs.writeFile(files.links, JSON.stringify(links));
-}
-load_from_disk(); // Load the links initially.
+  static get default_node() {
+    return {
+      exists: false,
+      to: [],
+      from: [],
+      aliases: []
+    };
+  }
 
-module.exports = Links;
+  get(slug) {
+    return this.links[this.resolve(slug)];
+  }
+  resolve(slug) {
+    let norm = Slug.normalize(slug),
+        link = this.links[norm];
+    return (link && link.alias_for) ? Links.resolve(link.alias_for) : norm;
+  }
+
+  cleanse() {
+    if (this.last_cleanse && (Date.now() - this.last_cleanse < 5000)) {
+      clearTimeout(this.cleanse_queued); // Clear any already queued cleansing, ...
+      this.cleanse_queued = setTimeout(this.cleanse, 5000); // ... and enqueue in 5 seconds ...
+      return; // ... then stop processing.
+    }
+
+    this.last_cleanse = Date.now(); // Update the last cleansed time.
+    this.cleanse_queued = null;     // This should be the queued cleanse, so clear the timer.
+
+    for (let slug in this.links) {
+      let link = Object.assign(Links.default_node, this.links[slug]);
+      if (!link.exists && !link.to.length && !link.from.length && !link.aliases.length && !link.alias_for)
+        delete this.links[slug];
+    }
+
+    this.save();
+  }
+  reindex_html(slug) {
+    console.log(`${slug} changed: reindexing links.`);
+    this.links[slug] = this.links[slug] || Links.default_node;
+    let existing = this.links[slug].to,
+        updated  = Article.build_html(Article.load_html(slug)).links_to,
+        in_both  = _.intersection(existing, updated),
+        to_drop  = _.difference(existing, in_both),
+        to_add   = _.difference(updated, in_both);
+
+    to_drop.forEach(drop => { this.links[drop].from = _.difference(this.links[drop].from, [slug]) });
+    to_add.forEach(add => { this.links[add].from = _.union(this.links[add].from, [slug]) });
+
+    this.links[slug].to = updated;
+
+    this.cleanse(); // Also saves.
+  }
+  reindex_meta(slug, into) {
+    console.log(`${slug} changed: reindexing aliases.`);
+    this.links[slug] = this.links[slug] || Links.default_node;
+    let existing = this.links[slug].aliases,
+        updated  = Article.load_meta(slug).aliases,
+        in_both  = _.intersection(existing, updated),
+        to_drop  = _.difference(existing, in_both),
+        to_add   = _.difference(updated, in_both);
+
+    console.log(`existing: ${existing}, adding: ${to_add}, removing: ${to_drop}`);
+
+    to_drop.forEach(drop => { delete this.links[drop].alias_for; });
+    to_add.forEach(add => { this.links[add] = Object.assign(Links.default_node, this.links[add], { alias_for: slug }) });
+
+    this.links[slug].aliases = updated;
+
+    this.cleanse(); // Also saves.
+  }
+  rebuild() {
+    let rebuilt = {};
+    fs.readdirSync(this.folders.articles)
+      .filter(name => { return name.endsWith('.html') })
+      .forEach(file => {
+        let slug = file.replace(/.html/, ''),
+            html = Article.build_html(Article.load_html(slug)),
+            meta = Article.clean_meta(Article.load_meta(slug));
+
+        // This article exists, because it was listed above. Create it.
+        rebuilt[slug] = Object.assign(
+          Links.default_node,
+          rebuilt[slug] || {},
+          { exists: true, to: html.links_to, aliases: meta.aliases }
+        );
+
+        // Now parse all `links_to` and add this slug to each entry.
+        html.links_to.forEach(link => {
+          rebuilt[link] = Object.assign(
+            Links.default_node,
+            rebuilt[link] || {}
+          );
+          rebuilt[link].from = _.union(rebuilt[link].from, [slug]);
+        });
+
+        meta.aliases.forEach(alias => {
+          rebuilt[alias] = Object.assign(
+            Links.default_node,
+            rebuilt[alias] || {},
+            { alias_for: slug }
+          );
+        });
+      });
+
+    this.links = rebuilt;
+
+    this.cleanse(); // Also saves.
+  }
+  reload() {
+    this.links = utils.exists(this.files.links) ? utils.readJSONSync(this.files.links) : {};
+  }
+  save() {
+    fs.writeFile(this.files.links, JSON.stringify(this.links, null, 2));
+  }
+}
+
+let Singleton = new Links();
+export default Singleton;
+
+let html_reindexer = file => Singleton.reindex_html(path.basename(file, '.html'));
+chokidar.watch(`${Singleton.folders.articles}/*.html`, { ignoreInitial: true })
+  .on('add', html_reindexer)
+  .on('change', html_reindexer)
+;
+
+let meta_reindexer = file => Singleton.reindex_meta(path.basename(file, '.json'));
+chokidar.watch(`${Singleton.folders.articles}/*.json`, { ignoreInitial: true })
+  .on('add', meta_reindexer)
+  .on('change', meta_reindexer)
+;

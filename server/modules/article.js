@@ -9,12 +9,8 @@ import URL                  from 'url'
 import utils                from 'fs-utils'
 
 import Article              from '../services/Article'
-import Config               from '../services/Config'
 import Links                from '../services/Links'
 import Slug                 from '../services/Slug'
-import Tags                 from '../services/Tags'
-
-var folders = Config.folders;
 
 var article = module.exports = express()
   .use(bodyParser.json())                         // Parses application/json
@@ -34,9 +30,6 @@ var article = module.exports = express()
 
     if (!saved)
       return response.status(500).send('Unable to save article.');
-
-    Links.alias(slug, Slug.normalize(posted.aliases));
-    //Links.set(slug, extract_wiki_links(wiki_url, $));
 
     response.status(200).send(Article.get_final(slug));
   })

@@ -19,8 +19,10 @@ import utils        from 'fs-utils'
 import Config       from './Config'
 import Slug         from './Slug'
 
-export class Tags {
+class Tags {
   constructor() {
+    this.tags = {};
+
     this.for = this.for.bind(this);
 
     this.cleanse = this.cleanse.bind(this);
@@ -47,7 +49,7 @@ export class Tags {
     return this.save();
   }
   reindex(slug) {
-    console.log(`${slug} changed: reindexing now.`);
+    console.log(`${slug} changed: reindexing tags.`);
     let existing = this.tags[slug],
         updated  = utils.readJSONSync(path.join(this.folders.articles, `${slug}.json`)),
         in_both  = _.intersection(existing, updated),
@@ -89,13 +91,13 @@ export class Tags {
       tags: this.tags
     }));
   }
-};
+}
 
 let Singleton = new Tags();
 export default Singleton;
 
 // File Watcher, to re-index on any .json file change in the Articles directory.
-let reindexer = file => Singleton.reindex(path.basename(file, '.json'))
+let reindexer = file => Singleton.reindex(path.basename(file, '.json'));
 chokidar.watch(`${Singleton.folders.articles}/*.json`, { ignoreInitial: true })
   .on('add', reindexer)
   .on('change', reindexer)
