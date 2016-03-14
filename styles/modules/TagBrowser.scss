@@ -1,5 +1,15 @@
+@import '../Variables';
+
 .cp-tagbrowser {
   margin-top: 10px;
+
+  &.message {
+    background: transparent;
+    overflow-x: hidden;
+
+    .message-header { display: block; }
+    &.is-info .message-body { background-color: $color-info; }
+  }
 
   .message-header > .icon {
     font-size: 14px;
