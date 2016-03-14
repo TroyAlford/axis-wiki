@@ -53,7 +53,7 @@ class Links {
   resolve(slug) {
     let norm = Slug.normalize(slug),
         link = this.links[norm];
-    return (link && link.alias_for) ? Links.resolve(link.alias_for) : norm;
+    return (link && link.alias_for) ? this.resolve(link.alias_for) : norm;
   }
 
   cleanse() {
