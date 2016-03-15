@@ -4,8 +4,6 @@ import TinyMCE            from 'react-tinymce'
 import { browserHistory } from 'react-router'
 
 import Icon               from './Icon'
-import MenuButton         from './MenuButton'
-import MenuItem           from './MenuItem'
 import Tag                from './Tag'
 import TagBrowser         from './TagBrowser'
 
@@ -15,8 +13,7 @@ export default class Article extends React.Component {
   constructor(props) {
     super(props);
 
-    this.default_state = this.default_state.bind(this);
-    this.state = this.default_state();
+    this.state = this.default_state;
 
     this.loadArticle = this.loadArticle.bind(this);
 
@@ -42,7 +39,7 @@ export default class Article extends React.Component {
       this.loadArticle(newProps.params.slug);
   }
 
-  default_state() {
+  get default_state() {
     return {
       aliases: [],
       children: [],
@@ -112,8 +109,8 @@ export default class Article extends React.Component {
     this.setState({ html: event.target.value })
   }
 
-  handleLoad(response, b, c, d) {
-    let state = Object.assign(this.default_state(), JSON.parse(response.message));
+  handleLoad(response) {
+    let state = Object.assign(this.default_state, JSON.parse(response.message));
     state.tags = _.map(state.tags, this.tagify);
     this.setState(state);
   }
