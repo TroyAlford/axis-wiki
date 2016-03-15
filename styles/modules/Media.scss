@@ -1,0 +1,8 @@
+@import "../Variables";
+
+.cp-media {
+  .media-container {
+    text-align: center;
+    img { background-image: $image-transparent; }
+  }
+}

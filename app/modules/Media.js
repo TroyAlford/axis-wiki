@@ -74,7 +74,9 @@ export default class Article extends React.Component {
   render() {
      return (
       <div className={`cp-media`}>
-        <img src={`/media/${this.state.filename}`} />
+        <div className={`media-container`}>
+          <img src={`/media/${this.state.filename}`} />
+        </div>
       </div>
     );
   }
