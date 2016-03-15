@@ -3,6 +3,8 @@ import ReactDOM           from 'react-dom'
 import TinyMCE            from 'react-tinymce'
 import { browserHistory } from 'react-router'
 
+import Slug               from '../../server/services/Slug'
+
 import Icon               from './Icon'
 import Tag                from './Tag'
 import TagBrowser         from './TagBrowser'
@@ -67,7 +69,7 @@ export default class Article extends React.Component {
   }
 
   tagify(tag) {
-    return _.trim(_.lowerCase(tag.replace(/[\s]{2,}/g, ' ')));
+    return Slug.normalize(tag);
   }
 
   handleAddTag(new_tag) {
