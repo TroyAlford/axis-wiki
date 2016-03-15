@@ -21,10 +21,13 @@ export default class App extends React.Component {
       container['onclick'] = this.handleLinks;
   }
   handleLinks(event) {
-    if (event.which == 1 && event.target.nodeName == "A"
-      && event.target.hostname == window.location.hostname) {
-      event.preventDefault();
-      browserHistory.push(event.target.pathname);
+    let inside_editor = undefined !== _.find(event.path, { id: 'react-tinymce-0' });
+
+    if (event.which == 1 && event.target.nodeName == "A" && event.target.pathname !== '') {
+      if (inside_editor || event.target.hostname == window.location.hostname)
+        event.preventDefault();
+
+      if (!inside_editor) browserHistory.push(event.target.pathname);
     }
   }
 
