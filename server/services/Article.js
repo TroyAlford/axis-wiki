@@ -27,6 +27,9 @@ class Article {
     this.delete = this.delete.bind(this);
     this.build_html = this.build_html.bind(this);
 
+    this.get_rooted_url = this.get_rooted_url.bind(this);
+    this.is_local_url = this.is_local_url.bind(this);
+
     this.save = this.save.bind(this);
   }
 
@@ -113,10 +116,11 @@ class Article {
         links_to      = [],
         missing_links = [];
     $html('a').each((index, element) => {
-      let link    = url.parse(element.attribs.href),
+      let href    = element.attribs.href,
+          link    = url.parse(href),
           $el     = $html(element);
 
-      if (link.hostname) // External link
+      if (!this.is_local_url(href)) // External link
         $el.attr('target', '_new').addClass('wiki-external');
       else { // Internal link
         let link_slug = Slug.normalize(link.pathname);
@@ -127,7 +131,12 @@ class Article {
           missing_links = _.union(missing_links, [link_slug]);
           $el.addClass('wiki-missing');
         }
+
+        element.attribs.href = this.get_rooted_url(link.pathname);
       }
+      $html('img').each((index, element) => {
+        element.attribs.src = this.get_rooted_url(element.attribs.src);
+      });
     });
 
     return {
@@ -136,6 +145,21 @@ class Article {
       missing_links: Slug.normalize(missing_links)
     };
   }
+
+  get_rooted_url(value) {
+    if (!this.is_local_url(value)) return value;
+
+    let href = Slug.normalize(value, true).replace(/^[.]{0,}\//g, '');
+    if (href.split('/').length == 1)
+      href = `page/${href}`;
+
+    return `/${href}`;
+  }
+  is_local_url(value) {
+    let link = url.parse(value);
+    return !link.hostname;
+  }
+
 
   save(slug, article) {
     let base = path.resolve(this.folders.articles, slug),
