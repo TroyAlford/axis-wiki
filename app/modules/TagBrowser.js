@@ -17,7 +17,7 @@ export default class TagBrowser extends React.Component {
 
   render() {
     let
-      articles   = this.props.articles,
+      articles   = _.sortBy(this.props.articles),
       col_count  = this.props.columns || 4,
       columns    = [],
       col_size   = Math.ceil(articles.length / col_count),
@@ -27,7 +27,7 @@ export default class TagBrowser extends React.Component {
       let
         first = i * col_size,
         last = (i * col_size) + col_size,
-        list = this.props.articles.slice(first, last)
+        list = articles.slice(first, last)
       ;
       columns[i] =
         <div key={`column-${i}`} className={classes}>{
