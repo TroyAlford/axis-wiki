@@ -204,18 +204,27 @@ class Links {
 let Singleton = new Links();
 export default Singleton;
 
-let html_reindexer = file => Singleton.reindex_html(path.basename(file, '.html')),
-    html_unindexer = file => Singleton.unindex_html(path.basename(file, '.html'));
-chokidar.watch(`${Singleton.folders.articles}/*.html`, { ignoreInitial: true })
-  .on('add', html_reindexer)
-  .on('change', html_reindexer)
-  .on('unlink', html_unindexer)
-;
+const CHOKIDAR_OPTIONS = {
+  ignoreInitial: true,
+  persistent: true
+};
 
-let meta_reindexer = file => Singleton.reindex_meta(path.basename(file, '.json')),
+let html_reindexer = file => Singleton.reindex_html(path.basename(file, '.html')),
+    html_unindexer = file => Singleton.unindex_html(path.basename(file, '.html')),
+    meta_reindexer = file => Singleton.reindex_meta(path.basename(file, '.json')),
     meta_unindexer = file => Singleton.unindex_meta(path.basename(file, '.json'));
-chokidar.watch(`${Singleton.folders.articles}/*.json`, { ignoreInitial: true })
-  .on('add', meta_reindexer)
-  .on('change', meta_reindexer)
-  .on('unlink', meta_unindexer)
+chokidar.watch(`${Singleton.folders.articles}/*`, CHOKIDAR_OPTIONS)
+  .on('raw', (event, path, details) => {
+    if (path.startsWith(Singleton.folders.articles) && _(['add', 'change', 'modified']).includes(event)) {
+      console.log(`${path} added/changed: reindexing.`);
+      if (path.endsWith('.html')) return html_reindexer(path);
+      if (path.endsWith('.json')) return meta_reindexer(path);
+    }
+    if (path.startsWith(Singleton.folders.articles) && 'unlink' == event) {
+      console.log(`${path} removed: unindexing.`);
+      if (path.endsWith('.html')) return html_unindexer(path);
+      if (path.endsWith('.json')) return meta_unindexer(path);
+    }
+  })
+  .on('error', error => console.log(`Watcher error: ${error}`))
 ;
