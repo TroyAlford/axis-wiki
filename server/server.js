@@ -7,6 +7,8 @@ import path       from 'path';
 import request    from 'request';
 import url        from 'url';
 
+import Watcher from './services/Watcher'
+
 var port = 8080;
 
 var modules = {
@@ -14,6 +16,8 @@ var modules = {
   config:  require('./modules/config.js'),
   media:   require('./modules/media.js'),
 };
+
+Watcher.watch();
 
 var app = express();
 app.use('/api/page', modules.article);

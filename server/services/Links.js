@@ -32,9 +32,9 @@ class Links {
     this.reload = this.reload.bind(this);
 
     this.reindex_html = this.reindex_html.bind(this);
-    this.reindex_meta = this.reindex_meta.bind(this);
+    this.reindex_json = this.reindex_json.bind(this);
     this.unindex_html = this.unindex_html.bind(this);
-    this.unindex_meta = this.unindex_meta.bind(this);
+    this.unindex_json = this.unindex_json.bind(this);
 
     this.save = this.save.bind(this);
 
@@ -103,7 +103,7 @@ class Links {
 
     setTimeout(this.cleanse, THROTTLE); // Also saves.
   }
-  reindex_meta(slug) {
+  reindex_json(slug) {
     console.log(`${slug} changed: reindexing aliases.`);
     this.links[slug] = this.links[slug] || Links.default_node;
     let existing = this.links[slug].aliases,
@@ -138,7 +138,7 @@ class Links {
 
     setTimeout(this.cleanse, THROTTLE); // Also saves.
   }
-  unindex_meta(slug) {
+  unindex_json(slug) {
     console.log(`${slug} removed: unindexing aliases.`);
     let existing = this.links[slug].aliases;
 
@@ -203,28 +203,3 @@ class Links {
 
 let Singleton = new Links();
 export default Singleton;
-
-const CHOKIDAR_OPTIONS = {
-  ignoreInitial: true,
-  persistent: true
-};
-
-let html_reindexer = file => Singleton.reindex_html(path.basename(file, '.html')),
-    html_unindexer = file => Singleton.unindex_html(path.basename(file, '.html')),
-    meta_reindexer = file => Singleton.reindex_meta(path.basename(file, '.json')),
-    meta_unindexer = file => Singleton.unindex_meta(path.basename(file, '.json'));
-chokidar.watch(`${Singleton.folders.articles}/*`, CHOKIDAR_OPTIONS)
-  .on('raw', (event, path, details) => {
-    if (path.startsWith(Singleton.folders.articles) && _(['add', 'change', 'modified']).includes(event)) {
-      console.log(`${path} added/changed: reindexing.`);
-      if (path.endsWith('.html')) return html_reindexer(path);
-      if (path.endsWith('.json')) return meta_reindexer(path);
-    }
-    if (path.startsWith(Singleton.folders.articles) && 'unlink' == event) {
-      console.log(`${path} removed: unindexing.`);
-      if (path.endsWith('.html')) return html_unindexer(path);
-      if (path.endsWith('.json')) return meta_unindexer(path);
-    }
-  })
-  .on('error', error => console.log(`Watcher error: ${error}`))
-;

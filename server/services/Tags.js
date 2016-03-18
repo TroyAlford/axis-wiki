@@ -125,28 +125,3 @@ class Tags {
 
 let Singleton = new Tags();
 export default Singleton;
-
-// File Watcher, to re-index on any .json file change in the Articles directory.
-const CHOKIDAR_OPTIONS = {
-  ignoreInitial: true,
-  persistent: true
-};
-
-let reindexer = file => Singleton.reindex(path.basename(file, '.json')),
-    unindexer = file => Singleton.unindex(path.basename(file, '.json'));
-chokidar.watch(`${Singleton.folders.articles}/*`, CHOKIDAR_OPTIONS)
-  .on('add', reindexer).on('change', reindexer)
-  .on('unlink', unindexer)
-  .on('raw', (event, path, details) => {
-    console.log('got here');
-    if (path.startsWith(Singleton.folders.articles) && _(['add', 'change', 'modified']).includes(event)) {
-      console.log(`${path} added/changed: reindexing.`);
-      if (path.endsWith('.json')) return reindexer(path);
-    }
-    if (path.startsWith(Singleton.folders.articles) && 'unlink' == event) {
-      console.log(`${path} removed: unindexing.`);
-      if (path.endsWith('.json')) return unindexer(path);
-    }
-  })
-  .on('error', error => console.log(`Watcher error: ${error}`))
-;
