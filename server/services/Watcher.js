@@ -14,7 +14,9 @@ export default class Watcher {
   static watch() {
     chokidar.watch(`${Config.folders.articles}/*`, CHOKIDAR_OPTIONS)
       .on('raw', (event, filename, details) => {
-        if (path.dirname(filename) != Config.folders.articles) return;
+        if (path.dirname(filename) != '.' && // Windows = '.', and only events for files in the subdir
+            path.dirname(filename) != Config.folders.articles) // *nix = full path
+          return;
 
         let which = path.extname(filename),
             action = event != 'unlink' ? 'reindex' : 'unindex',
