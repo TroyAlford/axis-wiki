@@ -1,4 +1,4 @@
-// modules/App.js
+import _                  from 'lodash'
 import React              from 'react'
 import ReactDOM           from 'react-dom'
 import { browserHistory } from 'react-router'
@@ -9,6 +9,9 @@ import LeftNavigation from './LeftNavigation'
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    this.parser = document.createElement('a');
+
+    this.handleClicks = this.handleClicks.bind(this);
   }
 
   componentDidMount() {
@@ -21,22 +24,25 @@ export default class App extends React.Component {
       container['onclick'] = this.handleClicks;
   }
   handleClicks(event) {
-    let inside_editor = undefined !== _.find(event.path, { id: 'react-tinymce-0' });
+    let node_name = event.target.nodeName.toUpperCase();
+    if (!_(['A', 'IMG']).includes(node_name))
+      return; // If the click wasn't on an A or IMG, no need to continue.
 
-    if (event.which == 1 && event.target.nodeName == "A" && event.target.pathname !== '') {
-      if (inside_editor || event.target.hostname == window.location.hostname)
-        event.preventDefault();
-
-      if (!inside_editor) browserHistory.push(event.target.pathname);
+    let inside_editor = undefined !== _.find(event.path, { id: 'react-tinymce-0' }),
+        url = event.target.href || event.target.src;
+    if (inside_editor || !url) {
+      // Clicks inside TinyMCE and clicks with no href/img do nothing
+      event.preventDefault();
+      return;
     }
-    if (!inside_editor && event.which == 1 && event.target.nodeName == "IMG") {
-      let parser = document.createElement('a');
-      parser.href = event.target.src;
-      let filename = _.last(parser.pathname.split('/'));
 
-      if (parser.hostname == window.location.hostname)
-        browserHistory.push(`/info/media/${filename}`);
-    }
+    this.parser.href = url;
+    if (this.parser.hostname != window.location.hostname) return; // Allow external links
+
+    let location = node_name == "A"
+      ? this.parser.pathname
+      : `/info${this.parser.pathname}`;
+    browserHistory.push(location);
   }
 
   render() {
