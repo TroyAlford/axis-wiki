@@ -39,6 +39,7 @@ export default class App extends React.Component {
     this.parser.href = url;
     if (this.parser.hostname != window.location.hostname) return; // Allow external links
 
+    event.preventDefault();
     let location = node_name == "A"
       ? this.parser.pathname
       : `/info${this.parser.pathname}`;
