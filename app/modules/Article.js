@@ -117,7 +117,15 @@ export default class Article extends React.Component {
     this.setState(state);
   }
   handleMode(mode) {
-    this.setState({ mode: mode });
+    if (mode == this.state.mode) return;
+
+    let html = this.state.html;
+    if ('edit' == this.state.mode)
+      html = window.tinyMCE.activeEditor.getContent();
+    else if ('source' == this.state.mode)
+      html = this.refs.source.value;
+
+    this.setState({ html: html, mode: mode });
   }
   handleSave() {
     var html = '';
