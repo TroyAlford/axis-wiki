@@ -107,7 +107,12 @@ class Article {
   delete(slug) {
     // Removes files only. Reference updates are performed in response to file watchers.
     let base = path.resolve(this.folders.articles, slug);
-    utils.del(`${base}.{html,json}`);
+    _(['html', 'json']).forEach(ext => {
+      let filename = `${base}.${ext}`;
+      if (utils.exists(filename))
+        fs.unlinkSync(filename, { force: true });
+    });
+    //utils.del(`${base}.{html,json}`, { force: true });
     return true;
   }
 

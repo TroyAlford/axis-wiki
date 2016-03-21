@@ -52,7 +52,8 @@ class Tags {
     this.cleanse_queued = null;     // This should be the queued cleanse, so clear the timer.
 
     for (var article in this.articles) {
-      if (!this.articles[article].length) delete this.articles[article];
+      if (this.articles[article] && !this.articles[article].length)
+        delete this.articles[article];
     }
     for (var tag in this.tags) {
       if (!this.tags[tag].length) delete this.tags[tag];
@@ -62,12 +63,13 @@ class Tags {
   }
   reindex(slug) {
     console.log(`${slug} changed: reindexing tags.`);
-    let existing = this.articles[slug],
-        json     = utils.readJSONSync(path.join(this.folders.articles, `${slug}.json`)),
-        updated  = json.tags,
-        in_both  = _.intersection(existing, updated),
-        to_drop  = _.difference(existing, in_both),
-        to_add   = _.difference(updated, in_both);
+    let existing  = this.articles[slug],
+        json_path = path.join(this.folders.articles, `${slug}.json`),
+        json      = utils.exists(json_path) ? utils.readJSONSync(json_path) : {},
+        updated   = json.tags,
+        in_both   = _.intersection(existing, updated),
+        to_drop   = _.difference(existing, in_both),
+        to_add    = _.difference(updated, in_both);
 
     to_drop.forEach(drop => { this.tags[drop] = _.difference(this.tags[drop], [slug]) });
     to_add.forEach(add => { this.tags[add] = _.union(this.tags[add], [slug]) });
@@ -86,7 +88,7 @@ class Tags {
 
         rebuilt.articles[slug] = _.union(rebuilt.articles[slug], json.tags);
         (json.tags || []).forEach(tag => {
-          rebuilt.tags[tag] = _.union(rebuilt.tags[tag], [slug]);
+          rebuilt.tags[tag] = _.union(rebuilt.tags[tag] || [], [slug]);
         });
       });
 
