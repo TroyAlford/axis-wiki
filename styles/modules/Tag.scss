@@ -1,7 +1,7 @@
 @import '../Variables';
 
 .tag {
-  padding: 4px;
+  padding: 4px 8px 4px 4px;
   margin: 0 5px 5px 0;
 
   .icon {
@@ -13,6 +13,7 @@
   .icon-remove { display: none; }
 
   &.editable {
+    padding: 4px;
     span.name, .icon-remove {
       cursor: pointer;
     }
