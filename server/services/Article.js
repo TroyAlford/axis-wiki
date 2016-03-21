@@ -116,9 +116,9 @@ class Article {
         links_to      = [],
         missing_links = [];
     $html('a').each((index, element) => {
-      let href    = element.attribs.href,
-          link    = url.parse(href),
-          $el     = $html(element);
+      let href = element.attribs.href,
+          link = url.parse(href),
+          $el  = $html(element);
 
       if (!this.is_local_url(href)) // External link
         $el.attr('target', '_new').addClass('wiki-external');
@@ -126,8 +126,11 @@ class Article {
         let link_slug = Slug.normalize(link.pathname);
         links_to.push(link_slug);
 
-        let lookup = Links.get(link_slug);
-        if (!lookup || !lookup.exists) {
+        let lookup = Links.get(link_slug),
+            is_media = 0 <= link.pathname.indexOf('media/');
+
+        if ((is_media && !utils.exists(path.join(this.folders.media, path.basename(href)))
+        || (!is_media && (!lookup || !lookup.exists)))) {
           missing_links = _.union(missing_links, [link_slug]);
           $el.addClass('wiki-missing');
         }
