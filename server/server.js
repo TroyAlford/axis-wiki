@@ -24,12 +24,13 @@ app.use('/api/page', modules.article);
 app.use('/api/config', modules.config);
 app.use('/media', modules.media);
 
-['js', 'font', 'images', 'styles'].forEach(function(el) {
-  app.use('/' + el, express.static(path.join(__dirname, '../build/develop/' + el)));
-});
+app.use('/css',     express.static(path.join(__dirname, '../build/css')));
+app.use('/js', 	    express.static(path.join(__dirname, '../build/js')));
+app.use('/font',    express.static(path.join(__dirname, '../fontello/font')));
+app.use('/images',  express.static(path.join(__dirname, '../images')));
 
 app.get('*', function (req, res) {
-  fs.createReadStream(path.join(__dirname, '../build/develop', 'index.html'))
+  fs.createReadStream(path.join(__dirname, '../source/index.html'))
     .pipe(res);
 });
 
