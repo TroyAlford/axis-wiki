@@ -2,11 +2,11 @@ import React    from 'react'
 import ReactDOM from 'react-dom'
 import { Redirect, Route, Router, browserHistory } from 'react-router'
 
-import Layout       from './modules/Layout'
-import Article      from './modules/Article'
-import Media        from './modules/Media'
-import TagBrowser   from './modules/TagBrowser'
-import FileUploader from './modules/FileUploader'
+import Layout       from '../components/Layout'
+import Article      from '../components/Article'
+import Media        from '../components/Media'
+import TagBrowser   from '../components/TagBrowser'
+import FileUploader from '../components/FileUploader'
 
 ReactDOM.render((
   <Router history={browserHistory}>
