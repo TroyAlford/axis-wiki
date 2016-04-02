@@ -1,4 +1,3 @@
-// modules/TopNavigation.js
 import React from 'react';
 
 let render_key = 0;

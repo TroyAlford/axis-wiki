@@ -14,7 +14,8 @@
     "react-dom": "^0.14.7",
     "react-file-input": "^0.2.5",
     "react-router": "^2.0.0",
-    "react-tinymce": "^0.4.0"
+    "react-tinymce": "^0.4.0",
+    "tinymce": "^4.3.8"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
@@ -24,7 +25,6 @@
     "body-parser": "^1.15.0",
     "browserify": "^13.0.0",
     "browserify-resolutions": "^1.0.6",
-    "browserify-shim": "^3.8.12",
     "bulma": "0.0.14",
     "chalk": "^1.1.1",
     "cheerio": "^0.20.0",
@@ -57,8 +57,8 @@
     "css-app-build": "mkdirp build/css && npm run css-app-concat && node-sass build/sass/application.scss -o build/css --output-style compressed --source-map true --source-map-embed",
     "css-app-concat": "mkdirp build/sass && concat-cli -f styles/**/*.scss -o build/sass/application.scss",
     "css-dep-build": "node-sass vendor/dependencies.scss -o build/css --output-style compressed --source-map true --source-map-embed",
-    "jsx-build-app": "mkdirp build/js && browserify -x react -x react-dom -x react-router -x lodash source/application/Application.js > build/js/application.js",
-    "jsx-build-dep": "mkdirp build/js && browserify -r react -r react-dom -r react-router -r lodash vendor/dependencies.js > build/js/dependencies.js ",
+    "jsx-build-app": "mkdirp build/js && browserify -x react -x react-dom -x react-router -x react-tinymce -x lodash source/application/Application.js > build/js/application.js",
+    "jsx-build-dep": "mkdirp build/js && browserify -r react -r react-dom -r react-router -r react-tinymce -r lodash vendor/dependencies.js > build/js/dependencies.js ",
     "serve": "nodemon --watch ./server --exec babel-node server/server.js -c ../config/config.json",
     "watch-css": "nodemon --watch styles -e css,scss --exec 'npm run build-css'",
     "watch-jsx": "nodemon --watch src -e js --exec 'npm run jsx-build-app'"
