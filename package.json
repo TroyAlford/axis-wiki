@@ -48,15 +48,18 @@
     ]
   },
   "scripts": {
+    "develop": "npm run serve & npm run jsx-build-dep & npm run watch-jsx & npm run watch-css",
+    "build": "npm run clean && (npm run build-jsx & npm run build-css)",
+    "build-css": "npm run css-app-build & npm run css-dep-build",
+    "build-jsx": "npm run jsx-build-app & npm run jsx-build-dep",
+    "clean": "rm -rf build",
+    "css-app-build": "mkdirp build/css && npm run css-app-concat && node-sass build/sass/application.scss -o build/css --output-style compressed --source-map true --source-map-embed",
+    "css-app-concat": "mkdirp build/sass && concat-cli -f styles/**/*.scss -o build/sass/application.scss",
+    "css-dep-build": "node-sass vendor/dependencies.scss -o build/css --output-style compressed --source-map true --source-map-embed",
+    "jsx-build-app": "mkdirp build/js && browserify -x react -x react-dom -x react-router -x lodash source/application/Application.js > build/js/application.js",
+    "jsx-build-dep": "mkdirp build/js && browserify -r react -r react-dom -r react-router -r lodash vendor/dependencies.js > build/js/dependencies.js ",
     "serve": "nodemon --watch ./server --exec babel-node server/server.js -c ../config/config.json",
-    "build": "rm -r ./build && npm run build-js && npm run build-css",
-    "build-js": "npm run build-app-js && npm run build-dep-js",
-    "build-app-js": "mkdirp build/js && browserify -x react -x react-dom -x react-router -x lodash source/application/Application.js > build/js/application.js",
-    "build-dep-js": "mkdirp build/js && browserify -r react -r react-dom -r react-router -r lodash source/Dependencies.js > build/js/dependencies.js ",
-    "concat-css": "mkdirp build/sass && concat-cli -f styles/**/*.scss -o build/sass/application.scss",
-    "build-css": "npm run concat-css && mkdirp build/css && node-sass build/sass/application.scss -o build/css --output-style compressed --source-map true --source-map-embed",
-    "develop": "npm run serve & npm run build-dep-js & npm run auto-rebuild-js & npm run auto-rebuild-css",
-    "auto-rebuild-js": "nodemon --watch src -e js --exec 'npm run build-app-js'",
-    "auto-rebuild-css": "nodemon --watch styles -e css,scss --exec 'npm run build-css'"
+    "watch-css": "nodemon --watch styles -e css,scss --exec 'npm run build-css'",
+    "watch-jsx": "nodemon --watch src -e js --exec 'npm run jsx-build-app'"
   }
 }
