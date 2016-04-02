@@ -40,7 +40,8 @@
     "mkdirp": "^0.5.1",
     "multer": "^1.1.0",
     "node-sass": "^3.4.2",
-    "nodemon": "^1.9.1"
+    "nodemon": "^1.9.1",
+    "normalize.css": "^4.0.0"
   },
   "browserify": {
     "transform": [
