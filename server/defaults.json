@@ -1,15 +1,7 @@
 {
-  "storage": {
-    "path": "../content"
-  },
-  "navigation": {
-    "default_links": [
-      { "text": "Home", "url": "/page/home" },
-      { "text": "Upload", "url": "/upload" }
-    ]
-  },
-  "saving": {
-    "throttle": 1000
+  "facebook": {
+    "application_id": "YOUR_APP_ID_HERE",
+    "permissions": "public_profile,email"
   },
   "html": {
     "beautifier": {
@@ -21,5 +13,17 @@
       "max_preserve_newlines": 0,
       "wrap_line_length": 0
     }
+  },
+  "navigation": {
+    "default_links": [
+      { "text": "Home", "url": "/page/home" },
+      { "text": "Upload", "url": "/upload" }
+    ]
+  },
+  "saving": {
+    "throttle": 1000
+  },
+  "storage": {
+    "path": "../content"
   }
 }

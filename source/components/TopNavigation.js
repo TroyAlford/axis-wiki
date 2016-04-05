@@ -1,5 +1,6 @@
-// modules/TopNavigation.js
 import React from 'react';
+
+import Facebook from './Facebook'
 
 export default class TopNavigation extends React.Component {
   render() {
@@ -10,9 +11,9 @@ export default class TopNavigation extends React.Component {
             <div className="header-left title">
               <strong>Axis</strong> Wiki
             </div>
-            <div className="header-menu">
-              {/*<span className="header-item"><a href="/w/home">Home</a></span>*/}
-            </div>
+            <nav className="navbar">
+              <Facebook className="header-item" />
+            </nav>
           </header>
         </div>
       </section>

@@ -58,13 +58,6 @@
   &.center, .center * { text-align: center; }
 }
 
-.icon { vertical-align: baseline; }
-[class^="icon-"]:before,
-[class*=" icon-"]:before {
-  margin: 0;
-  padding: 0;
-}
-
 table.note[class*="note-"], table.tip[class*="tip-"] {
   border-collapse: separate;
   border-spacing: 0;

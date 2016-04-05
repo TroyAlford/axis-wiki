@@ -3,8 +3,8 @@ import React              from 'react'
 import ReactDOM           from 'react-dom'
 import { browserHistory } from 'react-router'
 
-import TopNavigation from './TopNavigation'
-import LeftNavigation from './LeftNavigation'
+import TopNavigation      from './TopNavigation'
+import LeftNavigation     from './LeftNavigation'
 
 export default class App extends React.Component {
   constructor(props) {

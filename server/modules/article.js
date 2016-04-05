@@ -2,6 +2,7 @@ import _                    from 'lodash'
 import { html as beautify } from 'js-beautify'
 import bodyParser           from 'body-parser'
 import cheerio              from 'cheerio'
+import cookieParser         from 'cookie-parser'
 import express              from 'express'
 import fs                   from 'fs'
 import path                 from 'path'
@@ -15,6 +16,7 @@ import Slug                 from '../services/Slug'
 var article = module.exports = express()
   .use(bodyParser.json())                         // Parses application/json
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
+  .use(cookieParser())
   .get('/:slug', (request, response) => {
     var slug = Links.resolve(Slug.normalize(request.params.slug));
 
@@ -24,6 +26,7 @@ var article = module.exports = express()
     return response.status(200).send(Article.get_final(slug));
   })
   .post('/:slug', (request, response) => {
+    console.log(request.cookies);
     let slug    = Slug.normalize(request.params.slug),
         posted  = request.body,
         saved   = Article.save(slug, posted);
