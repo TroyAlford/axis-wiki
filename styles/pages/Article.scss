@@ -31,7 +31,7 @@
 
     > ul {
       margin: 0;
-      padding: 0;
+      padding: 0 10px;
 
       .button {
         height: 2em;
@@ -56,62 +56,6 @@
     position: absolute;
     text-align: justify;
 
-    p:first-child { margin-top: 0; }
-    p:last-child  { margin-bottom: 0; }
-
-    ul, ol {
-      list-style-position: outside;
-      padding-left: 25px;
-    }
-    ul { list-style-type: disc; }
-    li { padding: 0 0 5px 0; }
-
-    blockquote {
-      background: #f6ebc1;
-      border-left: 3px solid $color-border-gray;
-      margin: 10px 25px;
-      padding: 0.5em 10px;
-      text-align: justify;
-
-      &:before, &:after {
-        color: #ccc;
-        font-size: 4em;
-        line-height: 0.1em;
-        vertical-align: -0.4em;
-      }
-      &:before {
-        content: '“';
-        margin-right: 0.25em;
-      }
-      &:after {
-        content: '”';
-        margin-left: 0.25em;
-      }
-    }
-
-    table {
-      border: 1px solid $color-border-gray;
-      border-collapse: collapse;
-
-      th, td {
-        border-color: $color-border-gray;
-        border-style: solid;
-        border-width: 0 0 1px 1px;
-        padding: 10px;
-      }
-      tr:last-child {
-        th, td { border-bottom: 0; }
-      }
-    }
-
-    &.reader a.external:after {
-      content: '\e807';
-      font-family: axis-wiki;
-      font-size: .7rem;
-      margin-left: 3px;
-      position: relative;
-      top: -3px;
-    }
     &.editor {
       top: 75px;
       .mce-edit-focus { outline: none; }
