@@ -1,0 +1,97 @@
+.article .content {
+  h1, h2, h3, h4, h5, h6 {
+    border-bottom: 1px solid #42afe3;
+    display: block;
+    margin: 10px 0;
+  }
+  h1, h3, h5 {
+    font-weight: bold;
+  }
+  h2, h4, h6 {
+    font-style: italic;
+  }
+  h1, h2 { font-size: 2em; line-height: 2em; }
+  h3, h4 { font-size: 1.6em; line-height: 1.6em; }
+  h5, h6 { font-size: 1.2em; line-height: 1.2em; }
+
+  a.missing { color: $color-missing-link; }
+
+  p {
+    margin: 1rem 0;
+    text-align: justify;
+  }
+
+  b, strong { font-weight: bold;  }
+  i, em { font-style: italic; }
+  u { text-decoration: underline; }
+  s, strike, del { text-decoration: line-through; }
+
+  p { text-align: justify; }
+
+  th { font-weight: bold; text-align: center; }
+  td { text-align: justify; }
+  .is-hidden { display: none!important; }
+  .button:not(.is-disabled) { cursor: pointer; }
+
+  .note, .info, .tip, .data {
+    background-color: lighten($color-bg-light, 2.5%);
+    border: 1px solid $color-border-gray;
+    overflow: hidden;
+    padding: 5px;
+
+    &:not([class*=is-text-]) { text-align: justify; }
+  }
+  .note[class*="note-"] {
+    padding-left: 30px;
+    position: relative;
+
+    &:before {
+      content: '';
+      display: inline-block;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: 16px 16px;
+      border-right: 1px solid $color-border-gray;
+      position: absolute;
+      left: 0; top: 0; height: 100%; width: 24px;
+    }
+    &.note-system:before {
+      background-color: $color-system;
+      background-image: $image-system;
+    }
+    &.note-book:before {
+      background-color: $color-book;
+      background-image: $image-book;
+    }
+    &.note-info:before {
+      background-color: $color-info;
+      background-image: $image-info;
+    }
+  }
+  .info[class*="info-"] {
+    float: right;
+
+    &.info-box {
+      font-size: .9rem;
+      margin: 0 0 10px 10px;
+      width: 275px;
+
+      th, td { padding: 5px; }
+      th { background-color: #eeeeee; }
+      td { background-color: #f9f9f9; }
+      th:not([colspan]) { width: 30%; }
+    }
+  }
+  .data {
+    border-collapse: collapse;
+    margin: 0 auto;
+    width: auto;
+
+    thead, tbody, tfoot { border: none; }
+    th, td { padding: 5px 10px; }
+    th { background-color: #eeeeee; }
+    td { background-color: #f9f9f9; }
+
+    &.center, .center * { text-align: center; }
+  }
+}

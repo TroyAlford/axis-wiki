@@ -1,14 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import ComponentBase  from '../application/ComponentBase'
+import Icon           from './Icon';
+import ReactDOM       from 'react-dom';
 
-import Icon from './Icon';
-
-export default class MenuButton extends React.Component {
+export default class MenuButton extends ComponentBase {
   constructor(props) {
     super(props);
-
-    this.handleClick = this.handleClick.bind(this);
-    this.handleMouseDown = this.handleMouseDown.bind(this);
   }
 
   handleClick() {

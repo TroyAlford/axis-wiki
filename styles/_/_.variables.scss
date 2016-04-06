@@ -1,18 +1,26 @@
 $size-header-y: 50px;
 $size-left-column-x: 160px;
 
-$color-text: #333;
-$color-bg-page: #fff;
-$color-bg-light: #f6f6f6;
+$palette-blue:        #42afe3;
+$palette-dark-gray:   #333;
+$palette-royal-blue:  #08f;
+$palette-light-gray:  #d3d6db;
+$palette-offwhite:    #f6f6f6;
+$palette-red:         #c44;
+$palette-white:       #fff;
 
-$color-border-gray: #d3d6db;
-$color-border-blue: #42afe3;
+$color-text:          $palette-dark-gray;
+$color-bg-page:       $palette-white;
+$color-bg-light:      $palette-offwhite;
 
-$color-default-link: #08f;
-$color-missing-link: #c44;
+$color-border-gray:   $palette-light-gray;
+$color-border-blue:   $palette-blue;
 
-$color-table-bg-even: #fff;
-$color-table-bg-odds: $color-bg-light;
+$color-default-link:  $palette-royal-blue;
+$color-missing-link:  $palette-red;
+
+$color-table-bg-even: $palette-white;
+$color-table-bg-odds: $palette-offwhite;
 
 // Special Icons for Content Types
 $color-system: #fdf5e6;

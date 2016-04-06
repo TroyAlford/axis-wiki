@@ -1,35 +1,17 @@
-import React              from 'react'
-import ReactDOM           from 'react-dom'
-import TinyMCE            from 'react-tinymce'
 import { browserHistory } from 'react-router'
-
+import ComponentBase      from '../application/ComponentBase'
+import Icon               from '../components/Icon'
+import ReactDOM           from 'react-dom'
 import Slug               from '../../server/services/Slug'
-
-import Icon               from './Icon'
-import Tag                from './Tag'
-import TagBrowser         from './TagBrowser'
-
+import Tag                from '../components/Tag'
+import TagBrowser         from '../components/TagBrowser'
+import TinyMCE            from 'react-tinymce'
 import XHR                from '../helpers/XHR'
 
-export default class Article extends React.Component {
+export default class Article extends ComponentBase {
   constructor(props) {
     super(props);
-
     this.state = this.default_state;
-
-    this.loadArticle = this.loadArticle.bind(this);
-
-    this.handleAddTag = this.handleAddTag.bind(this);
-    this.handleAlias = this.handleAlias.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    this.handleEditTag = this.handleEditTag.bind(this);
-    this.handleRemoveTag = this.handleRemoveTag.bind(this);
-    this.handleSourceChange = this.handleSourceChange.bind(this);
-
-    this.handleLoad = this.handleLoad.bind(this);
-    this.handleMode = this.handleMode.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-
     this.loadArticle(this.props.params.slug);
   }
   componentDidUpdate() {
@@ -160,7 +142,7 @@ export default class Article extends React.Component {
         auto_focus: true,
         autosave_ask_before_unload: false,
         inline: true,
-        fixed_toolbar_container: '.wiki-container > .tabs',
+        fixed_toolbar_container: '.article.page > .tabs',
         formats: {
           aligncenter: {
             selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img',
@@ -210,17 +192,17 @@ export default class Article extends React.Component {
       </table>
     </div>;
 
-    let tags = this.state.tags.map(function(tag) {
+    let tags = this.state.tags.map((tag => {
       return (
         <Tag key={tag} name={tag}
              onChange={this.handleEditTag}
              onRemove={this.handleRemoveTag.bind(this, tag)}
              editable={this.state.mode != 'read'} />
       );
-    }.bind(this));
+    }).bind(this));
 
     return (
-      <div className={`cp-article wiki-container mode-${this.state.mode}`}>
+      <div className={`article page mode-${this.state.mode}`}>
         <div className="tabs is-right is-boxed">
           <ul>
             <li className={`button is-primary ${this.state.mode == 'read' ? 'is-hidden' : ''}`}
@@ -241,10 +223,10 @@ export default class Article extends React.Component {
             </li>
           </ul>
         </div>
-        <div className="wiki-article-tab reader">{viewer}</div>
-        <div className="wiki-article-tab editor">{editor}</div>
-        <div className="wiki-article-tab source">{source}</div>
-        <div className="wiki-article-tab settings">{settings}</div>
+        <div className="tab reader content">{viewer}</div>
+        <div className="tab editor content">{editor}</div>
+        <div className="tab source">{source}</div>
+        <div className="tab settings">{settings}</div>
         <div className="tags">
           <Icon name="tags" /> {tags}
           <Icon name="add" onClick={this.handleAddTag.bind(this, 'new tag')} />

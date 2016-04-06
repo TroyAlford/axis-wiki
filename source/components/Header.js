@@ -1,11 +1,10 @@
-import React from 'react';
+import ComponentBase      from '../application/ComponentBase'
+import Facebook           from './Facebook'
 
-import Facebook from './Facebook'
-
-export default class TopNavigation extends React.Component {
+export default class Header extends ComponentBase {
   render() {
     return (
-      <section className="hero is-info is-left is-bold cp-topnavigation">
+      <section className="app-header hero is-info">
         <div className="hero-header">
           <header className="header">
             <div className="header-left title">

@@ -1,15 +1,13 @@
-import React from 'react';
+import ComponentBase      from '../application/ComponentBase'
 import FileInput from 'react-file-input';
 
-export default class FileUploader extends React.Component {
+export default class FileUploader extends ComponentBase {
   constructor(props) {
     super(props);
     
     this.state = {
       files: []
     };
-
-    this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(event) {

@@ -1,0 +1,15 @@
+.app-header {
+  .header { padding: 0 10px; }
+  .header .title {
+    line-height: 50px;
+    margin-bottom: 0;
+    padding: 0;
+  }
+
+  .navbar {
+    a { 
+      color: $palette-white;
+      font-weight: bold;
+    }
+  }
+}

@@ -1,20 +1,14 @@
-import React from 'react';
+import ComponentBase      from '../application/ComponentBase'
 
 let render_key = 0;
 
-export default class LeftNavigation extends React.Component {
+export default class Navigation extends ComponentBase {
   constructor(props) {
     super(props);
 
     this.state = {
       links: {}
     };
-
-    this.handle404 = this.handle404.bind(this);
-    this.handleLoad = this.handleLoad.bind(this);
-
-    this.renderLink = this.renderLink.bind(this);
-    this.renderLinks = this.renderLinks.bind(this);
 
     XHR.get('/api/config/navigation', {
       success: this.handleLoad,
@@ -36,9 +30,11 @@ export default class LeftNavigation extends React.Component {
 
   render() {
     render_key = 0;
-    return <section className="cp-leftnavigation">
-      {this.renderLinks(this.state.links || default_links)}
-    </section>;
+    return (
+      <section className="navigation">
+        {this.renderLinks(this.state.links || default_links)}
+      </section>
+    );
   }
 
   renderLink(link) {

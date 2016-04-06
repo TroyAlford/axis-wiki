@@ -1,11 +1,6 @@
-import React from 'react';
+import ComponentBase      from '../application/ComponentBase'
 
-export default class Icon extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
+export default class Icon extends ComponentBase {
   handleClick() {
     if (typeof this.props.onClick == 'function')
       this.props.onClick();

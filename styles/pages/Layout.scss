@@ -1,18 +1,18 @@
 html, body { overflow: hidden; }
 
-.cp-layout {
-  .cp-layout-head {
+.layout {
+  > .header {
     position: fixed;
     left: 0; right: 0; top: 0; height: $size-header-y;
   }
-  .cp-layout-left {
+  > .navigation {
     position: fixed;
     left: 0; bottom: 0; top: $size-header-y; width: $size-left-column-x;
     padding: 10px;
     border: 0 solid $color-border-blue;
     border-right-width: 1px;
   }
-  .cp-layout-main {
+  > .content {
     position: fixed;
     right: 0; bottom: 0; top: $size-header-y; left: $size-left-column-x;
     padding: 10px;

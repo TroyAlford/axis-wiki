@@ -126,7 +126,7 @@ class Article {
           $el  = $html(element);
 
       if (!this.is_local_url(href)) // External link
-        $el.attr('target', '_new').addClass('wiki-external');
+        $el.attr('target', '_new').addClass('external');
       else { // Internal link
         let link_slug = Slug.normalize(link.pathname);
         links_to.push(link_slug);
@@ -137,7 +137,7 @@ class Article {
         if ((is_media && !utils.exists(path.join(this.folders.media, path.basename(href)))
         || (!is_media && (!lookup || !lookup.exists)))) {
           missing_links = _.union(missing_links, [link_slug]);
-          $el.addClass('wiki-missing');
+          $el.addClass('missing');
         }
 
         element.attribs.href = this.get_rooted_url(link.pathname);

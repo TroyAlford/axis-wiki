@@ -1,21 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import ComponentBase      from '../application/ComponentBase'
+import Icon               from './Icon'
+import ReactDOM           from 'react-dom'
 
-import Icon from './Icon';
-
-export default class Tag extends React.Component {
+export default class Tag extends ComponentBase {
   constructor(props) {
     super(props);
     this.state = {
       editing: false,
       name: this.props.name || 'new tag'
     };
-
-    this.handleBlur = this.handleBlur.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
   }
 
   handleBlur() {

@@ -1,17 +1,15 @@
 import _                  from 'lodash'
-import React              from 'react'
 import ReactDOM           from 'react-dom'
 import { browserHistory } from 'react-router'
 
-import TopNavigation      from './TopNavigation'
-import LeftNavigation     from './LeftNavigation'
+import ComponentBase      from '../application/ComponentBase'
+import Header             from '../components/Header'
+import Navigation         from '../components/Navigation'
 
-export default class App extends React.Component {
+export default class App extends ComponentBase {
   constructor(props) {
     super(props);
     this.parser = document.createElement('a');
-
-    this.handleClicks = this.handleClicks.bind(this);
   }
 
   componentDidMount() {
@@ -48,14 +46,10 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div className="cp-layout" ref="container">
-        <div className="cp-layout-head">
-          <TopNavigation />
-        </div>
-        <div className="cp-layout-left">
-          <LeftNavigation />
-        </div>
-        <div className="cp-layout-main">
+      <div className="layout" ref="container">
+        <Header />
+        <Navigation />
+        <div className="content">
           {this.props.children}
         </div>
       </div>

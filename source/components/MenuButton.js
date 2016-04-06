@@ -1,18 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import ComponentBase      from '../application/ComponentBase'
+import MenuItem           from './MenuItem';
+import ReactDOM           from 'react-dom';
 
-import MenuItem from './MenuItem';
-
-export default class MenuButton extends React.Component {
+export default class MenuButton extends ComponentBase {
   constructor(props) {
     super(props);
 
     this.state = {
       expanded: false
     }
-
-    this.handleMouseDown = this.handleMouseDown.bind(this);
-    this.handleClick = this.handleClick.bind(this);
   }
 
   handleMouseDown(event) {

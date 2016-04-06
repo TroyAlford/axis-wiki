@@ -1,9 +1,8 @@
 import _                  from 'lodash'
-import React              from 'react'
-
+import ComponentBase      from '../application/ComponentBase'
 import ConfigJSON         from '../../config/config.json'
 
-export default class Facebook extends React.Component {
+export default class Facebook extends ComponentBase {
   constructor(props) {
     super(props);
 
@@ -17,42 +16,36 @@ export default class Facebook extends React.Component {
         permissions: "public_profile,email"
       }
     }, ConfigJSON);
-
-    this.handleStatusChange = this.handleStatusChange.bind(this);
   }
 
   componentDidMount() {
     FB.Event.subscribe('auth.statusChange', this.handleStatusChange);
-
-    let fb = this.config.facebook;
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId   : fb.application_id,
-        cookie  : true,   // allows server to access the session
-        status  : true,   // check login status on init
-        version : 'v2.5', // use graph api v2.5
-        xfbml   : true    // parse social plugins on page
-      });
-    }
-  }
-
-  handleStatusChange(response) {
-    if (response.status !== 'connected')
-      return this.setState({ user: null });
-
-    let self = this;
-    FB.api('/me', response => {
-      self.setState({ user: response })
+    FB.init({
+      appId   : this.config.facebook.application_id,
+      cookie  : true,   // allows server to access the session
+      status  : true,   // check login status on init
+      version : 'v2.5', // use graph api v2.5
+      xfbml   : true    // parse social plugins on page
     });
   }
 
+  handleUserChange(user) {
+    this.setState({ user: user });
+    if (this.onUserChange) this.onUserChange(user);
+  }
+  handleStatusChange(response) {
+    if (response.status !== 'connected')
+      return this.handleUserChange(null);
+
+    FB.api('/me', { fields: 'name,email,picture.width(250)' }, (response => {
+      this.handleUserChange(response);
+    }).bind(this));
+  }
+
   render() {
-    console.log(this.state.user);
     let settings_link = !this.state.user ? '' :
-      <a href="/settings" className="navbar-item button is-small">
-        <span className="icon icon-settings">
-          {this.state.user.name}
-        </span>
+      <a href="/profile" className="navbar-item">
+        {this.state.user.name}
       </a>;
 
     return (
@@ -61,9 +54,9 @@ export default class Facebook extends React.Component {
         <div 
           className="fb-login-button navbar-item"
           data-auto-logout-link="true"
-          data-scope={this.config.facebook.permissions}
           data-show-faces="false" 
-          data-size="medium" 
+          data-size="medium"
+          scope={this.config.facebook.permissions}
         ></div>
       </div>
     );

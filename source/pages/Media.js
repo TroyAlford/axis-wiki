@@ -1,27 +1,20 @@
-import React              from 'react'
+import ComponentBase      from '../application/ComponentBase'
 import ReactDOM           from 'react-dom'
 import TinyMCE            from 'react-tinymce'
 import { browserHistory } from 'react-router'
 
-import Icon               from './Icon'
-import MenuButton         from './MenuButton'
-import MenuItem           from './MenuItem'
+import Icon               from '../components/Icon'
+import MenuButton         from '../components/MenuButton'
+import MenuItem           from '../components/MenuItem'
 
 import XHR                from '../helpers/XHR'
 
-export default class Article extends React.Component {
+export default class Article extends ComponentBase {
   constructor(props) {
     super(props);
-
-    this.loadMedia = this.loadMedia.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    this.handleLoad = this.handleLoad.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-
     this.state = Object.assign(this.default_state, {
       filename: this.props.params.filename
     });
-
     this.loadMedia(this.state.filename);
   }
   componentWillReceiveProps(newProps) {
@@ -73,7 +66,7 @@ export default class Article extends React.Component {
 
   render() {
      return (
-      <div className={`cp-media`}>
+      <div className={`media page`}>
         <div className={`media-container`}>
           <img src={`/media/${this.state.filename}`} />
         </div>

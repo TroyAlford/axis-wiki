@@ -1,16 +1,13 @@
-// modules/Article.js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Link } from 'react-router';
+import ComponentBase      from '../application/ComponentBase'
+import Icon               from './Icon';
+import { Link }           from 'react-router';
+import MenuButton         from './MenuButton';
+import MenuItem           from './MenuItem';
+import ReactDOM           from 'react-dom';
+import Tag                from './Tag';
+import XHR                from '../helpers/XHR';
 
-import Icon from './Icon';
-import MenuButton from './MenuButton';
-import MenuItem from './MenuItem';
-import Tag from './Tag';
-
-import XHR from '../helpers/XHR';
-
-export default class TagBrowser extends React.Component {
+export default class TagBrowser extends ComponentBase {
   constructor(props) {
     super(props);
   }
@@ -38,7 +35,7 @@ export default class TagBrowser extends React.Component {
     }
 
     return (
-      <div className={`cp-tagbrowser message is-info ${this.props.articles.length ? '' : 'is-hidden'}`}>
+      <div className={`tag-browser message is-info ${this.props.articles.length ? '' : 'is-hidden'}`}>
         <div className="message-header"><Icon name="tag" /> Child Articles:</div>
         <div className="columns message-body">{columns}</div>
       </div>
