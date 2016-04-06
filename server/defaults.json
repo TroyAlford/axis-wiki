@@ -23,6 +23,9 @@
   "saving": {
     "throttle": 1000
   },
+  "server": {
+    "port": 8080
+  },
   "storage": {
     "path": "../content"
   }

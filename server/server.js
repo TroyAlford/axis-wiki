@@ -7,9 +7,8 @@ import path       from 'path';
 import request    from 'request';
 import url        from 'url';
 
-import Watcher from './services/Watcher'
-
-var port = 8080;
+import Config  	  from './services/Config'
+import Watcher    from './services/Watcher'
 
 var modules = {
   article: require('./modules/article.js'),
@@ -20,9 +19,9 @@ var modules = {
 Watcher.watch();
 
 var app = express();
-app.use('/api/page', modules.article);
-app.use('/api/config', modules.config);
-app.use('/media', modules.media);
+app.use('/api/page', 	modules.article);
+app.use('/api/config', 	modules.config);
+app.use('/media', 		modules.media);
 
 app.use('/css',     express.static(path.join(__dirname, '../build/css')));
 app.use('/js', 	    express.static(path.join(__dirname, '../build/js')));
@@ -34,6 +33,6 @@ app.get('*', function (req, res) {
     .pipe(res);
 });
 
-app.listen(port, function() {
-  console.log('Express server running on port ' + port);
+app.listen(Config.settings.server.port, function() {
+  console.log(`Express server running on port ${Config.settings.server.port}`);
 });
