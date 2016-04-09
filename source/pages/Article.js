@@ -204,7 +204,7 @@ export default class Article extends ComponentBase {
     return (
       <div className={`article page mode-${this.state.mode}`}>
         <div className="tabs is-right is-boxed">
-          <ul>
+          <ul className="tab-set">
             <li className={`button is-primary ${this.state.mode == 'read' ? 'is-hidden' : ''}`}
                 onClick={this.handleSave}>
               <Icon name="save" size="small" />

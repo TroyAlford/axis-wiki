@@ -12,7 +12,7 @@ html, body { overflow: hidden; }
     border: 0 solid $color-border-blue;
     border-right-width: 1px;
   }
-  > .content {
+  > .page-container {
     position: fixed;
     right: 0; bottom: 0; top: $size-header-y; left: $size-left-column-x;
     padding: 10px;

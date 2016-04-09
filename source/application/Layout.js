@@ -49,7 +49,7 @@ export default class App extends ComponentBase {
       <div className="layout" ref="container">
         <Header />
         <Navigation />
-        <div className="content">
+        <div className="page-container">
           {this.props.children}
         </div>
       </div>

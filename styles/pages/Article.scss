@@ -4,9 +4,25 @@
   position: absolute;
 
   > .tabs {
-    margin: 0;
-    overflow: visible;
+    ul.tab-set {
+      .button {
+        height: 2em;
+        line-height: 1em;
+        margin: auto 0 .2em 0;
+        padding: 0;
+        width: 2em;
+      }
+    }
+  }
+  > .tab {
+    left: 0; right: 0; top: 41px; bottom: 15px;
+    overflow: auto;
+    padding: 10px;
+    position: absolute;
+    text-align: justify;
+  }
 
+  > .tabs {
     .mce-tinymce-inline.mce-panel {
       border: solid $color-border-gray;
       border-width: 1px 0;
@@ -29,18 +45,6 @@
       top: 2px;
     }
 
-    > ul {
-      margin: 0;
-      padding: 0 10px;
-
-      .button {
-        height: 2em;
-        line-height: 1em;
-        margin: auto 0 .2em 0;
-        padding: 0;
-        width: 2em;
-      }
-    }
     li.is-active {
       z-index: 70000;
       a {
@@ -50,12 +54,6 @@
     }
   }
   > .tab {
-    left: 0; right: 0; top: 45px; bottom: 35px;
-    overflow: auto;
-    padding: 10px;
-    position: absolute;
-    text-align: justify;
-
     &.editor {
       top: 75px;
       .mce-edit-focus { outline: none; }
