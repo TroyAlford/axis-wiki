@@ -227,9 +227,10 @@ export default class Article extends ComponentBase {
         <div className="tab editor content">{editor}</div>
         <div className="tab source">{source}</div>
         <div className="tab settings">{settings}</div>
-        <div className="tags">
-          <Icon name="tags" /> {tags}
-          <Icon name="add" onClick={this.handleAddTag.bind(this, 'new tag')} />
+        <div className="tag-bar">
+          <Icon className="tag-bar-icon" name="tags" />
+          {tags}
+          <Icon className="btn-add" name="add" onClick={this.handleAddTag.bind(this, 'new tag')} />
         </div>
       </div>
     );

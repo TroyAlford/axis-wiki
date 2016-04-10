@@ -8,7 +8,7 @@ export default class Icon extends ComponentBase {
 
   render() {
     return (
-      <span className={`icon is-${this.props.size}`}><i
+      <span className={`icon is-${this.props.size} ${this.props.className}`}><i
         className={`icon-${this.props.name}`}
         onClick={this.handleClick}
       ></i></span>

@@ -1,0 +1,32 @@
+.tag-bar {
+  background: $palette-white;
+  border-top: 1px solid $color-border-blue;
+  bottom: 0; left: $size-left-column-x; right: 0;
+  display: block;
+  height: 35px;
+  padding: 5px 5px 5px 35px;
+  position: fixed;
+
+  > .tag-bar-icon {
+    font-size: 25px;
+    padding: 5px;
+    position: absolute;
+    left: 0; top: 0;
+  }
+
+  > .tag, > .tag > span {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+  }
+
+  > .btn-add {
+    cursor: pointer;
+    font-size: 25px;
+    padding: 5px;
+    position: absolute;
+    right: 0; top: 0;
+  }
+}
