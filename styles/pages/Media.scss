@@ -1,6 +1,7 @@
 .media.page {
   .media-container {
+    background-image: $image-transparent;
     text-align: center;
-    img { background-image: $image-transparent; }
+    width: 100%;
   }
 }
