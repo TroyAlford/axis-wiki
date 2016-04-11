@@ -15,7 +15,7 @@
     }
   }
   > .tab {
-    left: 0; right: 0; top: 41px; bottom: 15px;
+    left: 0; right: 0; top: 41px; bottom: 35px;
     overflow: auto;
     padding: 10px;
     position: absolute;
@@ -55,7 +55,7 @@
   }
   > .tab {
     &.editor {
-      top: 75px;
+      top: 71px;
       .mce-edit-focus { outline: none; }
     }
     &.source {
