@@ -19,7 +19,7 @@ export default class FileUploader extends ComponentBase {
       <div className="cp-fileuploader">
         <form ref="upload_form" action={this.props.url || '/media'}
               encType="multipart/form-data" method="POST">
-          <FileInput name="Image" accept=".png,.gif,.jpg"
+          <FileInput name="image_data" accept=".png,.gif,.jpg"
                      placeholder="Choose an Image..."
                      className="cp-fileinput"
                      onChange={this.handleChange} 

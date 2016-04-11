@@ -68,7 +68,7 @@ export default class Article extends ComponentBase {
      return (
       <div className={`media page`}>
         <div className={`media-container`}>
-          <img src={`/media/${this.state.filename}`} />
+          <img src={`/media/full/${this.state.filename}`} />
         </div>
       </div>
     );
