@@ -1,0 +1,17 @@
+a { 
+  color: $palette-royal-blue; 
+
+
+  &.external {
+    &:after {
+      content: '\e807';
+      font-family: axis-wiki;
+      font-size: .7rem;
+      margin-left: 3px;
+      position: relative;
+      top: -3px;
+    }
+  }
+
+  &.missing { color: $palette-red; }
+}

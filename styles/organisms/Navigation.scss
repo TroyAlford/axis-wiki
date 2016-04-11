@@ -1,5 +1,13 @@
 .navigation {
   font-size: .9rem;
-  li > ul { padding-left: 10px; }
-  span { font-weight: bold; }
+
+  ul { 
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  li { padding: 0; }
+  li > ul {
+    margin: 0 0 5px 10px;
+  }
 }

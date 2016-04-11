@@ -39,7 +39,7 @@ export default class Navigation extends ComponentBase {
 
   renderLink(link) {
     return <li key={render_key++}>
-      {link.url ? <a href={link.url}>{link.text}</a> : link.text}
+      {link.url ? <a href={link.url}>{link.text}</a> : <b>{link.text}</b>}
       {this.renderLinks(link.children)}
     </li>;
   }

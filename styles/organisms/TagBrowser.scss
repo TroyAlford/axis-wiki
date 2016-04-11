@@ -6,14 +6,16 @@
     overflow-x: hidden;
 
     .message-header { display: block; }
-    &.is-info .message-body { background-color: $color-info; }
   }
+  &.is-info .message-body { background-color: $color-info; }
 
   .message-header > .icon {
     font-size: 14px;
-    height: 21px; width: 16px;
     margin: 0 0 0 -3px;
     vertical-align: middle;
   }
-  .message-body { margin: 0; }
+  .message-body { 
+    margin: 0; 
+    padding: 0;
+  }
 }

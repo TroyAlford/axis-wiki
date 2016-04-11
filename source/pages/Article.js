@@ -223,8 +223,8 @@ export default class Article extends ComponentBase {
             </li>
           </ul>
         </div>
-        <div className="tab reader content">{viewer}</div>
-        <div className="tab editor content">{editor}</div>
+        <div className="tab reader">{viewer}</div>
+        <div className="tab editor">{editor}</div>
         <div className="tab source">{source}</div>
         <div className="tab settings">{settings}</div>
         <div className="tag-bar">

@@ -1,6 +1,7 @@
 $size-header-y: 50px;
 $size-left-column-x: 160px;
 
+$palette-beige:       #f6ebc1;
 $palette-blue:        #42afe3;
 $palette-dark-gray:   #333;
 $palette-royal-blue:  #08f;
@@ -13,11 +14,7 @@ $color-text:          $palette-dark-gray;
 $color-bg-page:       $palette-white;
 $color-bg-light:      $palette-offwhite;
 
-$color-border-gray:   $palette-light-gray;
 $color-border-blue:   $palette-blue;
-
-$color-default-link:  $palette-royal-blue;
-$color-missing-link:  $palette-red;
 
 $color-table-bg-even: $palette-white;
 $color-table-bg-odds: $palette-offwhite;

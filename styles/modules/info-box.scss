@@ -1,0 +1,15 @@
+.info-box {
+  float: right;
+
+  font-size: .9rem;
+  margin: 0 0 10px 10px;
+  width: 275px;
+
+  th, td { padding: 5px; }
+  th { background-color: darken($palette-offwhite, 2.5%); }
+  td { background-color: $palette-offwhite;  }
+  th:not([colspan]) { 
+    text-align: right;
+    width: 30%; 
+  }
+}

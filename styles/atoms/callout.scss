@@ -1,0 +1,47 @@
+.callout {
+  background-color: $palette-offwhite;
+  border-color: $palette-light-gray;
+  border-style: solid;
+  border-width: 1px;
+  overflow: hidden;
+  padding: 5px 5px 5px 30px;
+  position: relative;
+
+  td, th, &:before {
+    border-color: $palette-light-gray;
+    border-style: solid;
+  }
+  &:before {
+    content: '';
+    display: inline-block;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    border-width: 0 1px 0 0;
+    position: absolute;
+    left: 0; top: 0; height: 100%; width: 24px;
+  }
+}
+
+@mixin callout($color, $icon) {
+  th { background-color: lighten($color, 2.5%); }
+  &:before {
+    background-color: $color;
+    background-image: $icon;
+  }
+}
+
+[class*="callout-"] {
+  @extend .callout;
+
+  &[class*="-system"] { @include callout($color-system, $image-system); }
+  &[class*="-book"]   { @include callout($color-book,   $image-book  ); }
+  &[class*="-info"]   { @include callout($color-info,   $image-info  ); }
+}
+table[class*="callout-"] {
+  border-width: 1px 0 0 1px;
+  padding: 0 0 0 23px;
+  &:before {
+    border-width: 0 1px 1px 0;
+  }
+}
