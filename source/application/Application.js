@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { Redirect, Route, Router, browserHistory } from 'react-router'
 
 import Layout       from './Layout'
+import NotFound     from '../pages/NotFound'
 import Article      from '../pages/Article'
 import Media        from '../pages/Media'
 import Profile      from '../pages/Profile'
@@ -16,6 +17,7 @@ ReactDOM.render((
       <Route path="/info/media/:filename" component={Media} />
       <Route path="/profile" component={Profile} />
       <Route path="/upload" component={Upload} />
+      <Route path="*" component={NotFound} />
     </Route>
   </Router>
 ), document.getElementById('application'));
