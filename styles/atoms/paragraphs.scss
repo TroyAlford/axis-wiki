@@ -1,0 +1,7 @@
+p {
+  margin: 1rem 0;
+  text-align: justify;
+
+  &:first-child { margin-top: 0; }
+  &:last-child  { margin-bottom: 0; }
+}
