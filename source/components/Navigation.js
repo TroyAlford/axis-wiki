@@ -38,8 +38,12 @@ export default class Navigation extends ComponentBase {
   }
 
   renderLink(link) {
-    return <li key={render_key++}>
-      {link.url ? <a href={link.url}>{link.text}</a> : <b>{link.text}</b>}
+    let is_current = link.url == window.location.pathname;
+    return <li key={render_key++} className={is_current ? 'is-current' : ''}>
+      {!link.url || is_current
+        ? <b>{link.text}</b>
+        : <a href={link.url}>{link.text}</a>
+      }
       {this.renderLinks(link.children)}
     </li>;
   }
