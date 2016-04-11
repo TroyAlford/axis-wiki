@@ -36,8 +36,6 @@ class Links {
     this.unindex_html = this.unindex_html.bind(this);
     this.unindex_json = this.unindex_json.bind(this);
 
-    this.save = this.save.bind(this);
-
     this.folders = Config.folders;
     this.files = { links: path.resolve(this.folders.metadata, 'links.json') };
 
@@ -80,8 +78,6 @@ class Links {
       if (!link.exists && !link.to.length && !link.from.length && !link.aliases.length && !link.alias_for)
         delete this.links[slug];
     }
-
-    this.save();
   }
   reindex_html(slug) {
     console.log(`${slug} changed: reindexing links.`);
@@ -101,7 +97,7 @@ class Links {
     this.links[slug].exists = true;
     this.links[slug].to = updated;
 
-    setTimeout(this.cleanse, THROTTLE); // Also saves.
+    setTimeout(this.cleanse, THROTTLE);
   }
   reindex_json(slug) {
     console.log(`${slug} changed: reindexing aliases.`);
@@ -123,7 +119,7 @@ class Links {
 
     this.links[slug].aliases = updated;
 
-    setTimeout(this.cleanse, THROTTLE); // Also saves.
+    setTimeout(this.cleanse, THROTTLE);
   }
   unindex_html(slug) {
     console.log(`${slug} removed: unindexing links.`);
@@ -136,7 +132,7 @@ class Links {
       this.links[link].from = _.difference(this.links[link].from, [slug]);
     });
 
-    setTimeout(this.cleanse, THROTTLE); // Also saves.
+    setTimeout(this.cleanse, THROTTLE);
   }
   unindex_json(slug) {
     console.log(`${slug} removed: unindexing aliases.`);
@@ -148,7 +144,7 @@ class Links {
         delete this.links[link].alias_for;
     });
 
-    setTimeout(this.cleanse, THROTTLE); // Also saves.
+    setTimeout(this.cleanse, THROTTLE);
   }
 
   rebuild() {
@@ -188,16 +184,10 @@ class Links {
 
     this.links = rebuilt;
 
-    setTimeout(this.cleanse, THROTTLE); // Also saves.
+    setTimeout(this.cleanse, THROTTLE);
   }
   reload() {
     this.links = utils.exists(this.files.links) ? utils.readJSONSync(this.files.links) : {};
-  }
-  save() {
-    var json = !Config.settings.debugging
-      ? JSON.stringify(this.links)
-      : JSON.stringify(this.links, null, 2);
-    fs.writeFile(this.files.links, json);
   }
 }
 

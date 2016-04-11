@@ -26,7 +26,6 @@ var article = module.exports = express()
     return response.status(200).send(Article.get_final(slug));
   })
   .post('/:slug', (request, response) => {
-    console.log(request.cookies);
     let slug    = Slug.normalize(request.params.slug),
         posted  = request.body,
         saved   = Article.save(slug, posted);

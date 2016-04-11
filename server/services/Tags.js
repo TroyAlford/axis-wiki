@@ -31,7 +31,6 @@ class Tags {
     this.rebuild = this.rebuild.bind(this);
     this.reindex = this.reindex.bind(this);
     this.reload = this.reload.bind(this);
-    this.save = this.save.bind(this);
 
     this.folders = Config.folders;
     this.files = { tags: path.resolve(this.folders.metadata, 'tags.json') };
@@ -58,8 +57,6 @@ class Tags {
     for (var tag in this.tags) {
       if (!this.tags[tag].length) delete this.tags[tag];
     }
-
-    return this.save();
   }
   reindex(slug) {
     console.log(`${slug} changed: reindexing tags.`);
@@ -95,7 +92,7 @@ class Tags {
     this.articles = rebuilt.articles;
     this.tags = rebuilt.tags;
 
-    setTimeout(this.cleanse, 0); // Will also save.
+    setTimeout(this.cleanse, 0);
   }
   reload() {
     let json = utils.exists(this.files.tags) ? utils.readJSONSync(this.files.tags) : {articles:{},tags:{}};
@@ -113,15 +110,6 @@ class Tags {
     });
 
     setTimeout(this.cleanse, THROTTLE);
-  }
-  save() {
-    let obj = { articles: this.articles, tags: this.tags },
-        json = !Config.settings.debugging
-                 ? JSON.stringify(obj)
-                 : JSON.stringify(obj, null, 2);
-
-    console.log(`Saving ${this.files.tags}`);
-    fs.writeFile(this.files.tags, json);
   }
 }
 
