@@ -79,6 +79,8 @@
       }
     }
   }
+  &.mode-read .tag-bar .btn-add       { display: none; }
+  
   &:not(.mode-read)     .tab.reader   { display: none; }
   &:not(.mode-edit)     .tab.editor   { display: none; }
   &:not(.mode-source)   .tab.source   { display: none; }
