@@ -8,9 +8,4 @@
   th, td { padding: 5px; }
   th { background-color: darken($palette-offwhite, 2.5%); }
   td { background-color: $palette-offwhite;  }
-  th:not([colspan]) { 
-    text-align: right;
-    width: 30%; 
-  }
-  [colspan] { text-align: center; }
 }

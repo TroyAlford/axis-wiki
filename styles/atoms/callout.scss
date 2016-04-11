@@ -1,5 +1,13 @@
-.callout {
-  background-color: $palette-offwhite;
+@mixin callout-color($color, $icon) {
+  th { background-color: lighten($color, 2.5%); }
+  &:before {
+    background-color: $color;
+    background-image: $icon;
+  }
+}
+
+.callout, [class*="callout-"] {
+  background-color: $palette-white;
   border-color: $palette-light-gray;
   border-style: solid;
   border-width: 1px;
@@ -21,23 +29,12 @@
     position: absolute;
     left: 0; top: 0; height: 100%; width: 24px;
   }
+
+  &[class*="-system"] { @include callout-color($color-system, $image-system); }
+  &[class*="-book"]   { @include callout-color($color-book,   $image-book  ); }
+  &[class*="-info"]   { @include callout-color($color-info,   $image-info  ); }
 }
 
-@mixin callout($color, $icon) {
-  th { background-color: lighten($color, 2.5%); }
-  &:before {
-    background-color: $color;
-    background-image: $icon;
-  }
-}
-
-[class*="callout-"] {
-  @extend .callout;
-
-  &[class*="-system"] { @include callout($color-system, $image-system); }
-  &[class*="-book"]   { @include callout($color-book,   $image-book  ); }
-  &[class*="-info"]   { @include callout($color-info,   $image-info  ); }
-}
 table[class*="callout-"] {
   border-width: 1px 0 0 1px;
   padding: 0 0 0 23px;
