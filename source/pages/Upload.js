@@ -1,5 +1,5 @@
 import ComponentBase      from '../application/ComponentBase'
-import FileInput from 'react-file-input';
+import FileInput          from '../components/FileInput';
 
 export default class FileUploader extends ComponentBase {
   constructor(props) {
@@ -21,7 +21,6 @@ export default class FileUploader extends ComponentBase {
               encType="multipart/form-data" method="POST">
           <FileInput name="image_data" accept=".png,.gif,.jpg"
                      placeholder="Choose an Image..."
-                     className="cp-fileinput"
                      onChange={this.handleChange} 
           />
           <input type="submit" value="Save" />

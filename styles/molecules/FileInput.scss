@@ -1,0 +1,17 @@
+.file-input {
+  position: relative;
+
+  .input-file {
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .input-text {
+    position: relative;
+    z-index: -1;
+  }
+}
