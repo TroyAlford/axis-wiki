@@ -25,11 +25,10 @@
     "mkdirp": "^0.5.1",
     "multer": "^1.1.0",
     "normalize.css": "^4.0.0",
-    "react": "^0.14.7",
-    "react-dom": "^0.14.7",
-    "react-file-input": "^0.2.5",
+    "react": "^15.0.1",
+    "react-dom": "^15.0.1",
     "react-router": "^2.0.0",
-    "react-tinymce": "^0.4.0",
+    "react-tinymce": "github:TroyAlford/react-tinymce",
     "tinymce": "^4.3.8"
   },
   "devDependencies": {
@@ -41,8 +40,10 @@
     "browserify-resolutions": "^1.0.6",
     "concat": "github:azer/concat",
     "concat-cli": "^4.0.0",
+    "jest": "^0.1.40",
     "node-sass": "^3.4.2",
-    "nodemon": "^1.9.1"
+    "nodemon": "^1.9.1",
+    "react-addons-test-utils": "^15.0.1"
   },
   "browserify": {
     "transform": [
