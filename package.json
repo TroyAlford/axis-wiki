@@ -33,14 +33,16 @@
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
-    "babel-preset-es2015": "^6.3.13",
-    "babel-preset-react": "^6.3.13",
+    "babel-jest": "^10.0.2",
+    "babel-preset-es2015": "*",
+    "babel-preset-jest": "*",
+    "babel-preset-react": "*",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
     "browserify-resolutions": "^1.0.6",
     "concat": "github:azer/concat",
     "concat-cli": "^4.0.0",
-    "jest": "^0.1.40",
+    "jest-cli": "*",
     "node-sass": "^3.4.2",
     "nodemon": "^1.9.1",
     "react-addons-test-utils": "^15.0.1"
@@ -50,7 +52,16 @@
       "babelify"
     ]
   },
+  "jest": {
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react",
+      "<rootDir>/node_modules/react-dom",
+      "<rootDir>/node_modules/react-router",
+      "<rootDir>/node_modules/react-addons-test-utils"
+    ]
+  },
   "scripts": {
+    "test": "jest",
     "develop": "npm run serve & npm run jsx-build-dep & npm run watch-jsx & npm run watch-css",
     "build": "npm run clean && (npm run build-jsx & npm run build-css)",
     "build-css": "npm run css-app-build & npm run css-dep-build",
