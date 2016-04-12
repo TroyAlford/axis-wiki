@@ -1,4 +1,4 @@
-![](https://circleci.com/gh/TroyAlford/axis-wiki.svg?style=shield&circle-token=de0448a66f628869883f75536987c2090d2479b6)
+![](https://circleci.com/gh/TroyAlford/axis-wiki.svg?style=shield&circle-token=aacb39e59ecff89f1fc9ee7a301b4c23f4bfab65)
 # Axis Wiki
 ### A wiki project built on TinyMCE and React
 
