@@ -4,7 +4,7 @@ machine:
   python:
     version: 2.7.10
 
-deployment:
+no_deployment:
   production:
     branch: master
     codedeploy:
