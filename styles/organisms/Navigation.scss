@@ -18,7 +18,12 @@
   }
 
   li.is-current {
-    list-style: disc;
-    list-style-position: inside;
+    list-style: none;
+
+    &:before {
+      content: '»';
+      margin-left: -.75em;
+      position: absolute;
+    }
   }
 }
