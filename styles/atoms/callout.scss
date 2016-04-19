@@ -36,9 +36,10 @@
 }
 
 table[class*="callout-"] {
-  border-width: 1px 0 0 1px;
+  border-width: 1px;
   padding: 0 0 0 23px;
   &:before {
-    border-width: 0 1px 1px 0;
+    border-right-width: 1px;
+    border-radius: 5px 0 0 5px;
   }
 }
