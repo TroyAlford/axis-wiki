@@ -1,0 +1,10 @@
+.section-header:not(:empty) {
+  border-bottom: 1px solid $palette-blue;
+  display: flex;
+
+  .section-heading {
+    font-family: $font-headers;
+    font-weight: bold;
+    padding: 5px;
+  }
+}
