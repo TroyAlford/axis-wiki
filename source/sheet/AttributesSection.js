@@ -11,20 +11,20 @@ export default ({ attrs, onChange }) => {
       <div className="name">Attributes</div>
       <div className="attributes">
         <div className="placeholder attr"></div>
-        <Attribute attr={{
+        <Attribute className="th" attr={{
           name: "body", 
           value: Math.floor(map['strength'] + map['agility'] + map['fitness'] / 3)
         }} />
-        <Attribute attr={{
+        <Attribute className="th" attr={{
           name: "Mind",
           value: Math.floor(map['intellect'] + map['acuity'] + map['focus'] / 3)
         }} />
-        <Attribute attr={{
+        <Attribute className="th" attr={{
           name: "Spirit",
           value: Math.floor(map['confidence'] + map['intuition'] + map['devotion'] / 3)
         }} />
 
-        <Attribute attr={{
+        <Attribute className="th" attr={{
           name: "Potency",
           value: Math.floor(map['strength'] + map['intellect'] + map['confidence'] / 3)
         }} />
@@ -32,7 +32,7 @@ export default ({ attrs, onChange }) => {
         <Attribute attr={attrs.get('intellect')} />
         <Attribute attr={attrs.get('confidence')} />
 
-        <Attribute attr={{
+        <Attribute className="th" attr={{
           name: "Reflex",
           value: Math.floor(map['agility'] + map['acuity'] + map['intuition'] / 3)}
         }/>
@@ -40,7 +40,7 @@ export default ({ attrs, onChange }) => {
         <Attribute attr={attrs.get('acuity')} />
         <Attribute attr={attrs.get('focus')} />
 
-        <Attribute attr={{
+        <Attribute className="th" attr={{
           name: "Resilience",
           value: Math.floor(map['fitness'] + map['focus'] + map['devotion'] / 3)
         }} />

@@ -1,8 +1,15 @@
 import Attribute          from '../sheet/Attribute'
 import SectionHeader      from '../sheet/SectionHeader'
 
-export default ({ name = '', header = [], attrs = [], children, onChange }) => 
-  <div className={`${name} section`}>
+export default ({ 
+  attrs = [], 
+  className = '', 
+  header = [], 
+  name = '', 
+  children, 
+  onChange 
+}) => 
+  <div className={`${name} section ${className}`}>
     <div className="name">{name}</div>
     <SectionHeader items={header} />
     <div className="attributes">

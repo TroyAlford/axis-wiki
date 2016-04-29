@@ -1,3 +1,35 @@
+.attr-highlight {
+  border-radius: 3px;
+  background-color: #f0f9f9;
+}
+
 .sheet.page {
   font-size: .8em;
+
+  .portrait {
+    border-radius: 5px;
+    border: 5px solid lighten($palette-light-gray, 5%);
+  }
+
+  .attr.th {
+    border-radius: 3px;
+    background-color: $palette-light-blue;
+  }
+
+  .Attributes.section .attr.placeholder {
+    background-color: transparent;
+  }
+  .Attributes.section .attr:not(.th)   { @extend .attr-highlight; }
+  .Traits.section {
+    .attr { width: 100%; }
+    .section-header, .attr { 
+      display: flex;
+      justify-content: space-between; 
+    }
+    .attr:nth-child(odd) { @extend .attr-highlight; }
+  }
+  .Skills.section {
+    .attr { width: 100%; }
+    .attr:nth-child(odd) { @extend .attr-highlight; }
+  }
 }
