@@ -1,0 +1,19 @@
+.sheet .section {
+  background: transparent;
+  border-top: none;
+  margin-bottom: 10px;
+  padding: 0;
+
+  > .name {
+    border-bottom: 1px solid $palette-blue;
+    font-family: Ubuntu, Calibri, sans-serif;
+    font-size: 1.4em;
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+
+  > .header {
+    height: auto;
+    display: flex;
+  }
+}
