@@ -1,0 +1,22 @@
+.attributes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 5px 0;
+
+  .attr {
+    display: flex;
+    min-width: 24%;
+
+    .name  {
+      font-family: Ubuntu, Calibri, sans-serif;
+      font-weight: bold;
+      text-transform: capitalize;
+      width: 40%; 
+    }
+    .value { width: 60%; text-align: right; }
+
+    &.cols-2 { width: 49%; }
+    &.cols-3 { width: 75%; }
+  }
+}
