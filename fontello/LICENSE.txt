@@ -1,22 +1,13 @@
 Font license info
 
 
-## Elusive
+## Font Awesome
 
-   Copyright (C) 2013 by Aristeides Stathopoulos
+   Copyright (C) 2012 by Dave Gandy
 
-   Author:    Aristeides Stathopoulos
-   License:   SIL (http://scripts.sil.org/OFL)
-   Homepage:  http://aristeides.com/
-
-
-## Typicons
-
-   (c) Stephen Hutchings 2012
-
-   Author:    Stephen Hutchings
-   License:   SIL (http://scripts.sil.org/OFL)
-   Homepage:  http://typicons.com/
+   Author:    Dave Gandy
+   License:   SIL ()
+   Homepage:  http://fortawesome.github.com/Font-Awesome/
 
 
 ## Entypo
@@ -28,6 +19,15 @@ Font license info
    Homepage:  http://www.entypo.com
 
 
+## Typicons
+
+   (c) Stephen Hutchings 2012
+
+   Author:    Stephen Hutchings
+   License:   SIL (http://scripts.sil.org/OFL)
+   Homepage:  http://typicons.com/
+
+
 ## Iconic
 
    Copyright (C) 2012 by P.J. Onori
@@ -37,12 +37,12 @@ Font license info
    Homepage:  http://somerandomdude.com/work/iconic/
 
 
-## Font Awesome
+## Elusive
 
-   Copyright (C) 2012 by Dave Gandy
+   Copyright (C) 2013 by Aristeides Stathopoulos
 
-   Author:    Dave Gandy
-   License:   SIL ()
-   Homepage:  http://fortawesome.github.com/Font-Awesome/
+   Author:    Aristeides Stathopoulos
+   License:   SIL (http://scripts.sil.org/OFL)
+   Homepage:  http://aristeides.com/
 
 

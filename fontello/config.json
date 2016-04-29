@@ -9,19 +9,19 @@
     {
       "uid": "e15f0d620a7897e2035c18c80142f6d9",
       "css": "link-external",
-      "code": 59399,
+      "code": 59392,
       "src": "fontawesome"
     },
     {
       "uid": "7034e4d22866af82bef811f52fb1ba46",
       "css": "html",
-      "code": 59401,
+      "code": 59393,
       "src": "fontawesome"
     },
     {
       "uid": "a66cdc7278e6b33b8bd44a141f5e1a8d",
       "css": "add",
-      "code": 59396,
+      "code": 59394,
       "src": "entypo"
     },
     {
@@ -33,7 +33,7 @@
     {
       "uid": "3327862df439988139b61814143b7a42",
       "css": "remove",
-      "code": 59394,
+      "code": 59396,
       "src": "typicons"
     },
     {
@@ -45,26 +45,32 @@
     {
       "uid": "3a89ddb1c81111c15d6c4e26cc3c546a",
       "css": "settings",
-      "code": 59400,
+      "code": 59398,
       "src": "typicons"
     },
     {
       "uid": "8fc56819afcd07e2786e34f18d39b71b",
       "css": "read",
-      "code": 59398,
+      "code": 59399,
       "src": "iconic"
     },
     {
       "uid": "630529f03c319c01101aa167181b650e",
       "css": "tag",
-      "code": 59392,
+      "code": 59400,
       "src": "elusive"
     },
     {
       "uid": "937a0ad3f6e25611bff801445d6a4885",
       "css": "tags",
-      "code": 59393,
+      "code": 59401,
       "src": "elusive"
+    },
+    {
+      "uid": "da0fd38d651815e3a12f6c030ff1fe5b",
+      "css": "sheet",
+      "code": 59402,
+      "src": "entypo"
     }
   ]
 }

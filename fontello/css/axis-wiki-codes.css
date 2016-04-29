@@ -1,11 +1,12 @@
 
-.icon-tag:before { content: '\e800'; } /* '' */
-.icon-tags:before { content: '\e801'; } /* '' */
-.icon-remove:before { content: '\e802'; } /* '' */
+.icon-link-external:before { content: '\e800'; } /* '' */
+.icon-html:before { content: '\e801'; } /* '' */
+.icon-add:before { content: '\e802'; } /* '' */
 .icon-save:before { content: '\e803'; } /* '' */
-.icon-add:before { content: '\e804'; } /* '' */
+.icon-remove:before { content: '\e804'; } /* '' */
 .icon-edit:before { content: '\e805'; } /* '' */
-.icon-read:before { content: '\e806'; } /* '' */
-.icon-link-external:before { content: '\e807'; } /* '' */
-.icon-settings:before { content: '\e808'; } /* '' */
-.icon-html:before { content: '\e809'; } /* '' */
+.icon-settings:before { content: '\e806'; } /* '' */
+.icon-read:before { content: '\e807'; } /* '' */
+.icon-tag:before { content: '\e808'; } /* '' */
+.icon-tags:before { content: '\e809'; } /* '' */
+.icon-sheet:before { content: '\e80a'; } /* '' */
