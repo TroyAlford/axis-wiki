@@ -1,0 +1,8 @@
+.sheet .editable {
+  @extend .ellipsis;
+  padding: .25em 0;
+  min-width: 30px;
+  text-align: center;
+
+  &:empty { display: none; }
+}

@@ -6,15 +6,23 @@
 
   .attr {
     display: flex;
+    justify-content: space-between;
+    padding: 0 .25em;
+    margin: 2px;
     min-width: 24%;
 
+    > div {
+      min-width: 30px;
+      text-align: center;
+    }
+
     .name  {
+      flex-grow: 1;
       font-family: Ubuntu, Calibri, sans-serif;
       font-weight: bold;
+      text-align: left;
       text-transform: capitalize;
-      width: 40%; 
     }
-    .value { width: 60%; text-align: right; }
 
     &.cols-2 { width: 49%; }
     &.cols-3 { width: 75%; }
