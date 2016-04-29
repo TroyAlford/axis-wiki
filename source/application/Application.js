@@ -11,6 +11,7 @@ import NotFound        from '../pages/NotFound'
 import Article         from '../pages/Article'
 import Media           from '../pages/Media'
 import Profile         from '../pages/Profile'
+import Sheet           from '../pages/Sheet'
 import Upload          from '../pages/Upload'
 
 const store              = createStore(appState)
@@ -24,6 +25,7 @@ ReactDOM.render(
         <Route path="/page/:slug" component={Article} />
         <Route path="/info/media/:filename" component={Media} />
         <Route path="/profile" component={Profile} />
+        <Route path="/sheet/:slug" component={Sheet} />
         <Route path="/upload" component={Upload} />
         <Route path="*" component={NotFound} />
       </Route>
