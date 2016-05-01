@@ -15,7 +15,8 @@
     }
   },
   "media": {
-    "image_resize_width": 250
+    "lg_image_width": 1000,
+    "sm_image_width": 250
   },
   "navigation": {
     "default_links": [

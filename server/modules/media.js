@@ -2,6 +2,7 @@
 import _               from 'lodash'
 import bodyParser      from 'body-parser'
 import cheerio         from 'cheerio'
+import del             from 'del'
 import express         from 'express'
 import fs              from 'fs'
 import lwip            from 'lwip'
@@ -34,32 +35,68 @@ var storage = multer.diskStorage({
     var ext  = path.extname(file.originalname),
         name = Slug.normalize(path.basename(file.originalname, ext));
 
-    ext = ext.replace(/jpeg/, 'jpg');
+    ext = ext
+      .replace('.', '')
+      .replace(/jpeg/, 'jpg')
+    ;
 
     request._filename = name;
     request._extension = ext;
-    request._full_path = `${name}.full${ext}`;
-    cb(null, request._full_path);
+    request._temp_path = `${name}.temp.${ext}`;
+
+    cb(null, request._temp_path);
   }
 });
 media.post('/', multer({ storage: storage })
   .single("image_data"), function(request, response) {
     let name     = request._filename,
         ext      = request._extension,
-        filename = `${name}${ext}`;
+        fullsize_filename = `${name}.full.${ext}`,
+        preview_filename  = `${name}.${ext}`;
 
-    lwip.open(request.file.path, (error, image) => {
-      let resize_w = settings.image_resize_width,
-          resize_h = image.height() * (resize_w / image.width());
-      image.batch()
-        .resize(resize_w, resize_h)
-        .writeFile(path.resolve(folders.media, filename), err => {
-          if (err) response.status(400).send({
-            error: 'Error encountered while attempting to create a thumbnail for your file.'
-          });
-        })
-      ;
-    })
-    response.redirect(`/info/media/${filename}`);
+    let lwip_error = false;
+
+    lwip.open(path.resolve(folders.media, request._temp_path), (error, image) => {
+      lwip_error = error || false;
+      if (lwip_error) return;
+
+      console.log(`Media: uploaded ${request._temp_path} => ${image.width()}x${image.height()}px image.`)
+
+      let fullsize_w = settings.lg_image_width,
+          fullsize_h = Math.round(image.height() * (fullsize_w / image.width())),
+          preview_w  = settings.sm_image_width,
+          preview_h  = Math.round(image.height() * (preview_w / image.width()));
+
+      let fullsize = (image.width() > fullsize_w)
+        ? resize(image, fullsize_w, fullsize_h)
+        : image;
+
+      let preview = (image.width() > preview_w)
+        ? resize(image, preview_w, preview_h)
+        : image;
+
+      fullsize.writeFile(path.resolve(folders.media, fullsize_filename), error => {
+        if (error)
+          return console.log(` !! fullsize error: ${lwip_error}`);
+
+        console.log(` >> ${fullsize_filename} => ${fullsize_w}x${fullsize_h}px`);
+
+        preview.writeFile(path.resolve(folders.media, preview_filename), error => {
+          if (error)
+            return console.log(` !! preview error: ${lwip_error}`);
+
+          console.log(` >> ${preview_filename} => ${preview_w}x${preview_h}px`);
+
+          del([path.resolve(folders.media, request._temp_path)], { force: true })
+            .then(paths => { console.log(` XX ${request._temp_path} => deleted`); });
+
+          response.redirect(`/info/media/${preview_filename}`);
+        });
+      });
+    });
   })
 ;
+
+function resize(image, w, h) {
+  return image.batch().resize(w, h);
+}
