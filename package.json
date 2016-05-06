@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "body-parser": "^1.15.0",
-    "bulma": "0.0.24",
+    "bulma": "0.0.25",
     "cheerio": "^0.20.0",
     "chokidar": "^1.4.3",
     "cookie-parser": "^1.4.1",
