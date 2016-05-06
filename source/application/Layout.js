@@ -3,6 +3,7 @@ import ReactDOM           from 'react-dom'
 import { browserHistory } from 'react-router'
 
 import ComponentBase      from '../application/ComponentBase'
+import HtmlMetadata       from '../containers/HtmlMetadata'
 import Header             from '../components/Header'
 import Navigation         from '../components/Navigation'
 
@@ -49,6 +50,7 @@ export default class App extends ComponentBase {
   render() {
     return (
       <div className="layout" ref="container">
+        <HtmlMetadata />
         <Header />
         <Navigation />
         <div className="page-container">
