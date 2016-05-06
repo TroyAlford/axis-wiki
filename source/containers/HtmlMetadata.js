@@ -15,5 +15,5 @@ export default connect(
       ]
     }
   },
-  (dispatch) => {}
+  (dispatch) => { return {}; }
 )(Helmet)
