@@ -15,16 +15,27 @@ const parser = document.createElement('a');
 class Layout extends ComponentBase {
   constructor(props) {
     super(props);
-    
-    let slug = _(window.location.pathname).split('/').last();
-    this.props.dispatch(loadArticle(slug));
+
+    let path = window.location.pathname,
+        slug = _(path).split('/').last();
+    if (!path || _(path).startsWith('/page/'))
+      this.props.dispatch(loadArticle(slug));
+  }
+
+  elementIsWithinEditor(element) {
+    if (element.id.startsWith('react-tinymce'))
+      return true;
+    else if (!element.parentElement)
+      return false;
+    else
+      return this.elementIsWithinEditor(element.parentElement);
   }
 
   handleClicks(event) {
     let node_name = event.target.nodeName.toUpperCase();
     if (node_name !== 'A' && node_name !== 'IMG') return;
 
-    let inside_editor = undefined !== _(event.path).find({ id: 'react-tinymce-0' });
+    let inside_editor = this.elementIsWithinEditor(event.target);
     let url = parser.href = event.target.href || event.target.src;
     
     if (inside_editor || !url)
@@ -39,7 +50,7 @@ class Layout extends ComponentBase {
       case "A":
         return this.props.dispatch(loadArticle(slug));
       case "IMG":
-        return browserHistory.push(`/info/${slug}`);
+        return browserHistory.push(`/info/media/${slug}`);
     }
   }
 
