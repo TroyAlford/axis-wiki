@@ -1,3 +1,4 @@
+import _                  from 'lodash'
 import { browserHistory } from 'react-router'
 import ComponentBase      from '../application/ComponentBase'
 import Icon               from '../components/Icon'
@@ -18,6 +19,10 @@ class Article extends ComponentBase {
     this.state = {
       selected_tab: 0
     }
+  }
+
+  handleTagChange(tags) {
+    this.setState({ tags: _.uniq(_.sortBy(tags)) });
   }
 
   render() {
@@ -47,6 +52,7 @@ class Article extends ComponentBase {
           }]}
           tabClicked={clicked => this.setState({ selected_tab: clicked.index })}
         />
+        <TagsInput value={this.state.tags || this.props.tags} onChange={this.handleTagChange} />
       </div>
     )
   }

@@ -1,5 +1,6 @@
 $tabs-height: 35px;
 $toolbar-height: 32px;
+$tags-height: 36px;
 
 .article.page {
   left: 0; right: 0; top: 0; bottom: 0;
@@ -21,7 +22,7 @@ $toolbar-height: 32px;
 
     > .tab {
       position: absolute;
-      top: $tabs-height; left: 0; right: 0; bottom: 0;
+      top: $tabs-height; left: 0; right: 0; bottom: $tags-height;
       overflow-y: auto;
     }
 
@@ -70,5 +71,11 @@ $toolbar-height: 32px;
       padding-right: 18px;
       > .mce-caret { right: 5px; }
     }
+  }
+
+  .react-tagsinput {
+    position: absolute;
+    height: $tags-height;
+    bottom: 0; left: 0; right: 0;
   }
 }
