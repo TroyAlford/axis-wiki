@@ -1,4 +1,5 @@
 $tabs-height: 35px;
+$toolbar-height: 32px;
 
 .article.page {
   left: 0; right: 0; top: 0; bottom: 0;
@@ -12,6 +13,10 @@ $tabs-height: 35px;
     > ul.tabs {
       height: $tabs-height;
       text-align: right;
+
+      > li.edit.is-active {
+        background-color: #f0f0f0;
+      }
     }
 
     > .tab {
@@ -19,14 +24,23 @@ $tabs-height: 35px;
       top: $tabs-height; left: 0; right: 0; bottom: 0;
       overflow-y: auto;
     }
+
+    .tab.edit {
+      padding: 0;
+      top: $tabs-height + $toolbar-height;
+
+      > [id^="react-tinymce"] {
+        padding: 10px;
+        position: absolute;
+      }
+    }
   }
 
   .mce-tinymce-inline.mce-panel {
-    border: solid $palette-light-gray;
-    border-width: 1px 0;
+    border: solid $palette-royal-blue;
+    border-width: 0 0 1px 0!important;
     display: block!important;
-    margin: -2px 0 0 0;
-    height: 32px!important;
+    height: $toolbar-height!important;
     width: auto!important;
 
     .mce-flow-layout-item { margin: 0; }

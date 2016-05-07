@@ -10,6 +10,8 @@ import XHR                from '../helpers/XHR'
 
 import { connect }        from 'react-redux'
 
+let tinyMCE = window.tinyMCE;
+
 class Article extends ComponentBase {
   constructor(props) {
     super(props);
