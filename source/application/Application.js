@@ -4,7 +4,7 @@ import { Provider }    from 'react-redux'
 import { Redirect, Route, Router, browserHistory } from 'react-router'
 import { createStore } from 'redux'
 
-import appState        from '../reducers'
+import reducer         from '../reducers'
 
 import Layout          from './Layout'
 import NotFound        from '../pages/NotFound'
@@ -14,11 +14,10 @@ import Profile         from '../pages/Profile'
 import Sheet           from '../pages/Sheet'
 import Upload          from '../pages/Upload'
 
-const store              = createStore(appState)
 const applicationElement = document.getElementById('application')
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider store={reducer}>
     <Router history={browserHistory}>
       <Redirect from="/" to="/page/home" />
       <Route path="/" component={Layout}>

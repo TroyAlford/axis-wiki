@@ -1,98 +1,41 @@
+$tabs-height: 35px;
+
 .article.page {
   left: 0; right: 0; top: 0; bottom: 0;
   padding: 0;
   position: absolute;
 
-  > .tabs {
-    ul.tab-set {
-      .button {
-        height: 2em;
-        line-height: 1em;
-        margin: auto 0 .2em 0;
-        padding: 0;
-        width: 2em;
-      }
-    }
-  }
-  > .tab {
-    left: 0; right: 0; top: 41px; bottom: 35px;
-    overflow: auto;
-    padding: 10px;
+  .tab-set {
+    left: 0; right: 0; top: 0; bottom: 0;
     position: absolute;
-    text-align: justify;
+
+    > ul.tabs {
+      height: $tabs-height;
+      text-align: right;
+    }
+
+    > .tab {
+      position: absolute;
+      top: $tabs-height; left: 0; right: 0; bottom: 0;
+      overflow-y: auto;
+    }
   }
 
-  > .tabs {
-    .mce-tinymce-inline.mce-panel {
-      border: solid $palette-light-gray;
-      border-width: 1px 0;
-      margin: -2px 0 0 0;
-      height: 32px!important;
-      width: auto!important;
-
-      .mce-flow-layout-item { margin: 0; }
-      .mce-toolbar-grp { padding: 0; }
-      .mce-btn-group { padding: 2px 3px; }
-      .mce-btn > button { padding: 2px 4px; }
-      .mce-btn.mce-listbox > button {
-        padding-right: 18px;
-        > .mce-caret { right: 5px; }
-      }
-    }
-
-    .icon.is-small {
-      position: relative;
-      top: 2px;
-    }
-
-    li.is-active {
-      z-index: 70000;
-      a {
-        background: #f0f0f0;
-        padding: 5px 15px 4px;
-      }
-    }
-  }
-  > .tab {
-    &.editor {
-      top: 71px;
-      .mce-edit-focus { outline: none; }
-    }
-    &.source {
-      textarea {
-        border: none;
-        font-family: monospace;
-        padding: 10px;
-        position: absolute;
-        resize: none;
-        left: 0; top: 1px; bottom: 0; width: 100%;
-      }
-    }
-    &.settings {
-      table.settings {
-        th { width: 100px; }
-        td > div > textarea {
-          display: block;
-          resize: none;
-          height: 100%; width: 100%;
-        }
-      }
-    }
-  }
-  &.mode-read .tag-bar .btn-add       { display: none; }
-  
-  &:not(.mode-read)     .tab.reader   { display: none; }
-  &:not(.mode-edit)     .tab.editor   { display: none; }
-  &:not(.mode-source)   .tab.source   { display: none; }
-  &:not(.mode-settings) .tab.settings { display: none; }
-
-  &.mode-edit > .tabs .mce-tinymce-inline.mce-panel {
+  .mce-tinymce-inline.mce-panel {
+    border: solid $palette-light-gray;
+    border-width: 1px 0;
     display: block!important;
-  }
-  
-  &.mode-read .tags {
-    padding: 5px 35px;
+    margin: -2px 0 0 0;
+    height: 32px!important;
+    width: auto!important;
 
-    > .icon:last-child { display: none; }
+    .mce-flow-layout-item { margin: 0; }
+    .mce-toolbar-grp { padding: 0; }
+    .mce-btn-group { padding: 2px 3px; }
+    .mce-btn > button { padding: 2px 4px; }
+    .mce-btn.mce-listbox > button {
+      padding-right: 18px;
+      > .mce-caret { right: 5px; }
+    }
   }
 }
