@@ -34,6 +34,20 @@ $toolbar-height: 32px;
         position: absolute;
       }
     }
+
+    .tab.html {
+      padding: 5px;
+
+      > textarea {
+        border: none;
+        font-family: monospace;
+        padding: 5px;
+        position: absolute;
+        resize: none;
+        left: 0; top: 0; right: 0; bottom: 0;
+        width: 100%;
+      }
+    }
   }
 
   .mce-tinymce-inline.mce-panel {
