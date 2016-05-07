@@ -7,7 +7,8 @@ import TagsInput          from 'react-tagsinput'
 import TagBrowser         from '../components/TagBrowser'
 import TinyMCE            from 'react-tinymce'
 import editor_config      from '../config/editor'
-import XHR                from '../helpers/XHR'
+
+import { loadArticle }    from '../actions/article'
 
 import { connect }        from 'react-redux'
 
@@ -21,8 +22,13 @@ class Article extends ComponentBase {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.slug !== nextProps.params.slug)
+      this.props.dispatch(loadArticle(nextProps.params.slug));
+  }
+
   handleTagChange(tags) {
-    this.setState({ tags: _.uniq(_.sortBy(tags)) });
+    this.setState({ tags: _.sortBy(tags) });
   }
 
   render() {
@@ -52,7 +58,15 @@ class Article extends ComponentBase {
           }]}
           tabClicked={clicked => this.setState({ selected_tab: clicked.index })}
         />
-        <TagsInput value={this.state.tags || this.props.tags} onChange={this.handleTagChange} />
+        <TagsInput 
+          value={this.state.tags || this.props.tags} 
+          inputProps={{ 
+            className: 'react-tagsinput-input', 
+            placeholder: 'add tag'
+          }}
+          onChange={this.handleTagChange} 
+          onlyUnique={true}
+        />
       </div>
     )
   }
