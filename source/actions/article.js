@@ -29,7 +29,9 @@ export function loadingArticle(slug) {
 }
 
 export function loadedArticle(slug, article) {
-  browserHistory.push(`/page/${slug}`)
+  if (browserHistory.location !== `/page/${slug}`)
+    browserHistory.push(`/page/${slug}`)
+  
   return {
     type: ARTICLE_LOADED,
     slug,

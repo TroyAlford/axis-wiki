@@ -8,18 +8,20 @@ import TagsInput          from 'react-tagsinput'
 import TinyMCE            from 'react-tinymce'
 import editor_config      from '../config/editor'
 
-import { loadArticle }    from '../actions/article'
-
 import { connect }        from 'react-redux'
+import { 
+  loadArticle,
+  loadedArticle 
+}                         from '../actions/article'
 
-let tinyMCE = window.tinyMCE;
+const tinyMCE = window.tinyMCE;
+const parser  = document.createElement('a');
 
 class Article extends ComponentBase {
   constructor(props) {
     super(props);
-    this.state = {
-      selected_tab: 0  
-    }
+    this.state = this.default_state;
+
     this.isDirty = () => (
       !!this.state.html ||
       !!this.state.tags ||
@@ -32,11 +34,70 @@ class Article extends ComponentBase {
       this.props.dispatch(loadArticle(nextProps.params.slug));
   }
 
-  handleSourceChange() {
+  get default_state() {
+    return {
+      selected_tab: 0,
 
+      aliases: null,
+      children: null,
+      data: null,
+      html: null,
+      tags: null
+    }
   }
-  handleTagChange(tags) {
-    this.setState({ tags: _.sortBy(tags) });
+  
+  handleHtmlChange() {
+    let html = '';
+    switch (this.state.selected_tab) {
+      case 1: /* TinyMCE tab */
+        html = tinyMCE.activeEditor.getContent();
+        break;
+      case 2: /* HTML tab */
+        html = this.refs.html.value;
+        break;
+      default:
+        html = this.state.html || this.props.html;
+        break;
+    }
+    this.setState({ html: html !== this.props.html ? html : null })
+  }
+  handleTabClicked(clicked) {
+    if (this.state.selected_tab == clicked.index) return;
+
+    this.handleHtmlChange();
+    this.setState({ selected_tab: clicked.index })
+  }
+  handleTagChange(updated) {
+    let tags = _.sortBy(updated);
+    if (_.xor(tags, this.props.tags).length)
+      this.setState({ tags })
+    else
+      this.setState({ tags: null })
+  }
+
+  handleSave() {
+    let { aliases, children, data, html, tags } = this.props;
+
+    XHR.post('/api/page/' + this.props.params.slug, {
+      data: {
+        aliases: this.state.aliases || aliases,
+        children: this.state.children || children,
+        data: this.state.data || data,
+        html: this.state.html || html,
+        tags: this.state.tags || tags
+      },
+      success: (response) => {
+        parser.href = response.url;
+        let slug    = _(parser.pathname).split('/').last(),
+            article = JSON.parse(response.message);
+
+        this.props.dispatch(loadedArticle(slug, article))
+        this.setState(this.default_state)
+      },
+      failure: function(response) {
+        console.log('Save Error...', response);
+      }
+    });
   }
 
   render() {
@@ -54,17 +115,22 @@ class Article extends ComponentBase {
           }, {
             className: 'edit',
             caption: <Icon name="edit" size="small" />,
-            contents: <TinyMCE config={editor_config} content={this.props.html} />
+            contents: 
+              <TinyMCE ref="tinymce"
+                config={editor_config} 
+                content={this.props.html}
+                onChange={this.handleHtmlChange}
+              />
           }, {
             className: 'html',
             caption: <Icon name="html" size="small" />,
-            contents: 
-              <textarea 
-                onChange={this.handleSourceChange} 
+            contents:
+              <textarea ref="html"
+                onChange={this.handleHtmlChange} 
                 value={this.props.html}
               />
           }]}
-          tabClicked={clicked => this.setState({ selected_tab: clicked.index })}
+          tabClicked={this.handleTabClicked}
         />
         <TagsInput 
           value={this.state.tags || this.props.tags} 
@@ -76,9 +142,9 @@ class Article extends ComponentBase {
           onlyUnique={true}
         />
         {this.isDirty()
-         ? <a className="save button is-success">
+         ? <button className="save button is-success" onClick={this.handleSave}>
              <Icon name="save" size="small" /><span>Save</span>
-           </a>
+           </button>
          : ''}
       </div>
     )
