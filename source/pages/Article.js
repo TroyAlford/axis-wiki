@@ -1,10 +1,10 @@
 import _                  from 'lodash'
 import { browserHistory } from 'react-router'
 import ComponentBase      from '../application/ComponentBase'
+import ArticleChildren    from '../components/ArticleChildren'
 import Icon               from '../components/Icon'
 import TabSet             from '../components/TabSet'
 import TagsInput          from 'react-tagsinput'
-import TagBrowser         from '../components/TagBrowser'
 import TinyMCE            from 'react-tinymce'
 import editor_config      from '../config/editor'
 
@@ -18,8 +18,13 @@ class Article extends ComponentBase {
   constructor(props) {
     super(props);
     this.state = {
-      selected_tab: 0
+      selected_tab: 0  
     }
+    this.isDirty = () => (
+      !!this.state.html ||
+      !!this.state.tags ||
+      !!this.state.children
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -27,6 +32,9 @@ class Article extends ComponentBase {
       this.props.dispatch(loadArticle(nextProps.params.slug));
   }
 
+  handleSourceChange() {
+
+  }
   handleTagChange(tags) {
     this.setState({ tags: _.sortBy(tags) });
   }
@@ -41,7 +49,7 @@ class Article extends ComponentBase {
             caption: <Icon name="read" size="small" />,
             contents: <div>
               <div dangerouslySetInnerHTML={{ __html: this.props.html }}></div>
-              <TagBrowser articles={this.props.children} />
+              <ArticleChildren articles={this.props.children} />
             </div>
           }, {
             className: 'edit',
@@ -67,6 +75,11 @@ class Article extends ComponentBase {
           onChange={this.handleTagChange} 
           onlyUnique={true}
         />
+        {this.isDirty()
+         ? <a className="save button is-success">
+             <Icon name="save" size="small" /><span>Save</span>
+           </a>
+         : ''}
       </div>
     )
   }

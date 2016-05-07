@@ -56,6 +56,17 @@ $tags-height: 36px;
     }
   }
 
+  .save.button {
+    font-weight: bold;
+    height: auto;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    position: absolute;
+    left: 3px; top: 3px;
+  }
+
   .mce-tinymce-inline.mce-panel {
     border: solid $palette-royal-blue;
     border-width: 0 0 1px 0!important;
