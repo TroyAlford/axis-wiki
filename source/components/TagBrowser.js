@@ -8,10 +8,6 @@ import Tag                from './Tag';
 import XHR                from '../helpers/XHR';
 
 export default class TagBrowser extends ComponentBase {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     let
       articles   = _.sortBy(this.props.articles),

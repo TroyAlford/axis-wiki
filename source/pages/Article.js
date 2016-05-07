@@ -2,7 +2,7 @@ import { browserHistory } from 'react-router'
 import ComponentBase      from '../application/ComponentBase'
 import Icon               from '../components/Icon'
 import TabSet             from '../components/TabSet'
-import Tag                from '../components/Tag'
+import TagsInput          from 'react-tagsinput'
 import TagBrowser         from '../components/TagBrowser'
 import TinyMCE            from 'react-tinymce'
 import editor_config      from '../config/editor'
@@ -28,7 +28,10 @@ class Article extends ComponentBase {
           tabs={[{
             className: 'read',
             caption: <Icon name="read" size="small" />,
-            innerHTML: this.props.html
+            contents: <div>
+              <div dangerouslySetInnerHTML={{ __html: this.props.html }}></div>
+              <TagBrowser articles={this.props.children} />
+            </div>
           }, {
             className: 'edit',
             caption: <Icon name="edit" size="small" />,
