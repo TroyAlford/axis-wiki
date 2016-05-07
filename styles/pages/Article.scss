@@ -30,8 +30,12 @@ $toolbar-height: 32px;
       top: $tabs-height + $toolbar-height;
 
       > [id^="react-tinymce"] {
+        border: none;
+        outline: none;
         padding: 10px;
         position: absolute;
+        left: 0; top: 0; right: 0; bottom: 0;
+        width: 100%;
       }
     }
 
