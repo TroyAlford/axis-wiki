@@ -31,6 +31,7 @@
     "react-dom": "^15.0.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.0.0",
+    "react-tagsinput": "^3.6.1",
     "react-tinymce": "github:TroyAlford/react-tinymce",
     "redux": "^3.5.2",
     "redux-thunk": "^2.0.1"
