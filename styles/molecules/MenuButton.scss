@@ -1,53 +1,61 @@
-.cp-menubutton {
-  padding: 3px;
+.menu-button {
+  border-radius: 5px 5px 0 0;
+  padding: 0;
   position: relative;
 
   &:before {
     background: #fff;
-    border-radius: 2px;
+    border-radius: 5px 5px 0 0;
     content: '';
     position: absolute;
     top: 0; right: 0; bottom: 0; left: 0;
     z-index: 1001;
   }
+  > .caption {
+    padding: auto auto;
+    z-index: 1001;
 
-  > li.cp-menuitem {
-    margin: 0;
-    padding: 0;
-
-    > * {
-      z-index: 1002;
-    }
-
-    > ul {
-      background: #fff;
-      display: none;
-    }
+    > .icon { margin: 0; }
   }
-  > li > ul {
+
+  &:hover {
+    border: 1px solid $palette-royal-blue;
+    border-bottom: 1px solid $palette-white;
+  }
+
+  > .menu { z-index: 1000; }
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+}
+
+.menu-item {
+  padding: 5px;
+  position: relative;
+
+  &[onclick] { cursor: pointer; }
+
+  > .menu {
+    background-color: $palette-white;
+    border: 1px solid $palette-royal-blue;
+    border-radius: 5px;
     display: none;
     position: absolute;
-    right: 0;
-  }
+    top: 100%; margin-top: -1px;
 
-  .cp-menuitem, .cp-menuitem + .cp-menuitem {
-    display: block;
-    margin: 0;
-    padding: 2px 8px;
-    text-align: left;
-  }
-
-  &.cp-menu-expanded {
-    border-color: $palette-light-gray;
-    border-radius: 2px 2px 0 0;
-
-    > .cp-menuitem > ul {
-      border: 1px solid $palette-light-gray;
-      border-radius: 5px 0 5px 5px;
-      display: inline-block;
-      margin: -2px -1px 0 0;
-      top: 100%;
-      z-index: 1000;
+    &.align-left  {
+      border-radius: 0 5px 5px 5px;
+      left: -1px;
     }
+    &.align-right {
+      border-radius: 5px 0 5px 5px;
+      right: -1px; 
+    }
+  }
+
+  &:hover {
+    > .menu { display: inline-block; }
   }
 }

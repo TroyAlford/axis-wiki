@@ -3,6 +3,9 @@ import { browserHistory } from 'react-router'
 import ComponentBase      from '../application/ComponentBase'
 import ArticleChildren    from '../components/ArticleChildren'
 import Icon               from '../components/Icon'
+import MenuButton         from '../components/MenuButton'
+import MenuItem           from '../components/MenuItem'
+import Modal              from 'react-modal'
 import TabSet             from '../components/TabSet'
 import TagsInput          from 'react-tagsinput'
 import TinyMCE            from 'react-tinymce'
@@ -36,6 +39,7 @@ class Article extends ComponentBase {
 
   get default_state() {
     return {
+      show_modal: false,
       selected_tab: 0,
 
       aliases: null,
@@ -46,6 +50,15 @@ class Article extends ComponentBase {
     }
   }
   
+  handleDelete() {
+    let slug = this.props.params.slug;
+    XHR.delete(`/api/page/${slug}`, {
+      done: (res) => {
+        this.loadArticle(slug);
+      }
+    })
+  }
+
   handleHtmlChange() {
     let html = '';
     switch (this.state.selected_tab) {
@@ -66,6 +79,13 @@ class Article extends ComponentBase {
 
     this.handleHtmlChange();
     this.setState({ selected_tab: clicked.index })
+  }
+
+  handleAliasChange(updated) {
+    let aliases = _(updated).map(alias =>
+      _.toLower(alias).replace(/[^\w\d/_]/g, '-').replace(/-{2,}/g, '-')
+    ).sortBy().difference([this.props.params.slug]).uniq().value();
+    this.setState({ aliases });
   }
   handleTagChange(updated) {
     let tags = _.sortBy(updated);
@@ -132,7 +152,7 @@ class Article extends ComponentBase {
           }]}
           tabClicked={this.handleTabClicked}
         />
-        <TagsInput 
+        <TagsInput
           value={this.state.tags || this.props.tags} 
           inputProps={{ 
             className: 'react-tagsinput-input', 
@@ -141,11 +161,29 @@ class Article extends ComponentBase {
           onChange={this.handleTagChange} 
           onlyUnique={true}
         />
-        {this.isDirty()
-         ? <button className="save button is-success" onClick={this.handleSave}>
+        <MenuButton 
+          caption={<Icon name="menu" size="small" />}>
+          <MenuItem caption="Aliases..." />
+        </MenuButton>
+        {!this.state.show_modal ? '' :
+          <Modal isOpen={true}>
+            <b>Aliases:</b>
+            <TagsInput value={this.state.aliases || this.props.aliases}
+              inputProps={{
+                className: 'alias-tag',
+                placeholder: 'add alias'
+              }}
+              onChange={this.handleAliasChange}
+              onlyUnique={true}
+            />
+            <button onClick={() => this.setState({ alias_modal: false })}
+                    className="button ok">OK</button>
+          </Modal>
+        }{!this.isDirty() ? '' :
+          <button className="save button is-success" onClick={this.handleSave}>
              <Icon name="save" size="small" /><span>Save</span>
            </button>
-         : ''}
+        }
       </div>
     )
   }
