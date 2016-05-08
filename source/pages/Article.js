@@ -25,9 +25,11 @@ class Article extends ComponentBase {
     this.state = this.default_state;
 
     this.isDirty = () => (
+      !!this.state.aliases ||
+      !!this.state.children ||
+      !!this.state.data ||
       !!this.state.html ||
-      !!this.state.tags ||
-      !!this.state.children
+      !!this.state.tags
     );
   }
 
