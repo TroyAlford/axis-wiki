@@ -1,98 +1,116 @@
+$tabs-height: 35px;
+$toolbar-height: 32px;
+$tags-height: 36px;
+
 .article.page {
   left: 0; right: 0; top: 0; bottom: 0;
   padding: 0;
   position: absolute;
 
-  > .tabs {
-    ul.tab-set {
-      .button {
-        height: 2em;
-        line-height: 1em;
-        margin: auto 0 .2em 0;
-        padding: 0;
-        width: 2em;
-      }
-    }
-  }
-  > .tab {
-    left: 0; right: 0; top: 41px; bottom: 35px;
-    overflow: auto;
-    padding: 10px;
+  .tab-set {
+    left: 0; right: 0; top: 0; bottom: 0;
     position: absolute;
-    text-align: justify;
-  }
 
-  > .tabs {
-    .mce-tinymce-inline.mce-panel {
-      border: solid $palette-light-gray;
-      border-width: 1px 0;
-      margin: -2px 0 0 0;
-      height: 32px!important;
-      width: auto!important;
+    > ul.tabs {
+      height: $tabs-height;
+      padding-right: 20px;
+      text-align: right;
 
-      .mce-flow-layout-item { margin: 0; }
-      .mce-toolbar-grp { padding: 0; }
-      .mce-btn-group { padding: 2px 3px; }
-      .mce-btn > button { padding: 2px 4px; }
-      .mce-btn.mce-listbox > button {
-        padding-right: 18px;
-        > .mce-caret { right: 5px; }
+      > li.edit.is-active {
+        background-color: #f0f0f0;
       }
     }
 
-    .icon.is-small {
-      position: relative;
-      top: 2px;
+    > .tab {
+      position: absolute;
+      top: $tabs-height; left: 0; right: 0; bottom: $tags-height;
+      overflow-y: auto;
     }
 
-    li.is-active {
-      z-index: 70000;
-      a {
-        background: #f0f0f0;
-        padding: 5px 15px 4px;
-      }
-    }
-  }
-  > .tab {
-    &.editor {
-      top: 71px;
-      .mce-edit-focus { outline: none; }
-    }
-    &.source {
-      textarea {
+    .tab.edit {
+      padding: 0;
+      top: $tabs-height + $toolbar-height;
+
+      > [id^="react-tinymce"] {
         border: none;
-        font-family: monospace;
+        outline: none;
         padding: 10px;
         position: absolute;
+        left: 0; top: 0; right: 0; bottom: 0;
+        width: 100%;
+      }
+    }
+
+    .tab.html {
+      padding: 5px;
+
+      > textarea {
+        border: none;
+        font-family: monospace;
+        outline: none;
+        padding: 5px;
+        position: absolute;
         resize: none;
-        left: 0; top: 1px; bottom: 0; width: 100%;
+        left: 0; top: 0; right: 0; bottom: 0;
+        width: 100%;
       }
     }
-    &.settings {
-      table.settings {
-        th { width: 100px; }
-        td > div > textarea {
-          display: block;
-          resize: none;
-          height: 100%; width: 100%;
-        }
+
+    .tab.settings {
+      [class*="callout-"] { 
+        border-radius: 3px;
+        margin: 10px 3px; 
       }
     }
   }
-  &.mode-read .tag-bar .btn-add       { display: none; }
-  
-  &:not(.mode-read)     .tab.reader   { display: none; }
-  &:not(.mode-edit)     .tab.editor   { display: none; }
-  &:not(.mode-source)   .tab.source   { display: none; }
-  &:not(.mode-settings) .tab.settings { display: none; }
 
-  &.mode-edit > .tabs .mce-tinymce-inline.mce-panel {
+  .save.button {
+    font-weight: bold;
+    height: auto;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    position: absolute;
+    left: 3px; top: 3px;
+  }
+  > .menu-button {
+    &:not(:hover) {
+      background-color: transparent;
+      border: none;
+    }
+    height: 27px; width: 30px;
+    margin: 7px 9px 0 0;
+    min-height: auto;
+    min-width: auto;
+    position: absolute;
+    right: 0; top: 0;
+
+    > .caption { padding: .25em; }
+  }
+
+  .mce-tinymce-inline.mce-panel {
+    border: solid $palette-royal-blue;
+    border-width: 0 0 1px 0!important;
     display: block!important;
-  }
-  
-  &.mode-read .tags {
-    padding: 5px 35px;
+    height: $toolbar-height!important;
+    width: auto!important;
 
-    > .icon:last-child { display: none; }
+    .mce-flow-layout-item { margin: 0; }
+    .mce-toolbar-grp { padding: 0; }
+    .mce-btn-group { padding: 2px 3px; }
+    .mce-btn > button { padding: 2px 4px; }
+    .mce-btn.mce-listbox > button {
+      padding-right: 18px;
+      > .mce-caret { right: 5px; }
+    }
+  }
+
+  .tags-editor {
+    background-color: $palette-white;
+    border-top: 1px solid $palette-royal-blue;
+    position: absolute;
+    height: $tags-height;
+    bottom: 0; left: 0; right: 0;
   }
 }

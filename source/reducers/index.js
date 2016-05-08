@@ -1,8 +1,16 @@
-import { combineReducers } from 'redux'
+import { 
+  applyMiddleware, 
+  combineReducers, 
+  createStore 
+}                          from 'redux'
+import thunk               from 'redux-thunk'
 import application         from './application'
-import page                from './page'
+import article             from './article'
 
-export default combineReducers({
-  application,
-  page
-})
+export default createStore(
+  combineReducers({
+    application,
+    article
+  }), 
+  applyMiddleware(thunk)
+);

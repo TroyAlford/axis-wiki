@@ -1,238 +1,199 @@
+import _                  from 'lodash'
 import { browserHistory } from 'react-router'
 import ComponentBase      from '../application/ComponentBase'
+import ArticleChildren    from '../components/ArticleChildren'
 import Icon               from '../components/Icon'
-import ReactDOM           from 'react-dom'
-import Slug               from '../../server/services/Slug'
-import Tag                from '../components/Tag'
-import TagBrowser         from '../components/TagBrowser'
+import MenuButton         from '../components/MenuButton'
+import MenuItem           from '../components/MenuItem'
+import TabSet             from '../components/TabSet'
+import TagsInput          from 'react-tagsinput'
 import TinyMCE            from 'react-tinymce'
-import XHR                from '../helpers/XHR'
+import editor_config      from '../config/editor'
 
-export default class Article extends ComponentBase {
+import { connect }        from 'react-redux'
+import { 
+  loadArticle,
+  loadedArticle 
+}                         from '../actions/article'
+
+const tinyMCE = window.tinyMCE;
+const parser  = document.createElement('a');
+
+class Article extends ComponentBase {
   constructor(props) {
     super(props);
     this.state = this.default_state;
-    this.loadArticle(this.props.params.slug);
+
+    this.isDirty = () => (
+      !!this.state.html ||
+      !!this.state.tags ||
+      !!this.state.children
+    );
   }
-  componentDidUpdate() {
-    if (this.state.mode == 'edit')
-      ReactDOM.findDOMNode(this.refs.editor).focus();
-  }
-  componentWillReceiveProps(newProps) {
-    if (newProps.params.slug != this.props.params.slug)
-      this.loadArticle(newProps.params.slug);
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.slug !== nextProps.params.slug) {
+      this.setState(this.default_state)
+      this.props.dispatch(loadArticle(nextProps.params.slug))
+    }
   }
 
   get default_state() {
     return {
-      aliases: [],
-      children: [],
-      data: [],
-      html: '',
-      missing_links: [],
-      tags: [],
+      selected_tab: 0,
 
-      mode: 'read'
+      aliases: null,
+      children: null,
+      data: null,
+      html: null,
+      tags: null
     }
   }
-
-  loadArticle(slug) {
-    XHR.get(`/api/page/${slug}`, {
-      success: this.handleLoad,
-      failure: this.handleLoad,
-      done: function(response) {
-        let regex = /[\w\d-_]{1,}$/;
-        let response_slug = regex.exec(response.url)[0],
-            current_slug = regex.exec(window.location.pathname)[0];
-        if (response_slug != current_slug)
-          browserHistory.replace(`/page/${response_slug}`);
-      }
-    })
-  }
-
-  tagify(tag) {
-    return Slug.normalize(tag);
-  }
-
-  handleAddTag(new_tag) {
-    this.setState({
-      tags: _.union(this.state.tags, [this.tagify(new_tag)])
-    });
-  }
-  handleAlias(event) {
-    let slugs = _.map(_.split(_.toLower(event.target.value), ','), function(slug) {
-      return slug.replace(/[^\w\d/_]/g, '-').replace(/-{2,}/g, '-');
-    });
-    this.setState({ aliases: slugs });
-  }
+  
   handleDelete() {
     let slug = this.props.params.slug;
     XHR.delete(`/api/page/${slug}`, {
-      done: (res) => {
-        this.loadArticle(slug);
+      done: response => {
+        this.setState(this.default_state)
+        this.props.dispatch(loadArticle(slug))
       }
     })
   }
-  handleEditTag(old_tag, new_tag) {
-    old_tag = this.tagify(old_tag);
-    new_tag = this.tagify(new_tag);
 
-    let tags = _.difference(this.state.tags, [old_tag]);
-    if (new_tag.length)
-      tags = _.union(tags, [new_tag]);
+  handleHtmlChange() {
+    let html = '';
+    switch (this.state.selected_tab) {
+      case 1: /* TinyMCE tab */
+        html = tinyMCE.activeEditor.getContent();
+        break;
+      case 2: /* HTML tab */
+        html = this.refs.html.value;
+        break;
+      default:
+        html = this.state.html || this.props.html;
+        break;
+    }
+    this.setState({ html: html !== this.props.html ? html : null })
+  }
+  handleTabClicked(clicked) {
+    if (this.state.selected_tab == clicked.index) return;
 
-    this.setState({ tags: tags });
-  }
-  handleRemoveTag(removed_tag) {
-    var tags = this.state.tags;
-    this.setState({
-      tags: _.difference(this.state.tags, [this.tagify(removed_tag)])
-    });
-  }
-  handleSourceChange(event) {
-    this.setState({ html: event.target.value })
+    this.handleHtmlChange();
+    this.setState({ selected_tab: clicked.index })
   }
 
-  handleLoad(response) {
-    let state = Object.assign(this.default_state, JSON.parse(response.message));
-    state.tags = _.map(state.tags, this.tagify);
-    this.setState(state);
+  handleAliasChange(updated) {
+    let aliases = _(updated).map(alias =>
+      _.toLower(alias).replace(/[^\w\d/_]/g, '-').replace(/-{2,}/g, '-')
+    ).sortBy().difference([this.props.params.slug]).uniq().value();
+    this.setState({ aliases });
   }
-  handleMode(mode) {
-    if (mode == this.state.mode) return;
-
-    let html = this.state.html;
-    if ('edit' == this.state.mode)
-      html = window.tinyMCE.activeEditor.getContent();
-    else if ('source' == this.state.mode)
-      html = this.refs.source.value;
-
-    this.setState({ html: html, mode: mode });
-  }
-  handleSave() {
-    var html = '';
-    if (this.state.mode == 'edit')
-      html = window.tinyMCE.activeEditor.getContent();
+  handleTagChange(updated) {
+    let tags = _.sortBy(updated);
+    if (_.xor(tags, this.props.tags).length)
+      this.setState({ tags })
     else
-      html = this.refs.source.value;
+      this.setState({ tags: null })
+  }
+
+  handleSave() {
+    let { aliases, children, data, html, tags } = this.props;
 
     XHR.post('/api/page/' + this.props.params.slug, {
       data: {
-        aliases: this.state.aliases || [],
-        children: this.state.children || [],
-        data: this.state.data || [],
-        html: html,
-        tags: this.state.tags || []
+        aliases: this.state.aliases || aliases,
+        children: this.state.children || children,
+        data: this.state.data || data,
+        html: this.state.html || html,
+        tags: this.state.tags || tags
       },
-      success: this.handleLoad,
-      failure: function(res) {
-        console.log('Save Error...', res);
+      success: (response) => {
+        parser.href = response.url;
+        let slug    = _(parser.pathname).split('/').last(),
+            article = JSON.parse(response.message);
+
+        this.props.dispatch(loadedArticle(slug, article))
+        this.setState(this.default_state)
+      },
+      failure: function(response) {
+        console.log('Save Error...', response);
       }
     });
   }
 
   render() {
-    let viewer = <div>
-      <div ref="viewer" dangerouslySetInnerHTML={{ __html: this.state.html }}></div>
-      <TagBrowser articles={this.state.children} columns="4" />
-    </div>;
-    let source = <textarea ref="source" onChange={this.handleSourceChange} value={this.state.html} />;
-    let editor = <TinyMCE ref="editor"
-      config={{
-        auto_focus: true,
-        autosave_ask_before_unload: false,
-        inline: true,
-        fixed_toolbar_container: '.article.page > .tabs',
-        formats: {
-          aligncenter: {
-            selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img',
-            classes: 'is-text-centered'
-          },
-          underline: { inline: 'u', exact: true }
-        },
-        menubar: false,
-        plugins:
-          'anchor advlist autosave fullscreen hr image ' +
-          'link lists paste table',
-        toolbar:
-          'formatselect | bold italic underline | bullist numlist ' +
-          '| hr link anchor | alignleft aligncenter alignright alignjustify ' +
-          '| image table | removeformat | undo redo',
-        valid_elements:
-          'a[href|target|class|style],img[src|class|style|height|width],' +
-          '@[class|colspan|rowspan|style],th,td,' +
-          '@[class|style],' +
-          '-h1,-h2,-h3,-h4,-h5,-h6,' +
-          '-table,-tr,br,hr,-blockquote,' +
-          '-div,-p,-ul,-ol,-li,-b/strong,-i/em,-u,-s/strike/del,-center,-sup,-sub'
-      }}
-      content={this.state.html}
-    />;
-    let settings = <div ref="settings">
-      <h5>Settings</h5>
-      <table className="settings">
-       <tbody>
-        <tr>
-          <th>Aliases</th>
-          <td>
-            <div>
-              <textarea ref="aliases" value={_.join(this.state.aliases, ',')}
-                        onChange={this.handleAlias}></textarea>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <th>Delete</th>
-          <td>
-            <button className="button is-danger" onClick={this.handleDelete}>Delete this Article</button>
-            <p><i>Warning: This cannot be undone!</i></p>
-          </td>
-        </tr>
-       </tbody>
-      </table>
-    </div>;
-
-    let tags = this.state.tags.map((tag => {
-      return (
-        <Tag key={tag} name={tag}
-             onChange={this.handleEditTag}
-             onRemove={this.handleRemoveTag.bind(this, tag)}
-             editable={this.state.mode != 'read'} />
-      );
-    }).bind(this));
-
     return (
-      <div className={`article page mode-${this.state.mode}`}>
-        <div className="tabs is-right is-boxed">
-          <ul className="tab-set">
-            <li className={`button is-primary ${this.state.mode == 'read' ? 'is-hidden' : ''}`}
-                onClick={this.handleSave}>
-              <Icon name="save" size="small" />
-            </li>
-            <li className={this.state.mode == 'read' ? 'is-active' : ''}>
-              <a title="Read" onClick={this.handleMode.bind(this, 'read')}><Icon name="read" size="small" /></a>
-            </li>
-            <li className={this.state.mode == 'edit' ? 'is-active' : ''}>
-              <a title="Editor" onClick={this.handleMode.bind(this, 'edit')}><Icon name="edit" size="small" /></a>
-            </li>
-            <li className={this.state.mode == 'source' ? 'is-active' : ''}>
-              <a title="Source" onClick={this.handleMode.bind(this, 'source')}><Icon name="html" size="small" /></a>
-            </li>
-            <li className={this.state.mode == 'settings' ? 'is-active' : ''}>
-              <a title="Settings" onClick={this.handleMode.bind(this, 'settings')}><Icon name="settings" size="small" /></a>
-            </li>
-          </ul>
-        </div>
-        <div className="tab reader">{viewer}</div>
-        <div className="tab editor">{editor}</div>
-        <div className="tab source">{source}</div>
-        <div className="tab settings">{settings}</div>
-        <div className="tag-bar">
-          <Icon className="tag-bar-icon" name="tags" />
-          {tags}
-          <Icon className="btn-add" name="add" onClick={this.handleAddTag.bind(this, 'new tag')} />
-        </div>
+      <div className="article page">
+        <TabSet
+          active={this.state.selected_tab}
+          tabs={[{
+            className: 'read',
+            caption: <Icon name="read" size="small" />,
+            contents: <div>
+              <div dangerouslySetInnerHTML={{ __html: this.props.html }}></div>
+              <ArticleChildren articles={this.props.children} />
+            </div>
+          }, {
+            className: 'edit',
+            caption: <Icon name="edit" size="small" />,
+            contents: 
+              <TinyMCE ref="tinymce"
+                config={editor_config} 
+                content={this.props.html}
+                onChange={this.handleHtmlChange}
+              />
+          }, {
+            className: 'html',
+            caption: <Icon name="html" size="small" />,
+            contents:
+              <textarea ref="html"
+                onChange={this.handleHtmlChange} 
+                value={this.props.html}
+              />
+          }, {
+            className: 'settings',
+            caption: <Icon name="settings" size="small" />,
+            contents:
+              <div className="settings">
+                <h5>Aliases:</h5>
+                <div className="callout-info">Each entry below is used as an alternate name / redirect for this page.</div>
+                <TagsInput
+                  className="aliases-editor react-tagsinput"
+                  value={this.state.aliases || this.props.aliases}
+                  inputProps={{
+                    className: 'alias-tag',
+                    placeholder: 'add alias'
+                  }}
+                  onChange={this.handleAliasChange}
+                  onlyUnique={true}
+                />
+                <h5>Danger</h5>
+                <button className="button is-danger" onClick={this.handleDelete}>Delete this Article</button>
+                <span className="button-label"><i>Warning: This cannot be undone!</i></span>
+              </div>
+          }]}
+          tabClicked={this.handleTabClicked}
+        />
+        <TagsInput
+          className="tags-editor react-tagsinput"
+          value={this.state.tags || this.props.tags} 
+          inputProps={{ 
+            className: 'react-tagsinput-input', 
+            placeholder: 'add tag'
+          }}
+          onChange={this.handleTagChange} 
+          onlyUnique={true}
+        />
+        {!this.isDirty() ? '' :
+          <button className="save button is-success" onClick={this.handleSave}>
+             <Icon name="save" size="small" /><span>Save</span>
+           </button>
+        }
       </div>
-    );
+    )
   }
 }
+
+export default connect(state => {
+  return state.article;
+})(Article);

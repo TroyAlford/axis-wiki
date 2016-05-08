@@ -1,55 +1,62 @@
 import _                  from 'lodash'
 import ReactDOM           from 'react-dom'
+import { connect }        from 'react-redux'
 import { browserHistory } from 'react-router'
 
 import ComponentBase      from '../application/ComponentBase'
-import HtmlMetadata       from '../containers/HtmlMetadata'
+import HtmlMetadata       from '../components/HtmlMetadata'
 import Header             from '../components/Header'
 import Navigation         from '../components/Navigation'
 
-export default class App extends ComponentBase {
+import { loadArticle }    from '../actions/article'
+
+const parser = document.createElement('a');
+
+class Layout extends ComponentBase {
   constructor(props) {
     super(props);
-    this.parser = document.createElement('a');
+
+    let path = window.location.pathname,
+        slug = _(path).split('/').last();
+    if (!path || _(path).startsWith('/page/'))
+      this.props.dispatch(loadArticle(slug));
   }
 
-  componentDidMount() {
-    var container = ReactDOM.findDOMNode(this.refs.container);
-    if (container.addEventListener)
-      container.addEventListener('click', this.handleClicks, false);
-    else if (el.attachEvent)
-      container.attachEvent('onclick', this.handleClicks);
+  elementIsWithinEditor(element) {
+    if (element.id.startsWith('react-tinymce'))
+      return true;
+    else if (!element.parentElement)
+      return false;
     else
-      container['onclick'] = this.handleClicks;
+      return this.elementIsWithinEditor(element.parentElement);
   }
+
   handleClicks(event) {
     let node_name = event.target.nodeName.toUpperCase();
-    if (!_(['A', 'IMG']).includes(node_name))
-      return; // If the click wasn't on an A or IMG, no need to continue.
+    if (node_name !== 'A' && node_name !== 'IMG') return;
 
-    let inside_editor = undefined !== _.find(event.path, { id: 'react-tinymce-0' }),
-        url = event.target.href || event.target.src;
-    if (inside_editor || !url) {
-      // Clicks inside TinyMCE and clicks with no href/img do nothing
-      event.preventDefault();
-      return;
-    }
+    let inside_editor = this.elementIsWithinEditor(event.target);
+    let url = parser.href = event.target.href || event.target.src;
+    
+    if (inside_editor || !url)
+      return event.preventDefault();
 
-    this.parser.href = url;
-    if (this.parser.hostname != window.location.hostname) return; // Allow external links
+    if (parser.hostname != window.location.hostname) return; // Allow external links
 
     event.preventDefault();
-    let pathname = this.parser.pathname
-      .replace(/\/full\//, '/')
-    ;
+    let slug = _(parser.pathname).split('/').last();
     
-    let location = node_name == "A" ? pathname : `/info${pathname}`;
-    browserHistory.push(location);
+    switch (node_name) {
+      case "A":
+        return this.props.dispatch(loadArticle(slug));
+      case "IMG":
+        return browserHistory.push(`/info/media/${slug}`);
+    }
   }
 
   render() {
     return (
-      <div className="layout" ref="container">
+      <div className="layout" onClick={this.handleClicks}>
         <HtmlMetadata />
         <Header />
         <Navigation />
@@ -60,3 +67,5 @@ export default class App extends ComponentBase {
     );
   }
 }
+
+export default connect()(Layout)

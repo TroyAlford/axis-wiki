@@ -7,11 +7,7 @@ import ReactDOM           from 'react-dom';
 import Tag                from './Tag';
 import XHR                from '../helpers/XHR';
 
-export default class TagBrowser extends ComponentBase {
-  constructor(props) {
-    super(props);
-  }
-
+export default class ArticleChildren extends ComponentBase {
   render() {
     let
       articles   = _.sortBy(this.props.articles),
@@ -29,7 +25,7 @@ export default class TagBrowser extends ComponentBase {
       columns[i] =
         <div key={`column-${i}`} className={classes}>{
           _.map(list, function(slug) {
-            return <div><Link key={slug} to={`${slug}`}>{_.startCase(slug)}</Link></div>;
+            return <div><Link key={slug} to={slug}>{_.startCase(slug)}</Link></div>;
           })
         }</div>;
     }

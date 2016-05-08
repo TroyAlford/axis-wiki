@@ -1,7 +1,10 @@
 @mixin callout-color($color, $icon) {
-  th { background-color: lighten($color, 2.5%); }
+  background-color: lighten($color, 2.5%);
+
+  th { background-color: $color; }
+
   &:before {
-    background-color: $color;
+    background-color: darken($color, 2.5%);
     background-image: $icon;
   }
 }
