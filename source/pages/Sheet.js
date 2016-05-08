@@ -14,7 +14,7 @@ export default class Sheet extends ComponentBase {
   }
 
   get example_sheet() {
-    return require('../../config/example_sheet.json');
+    return require('../../example_sheet.json');
   }
 
   attr(name) {

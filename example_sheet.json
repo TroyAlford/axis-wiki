@@ -1,0 +1,73 @@
+{
+  "image_url": "http://placehold.it/230x280",
+  "demographics": [
+     { "name": "Player", "value": "Alissa", "cols": 2 }
+    ,{ "name": "Height", "value": "5'9\"" }
+    ,{ "name": "Eyes", "value": "Gold/Amber" }
+
+    ,{ "name": "Homeland", "value": "Aktilles", "cols": 2 }
+    ,{ "name": "Weight", "value": "140 lbs" }
+    ,{ "name": "Hair", "value": "Dark Red" }
+
+    ,{ "name": "Race", "value": ["Asimaar","Half-Elf"] }
+    ,{ "name": "Gender", "value": "Female" }
+    ,{ "name": "Age", "value": "30" }
+    ,{ "name": "Skin", "value": "Tan/Bronze" }
+
+  ],
+  "attributes": [
+     { "name": "strength", "value": 1 }
+    ,{ "name": "agility", "value": 0 }
+    ,{ "name": "fitness", "value": 2 }
+    ,{ "name": "intellect", "value": 0 }
+    ,{ "name": "acuity", "value": 0 }
+    ,{ "name": "focus", "value": 0 }
+    ,{ "name": "confidence", "value": 2 }
+    ,{ "name": "intuition", "value": 1 }
+    ,{ "name": "devotion", "value": 2 }
+
+    ,{ "name": "size", "value": 0 }
+    ,{ "name": "natural_armor", "value": 0 }
+  ],
+  "traits": [
+     { "name": "Asimaar: Darkvision", "value": 1 }
+    ,{ "name": "Asimaar: Glamored Armor (G/S)", "value": 1 }
+    ,{ "name": "Asimaar: Halo", "value": 1 }
+    ,{ "name": "Asimaar: Sun-Sense", "value": 1 }
+    ,{ "name": "Asimaar: Gift of Tongues", "value": 1 }
+    ,{ "name": "Elven: Unaging", "value": 2 }
+    ,{ "name": "Elven: Low-Light Vision", "value": 1 }
+    ,{ "name": "Elven: Meditative Rest (8h)", "value": 1 }
+    ,{ "name": "Holy: Blessing of Eyes", "value": "+2/-2" }
+  ],
+  "skills": [
+     { "name": "Archery", "theory": 1, "mastery": 1 }
+    ,{ "name": "Athletics", "theory": 1, "mastery": 1 }
+    ,{ "name": "Combat Sense", "theory": 1, "mastery": 2 }
+    ,{ "name": "Combat: Greatsword", "theory": 2, "mastery": 2 }
+    ,{ "name": "Craft", "theory": 1, "mastery": 1 }
+    ,{ "name": "Empathy", "theory": 1, "mastery": 1 }
+    ,{ "name": "Etiquette", "theory": 1, "mastery": 1 }
+    ,{ "name": "Hand to Hand", "theory": 1, "mastery": 1 }
+    ,{ "name": "Investigation", "theory": 1, "mastery": 1 }
+    ,{ "name": "Leadership", "theory": 2, "mastery": 2 }
+    ,{ "name": "Lore: Religion", "theory": 2, "mastery": 2 }
+    ,{ "name": "Magic: Immolation", "theory": 3, "mastery": 1 }
+    ,{ "name": "Magic: Luminance", "theory": 4, "mastery": 2 }
+    ,{ "name": "Medicine", "theory": 1, "mastery": 1 }
+    ,{ "name": "Navigation: Land", "theory": 1, "mastery": 1 }
+    ,{ "name": "Negotiation", "theory": 1, "mastery": 1 }
+    ,{ "name": "Notice", "theory": 1, "mastery": 2 }
+    ,{ "name": "Parry", "theory": 1, "mastery": 2 }
+    ,{ "name": "Riding", "theory": 1, "mastery": 1 }
+    ,{ "name": "Streetwise", "theory": 1, "mastery": 1 }
+    ,{ "name": "Survival", "theory": 2, "mastery": 2 }
+    ,{ "name": "Teaching", "theory": 1, "mastery": 1 }
+  ],
+  "weapons": [
+     { "name": "Bastard Sword", "damage": "2/3", "range": 1, "hit": 0 }
+  ],
+  "armor": [
+     { "name": "Platemail", "head": 0, "arms": 3, "hands": 3, "body": 3, "legs": 3, "feet": 3 }
+  ]
+}
