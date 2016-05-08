@@ -5,7 +5,6 @@ import ArticleChildren    from '../components/ArticleChildren'
 import Icon               from '../components/Icon'
 import MenuButton         from '../components/MenuButton'
 import MenuItem           from '../components/MenuItem'
-import Modal              from 'react-modal'
 import TabSet             from '../components/TabSet'
 import TagsInput          from 'react-tagsinput'
 import TinyMCE            from 'react-tinymce'
@@ -33,13 +32,14 @@ class Article extends ComponentBase {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.slug !== nextProps.params.slug)
-      this.props.dispatch(loadArticle(nextProps.params.slug));
+    if (this.props.params.slug !== nextProps.params.slug) {
+      this.setState(this.default_state)
+      this.props.dispatch(loadArticle(nextProps.params.slug))
+    }
   }
 
   get default_state() {
     return {
-      show_modal: false,
       selected_tab: 0,
 
       aliases: null,
@@ -53,8 +53,9 @@ class Article extends ComponentBase {
   handleDelete() {
     let slug = this.props.params.slug;
     XHR.delete(`/api/page/${slug}`, {
-      done: (res) => {
-        this.loadArticle(slug);
+      done: response => {
+        this.setState(this.default_state)
+        this.props.dispatch(loadArticle(slug))
       }
     })
   }
@@ -149,10 +150,32 @@ class Article extends ComponentBase {
                 onChange={this.handleHtmlChange} 
                 value={this.props.html}
               />
+          }, {
+            className: 'settings',
+            caption: <Icon name="settings" size="small" />,
+            contents:
+              <div className="settings">
+                <h5>Aliases:</h5>
+                <div className="callout-info">Each entry below is used as an alternate name / redirect for this page.</div>
+                <TagsInput
+                  className="aliases-editor react-tagsinput"
+                  value={this.state.aliases || this.props.aliases}
+                  inputProps={{
+                    className: 'alias-tag',
+                    placeholder: 'add alias'
+                  }}
+                  onChange={this.handleAliasChange}
+                  onlyUnique={true}
+                />
+                <h5>Danger</h5>
+                <button className="button is-danger" onClick={this.handleDelete}>Delete this Article</button>
+                <span className="button-label"><i>Warning: This cannot be undone!</i></span>
+              </div>
           }]}
           tabClicked={this.handleTabClicked}
         />
         <TagsInput
+          className="tags-editor react-tagsinput"
           value={this.state.tags || this.props.tags} 
           inputProps={{ 
             className: 'react-tagsinput-input', 
@@ -161,25 +184,7 @@ class Article extends ComponentBase {
           onChange={this.handleTagChange} 
           onlyUnique={true}
         />
-        <MenuButton 
-          caption={<Icon name="menu" size="small" />}>
-          <MenuItem caption="Aliases..." />
-        </MenuButton>
-        {!this.state.show_modal ? '' :
-          <Modal isOpen={true}>
-            <b>Aliases:</b>
-            <TagsInput value={this.state.aliases || this.props.aliases}
-              inputProps={{
-                className: 'alias-tag',
-                placeholder: 'add alias'
-              }}
-              onChange={this.handleAliasChange}
-              onlyUnique={true}
-            />
-            <button onClick={() => this.setState({ alias_modal: false })}
-                    className="button ok">OK</button>
-          </Modal>
-        }{!this.isDirty() ? '' :
+        {!this.isDirty() ? '' :
           <button className="save button is-success" onClick={this.handleSave}>
              <Icon name="save" size="small" /><span>Save</span>
            </button>
