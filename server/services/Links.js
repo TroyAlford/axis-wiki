@@ -18,7 +18,7 @@ import Article    from './Article'
 import Config     from './Config'
 import Slug       from './Slug'
 
-const THROTTLE = Config.settings.saving.throttle;
+const THROTTLE = Config.settings.cleanup.throttle;
 
 class Links {
   constructor() {

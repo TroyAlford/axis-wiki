@@ -1,7 +1,10 @@
 {
+  "cleanup": {
+    "throttle": 5000
+  },
   "facebook": {
     "application_id": "YOUR_APP_ID_HERE",
-    "permissions": "public_profile,email"
+    "application_secret": "YOUR_APP_SECRET_HERE"
   },
   "html": {
     "beautifier": {
@@ -23,9 +26,6 @@
       { "text": "Home", "url": "/page/home" },
       { "text": "Upload", "url": "/upload" }
     ]
-  },
-  "saving": {
-    "throttle": 1000
   },
   "server": {
     "port": 8080

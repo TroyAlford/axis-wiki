@@ -198,6 +198,6 @@ class Article extends ComponentBase {
   }
 }
 
-export default connect(state => {
-  return state.article;
-})(Article);
+export default connect(
+  state => state.article
+)(Article);

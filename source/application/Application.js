@@ -6,7 +6,7 @@ import { createStore } from 'redux'
 
 import reducer         from '../reducers'
 
-import Layout          from './Layout'
+import Layout          from '../application/Layout'
 import NotFound        from '../pages/NotFound'
 import Article         from '../pages/Article'
 import Media           from '../pages/Media'

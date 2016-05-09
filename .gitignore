@@ -1,6 +1,8 @@
-.idea/
-build/
-/config/
-content/
-node_modules/
-npm-debug.log
+.idea
+/build
+/config
+/content
+/node_modules
+/npm-debug.log
+/source/config.json
+/server/config.json

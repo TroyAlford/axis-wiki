@@ -2,6 +2,8 @@ import mkdirp       from 'mkdirp'
 import path         from 'path'
 import utils        from 'fs-utils'
 
+import defaults     from '../defaults.json'
+
 let SETTINGS = null;
 
 class Config {
@@ -18,17 +20,15 @@ class Config {
     if (SETTINGS)
       return SETTINGS;
 
-    let
-      argv       = require('minimist')(process.argv.slice(2)),
-      defaults   = require('../defaults.json'),
-      arg_path   = argv.c || argv.config || 'defaults.json',
-      adj_path   = path.isAbsolute(arg_path) ? arg_path : path.join(__dirname, '../', arg_path),
-      cfg_exists = utils.exists(adj_path),
-      config     = cfg_exists ? require(adj_path) : {}
+    let 
+      argv        = require('minimist')(process.argv.slice(2)),
+      config_path = path.join(__dirname, '../config.json'),
+      config      = utils.exists(config_path) ? require(config_path) : {},
+      debug       = argv.debugging || false
     ;
 
-    SETTINGS = Object.assign({ debugging: argv.debugging || false }, defaults, config);
-    console.log(`Loaded Configuration: ${adj_path}`);
+    SETTINGS = Object.assign({ debugging: debug }, defaults, config);
+    console.log(`Loaded Configuration`);
 
     return SETTINGS;
   }
@@ -46,7 +46,8 @@ class Config {
       articles: path.join(basePath, './articles'),
       config:   path.join(basePath, './config'),
       media:    path.join(basePath, './media'),
-      metadata: path.join(basePath, './metadata')
+      metadata: path.join(basePath, './metadata'),
+      users:    path.join(basePath, './users')
     };
 
     return this._folders;

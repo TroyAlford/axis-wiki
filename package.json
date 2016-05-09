@@ -71,18 +71,18 @@
   "scripts": {
     "start": "babel-node server/server.js -c ../config/config.json",
     "test": "jest",
-    "develop": "npm run serve & npm run jsx-build-dep & npm run watch-jsx & npm run watch-css",
+    "develop": "npm run serve & npm run build-jsx-dep & npm run watch-jsx & npm run watch-css",
     "build": "npm run clean && (npm run build-jsx & npm run build-css)",
-    "build-css": "npm run css-app-build & npm run css-dep-build",
-    "build-jsx": "npm run jsx-build-app & npm run jsx-build-dep",
+    "build-css": "npm run build-css-app & npm run build-css-dep",
+    "build-css-app": "mkdirp build/css && npm run concat-css-app && node-sass build/sass/application.scss -o build/css --output-style compressed --source-map true --source-map-embed",
+    "build-css-dep": "node-sass vendor/dependencies.scss -o build/css --output-style compressed --source-map true --source-map-embed",
+    "build-jsx": "npm run build-jsx-app & npm run build-jsx-dep",
+    "build-jsx-app": "mkdirp build/js && browserify -x react -x react-dom -x react-router -x react-tinymce -x lodash source/application/Application.js > build/js/application.js",
+    "build-jsx-dep": "mkdirp build/js && browserify -r react -r react-dom -r react-router -r react-tinymce -r lodash vendor/dependencies.js > build/js/dependencies.js ",
     "clean": "rm -rf build",
-    "css-app-build": "mkdirp build/css && npm run css-app-concat && node-sass build/sass/application.scss -o build/css --output-style compressed --source-map true --source-map-embed",
-    "css-app-concat": "mkdirp build/sass && concat-cli -f styles/**/*.scss -o build/sass/application.scss",
-    "css-dep-build": "node-sass vendor/dependencies.scss -o build/css --output-style compressed --source-map true --source-map-embed",
-    "jsx-build-app": "mkdirp build/js && browserify -x react -x react-dom -x react-router -x react-tinymce -x lodash source/application/Application.js > build/js/application.js",
-    "jsx-build-dep": "mkdirp build/js && browserify -r react -r react-dom -r react-router -r react-tinymce -r lodash vendor/dependencies.js > build/js/dependencies.js ",
-    "serve": "nodemon --watch ./server --exec babel-node server/server.js -c ../config/config.json",
+    "concat-css-app": "mkdirp build/sass && concat-cli -f styles/**/*.scss -o build/sass/application.scss",
+    "serve": "nodemon --watch ./server --exec babel-node server/server.js",
     "watch-css": "nodemon --watch styles -e css,scss --exec 'npm run build-css'",
-    "watch-jsx": "nodemon --watch source -e js --exec 'npm run jsx-build-app'"
+    "watch-jsx": "nodemon --watch source -e js --exec 'npm run build-jsx-app'"
   }
 }
