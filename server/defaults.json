@@ -1,7 +1,11 @@
 {
+  "application": {
+    "name": "Axis Wiki"
+  },
   "cleanup": {
     "throttle": 5000
   },
+  "debugging": false,
   "facebook": {
     "application_id": "YOUR_APP_ID_HERE",
     "application_secret": "YOUR_APP_SECRET_HERE"
