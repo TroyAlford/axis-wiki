@@ -132,7 +132,7 @@ class Article extends ComponentBase {
             className: 'read',
             caption: <Icon name="read" size="small" />,
             contents: <div>
-              <div dangerouslySetInnerHTML={{ __html: this.props.html }}></div>
+              <div dangerouslySetInnerHTML={{ __html: this.state.html || this.props.html }}></div>
               <ArticleChildren articles={this.props.children} />
             </div>
           }, {
@@ -141,7 +141,7 @@ class Article extends ComponentBase {
             contents: 
               <TinyMCE ref="tinymce"
                 config={editor_config} 
-                content={this.props.html}
+                content={this.state.html || this.props.html}
                 onChange={this.handleHtmlChange}
               />
           }, {
@@ -150,7 +150,7 @@ class Article extends ComponentBase {
             contents:
               <textarea ref="html"
                 onChange={this.handleHtmlChange} 
-                value={this.props.html}
+                value={this.state.html || this.props.html}
               />
           }, {
             className: 'settings',
