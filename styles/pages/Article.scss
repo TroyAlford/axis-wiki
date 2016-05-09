@@ -90,7 +90,7 @@ $tags-height: 36px;
   }
 
   .mce-tinymce-inline.mce-panel {
-    border: solid $palette-royal-blue;
+    border: solid $color-border-blue;
     border-width: 0 0 1px 0!important;
     display: block!important;
     height: $toolbar-height!important;
@@ -108,7 +108,7 @@ $tags-height: 36px;
 
   .tags-editor {
     background-color: $palette-white;
-    border-top: 1px solid $palette-royal-blue;
+    border-top: 1px solid $color-border-blue;
     position: absolute;
     height: $tags-height;
     bottom: 0; left: 0; right: 0;

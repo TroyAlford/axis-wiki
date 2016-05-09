@@ -3,7 +3,7 @@
   padding: 0;
 
   ul.tabs {
-    border-bottom: 1px solid $palette-royal-blue;
+    border-bottom: 1px solid $color-border-blue;
     line-height: 1em;
     margin: 0;
     overflow: visible;
@@ -12,7 +12,7 @@
     > li, > li + li {
       background-color: $palette-offwhite;
       border: 1px solid $palette-light-gray;
-      border-bottom: 1px solid $palette-royal-blue;
+      border-bottom: 1px solid $color-border-blue;
       border-radius: 5px 5px 0 0;
       color: lighten($palette-dark-gray, 40%);
       cursor: pointer;
@@ -22,7 +22,7 @@
 
       &.is-active {
         background: $palette-white;
-        border-color: $palette-royal-blue;
+        border-color: $color-border-blue;
         border-bottom: 1px solid transparent;
         color: $color-text;
         padding-top: 7px;
