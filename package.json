@@ -34,7 +34,8 @@
     "react-tagsinput": "^3.6.1",
     "react-tinymce": "github:TroyAlford/react-tinymce",
     "redux": "^3.5.2",
-    "redux-thunk": "^2.0.1"
+    "redux-thunk": "^2.0.1",
+    "simple-grep": "github:gawkermedia/simple-grep"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",

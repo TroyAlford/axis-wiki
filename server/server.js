@@ -12,12 +12,15 @@ import Facebook     from './middleware/Facebook'
 import Config  	    from './services/Config'
 import Watcher      from './services/Watcher'
 
+var apis    = {
+  article: require('./modules/article'),
+  config:  require('./modules/config'),
+  my:      require('./modules/my'),
+  search:  require('./modules/search')
+}
 var modules = {
-  article: require('./modules/article.js'),
-  config:  require('./modules/config.js'),
-  media:   require('./modules/media.js'),
-  my:      require('./modules/my.js')
-};
+  media:   require('./modules/media')
+}
 
 Watcher.watch();
 
@@ -26,9 +29,11 @@ var app = express();
 app.use(cookieParser());
 
 /* Non-Static Routes */
-app.use('/api/page',   Facebook, modules.article);
-app.use('/api/config', Facebook, modules.config);
-app.use('/api/my',     Facebook, modules.my);
+app.use('/api/page',   Facebook, apis.article);
+app.use('/api/config', Facebook, apis.config);
+app.use('/api/my',     Facebook, apis.my);
+app.use('/api/search', Facebook, apis.search);
+
 app.use('/media',      Facebook, modules.media);
 
 /* Static Content Routes */
