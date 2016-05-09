@@ -65,6 +65,9 @@ class Article extends ComponentBase {
   handleHtmlChange() {
     let html = '';
     switch (this.state.selected_tab) {
+      case 0: /* Reading tab */
+        this.setState({ html: this.state.html || this.props.html });
+        return; // Leaving the Reading page should enable editing/dirty
       case 1: /* TinyMCE tab */
         html = tinyMCE.activeEditor.getContent();
         break;
@@ -99,6 +102,7 @@ class Article extends ComponentBase {
   }
 
   handleSave() {
+    this.handleHtmlChange(); // Ensure we have the latest HTML version.
     let { aliases, children, data, html, tags } = this.props;
 
     XHR.post('/api/page/' + this.props.params.slug, {
@@ -142,14 +146,12 @@ class Article extends ComponentBase {
               <TinyMCE ref="tinymce"
                 config={editor_config} 
                 content={this.state.html || this.props.html}
-                onChange={this.handleHtmlChange}
               />
           }, {
             className: 'html',
             caption: <Icon name="html" size="small" />,
             contents:
               <textarea ref="html"
-                onChange={this.handleHtmlChange} 
                 value={this.state.html || this.props.html}
               />
           }, {
