@@ -11,6 +11,15 @@ export default (req, res, next) => {
     cookie      = req.header(header_name) || req.cookies[cookie_name]
   ;
 
+  let hmac = null;
+  try {
+    hmac = crypto.createHmac('sha256', application_secret);
+  } catch (err) { // application_secret is probably not set-up
+    req.facebook = { session: {} };
+    next();
+    return;
+  }
+
   req.facebook = {};
 
   if (cookie) {
