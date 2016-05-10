@@ -1,5 +1,4 @@
 import _                  from 'lodash'
-import { browserHistory } from 'react-router'
 import ComponentBase      from '../application/ComponentBase'
 import ArticleChildren    from '../components/ArticleChildren'
 import Icon               from '../components/Icon'

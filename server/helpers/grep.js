@@ -1,9 +1,10 @@
 import _        from 'lodash'
 import { exec } from 'child_process'
 
-export default (what, where) => {
+export default (what, where, timeout = 1000) => {
   return new Promise((resolve, reject) => {
-    const child = exec(`grep ${what} ${where} -nr`, (error, stdin) => {
+    let command = `grep ${what} ${where} -Finr`;
+    const child = exec(command, { timeout }, (error, stdin) => {
       if (error)
         return reject(error);
 

@@ -35,8 +35,8 @@ class Layout extends ComponentBase {
     let node_name = event.target.nodeName.toUpperCase();
     if (node_name !== 'A' && node_name !== 'IMG') return;
 
-    let inside_editor = this.elementIsWithinEditor(event.target);
-    let url = parser.href = event.target.href || event.target.src;
+    let inside_editor = this.elementIsWithinEditor(event.target)
+    let url = parser.href = event.target.href || event.target.src
     
     if (inside_editor || !url)
       return event.preventDefault();
@@ -48,9 +48,9 @@ class Layout extends ComponentBase {
     
     switch (node_name) {
       case "A":
-        return this.props.dispatch(loadArticle(slug));
+        return this.props.dispatch(loadArticle(slug)) 
       case "IMG":
-        return browserHistory.push(`/info/media/${slug}`);
+        return browserHistory.push(`/info/media/${slug}`)
     }
   }
 

@@ -1,12 +1,5 @@
-import _                    from 'lodash'
-import { html as beautify } from 'js-beautify'
 import bodyParser           from 'body-parser'
-import cheerio              from 'cheerio'
 import express              from 'express'
-import fs                   from 'fs'
-import path                 from 'path'
-import URL                  from 'url'
-import utils                from 'fs-utils'
 
 import Profile              from '../services/Profile'
 
@@ -15,7 +8,7 @@ var my = module.exports = express()
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
   .get('/profile', (request, response) => {
     let { session } = request.facebook,
-      profile = Profile.load(session.user_id);
+        profile = Profile.load(session.user_id);
 
     if (!profile)
       Profile.save(session.user_id, Profile.default);

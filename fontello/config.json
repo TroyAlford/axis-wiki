@@ -91,6 +91,12 @@
       "search": [
         "d10"
       ]
+    },
+    {
+      "uid": "4743b088aa95d6f3b6b990e770d3b647",
+      "css": "facebook",
+      "code": 59405,
+      "src": "fontawesome"
     }
   ]
 }

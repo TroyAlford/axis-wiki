@@ -10,9 +10,9 @@ export default ({}) =>
           <strong>Axis</strong> Wiki
         </div>
         <nav className="navbar">
-          <SearchBox />
-          <div className="spacer"></div>
           <Facebook className="header-item" />
+          <div className="spacer"></div>
+          <SearchBox />
         </nav>
       </header>
     </div>

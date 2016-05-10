@@ -1,6 +1,7 @@
 import {
   SEARCH_LOADING,
   SEARCH_REQUEST,
+  SEARCH_RESET,
   SEARCH_RESULTS
 } from '../actions/search'
 
@@ -23,9 +24,11 @@ export default (state = default_state, action) => {
         default_state,
         { term, loading: true }
       )
+    case SEARCH_RESET:
+      return Object.assign({}, default_state)
     case SEARCH_RESULTS:
       return Object.assign({}, 
-        default_state, 
+        default_state,
         { loading: false, term, results }
       )
     default:

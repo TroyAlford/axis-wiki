@@ -4,6 +4,7 @@ import { browserHistory }    from 'react-router'
 
 export const SEARCH_LOADING = 'search.loading'
 export const SEARCH_REQUEST = 'search.request'
+export const SEARCH_RESET   = 'search.reset'
 export const SEARCH_RESULTS = 'search.results'
 
 export function searchLoading(term) {
@@ -17,7 +18,7 @@ export function searchRequest(term) {
     dispatch(searchLoading(term));
 
     let updated_term = ''
-    return fetch(`/api/search/${term}`)
+    return fetch(`/api/search/${term}`, { credentials: 'include' })
       .then(response => {
         updated_term = _(response.url).split('/').last()
         return response.json()
@@ -34,5 +35,10 @@ export function searchResults(term, results) {
   return {
     type: SEARCH_RESULTS,
     results, term
+  }
+}
+export function searchReset() {
+  return {
+    type: SEARCH_RESET
   }
 }

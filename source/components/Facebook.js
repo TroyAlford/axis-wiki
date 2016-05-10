@@ -1,10 +1,13 @@
 import _                        from 'lodash'
 import { connect }              from 'react-redux'
-import ComponentBase            from '../application/ComponentBase'
 import { facebook as config   } from '../config.json'
 import { facebook as defaults } from '../defaults.json'
 
-import { logoff, logon, updateProfile } from '../actions/user'
+import ComponentBase            from '../application/ComponentBase'
+import Icon                     from '../components/Icon'
+import { Link }                 from 'react-router'
+
+import { logoff, logon, updateUserInfo } from '../actions/user'
 
 class Facebook extends ComponentBase {
   constructor(props) {
@@ -14,31 +17,33 @@ class Facebook extends ComponentBase {
 
   componentDidMount() {
     FB.Event.subscribe('auth.statusChange', this.handleStatusChange);
-    FB.init({
-      appId   : this.config.application_id,
-      cookie  : true,   // allows server to access the session
-      status  : true,   // check login status on init
-      version : 'v2.5', // use graph api v2.5
-      xfbml   : true    // parse social plugins on page
-    });
-    if ("" === FB.getUserID())
-      this.props.dispatch(logoff());
-    else
-      this.loadProfile();
+
+    window.fbAsyncInit = (() => {
+      FB.init({
+        appId   : this.config.application_id,
+        cookie  : true,   // allows server to access the session
+        status  : true,   // check login status on init
+        version : 'v2.5', // use graph api v2.5
+        xfbml   : true,   // parse social plugins on page
+        frictionlessRequests: true
+      });
+
+      FB.getLoginStatus(this.handleStatusChange)
+    }).bind(this)
   }
 
   loadProfile() {
     FB.api('/me', { fields: 'name,email,picture.width(250)' }, (response => {
       let { id, email, name, picture } = response;
-      this.props.dispatch(updateProfile({ id, email, name, picture }));
+      this.props.dispatch(updateUserInfo({ id, email, name, picture }));
     }).bind(this));
   }
 
   handleStatusChange(response) {
-    if (response.status == 'connected')
-      this.props.dispatch(logoff())
+    if (response.status === 'connected')
+      this.loadProfile()
     else
-      this.props.dispatch(logon())
+      this.props.dispatch(logoff())
   }
 
   render() {
@@ -51,9 +56,10 @@ class Facebook extends ComponentBase {
             data-size="medium"
             scope={this.config.permissions}
           ></div>
-        : <a href="/profile" className="navbar-item">
-            {this.props.name}
-          </a>
+        : <Link to="/profile" className="navbar-item profile link">
+            <img src={this.props.picture.data.url} width="24px" />
+            <span>{this.props.name}</span>
+          </Link>
       }
       </div>
     );

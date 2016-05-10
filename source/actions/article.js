@@ -11,7 +11,7 @@ export function loadArticle(requested_slug) {
     dispatch(loadingArticle(requested_slug))
 
     let slug = requested_slug;
-    return fetch(`/api/page/${requested_slug}`)
+    return fetch(`/api/page/${requested_slug}`, { credentials: 'include' })
       .then(response => {
         slug = _(response.url).split('/').last();
         return response.json();
