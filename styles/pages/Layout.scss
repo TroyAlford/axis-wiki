@@ -11,6 +11,8 @@ html, body { overflow: hidden; }
     padding: 10px;
     border: 0 solid $color-border-blue;
     border-right-width: 1px;
+    overflow-x: auto;
+    overflow-y: auto;
   }
   > .page-container {
     position: fixed;
