@@ -13,15 +13,6 @@ import { loadArticle }    from '../actions/article'
 const parser = document.createElement('a');
 
 class Layout extends ComponentBase {
-  constructor(props) {
-    super(props);
-
-    let path = window.location.pathname,
-        slug = _(path).split('/').last();
-    if (!path || _(path).startsWith('/page/'))
-      this.props.dispatch(loadArticle(slug));
-  }
-
   elementIsWithinEditor(element) {
     if (element.id.startsWith('react-tinymce'))
       return true;

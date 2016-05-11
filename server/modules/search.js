@@ -32,25 +32,25 @@ let search = module.exports = express()
 ;
 
 async function getContentMatches(search_term) {
-  let file_mask = path.join(folders.articles, '*.html');
+  return grep(escape(search_term), folders.articles, { ext: 'html' })
+    .then(list => 
+      list.map(hit => {
+        let name = _(hit.file).split('/').last().replace(/\.html$/g, ''),
+            html = utils.readFileSync(hit.file),
+           $html = $(html || '')
 
-  return grep(escape(search_term), file_mask).then(list => 
-    list.map(hit => {
-      let name = _(hit.file).split('/').last().replace(/\.html$/g, ''),
-          html = utils.readFileSync(hit.file),
-         $html = $(html || '')
-
-      return {
-        title: $html.find('h1,h2,h3,h4,h5,h6').first().text() || _.capitalize(name),
-        file:  name,
-        image: $html.find('img').first().attr('src'),
-        results: hit.results.map(result => Object.assign(result, {
-          details: $(result.details).text()
-        })),
-        type: 'article:content'
-      }
-    })
-  );
+        return {
+          title: $html.find('h1,h2,h3,h4,h5,h6').first().text() || _.capitalize(name),
+          file:  name,
+          image: $html.find('img').first().attr('src'),
+          results: hit.results.map(result => Object.assign(result, {
+            text: $(result.text).text()
+          })),
+          type: 'article:content'
+        }
+      })
+    )
+  ;
 }
 
 function getFileNameMatches(search_term, folder, filter = '') {

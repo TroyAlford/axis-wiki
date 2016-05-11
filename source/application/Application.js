@@ -26,6 +26,7 @@ ReactDOM.render(
         <Route path="/info/media/:filename" component={Media} />
         <Route path="/profile" component={Profile} />
         <Route path="/search/:term" component={Search} />
+        <Route path="/search" component={Search} />
         <Route path="/sheet/:slug" component={Sheet} />
         <Route path="/upload" component={Upload} />
         <Route path="*" component={NotFound} />

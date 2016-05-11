@@ -6,7 +6,9 @@
   .search-result {
     border: 1px solid $color-border-blue;
     border-radius: 5px;
+    box-shadow: 1px 1px 5px 0px #ccc;
     cursor: pointer;
+    font-size: .9em;
     height: 5.5em;
     line-height: 1.5em;
     margin: 0 1% 1% 0;
@@ -15,6 +17,7 @@
     position: relative;
 
     .preview-image {
+      background-color: $palette-offwhite;
       background-position: center center;
       background-repeat: no-repeat;
       background-size: contain;
@@ -32,15 +35,15 @@
   }
 }
 
-@media screen and (max-width: $screen-tablet) {
+@media (max-width: $screen-tablet) {
   .search-result { width: 95%; }
 }
-@media screen and (min-width: $screen-tablet) {
+@media (min-width: $screen-tablet) {
   .search-result { width: 49%; }
 }
-@media screen and (min-width: $screen-desktop) {
-  .search-result { width: 24%; }
+@media (min-width: $screen-desktop) {
+  .search-result { width: 32%; }
 }
-@media screen and (min-width: $screen-widescreen) {
-  .search-result { width: 19%; }
+@media (min-width: $screen-widescreen) {
+  .search-result { width: 24%; }
 }

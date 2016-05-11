@@ -16,10 +16,13 @@ export function searchLoading(term) {
 export function searchRequest(term) {
   return dispatch => {
     dispatch(searchLoading(term));
+    if (term.length < 3) return;
 
     let updated_term = ''
-    return fetch(`/api/search/${term}`, { credentials: 'include' })
-      .then(response => {
+    return fetch(`/api/search/${term}`, { 
+      credentials: 'include', 
+      timeout: 1000 
+    }).then(response => {
         updated_term = _(response.url).split('/').last()
         return response.json()
       }).then(json => {

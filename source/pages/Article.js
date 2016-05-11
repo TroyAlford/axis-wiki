@@ -23,6 +23,9 @@ class Article extends ComponentBase {
     super(props);
     this.state = this.default_state;
 
+    if (this.props.slug !== this.props.params.slug)
+      this.props.dispatch(loadArticle(this.props.params.slug))
+
     this.isDirty = () => (
       !!this.state.aliases ||
       !!this.state.children ||

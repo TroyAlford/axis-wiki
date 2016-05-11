@@ -27,7 +27,7 @@ class Search extends ComponentBase {
       slug:  article.file,
       title: article.title,
       previews: article.results.map(hit => {
-        let words = hit.details.split(' '),
+        let words = hit.text.split(' '),
             index = _.findIndex(words, word => _.includes(
               word.toLowerCase(), 
               this.props.term.toLowerCase()
@@ -43,7 +43,7 @@ class Search extends ComponentBase {
             `<span class="highlight">${words[index]}</span>`,
             ...words.slice(index + 1)
           ].join(' '),
-          line_number: hit.line_number
+          line: hit.line
         }
       }).filter(preview => preview !== null)
     }))

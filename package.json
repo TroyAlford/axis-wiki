@@ -52,7 +52,8 @@
     "nodemon": "^1.9.1",
     "react-addons-test-utils": "^15.0.1",
     "react-helmet": "^3.1.0",
-    "redux-devtools": "^3.2.0"
+    "redux-devtools": "^3.2.0",
+    "superchild": "^0.1.2"
   },
   "browserify": {
     "transform": [
