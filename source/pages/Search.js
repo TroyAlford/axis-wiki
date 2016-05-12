@@ -28,7 +28,7 @@ class Search extends ComponentBase {
                 this.props.term.toLowerCase()
               ));
           
-          if (!index) 
+          if (0 > index) // not found
             return { html: hit.text, line: hit.line }
 
           let start = index - 4 > 0 ? index - 4 : 0
@@ -62,7 +62,7 @@ class Search extends ComponentBase {
           <div key={search_result.key} className="search-result" onClick={() => this.props.dispatch(loadArticle(search_result.slug))}>
             {!search_result.image ? '' :
               <div className="preview-image" style={{
-                'background-image': `url(${search_result.image})`
+                backgroundImage: `url(${search_result.image})`
               }}></div>
             }
             <b>{search_result.title} ({search_result.hits} hits)</b>

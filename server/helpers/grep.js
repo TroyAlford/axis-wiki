@@ -6,12 +6,24 @@ const default_options = {
   ext: null
 }
 
-export default (what, where, set_options) => {
+const must_escape = ['&', ';'].map(char => ({
+  char: new RegExp(`[${char}]`, 'g'),
+  repl: `\\${char}`
+}))
+const regex_metas = ['?', '+', '{', '|', '(', ')']
+
+export default ($what, where, set_options) => {
   let options = Object.assign({}, default_options, set_options || {})
 
+  let what = `${$what}`
+  regex_metas.forEach(char => what = what.replace(char, `[${char}]`))
+  must_escape.forEach(esc  => what = what.replace(esc.char, esc.repl))
+
+  what = `\\(${what}\\)` // RegEx-ify the what query
+
   return new Promise((resolve, reject) => {
-    const file_filter = options.ext ? `--include \*.${options.ext}` : ''
-    const command = `grep -Finr "${what}" --include \\*.${options.ext || '\\*'} ${where}`
+    const ext_filter = `\\*.${options.ext || '\\*'}`
+    const command = `grep -Einr ${what} --include ${ext_filter} ${where}`
     // console.log(command)
     const grep = spawn(command)
     let matches = [], total_matches = 0
@@ -45,8 +57,10 @@ export default (what, where, set_options) => {
       reject(message)
     })
     grep.on('stdout_line', match => {
-      if (match && match.length)
+      if (match && match.length) {
+        // console.log(match)
         matches.push(match)
+      }
     })
     grep.on('close', finalize)
     grep.on('exit',  finalize)
