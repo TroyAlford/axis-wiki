@@ -20,33 +20,39 @@ class Search extends ComponentBase {
   }
 
   getDisplayData() {
-    return _(this.props.results).map((article, index) => ({
-      key:   index,
-      hits:  article.results.length,
-      image: article.image,
-      slug:  article.file,
-      title: article.title,
-      previews: article.results.map(hit => {
-        let words = hit.text.split(' '),
-            index = _.findIndex(words, word => _.includes(
-              word.toLowerCase(), 
-              this.props.term.toLowerCase()
-            ));
-        
-        if (index < 0)
-          return null;
+    return _(this.props.results).map((article, index) => {
+      let previews = article.results.map(hit => {
+          let words = hit.text.split(' '),
+              index = _.findIndex(words, word => _.includes(
+                word.toLowerCase(), 
+                this.props.term.toLowerCase()
+              ));
+          
+          if (!index) 
+            return { html: hit.text, line: hit.line }
 
-        return {
-          html: [
-            index > 4 ? '...' : '',
-            ...words.slice(index > 4 ? index - 4 : 0, index),
-            `<span class="highlight">${words[index]}</span>`,
-            ...words.slice(index + 1)
-          ].join(' '),
-          line: hit.line
-        }
-      }).filter(preview => preview !== null)
-    }))
+          let start = index - 4 > 0 ? index - 4 : 0
+
+          return {
+            html: [
+              index ? '&hellip;' : '',
+              ...words.slice(start, index),
+              `<span class="highlight">${words[index]}</span>`,
+              ...words.slice(index + 1)
+            ].join(' '),
+            line: hit.line
+          }
+        }).filter(preview => preview !== null)
+
+      return {
+        key:   index,
+        hits:  previews.length,
+        image: article.image,
+        slug:  article.file,
+        title: article.title,
+        previews
+      }
+    })
   }
 
   render() {

@@ -45,22 +45,12 @@ async function getContentMatches(search_term) {
           image: $html.find('img').first().attr('src'),
           results: hit.results.map(result => Object.assign(result, {
             text: $(result.text).text()
-          })),
+          })).filter(result => 0 <= result.text.toLowerCase().indexOf(search_term.toLowerCase())),
           type: 'article:content'
         }
-      })
+      }).filter(hit => hit.results.length)
     )
   ;
-}
-
-function getFileNameMatches(search_term, folder, filter = '') {
-  if (search_term.match(/$\w*^/g))
-    return []
-
-  return fs.readdirSync(folder).filter(file => 
-    file.toLowerCase().includes(search_term.toLowerCase()) &&
-    file.match(filter)
-  )
 }
 
 function decode(input) {
