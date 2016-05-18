@@ -8,6 +8,7 @@ import TabSet             from '../components/TabSet'
 import TagsInput          from 'react-tagsinput'
 import TinyMCE            from 'react-tinymce'
 import editor_config      from '../config/editor'
+import fetch              from 'isomorphic-fetch'
 
 import { connect }        from 'react-redux'
 import { 
@@ -68,9 +69,11 @@ class Article extends ComponentBase {
     let html = '';
     switch (this.state.selected_tab) {
       case 0: /* Reading tab */
+        html = this.state.html || this.props.html;
         this.setState({ html: this.state.html || this.props.html });
-        return; // Leaving the Reading page should enable editing/dirty
+        return html; // Leaving the Reading page should enable editing/dirty
       case 1: /* TinyMCE tab */
+        console.log(tinyMCE.activeEditor.getContent());
         html = tinyMCE.activeEditor.getContent();
         break;
       case 2: /* HTML tab */
@@ -81,6 +84,7 @@ class Article extends ComponentBase {
         break;
     }
     this.setState({ html: html !== this.props.html ? html : null })
+    return html;
   }
   handleTabClicked(clicked) {
     if (this.state.selected_tab == clicked.index) return;
@@ -104,15 +108,15 @@ class Article extends ComponentBase {
   }
 
   handleSave() {
-    this.handleHtmlChange(); // Ensure we have the latest HTML version.
+    let latest_html = this.handleHtmlChange(); // Ensure we have the latest HTML version.
     let { aliases, children, data, html, tags } = this.props;
 
-    XHR.post('/api/page/' + this.props.params.slug, {
+    XHR.post(`/api/page/${this.props.params.slug}`, {
       data: {
         aliases: this.state.aliases || aliases,
         children: this.state.children || children,
         data: this.state.data || data,
-        html: this.state.html || html,
+        html: latest_html || html,
         tags: this.state.tags || tags
       },
       success: (response) => {
@@ -154,6 +158,7 @@ class Article extends ComponentBase {
             caption: <Icon name="html" size="small" />,
             contents:
               <textarea ref="html"
+                onChange={() => this.setState({ html: this.refs.html.value })}
                 value={this.state.html || this.props.html}
               />
           }, {
