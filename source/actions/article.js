@@ -10,6 +10,8 @@ export const
   ARTICLE_DELETE  = 'article.delete'
 ;
 
+const parser  = document.createElement('a');
+
 export function loadArticle(requested_slug) {
   return dispatch => {
     dispatch(loadingArticle(requested_slug))
@@ -53,9 +55,31 @@ export function deleteArticle(slug) {
         dispatch(loadArticle('home'))
         dispatch(addMessage(`Article ${slug} was successfully deleted!`))
       } else if (response.status == 401 /* Unauthorized */)
-        dispatch(addMessage(`You need a higher level of permissions to delete ${slug}. Sorry!`))
+        dispatch(addMessage(`Your account does not have permission to delete the '${slug}' article.`))
       else if (response.status == 500 /* Internal Server Error */)
-        dispatch(addMessage(`Unable to delete ${slug}. Internal error - please try again.`))
+        dispatch(addMessage(`An error occurred while attempting to delete the '${slug}' article. Please try again.`))
+    })
+  }
+}
+
+export function saveArticle(slug, article) {
+  return dispatch => {
+    return fetch(`/api/page/${slug}`, {
+      body: JSON.stringify(article),
+      credentials: 'include',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }),
+      method: 'POST',
+      mode: 'cors'
+    }).then(response => {
+      if (response.status == 200 /* OK */) {
+        dispatch(loadArticle(slug))
+      } else if (response.status == 401 /* Unauthorized */)
+        dispatch(addMessage(`Your account does not have permission to update the '${slug}' article.`))
+      else if (response.status == 500 /* Internal Server Error */)
+        dispatch(addMessage(`An error occurred while attempting to save the '${slug}' article. Please try again.`))
     })
   }
 }

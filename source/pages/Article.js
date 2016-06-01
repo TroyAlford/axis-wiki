@@ -13,12 +13,12 @@ import fetch              from 'isomorphic-fetch'
 import { connect }        from 'react-redux'
 import { 
   deleteArticle,
+  saveArticle,
   loadArticle,
   loadedArticle
 }                         from '../actions/article'
 
 const tinyMCE = window.tinyMCE;
-const parser  = document.createElement('a');
 
 class Article extends ComponentBase {
   constructor(props) {
@@ -57,19 +57,32 @@ class Article extends ComponentBase {
   }
   
   handleDelete() {
-    let slug = this.props.params.slug;
-    this.props.dispatch(deleteArticle(slug))
+    this.props.dispatch(deleteArticle(this.props.params.slug))
+  }
+  handleSave() {
+    let article = {
+      aliases:  this.state.aliases    || this.props.aliases,
+      children: this.state.children   || this.props.children,
+      data:     this.state.data       || this.props.data,
+      html:     this.getCurrentHtml(),
+      tags:     this.state.tags       || this.props.tags
+    }
+
+    this.props.dispatch(saveArticle(this.props.params.slug, article))
+    this.setState(this.default_state)
   }
 
   handleHtmlChange() {
+    let html = this.getCurrentHtml()
+    this.setState({ html: html !== this.props.html ? html : null })
+  }
+  getCurrentHtml() {
     let html = '';
     switch (this.state.selected_tab) {
       case 0: /* Reading tab */
         html = this.state.html || this.props.html;
-        this.setState({ html: this.state.html || this.props.html });
-        return html; // Leaving the Reading page should enable editing/dirty
+        break;
       case 1: /* TinyMCE tab */
-        console.log(tinyMCE.activeEditor.getContent());
         html = tinyMCE.activeEditor.getContent();
         break;
       case 2: /* HTML tab */
@@ -79,14 +92,15 @@ class Article extends ComponentBase {
         html = this.state.html || this.props.html;
         break;
     }
-    this.setState({ html: html !== this.props.html ? html : null })
     return html;
   }
   handleTabClicked(clicked) {
     if (this.state.selected_tab == clicked.index) return;
 
-    this.handleHtmlChange();
-    this.setState({ selected_tab: clicked.index })
+    this.setState({
+      html: clicked.index !== 0 ? this.props.html : this.state.html,
+      selected_tab: clicked.index
+    })
   }
 
   handleAliasChange(updated) {
@@ -101,32 +115,6 @@ class Article extends ComponentBase {
       this.setState({ tags })
     else
       this.setState({ tags: null })
-  }
-
-  handleSave() {
-    let latest_html = this.handleHtmlChange(); // Ensure we have the latest HTML version.
-    let { aliases, children, data, html, tags } = this.props;
-
-    XHR.post(`/api/page/${this.props.params.slug}`, {
-      data: {
-        aliases: this.state.aliases || aliases,
-        children: this.state.children || children,
-        data: this.state.data || data,
-        html: latest_html || html,
-        tags: this.state.tags || tags
-      },
-      success: (response) => {
-        parser.href = response.url;
-        let slug    = _(parser.pathname).split('/').last(),
-            article = JSON.parse(response.message);
-
-        this.props.dispatch(loadedArticle(slug, article))
-        this.setState(this.default_state)
-      },
-      failure: function(response) {
-        console.log('Save Error...', response);
-      }
-    });
   }
 
   render() {
