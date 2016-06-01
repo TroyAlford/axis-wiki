@@ -1,15 +1,5 @@
 import _                  from 'lodash'
-import ComponentBase      from '../application/ComponentBase'
-import ArticleChildren    from '../components/ArticleChildren'
-import Icon               from '../components/Icon'
-import MenuButton         from '../components/MenuButton'
-import MenuItem           from '../components/MenuItem'
-import TabSet             from '../components/TabSet'
-import TagsInput          from 'react-tagsinput'
-import TinyMCE            from 'react-tinymce'
-import editor_config      from '../config/editor'
 import fetch              from 'isomorphic-fetch'
-
 import { connect }        from 'react-redux'
 import { 
   deleteArticle,
@@ -17,6 +7,15 @@ import {
   loadArticle,
   loadedArticle
 }                         from '../actions/article'
+
+import ComponentBase      from '../application/ComponentBase'
+import ArticleChildren    from '../components/ArticleChildren'
+import Icon               from '../components/Icon'
+import TabSet             from '../components/TabSet'
+import TagsInput          from 'react-tagsinput'
+import TinyMCE            from 'react-tinymce'
+
+import editor_config      from '../config/editor'
 
 const tinyMCE = window.tinyMCE;
 
