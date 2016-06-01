@@ -1,11 +1,10 @@
 import _                  from 'lodash'
-import fetch              from 'isomorphic-fetch'
 import { connect }        from 'react-redux'
 import { 
   deleteArticle,
-  saveArticle,
   loadArticle,
-  loadedArticle
+  loadedArticle,
+  saveArticle
 }                         from '../actions/article'
 
 import ComponentBase      from '../application/ComponentBase'

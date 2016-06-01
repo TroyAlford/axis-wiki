@@ -4,23 +4,17 @@ import {
   MESSAGE_DISMISS
 } from '../actions/messages'
 
-const default_state = {
-  messages: []
-}
+const default_state = []
 
 export default (state = default_state, action) => {
   switch (action.type) {
     case MESSAGE_ADD:
-      return {
-        messages: [...state.messages, action.message]
-      }
+      return [...state.messages, action.message]
     case MESSAGE_DISMISS:
-      return {
-        messages: [
-          ...state.messages.slice(0, action.id - 1), 
-          ...state.messages.slice(action.id + 1)
-        ]
-      }
+      return [
+        ...state.messages.slice(0, action.id - 1), 
+        ...state.messages.slice(action.id + 1)
+      ]
     case MESSAGE_CLEARALL:
       return default_state
     default:
