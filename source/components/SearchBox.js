@@ -1,5 +1,5 @@
 import { connect }        from 'react-redux'
-import { searchRequest }  from '../actions/search'
+import { searchRequest }  from '../redux/actions/search'
 
 export default connect(
   state => state.search

@@ -4,7 +4,7 @@ import { Provider }    from 'react-redux'
 import { Redirect, Route, Router, browserHistory } from 'react-router'
 import { createStore } from 'redux'
 
-import reducer         from '../reducers'
+import reducer         from '../redux/reducers'
 
 import Layout          from '../application/Layout'
 import NotFound        from '../pages/NotFound'

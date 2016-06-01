@@ -8,7 +8,7 @@ import HtmlMetadata       from '../components/HtmlMetadata'
 import Header             from '../components/Header'
 import Navigation         from '../components/Navigation'
 
-import { loadArticle }    from '../actions/article'
+import { loadArticle }    from '../redux/actions/article'
 
 const parser = document.createElement('a');
 

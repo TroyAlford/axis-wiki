@@ -5,7 +5,7 @@ import {
   loadArticle,
   loadedArticle,
   saveArticle
-}                         from '../actions/article'
+}                         from '../redux/actions/article'
 
 import ComponentBase      from '../application/ComponentBase'
 import ArticleChildren    from '../components/ArticleChildren'

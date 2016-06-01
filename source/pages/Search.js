@@ -2,8 +2,12 @@ import _                  from 'lodash'
 import { browserHistory } from 'react-router'
 import { connect }        from 'react-redux'
 
-import { loadArticle }    from '../actions/article'
-import { searchRequest, searchReset } from '../actions/search'
+import { loadArticle }    from '../redux/actions/article'
+import { 
+  searchRequest, 
+  searchReset
+}                         from '../redux/actions/search'
+
 import ComponentBase      from '../application/ComponentBase'
 
 class Search extends ComponentBase {
@@ -59,7 +63,8 @@ class Search extends ComponentBase {
     return (
       <div className="search page">
         {this.getDisplayData().map(search_result =>
-          <div key={search_result.key} className="search-result" onClick={() => this.props.dispatch(loadArticle(search_result.slug))}>
+          <div key={search_result.key} className="search-result" 
+               onClick={() => this.props.dispatch(loadArticle(search_result.slug))}>
             {!search_result.image ? '' :
               <div className="preview-image" style={{
                 backgroundImage: `url(${search_result.image})`
