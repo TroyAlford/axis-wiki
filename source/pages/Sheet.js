@@ -1,6 +1,5 @@
 import _                  from 'lodash'
 import ComponentBase      from '../application/ComponentBase'
-import XHR                from '../helpers/XHR'
 
 import Attribute          from '../sheet/Attribute'
 import AttributesSection  from '../sheet/AttributesSection'

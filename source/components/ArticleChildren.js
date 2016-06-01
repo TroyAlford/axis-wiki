@@ -1,11 +1,6 @@
 import ComponentBase      from '../application/ComponentBase'
 import Icon               from './Icon';
 import { Link }           from 'react-router';
-import MenuButton         from './MenuButton';
-import MenuItem           from './MenuItem';
-import ReactDOM           from 'react-dom';
-import Tag                from './Tag';
-import XHR                from '../helpers/XHR';
 
 export default class ArticleChildren extends ComponentBase {
   render() {

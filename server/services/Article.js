@@ -112,7 +112,6 @@ class Article {
       if (utils.exists(filename))
         fs.unlinkSync(filename, { force: true });
     });
-    //utils.del(`${base}.{html,json}`, { force: true });
     return true;
   }
 

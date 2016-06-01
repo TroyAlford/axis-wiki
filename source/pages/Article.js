@@ -12,8 +12,9 @@ import fetch              from 'isomorphic-fetch'
 
 import { connect }        from 'react-redux'
 import { 
+  deleteArticle,
   loadArticle,
-  loadedArticle 
+  loadedArticle
 }                         from '../actions/article'
 
 const tinyMCE = window.tinyMCE;
@@ -57,12 +58,7 @@ class Article extends ComponentBase {
   
   handleDelete() {
     let slug = this.props.params.slug;
-    XHR.delete(`/api/page/${slug}`, {
-      done: response => {
-        this.setState(this.default_state)
-        this.props.dispatch(loadArticle(slug))
-      }
-    })
+    this.props.dispatch(deleteArticle(slug))
   }
 
   handleHtmlChange() {

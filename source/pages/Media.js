@@ -46,22 +46,12 @@ export default class Article extends ComponentBase {
     let filename = this.props.params.filename;
     XHR.delete(`/api/media/${filename}`, {
       done: (res) => {
-        this.loadMedia(filename);
+        this.loadMedia(filename)
       }
     })
   }
   handleLoad(response) {
     this.setState(Object.assign(this.default_state, JSON.parse(response.message)));
-  }
-  handleSave() {
-    XHR.post('/api/media/' + this.props.params.filename, {
-      data: {
-      },
-      success: this.handleLoad,
-      failure: function(res) {
-        console.log('Save Error...', res);
-      }
-    });
   }
 
   render() {
