@@ -18,9 +18,13 @@ export default class ArticleChildren extends ComponentBase {
         list = articles.slice(first, last)
       ;
       columns[i] =
-        <div key={`column-${i}`} className={classes}>{
+        <div key={i} className={classes}>{
           _.map(list, function(slug) {
-            return <div><Link key={slug} to={slug}>{_.startCase(slug)}</Link></div>;
+            return (
+              <div key={slug}>
+                <Link to={slug}>{_.startCase(slug)}</Link>
+              </div>
+            )
           })
         }</div>;
     }
