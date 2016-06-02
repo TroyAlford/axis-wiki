@@ -36,10 +36,8 @@ class Article extends ComponentBase {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.slug !== nextProps.params.slug) {
-      this.setState(this.default_state)
+    if (this.props.params.slug !== nextProps.params.slug)
       this.props.dispatch(loadArticle(nextProps.params.slug))
-    }
   }
 
   get default_state() {

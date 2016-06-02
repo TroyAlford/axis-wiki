@@ -22,7 +22,7 @@ export default class ArticleChildren extends ComponentBase {
           _.map(list, function(slug) {
             return (
               <div key={slug}>
-                <Link to={slug}>{_.startCase(slug)}</Link>
+                <Link to={`/page/${slug}`}>{_.startCase(slug)}</Link>
               </div>
             )
           })

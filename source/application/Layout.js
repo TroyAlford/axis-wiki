@@ -39,7 +39,7 @@ class Layout extends ComponentBase {
     
     switch (node_name) {
       case "A":
-        return this.props.dispatch(loadArticle(slug)) 
+        return browserHistory.push(`/page/${slug}`)
       case "IMG":
         return browserHistory.push(`/info/media/${slug}`)
     }

@@ -5,17 +5,13 @@ import { addMessage }       from '../actions/messages'
 
 export const
   ARTICLE_LOAD    = 'article.load',
-  ARTICLE_LOADING = 'article.loading',
-  ARTICLE_LOADED  = 'article.loaded',
-  ARTICLE_DELETE  = 'article.delete'
+  ARTICLE_LOADED  = 'article.loaded'
 ;
 
 const parser  = document.createElement('a');
 
 export function loadArticle(requested_slug) {
   return dispatch => {
-    dispatch(loadingArticle(requested_slug))
-
     let slug = requested_slug;
     return fetch(`/api/page/${requested_slug}`, { credentials: 'include' })
       .then(response => {
@@ -27,17 +23,7 @@ export function loadArticle(requested_slug) {
   }
 }
 
-export function loadingArticle(slug) {
-  return {
-    type: ARTICLE_LOADING,
-    slug
-  }
-}
-
 export function loadedArticle(slug, article) {
-  if (browserHistory.location !== `/page/${slug}`)
-    browserHistory.push(`/page/${slug}`)
-  
   return {
     type: ARTICLE_LOADED,
     slug,
