@@ -7,6 +7,9 @@ $tags-height: 36px;
   padding: 0;
   position: absolute;
 
+  .readonly {
+    padding: 10px;
+  }
   .tab-set {
     left: 0; right: 0; top: 0; bottom: 0;
     position: absolute;
@@ -62,6 +65,11 @@ $tags-height: 36px;
         margin: 10px 3px; 
       }
     }
+  }
+  > .tag-bar {
+    border-top: 1px solid $color-border-blue;
+    bottom: 0; left: $size-left-column-x; right: 0;
+    position: fixed;
   }
 
   .save.button {

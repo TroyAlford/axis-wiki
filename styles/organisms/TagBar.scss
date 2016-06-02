@@ -1,20 +1,19 @@
 .tag-bar {
   background: $palette-white;
-  border-top: 1px solid $color-border-blue;
-  bottom: 0; left: $size-left-column-x; right: 0;
   display: block;
   height: 35px;
-  padding: 5px 5px 5px 35px;
-  position: fixed;
+  padding: 5px;
 
-  > .tag-bar-icon {
-    font-size: 25px;
-    padding: 5px;
-    position: absolute;
-    left: 0; top: 0;
+  .tag-bar-input {
+    border: none;
+    margin: 0 5px;
   }
 
-  > .tag, > .tag > span {
+  .tag {
+    border-radius: 3px;
+    border: 1px solid lighten($color-border-blue, 20%);
+    margin: 0 .25em 0 0;
+
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -22,11 +21,9 @@
     user-select: none;
   }
 
-  > .btn-add {
-    cursor: pointer;
-    font-size: 25px;
-    padding: 5px;
-    position: absolute;
-    right: 0; top: 0;
+  .tag .remove:after {
+    content: ' ×';
+    font-weight: bold;
+    padding-left: .25em;
   }
 }

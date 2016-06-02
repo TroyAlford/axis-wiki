@@ -11,7 +11,7 @@ import ComponentBase      from '../application/ComponentBase'
 import ArticleChildren    from '../components/ArticleChildren'
 import Icon               from '../components/Icon'
 import TabSet             from '../components/TabSet'
-import TagsInput          from 'react-tagsinput'
+import TagBar             from '../components/TagBar'
 import TinyMCE            from 'react-tinymce'
 
 import editor_config      from '../config/editor'
@@ -114,17 +114,22 @@ class Article extends ComponentBase {
   }
 
   render() {
+    let reader = 
+      <div>
+        <div dangerouslySetInnerHTML={{ __html: this.state.html || this.props.html }}></div>
+        <ArticleChildren articles={this.props.children} />
+      </div>
+
     return (
       <div className="article page">
-        <TabSet
+    { this.props.readonly
+      ? <div className="readonly">{reader}</div>
+      : <TabSet
           active={this.state.selected_tab}
           tabs={[{
             className: 'read',
             caption: <Icon name="read" size="small" />,
-            contents: <div>
-              <div dangerouslySetInnerHTML={{ __html: this.state.html || this.props.html }}></div>
-              <ArticleChildren articles={this.props.children} />
-            </div>
+            contents: reader
           }, {
             className: 'edit',
             caption: <Icon name="edit" size="small" />,
@@ -148,13 +153,14 @@ class Article extends ComponentBase {
               <div className="settings">
                 <h5>Aliases:</h5>
                 <div className="callout-info">Each entry below is used as an alternate name / redirect for this page.</div>
-                <TagsInput
-                  className="aliases-editor react-tagsinput"
-                  value={this.state.aliases || this.props.aliases}
+                <TagBar
+                  className="aliases-editor tag-bar"
+                  tags={this.state.aliases || this.props.aliases}
                   inputProps={{
-                    className: 'alias-tag',
+                    className: 'alias-tag tag-bar-input',
                     placeholder: 'add alias'
                   }}
+                  readonly={false}
                   onChange={this.handleAliasChange}
                   onlyUnique={true}
                 />
@@ -165,14 +171,11 @@ class Article extends ComponentBase {
           }]}
           tabClicked={this.handleTabClicked}
         />
-        <TagsInput
-          className="tags-editor react-tagsinput"
-          value={this.state.tags || this.props.tags} 
-          inputProps={{ 
-            className: 'react-tagsinput-input', 
-            placeholder: 'add tag'
-          }}
-          onChange={this.handleTagChange} 
+      }
+        <TagBar
+          tags={this.state.tags || this.props.tags}
+          readonly={this.props.readonly}
+          onChange={this.handleTagChange}
           onlyUnique={true}
         />
         {!this.isDirty() ? '' :
@@ -186,5 +189,8 @@ class Article extends ComponentBase {
 }
 
 export default connect(
-  state => state.article
+  state => Object.assign(
+    {}, state.article,
+    { readonly: state.user.privileges.includes('edit') }
+  )
 )(Article);
