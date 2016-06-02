@@ -42,9 +42,9 @@ app.use('/js',     express.static(path.join(__dirname, '../build/js')));
 app.use('/font',   express.static(path.join(__dirname, '../fontello/font')));
 app.use('/images', express.static(path.join(__dirname, '../images')));
 
-app.get('*', function (req, res) {
+app.get('*', Facebook, function (req, res) {
   fs.createReadStream(path.join(__dirname, '../source/index.html'))
-    .pipe(res);
+    .pipe(res)
 });
 
 app.listen(Config.settings.server.port, function() {
