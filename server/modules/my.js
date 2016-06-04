@@ -7,15 +7,14 @@ var my = module.exports = express()
   .use(bodyParser.json())                         // Parses application/json
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
   .get('/profile', (request, response) => {
-    let { session } = request.facebook,
-        profile = Profile.load(session.user_id);
+    let { session } = request.facebook
 
-    if (!profile) {
-      Profile.save(session.user_id, Profile.default)
-      profile = Profile.default
-    }
+    if (!session.user_id) 
+      return response.status(401).send('Please log in to Facebook in order to authenticate.')
 
-    return response.status(200).send(profile);
+    return response.status(200).send(
+      Profile.load(session.user_id) || Profile.default
+    );
   })
   .post('/profile', (request, response) => {
     let { session } = request.facebook,
