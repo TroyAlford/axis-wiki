@@ -3,7 +3,8 @@ import fs                   from 'fs'
 import path                 from 'path'
 import utils                from 'fs-utils'
 
-import Config               from './Config'
+import Config               from '../services/Config'
+import Permissions          from '../services/Permissions'
 
 export default class Profile {
   static get default() {
@@ -27,20 +28,26 @@ export default class Profile {
 
   static load(id) {
     let file = path.resolve(Config.folders.users, `${id}.json`),
-        json = {};
+        profile = {}
 
     try {
-      return utils.readFileSync(file);
+      profile = utils.readJSONSync(file)
     } catch (err) {
-      return null;
+      profile = Object.assign({}, Profile.default)
     }
+
+    profile.privileges = _(['read',
+      ...Permissions.granted_to(id)
+    ]).uniq().sortBy().value()
+
+    return profile
   }
 
   static save(id, profile) {
     let filepath = path.resolve(Config.folders.users, `${id}.json`);
 
     try {
-      fs.writeFileSync(filepath, JSON.stringify(profile));
+      utils.writeJSONSync(filepath, profile);
     } catch (err) {
       console.log(err.message);
       return false;

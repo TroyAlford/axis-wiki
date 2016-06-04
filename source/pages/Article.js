@@ -191,6 +191,6 @@ class Article extends ComponentBase {
 export default connect(
   state => Object.assign(
     {}, state.article,
-    { readonly: state.user.privileges.includes('edit') }
+    { readonly: !state.user.privileges.includes('edit') }
   )
 )(Article);

@@ -7,7 +7,7 @@ import ComponentBase            from '../application/ComponentBase'
 import Icon                     from '../components/Icon'
 import { Link }                 from 'react-router'
 
-import { logoff, logon, updateUserInfo } from '../redux/actions/user'
+import { setAnonymous, logoff, logon, updateUserInfo } from '../redux/actions/user'
 
 class Facebook extends ComponentBase {
   constructor(props) {
@@ -32,18 +32,15 @@ class Facebook extends ComponentBase {
     }).bind(this)
   }
 
-  loadProfile() {
-    FB.api('/me', { fields: 'name,email,picture.width(250)' }, (response => {
-      let { id, email, name, picture } = response;
-      this.props.dispatch(updateUserInfo({ id, email, name, picture }));
-    }).bind(this));
-  }
-
   handleStatusChange(response) {
-    if (response.status === 'connected')
-      this.loadProfile()
-    else
-      this.props.dispatch(logoff())
+    let { dispatch } = this.props
+
+    if (response.status === 'connected') // Logged in & authorized
+      dispatch(logon())
+    else if (response.status === 'not_authorized') // Logged in to FB, not authorized
+      dispatch(logoff())
+    else // User is not logged in to FB
+      dispatch(anonymousUser())
   }
 
   render() {

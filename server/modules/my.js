@@ -10,19 +10,26 @@ var my = module.exports = express()
     let { session } = request.facebook,
         profile = Profile.load(session.user_id);
 
-    if (!profile)
-      Profile.save(session.user_id, Profile.default);
+    if (!profile) {
+      Profile.save(session.user_id, Profile.default)
+      profile = Profile.default
+    }
 
-    return response.status(200).send(Profile.load(session.user_id));
+    return response.status(200).send(profile);
   })
   .post('/profile', (request, response) => {
-    let user   = request.user,
-        posted = request.body,
-        saved  = Profile.save(user.id, posted);
+    let { session } = request.facebook,
+        { name, email, picture } = request.body,
+        profile = {
+          id: session.user_id,
+          name, email, picture
+        }
 
-    if (!saved)
+    profile = Profile.save(session.user_id, profile);
+
+    if (!profile)
       return response.status(500).send('Unable to save profile.');
 
-    response.status(200).send(Profile.load(user.id));
+    response.status(200).send(profile);
   })
 ;
