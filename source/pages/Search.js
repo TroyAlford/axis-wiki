@@ -64,7 +64,7 @@ class Search extends ComponentBase {
       <div className="search page">
         {this.getDisplayData().map(search_result =>
           <div key={search_result.key} className="search-result" 
-               onClick={() => this.props.dispatch(loadArticle(search_result.slug))}>
+               onClick={() => browserHistory.push(`/page/${search_result.slug}`)}>
             {!search_result.image ? '' :
               <div className="preview-image" style={{
                 backgroundImage: `url(${search_result.image})`
