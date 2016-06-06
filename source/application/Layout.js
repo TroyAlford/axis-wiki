@@ -35,6 +35,7 @@ class Layout extends ComponentBase {
     if (parser.hostname != window.location.hostname) return; // Allow external links
 
     event.preventDefault();
+    event.stopImmediatePropagation();
     let slug = _(parser.pathname).split('/').last();
     
     switch (node_name) {
