@@ -72,7 +72,7 @@ class Search extends ComponentBase {
                 {!search_result.image ? '' :
                   <div className="media-left">
                     <figure className="image is-64x64">
-                      <img src={search_result.image} alt="image" />
+                      <img src={search_result.image} alt="image" disabled="disabled" />
                     </figure>
                   </div>
                 }

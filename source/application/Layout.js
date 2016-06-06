@@ -1,4 +1,4 @@
-import _                  from 'lodash'
+import split              from 'lodash/split'
 import ReactDOM           from 'react-dom'
 import { connect }        from 'react-redux'
 import { browserHistory } from 'react-router'
@@ -25,6 +25,7 @@ class Layout extends ComponentBase {
   handleClicks(event) {
     let node_name = event.target.nodeName.toUpperCase();
     if (node_name !== 'A' && node_name !== 'IMG') return;
+    if (event.target.attributes.disabled) return;
 
     let inside_editor = this.elementIsWithinEditor(event.target)
     let url = parser.href = event.target.href || event.target.src
@@ -34,9 +35,10 @@ class Layout extends ComponentBase {
 
     if (parser.hostname != window.location.hostname) return; // Allow external links
 
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    let slug = _(parser.pathname).split('/').last();
+    event.preventDefault()
+    event.stopPropagation()
+
+    let slug = split(parser.pathname, '/').pop()
     
     switch (node_name) {
       case "A":
