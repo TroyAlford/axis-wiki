@@ -82,7 +82,7 @@ class Search extends ComponentBase {
                       <div className="level-item title is-6"><b>{search_result.title}</b></div>
                     </div>
                     <div className="level-right">
-                      <div className="level-item subtitle is-6">{search_result.hits} hits</div>
+                      <div className="level-item subtitle is-6"><i>{search_result.hits} hits</i></div>
                     </div>
                   </nav>
                   {search_result.previews.slice(0,3).map((preview, index) => (
