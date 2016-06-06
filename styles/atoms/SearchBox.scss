@@ -1,7 +1,16 @@
 .search-box {
+  margin: 0 10px;
+  position: relative;
+
   input[type="text"] {
-    border-radius: 10px;
-    margin: 0 10px;
-    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 5px 5px 25px;
+  }
+  > .icon {
+    color: #999;
+    position: absolute;
+    left: 0;
+    margin: 6px;
   }
 }

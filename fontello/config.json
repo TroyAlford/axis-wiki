@@ -19,22 +19,10 @@
       "src": "fontawesome"
     },
     {
-      "uid": "a66cdc7278e6b33b8bd44a141f5e1a8d",
-      "css": "add",
-      "code": 59394,
-      "src": "entypo"
-    },
-    {
       "uid": "191bcf63575a78def53c907c3d3bf7f0",
       "css": "save",
       "code": 59395,
       "src": "entypo"
-    },
-    {
-      "uid": "3327862df439988139b61814143b7a42",
-      "css": "remove",
-      "code": 59396,
-      "src": "typicons"
     },
     {
       "uid": "jqzwo6i8oicjbn049sh2856d8anrqoli",
@@ -73,12 +61,6 @@
       "src": "entypo"
     },
     {
-      "uid": "559647a6f430b3aeadbecd67194451dd",
-      "css": "menu",
-      "code": 59403,
-      "src": "fontawesome"
-    },
-    {
       "uid": "013d228e7c114d2883cdcf3af243c89f",
       "css": "d10",
       "code": 59404,
@@ -93,10 +75,10 @@
       ]
     },
     {
-      "uid": "4743b088aa95d6f3b6b990e770d3b647",
-      "css": "facebook",
-      "code": 59405,
-      "src": "fontawesome"
+      "uid": "t6cy82vd3t5piy0j3uknrlrzpg1ld8y3",
+      "css": "search",
+      "code": 59406,
+      "src": "typicons"
     }
   ]
 }

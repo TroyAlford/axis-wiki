@@ -8,5 +8,6 @@ export default connect(
     <input type="text" placeholder="Search..." value={term}
       onChange={event => dispatch(searchRequest(event.target.value))}
     />
+    <i className="icon icon-search"></i>
   </div>
 )
