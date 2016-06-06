@@ -3,35 +3,34 @@
   flex-wrap: wrap;
   justify-content: flex-start;
 
-  .search-result {
-    border: 1px solid $color-border-blue;
-    border-radius: 5px;
-    box-shadow: 1px 1px 5px 0px #ccc;
+  .result {
     cursor: pointer;
-    font-size: .9em;
-    height: 5.5em;
-    line-height: 1.5em;
-    margin: 0 1% 1% 0;
-    overflow: hidden;
-    padding: .5em;
-    position: relative;
 
-    .preview-image {
-      background-color: $palette-offwhite;
-      background-position: center center;
-      background-repeat: no-repeat;
-      background-size: contain;
-      border-right: 1px solid $color-border-blue;
-      float: left;
-      margin: -.5em .5em 0 -.5em;
-      height: 5.5em;
-      width: 5.5em;
+    .media figure > img {
+      margin: auto;
+      height: auto; max-height: 100%;
+      width:  auto; max-width:  100%;
+    }
+    .media-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      font-size: 0.8em;
+      line-height: 1.2em;
+      height: 64px;
+      overflow: hidden;
+
+      .level { margin: 0; }
     }
     .search-match {
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
     }
+  }
+  .no-results {
+    margin: auto;
   }
 }
 

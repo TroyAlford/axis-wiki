@@ -45,21 +45,21 @@ class Facebook extends ComponentBase {
 
   render() {
     return (
-      <div className="navbar-right">
+      <div className={`fb level ${this.props.className}`}>
       { this.props.anonymous
         ? <div 
-            className="fb-login-button navbar-item"
+            className="fb-login-button level-item"
             data-show-faces="false" 
             data-size="medium"
             scope={this.config.permissions}
           ></div>
-        : <Link to="/profile" className="navbar-item profile link">
-            <img src={this.props.picture.data.url} width="24px" />
+        : <Link to="/profile" className="level-item profile link">
+            <img src={this.props.picture.data.url} width="20px" />
             <span>{this.props.name}</span>
           </Link>
       }
       </div>
-    );
+    )
   }
 }
 

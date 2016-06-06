@@ -3,11 +3,11 @@ import { searchRequest }  from '../redux/actions/search'
 
 export default connect(
   state => state.search
-)(({ dispatch, term }) =>
-  <div className="search-box">
+)(({ className, dispatch, term }) =>
+  <div className={`search-box control has-icon ${className}`}>
     <input type="text" placeholder="Search..." value={term}
       onChange={event => dispatch(searchRequest(event.target.value))}
     />
-    <i className="icon icon-search"></i>
+    <i className="icon icon-search fa"></i>
   </div>
 )

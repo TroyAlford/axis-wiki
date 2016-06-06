@@ -24,7 +24,7 @@ class Search extends ComponentBase {
   }
 
   getDisplayData() {
-    return _(this.props.results).map((article, index) => {
+    return _.map(this.props.results, (article, index) => {
       let previews = article.results.map(hit => {
           let words = hit.text.split(' '),
               index = _.findIndex(words, word => _.includes(
@@ -60,25 +60,50 @@ class Search extends ComponentBase {
   }
 
   render() {
+    let results = this.getDisplayData()
     return (
       <div className="search page">
-        {this.getDisplayData().map(search_result =>
-          <div key={search_result.key} className="search-result" 
+       { results.length
+       ? _.map(results, search_result =>
+          <div key={search_result.key} className="card result"
                onClick={() => browserHistory.push(`/page/${search_result.slug}`)}>
-            {!search_result.image ? '' :
-              <div className="preview-image" style={{
-                backgroundImage: `url(${search_result.image})`
-              }}></div>
-            }
-            <b>{search_result.title} ({search_result.hits} hits)</b>
-            {search_result.previews.map((preview, index) => (
-              <div key={index}
-                className="search-match" 
-                dangerouslySetInnerHTML={{ __html: preview.html }}
-              ></div>
-            ))}
+            <div className="card-content">
+              <div className="media">
+                {!search_result.image ? '' :
+                  <div className="media-left">
+                    <figure className="image is-64x64">
+                      <img src={search_result.image} alt="image" />
+                    </figure>
+                  </div>
+                }
+                <div className="media-content">
+                  <nav className="level">
+                    <div className="level-left">
+                      <div className="level-item title is-6"><b>{search_result.title}</b></div>
+                    </div>
+                    <div className="level-right">
+                      <div className="level-item subtitle is-6">{search_result.hits} hits</div>
+                    </div>
+                  </nav>
+                  {search_result.previews.slice(0,3).map((preview, index) => (
+                    <div key={index}
+                      className="search-match" 
+                      dangerouslySetInnerHTML={{ __html: preview.html }}
+                    ></div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        ).value()}
+        )
+       : <div className="card no-results is-centered">
+           <div className="card-content">
+             <div className="content">
+               No results found for this search term.
+             </div>
+           </div>
+         </div>
+       }
       </div>
     )
   }

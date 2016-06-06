@@ -1,17 +1,17 @@
 .app-header {
-  .header { padding: 0 10px; }
-  .header .title {
-    line-height: 50px;
-    margin-bottom: 0;
-    padding: 0;
+  .hero-head {
+    padding: 0 10px;
   }
 
-  .navbar {
-    a { 
-      color: $palette-white;
-      font-size: 11px;
-      font-weight: bold;
-      padding-top: 2px;
+  .nav-left {
+    .title, .subtitle {
+      line-height: 28px; 
+      margin: auto 0; 
     }
+  }
+
+  .fb {
+    margin: 0; 
+    > a, > a > span { color: $palette-white; }
   }
 }

@@ -13,7 +13,7 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-jest": "^12.1.0",
     "body-parser": "^1.15.0",
-    "bulma": "0.0.25",
+    "bulma": "0.0.28",
     "cheerio": "^0.20.0",
     "chokidar": "^1.5.1",
     "concat": "github:azer/concat",

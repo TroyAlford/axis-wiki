@@ -13,7 +13,7 @@ export function searchLoading(term) {
     term
   }
 }
-export function searchRequest(term) {
+export function searchRequest(term = '') {
   return dispatch => {
     dispatch(searchLoading(term));
     if (term.length < 3) return;
