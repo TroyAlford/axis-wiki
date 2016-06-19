@@ -66,10 +66,23 @@ media.post('/', file_middleware, (request, response) => {
         lg_processor = Q.defer(),
         promises = [sm_processor.promise, lg_processor.promise]
 
+    let result = results[filename] = {
+      errors: [],
+      large: false,
+      small: false
+    }
+
     processors = [...processors, ...promises]
 
     lwip.open(temp_filepath, (error, image) => {
-      error ? opener.reject(error) : opener.resolve(image)
+      if (error) {
+        console.log(`Media Uploaded => ${filename} failed to .open() for processing. Invalid file.`)
+        result.errors.push(`An error occurred while attempting to process this file. It may be corrupt or have an incorrect file extension.`)
+        lg_processor.reject(error)
+        sm_processor.reject(error)
+        opener.reject(error)
+      } else
+        opener.resolve(image)
     })
 
     opener.promise.then(image => {
@@ -83,12 +96,6 @@ media.post('/', file_middleware, (request, response) => {
         path_sm = path.resolve(folders.media, name_sm),
         w_sm = Math.min(settings.sm_image_width, image.width()),
         h_sm = Math.round(image.height() * (w_sm / image.width()))
-
-      let result = results[filename] = {
-        errors: [],
-        large: false,
-        small: false
-      }
 
       console.log(`Media Upload => Processing ${filename}`)
       image.clone((error, large) => {
