@@ -42,7 +42,7 @@ class Layout extends ComponentBase {
     
     switch (node_name) {
       case "A":
-        return browserHistory.push(`/page/${slug}`)
+        return browserHistory.push(parser.pathname)
       case "IMG":
         return browserHistory.push(`/info/media/${slug}`)
     }
