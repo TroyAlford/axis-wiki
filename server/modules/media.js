@@ -7,6 +7,7 @@ import fs              from 'fs'
 import lwip            from 'lwip'
 import multer          from 'multer'
 import path            from 'path'
+import Q               from 'q'
 
 import Config          from '../services/Config'
 import Slug            from '../services/Slug'
@@ -26,76 +27,113 @@ media.get('/full/*', (req, res) => {
 });
 media.get('*', express.static(folders.media));
 
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: function(request, file, cb) {
     cb(null, folders.media);
   },
   filename: function(request, file, cb) {
     var ext  = path.extname(file.originalname),
-        name = Slug.normalize(path.basename(file.originalname, ext));
+        slug = Slug.normalize(path.basename(file.originalname, ext));
 
     ext = ext
       .replace('.', '')
       .replace(/jpeg/, 'jpg')
     ;
 
-    request._filename = name;
-    request._extension = ext;
-    request._temp_path = `${name}.temp.${ext}`;
+    file.slug = slug
+    file.extension = ext
 
-    cb(null, request._temp_path);
+    cb(null, `${slug}.temp.${ext}`);
   }
-});
-media.post('/', multer({ storage: storage })
-  .single("image_data"), function(request, response) {
-    let name     = request._filename,
-        ext      = request._extension,
-        fullsize_filename = `${name}.full.${ext}`,
-        preview_filename  = `${name}.${ext}`;
+})
 
-    let lwip_error = false;
+const file_middleware = multer({ storage: storage }).array('file')
 
-    lwip.open(path.resolve(folders.media, request._temp_path), (error, image) => {
-      lwip_error = error || false;
-      if (lwip_error) return;
+media.post('/', file_middleware, (request, response) => {
+  let files = request.files || [],
+      results = {},
+      processors = []
 
-      console.log(`Media: uploaded ${request._temp_path} => ${image.width()}x${image.height()}px image.`)
+  files.forEach(file => {
+    const { slug, extension } = file,
+          filename = `${slug}.${extension}`,
+          temp_filepath = path.resolve(folders.media, file.filename)
 
-      let fullsize_w = settings.lg_image_width,
-          fullsize_h = Math.round(image.height() * (fullsize_w / image.width())),
-          preview_w  = settings.sm_image_width,
-          preview_h  = Math.round(image.height() * (preview_w / image.width()));
+    let opener = Q.defer(),
+        sm_processor = Q.defer(),
+        lg_processor = Q.defer(),
+        promises = [sm_processor.promise, lg_processor.promise]
 
-      let fullsize = (image.width() > fullsize_w)
-        ? resize(image, fullsize_w, fullsize_h)
-        : image;
+    processors = [...processors, ...promises]
 
-      let preview = (image.width() > preview_w)
-        ? resize(image, preview_w, preview_h)
-        : image;
+    lwip.open(temp_filepath, (error, image) => {
+      error ? opener.reject(error) : opener.resolve(image)
+    })
 
-      fullsize.writeFile(path.resolve(folders.media, fullsize_filename), error => {
-        if (error)
-          return console.log(` !! fullsize error: ${lwip_error}`);
+    opener.promise.then(image => {
+      const
+        name_lg = `${slug}.full.${extension}`,
+        path_lg = path.resolve(folders.media, name_lg),
+        w_lg = Math.min(settings.lg_image_width, image.width()),
+        h_lg = Math.round(image.height() * (w_lg / image.width())),
 
-        console.log(` >> ${fullsize_filename} => ${fullsize_w}x${fullsize_h}px`);
+        name_sm = `${slug}.${extension}`,
+        path_sm = path.resolve(folders.media, name_sm),
+        w_sm = Math.min(settings.sm_image_width, image.width()),
+        h_sm = Math.round(image.height() * (w_sm / image.width()))
 
-        preview.writeFile(path.resolve(folders.media, preview_filename), error => {
-          if (error)
-            return console.log(` !! preview error: ${lwip_error}`);
+      let result = results[filename] = {
+        large: false,
+        small: false
+      }
 
-          console.log(` >> ${preview_filename} => ${preview_w}x${preview_h}px`);
+      console.log(`Media Upload => Processing ${filename}`)
+      image.clone((error, large) => {
+        if (error) {
+          console.log(`Media Upload => ${filename} failed to .clone() for large-size processing`)
+          lg_processor.reject(error)
+        }
 
-          del([path.resolve(folders.media, request._temp_path)], { force: true })
-            .then(paths => { console.log(` XX ${request._temp_path} => deleted`); });
+        large.batch()
+        .resize(w_lg, h_lg)
+        .writeFile(path_lg, extension, error => {
+          if (error) {
+            console.log(`Media Upload => ${filename} failed to .writeFile() for large-size processing\n ==> ${error}`)
+            lg_processor.reject(error)
+          } else {
+            console.log(`Media Upload => ${filename} => ${name_lg} saved`)
+            result.large = `/media/${name_lg}`
+            lg_processor.resolve(name_lg)
+          }
+        })
+      })
 
-          response.redirect(`/info/media/${preview_filename}`);
-        });
-      });
-    });
+      image.clone((error, small) => {
+        if (error) {
+          console.log(`Media Upload => ${filename} failed to .clone() for small-size processing`)
+          sm_processor.reject(error)
+        }
+
+        small.batch()
+        .resize(w_sm, h_sm)
+        .writeFile(path_sm, extension, error => {
+          if (error) {
+            console.log(`Media Upload => ${filename} failed to .writeFile() for small-size processing\n ==> ${error}`)
+            sm_processor.reject(error)
+          } else {
+            console.log(`Media Upload => ${filename} => ${name_sm} saved`)
+            result.small = `/media/${name_sm}`
+            sm_processor.resolve(name_sm)
+          }
+        })
+      })
+    })
   })
-;
 
-function resize(image, w, h) {
-  return image.batch().resize(w, h);
-}
+  Q.allSettled(processors).then(() => {
+    let files_to_delete = files.map(f => path.resolve(folders.media, f.filename))
+    console.log(`Media Upload Finished => Deleting: \n ==> ${files_to_delete.join('\n ==> ')}`)
+    del(files_to_delete, { force: true })
+    response.status(200).send(results)
+  })
+})
