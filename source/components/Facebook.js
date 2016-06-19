@@ -16,9 +16,6 @@ class Facebook extends ComponentBase {
   }
 
   componentDidMount() {
-    window.logoff = () => {
-      this.props.dispatch(logoff())
-    }
     FB.Event.subscribe('auth.statusChange', this.handleStatusChange);
 
     window.fbAsyncInit = (() => {
