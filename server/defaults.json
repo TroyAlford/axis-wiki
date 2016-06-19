@@ -22,6 +22,7 @@
     }
   },
   "media": {
+    "allowed_extensions": ["gif","jpg","png"],
     "lg_image_width": 1000,
     "sm_image_width": 250
   },

@@ -27,34 +27,36 @@ media.get('/full/*', (req, res) => {
 });
 media.get('*', express.static(folders.media));
 
+const fileFilter = (request, file, cb) => {
+  file.extension = path.extname(file.originalname).toLowerCase().replace('.', '')
+  file.process   = _.includes(settings.allowed_extensions, file.extension)
+  if (!file.process)
+    request.rejected_files = [...(request.rejected_files || []), file]
+
+  cb(null, file.process)
+}
+
 const storage = multer.diskStorage({
   destination: function(request, file, cb) {
     cb(null, folders.media);
   },
   filename: function(request, file, cb) {
-    var ext  = path.extname(file.originalname),
-        slug = Slug.normalize(path.basename(file.originalname, ext));
+    file.slug = Slug.normalize(path.basename(file.originalname, file.extension))
+                    .replace('.', '')
 
-    ext = ext
-      .replace('.', '')
-      .replace(/jpeg/, 'jpg')
-    ;
-
-    file.slug = slug
-    file.extension = ext
-
-    cb(null, `${slug}.temp.${ext}`);
+    cb(null, `${file.slug}.temp.${file.extension}`)
   }
 })
 
-const file_middleware = multer({ storage: storage }).array('file')
+const file_middleware = multer({ fileFilter, storage }).array('file')
 
 media.post('/', file_middleware, (request, response) => {
-  let files = request.files || [],
+  let files_to_process = (request.files || []),
+      files_rejected   = (request.rejected_files || []),
       results = {},
       processors = []
 
-  files.forEach(file => {
+  files_to_process.forEach(file => {
     const { slug, extension } = file,
           filename = `${slug}.${extension}`,
           temp_filepath = path.resolve(folders.media, file.filename)
@@ -83,6 +85,7 @@ media.post('/', file_middleware, (request, response) => {
         h_sm = Math.round(image.height() * (w_sm / image.width()))
 
       let result = results[filename] = {
+        errors: [],
         large: false,
         small: false
       }
@@ -91,7 +94,10 @@ media.post('/', file_middleware, (request, response) => {
       image.clone((error, large) => {
         if (error) {
           console.log(`Media Upload => ${filename} failed to .clone() for large-size processing`)
+          result.errors.push(`An error occurred while saving the large format version of this file.`)
+          result.large = null
           lg_processor.reject(error)
+          return
         }
 
         large.batch()
@@ -99,6 +105,8 @@ media.post('/', file_middleware, (request, response) => {
         .writeFile(path_lg, extension, error => {
           if (error) {
             console.log(`Media Upload => ${filename} failed to .writeFile() for large-size processing\n ==> ${error}`)
+            result.errors.push(`An error occurred while saving the large format version of this file.`)
+            result.large = null
             lg_processor.reject(error)
           } else {
             console.log(`Media Upload => ${filename} => ${name_lg} saved`)
@@ -111,7 +119,10 @@ media.post('/', file_middleware, (request, response) => {
       image.clone((error, small) => {
         if (error) {
           console.log(`Media Upload => ${filename} failed to .clone() for small-size processing`)
+          result.errors.push(`An error occurred while saving the small format version of this file.`)
+          result.small = null
           sm_processor.reject(error)
+          return
         }
 
         small.batch()
@@ -119,6 +130,8 @@ media.post('/', file_middleware, (request, response) => {
         .writeFile(path_sm, extension, error => {
           if (error) {
             console.log(`Media Upload => ${filename} failed to .writeFile() for small-size processing\n ==> ${error}`)
+            result.errors.push(`An error occurred while saving the small format version of this file.`)
+            result.small = null
             sm_processor.reject(error)
           } else {
             console.log(`Media Upload => ${filename} => ${name_sm} saved`)
@@ -130,8 +143,16 @@ media.post('/', file_middleware, (request, response) => {
     })
   })
 
+  files_rejected.forEach(file => {
+    results[file.originalname] = {
+      errors: [`Only valid .${settings.allowed_extensions.join(', .')} files are allowed.`],
+      large: null,
+      small: null
+    }
+  })
+
   Q.allSettled(processors).then(() => {
-    let files_to_delete = files.map(f => path.resolve(folders.media, f.filename))
+    let files_to_delete = request.files.map(f => path.resolve(folders.media, f.filename))
     console.log(`Media Upload Finished => Deleting: \n ==> ${files_to_delete.join('\n ==> ')}`)
     del(files_to_delete, { force: true })
     response.status(200).send(results)
