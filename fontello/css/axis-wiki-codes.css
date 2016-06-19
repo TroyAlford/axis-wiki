@@ -1,6 +1,7 @@
 
 .icon-link-external:before { content: '\e800'; } /* '' */
 .icon-html:before { content: '\e801'; } /* '' */
+.icon-facebook:before { content: '\e802'; } /* '' */
 .icon-save:before { content: '\e803'; } /* '' */
 .icon-edit:before { content: '\e805'; } /* '' */
 .icon-settings:before { content: '\e806'; } /* '' */

@@ -16,6 +16,9 @@ class Facebook extends ComponentBase {
   }
 
   componentDidMount() {
+    window.logoff = () => {
+      this.props.dispatch(logoff())
+    }
     FB.Event.subscribe('auth.statusChange', this.handleStatusChange);
 
     window.fbAsyncInit = (() => {
@@ -47,16 +50,12 @@ class Facebook extends ComponentBase {
     return (
       <div className={`fb level ${this.props.className}`}>
       { this.props.anonymous
-        ? <div 
-            className="fb-login-button level-item"
-            data-show-faces="false" 
-            data-size="medium"
-            scope={this.config.permissions}
-          ></div>
-        : <Link to="/profile" className="level-item profile link">
+        ? <a href="#" className="login button level-item icon icon-facebook"
+             onClick={() => this.props.dispatch(logon())}>Log In</a>
+        : <div className="level-item mini profile">
             <img src={this.props.picture.data.url} width="20px" />
             <span>{this.props.name}</span>
-          </Link>
+          </div>
       }
       </div>
     )

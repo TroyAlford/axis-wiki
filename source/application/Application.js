@@ -10,7 +10,6 @@ import Layout          from '../application/Layout'
 import NotFound        from '../pages/NotFound'
 import Article         from '../pages/Article'
 import Media           from '../pages/Media'
-import Profile         from '../pages/Profile'
 import Search          from '../pages/Search'
 import Sheet           from '../pages/Sheet'
 import Upload          from '../pages/Upload'
@@ -24,7 +23,6 @@ ReactDOM.render(
       <Route path="/" component={Layout}>
         <Route path="/page/:slug" component={Article} />
         <Route path="/info/media/:filename" component={Media} />
-        <Route path="/profile" component={Profile} />
         <Route path="/search/:term" component={Search} />
         <Route path="/search" component={Search} />
         <Route path="/sheet/:slug" component={Sheet} />
