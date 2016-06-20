@@ -26,7 +26,7 @@ var article = module.exports = express()
     return response.status(200).send(Article.get_final(slug));
   })
   .post('/:slug', (request, response) => {
-    if (!request.session.user_id)
+    if (!request.session.id)
       return response.status(401).send('You must be logged in to edit articles.')
     else if (_.intersection(request.session.privileges, ['admin', 'edit']).length == 0)
       return response.status(401).send('You do not have sufficient privileges to edit articles.')
