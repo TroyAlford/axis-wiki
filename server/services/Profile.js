@@ -27,6 +27,8 @@ export default class Profile {
   }
 
   static load(id) {
+    if (!id) return Profile.default
+
     let file = path.resolve(Config.folders.users, `${id}.json`),
         profile = {}
 

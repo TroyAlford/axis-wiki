@@ -26,6 +26,11 @@ var article = module.exports = express()
     return response.status(200).send(Article.get_final(slug));
   })
   .post('/:slug', (request, response) => {
+    if (!request.session.user_id)
+      return response.status(401).send('You must be logged in to edit articles.')
+    else if (_.intersection(request.session.privileges, ['admin', 'edit']).length == 0)
+      return response.status(401).send('You do not have sufficient privileges to edit articles.')
+
     let slug    = Slug.normalize(request.params.slug),
         posted  = request.body,
         saved   = Article.save(slug, posted);
@@ -42,7 +47,7 @@ var article = module.exports = express()
     else
       return response.status(500).send(`Article ${slug} could not be deleted.`);
   })
-  .post('/rename/:from/to/:to', (request, response) => {
+  // .post('/rename/:from/to/:to', (request, response) => {
 
-  })
+  // })
 ;

@@ -51,6 +51,9 @@ const storage = multer.diskStorage({
 const file_middleware = multer({ fileFilter, storage }).array('file')
 
 media.post('/', file_middleware, (request, response) => {
+  if (_.intersection(request.session.privileges, ['admin', 'edit']).length == 0)
+    return response.status(401).send('You do not have sufficient privileges to upload files.')
+
   let files_to_process = (request.files || []),
       files_rejected   = (request.rejected_files || []),
       results = {},

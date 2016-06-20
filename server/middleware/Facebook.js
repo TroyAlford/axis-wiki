@@ -1,5 +1,6 @@
-import crypto from 'crypto'
-import Config from '../services/Config'
+import crypto  from 'crypto'
+import Config  from '../services/Config'
+import Profile from '../services/Profile'
 
 const PREFIX = 'fbsr_';
 
@@ -15,12 +16,10 @@ export default (req, res, next) => {
   try {
     hmac = crypto.createHmac('sha256', application_secret);
   } catch (err) { // application_secret is probably not set-up
-    req.facebook = { session: {} };
+    req.session = {};
     next();
     return;
   }
-
-  req.facebook = {};
 
   if (cookie) {
     let 
@@ -37,7 +36,7 @@ export default (req, res, next) => {
     let expectedSignature = hmac.digest('hex');
 
     if (expectedSignature == hexSignature)
-      req.facebook = { session: token };
+      req.session = Object.assign({ token }, Profile.load(token.user_id))
   }
 
   next();
