@@ -20,6 +20,7 @@ ReactDOM.render(
   <Provider store={reducer}>
     <Router history={browserHistory}>
       <Redirect from="/" to="/page/home" />
+      <Redirect from="/media/:filename" to="/info/media/:filename" />
       <Route path="/" component={Layout}>
         <Route path="/page/:slug" component={Article} />
         <Route path="/info/media/:filename" component={Media} />
