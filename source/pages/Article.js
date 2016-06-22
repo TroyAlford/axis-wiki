@@ -1,5 +1,6 @@
 import _                  from 'lodash'
 import { connect }        from 'react-redux'
+import { browserHistory } from 'react-router'
 import { 
   deleteArticle,
   loadArticle,
@@ -36,6 +37,10 @@ class Article extends ComponentBase {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.slug !== this.props.slug // New Article is loading
+      && nextProps.slug !== nextProps.params.slug) // & the page location doesn't show it
+      browserHistory.push(`/page/${nextProps.slug}`)
+
     if (this.props.params.slug !== nextProps.params.slug) {
       this.setState(this.default_state)
       this.props.dispatch(loadArticle(nextProps.params.slug))
