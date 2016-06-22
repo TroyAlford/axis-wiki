@@ -58,6 +58,8 @@ class Article extends ComponentBase {
     this.props.dispatch(deleteArticle(this.props.params.slug))
   }
   handleSave() {
+    if (!this.isDirty()) return; // Only save if there's something to save.
+    
     let article = {
       aliases:  this.state.aliases    || this.props.aliases,
       children: this.state.children   || this.props.children,
