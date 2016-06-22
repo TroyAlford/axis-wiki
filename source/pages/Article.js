@@ -92,6 +92,19 @@ class Article extends ComponentBase {
     }
     return html;
   }
+  handleKeyDown(event) {
+    if (!event.ctrlKey) return; // Only handle Ctrl+[key] events
+    switch (event.key.toLowerCase()) {
+      case 's':
+        this.handleSave()
+        break;
+      default:
+        return; // Default doesn't prevent anything.
+    }
+    event.stopPropagation()
+    event.preventDefault()
+    // console.log(`${event.ctrlKey ? 'ctrl+' : ''}${event.key}`)
+  }
   handleTabClicked(clicked) {
     if (this.state.selected_tab == clicked.index) return;
 
@@ -123,7 +136,7 @@ class Article extends ComponentBase {
       </div>
 
     return (
-      <div className="article page">
+      <div className="article page" onKeyDown={this.handleKeyDown}>
     { this.props.readonly
       ? <div className="readonly">{reader}</div>
       : <TabSet
