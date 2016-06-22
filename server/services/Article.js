@@ -88,8 +88,14 @@ class Article {
   }
   clean_html(html) {
     let $html = $.load(html || '');
-    $html('style').remove();  // Remove all style tags
-    $html('script').remove(); // Remove all script tags
+    $html('style').remove();   // Remove all style tags
+    $html('script').remove();  // Remove all script tags
+
+    let $includes = $html('include').html('') // Empty all <include> tags
+    // Get all of the html attributes of 'include' tags as a single array.
+    let attrs = Object.keys(Object.assign(...$includes.map((ix, el) => el.attribs).get()))
+    _.xor(attrs, ['class', 'from', 'sections']).forEach(attr => $includes.removeAttr(attr))
+
     $html('a').each((index, element) => {
       let $el = $html(element);
       $el.removeAttr('target').removeAttr('class');
@@ -167,6 +173,9 @@ class Article {
     return !link.hostname;
   }
 
+  transclude(article) {
+
+  }
 
   save(slug, article) {
     let base = path.resolve(this.folders.articles, slug),
