@@ -143,7 +143,7 @@ class Article extends ComponentBase {
       </div>
 
     return (
-      <div className="article page" onKeyDown={this.handleKeyDown}>
+      <div className={`article page ${this.props.loading ? 'loading' : ''}`} onKeyDown={this.handleKeyDown}>
     { this.props.readonly
       ? <div className="readonly">{reader}</div>
       : <TabSet

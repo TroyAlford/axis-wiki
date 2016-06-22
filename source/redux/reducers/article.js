@@ -18,12 +18,12 @@ export default (state = default_state, action) => {
   switch (action.type) {
     case ARTICLE_LOADING:
       return Object.assign(
-        { slug }, 
+        { slug, loading: true }, 
         default_state,
       )
     case ARTICLE_LOADED:
       return Object.assign(
-        { slug }, 
+        { slug, loading: false }, 
         default_state,
         action.article
       )

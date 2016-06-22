@@ -62,7 +62,7 @@ class Search extends ComponentBase {
   render() {
     let results = this.getDisplayData()
     return (
-      <div className="search page">
+      <div className={`search page ${this.props.loading ? 'loading' : ''}`}>
        { results.length
        ? _.map(results, search_result =>
           <div key={search_result.key} className="card result"
