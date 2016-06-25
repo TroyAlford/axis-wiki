@@ -12,10 +12,7 @@ const default_state = {
 export default (state = default_state, action) => {
   switch (action.type) {
     case MEDIA_LOADED:
-      return Object.assign(
-        {}, default_state, 
-        action.media
-      )
+      return { ...default_state, ...action.media }
     default:
       return state
   }

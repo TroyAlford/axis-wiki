@@ -16,23 +16,19 @@ const default_state = {
 export default (state = default_state, action) => {
   switch (action.type) {
     case USER_LOGON:
-      return Object.assign(
-        {}, state, 
-        { anonymous: false }
-      )
+      return { ...state, anonymous: false }
     case USER_UPDATE:
       if (!action.user) return default_state
 
-      const { id, name, email, picture, privileges } = action.user;
-      return Object.assign(
-        {}, state,
-        { anonymous: false, id, email, name, picture, privileges: privileges || ['read'] }
-      )
+      const { id, name, email, picture, privileges } = action.user
+      return { 
+        ...state, 
+        anonymous: false, 
+        id, email, name, picture, 
+        privileges: privileges || ['read'] 
+      }
     case USER_LOGOFF:
-      return Object.assign(
-        {}, default_state, 
-        { anonymous: true }
-      )
+      return { ...default_state, anonymous: true }
     default:
       return state
   }

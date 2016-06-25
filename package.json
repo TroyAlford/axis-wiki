@@ -45,6 +45,7 @@
   "devDependencies": {
     "babel-cli": "^6.6.5",
     "babel-jest": "^10.0.2",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-preset-es2015": "*",
     "babel-preset-jest": "*",
     "babel-preset-react": "*",

@@ -17,16 +17,9 @@ export default (state = default_state, action) => {
   const { slug } = action;
   switch (action.type) {
     case ARTICLE_LOADING:
-      return Object.assign(
-        { slug, loading: true }, 
-        default_state,
-      )
+      return { ...default_state, slug, loading: true }
     case ARTICLE_LOADED:
-      return Object.assign(
-        { slug, loading: false }, 
-        default_state,
-        action.article
-      )
+      return { ...default_state, slug, ...action.article, loading: false }
     default:
       return state
   }

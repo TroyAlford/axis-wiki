@@ -6,7 +6,7 @@ const default_state = Object.assign({}, defaults, config)
 export default (state = default_state, action) => {
   switch (action.type) {
     case 'SET_TITLE':
-      return action.title;
+      return { ...state, title: action.title }
     default:
       return state;
   }
