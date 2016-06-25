@@ -69,7 +69,7 @@ class Search extends ComponentBase {
                onClick={() => browserHistory.push(`/page/${search_result.slug}`)}>
             <div className="card-content">
               <div className="media">
-                {!search_result.image ? '' :
+                {search_result.image &&
                   <div className="media-left">
                     <figure className="image is-64x64">
                       <img src={search_result.image} alt="image" disabled="disabled" />
