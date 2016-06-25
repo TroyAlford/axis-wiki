@@ -3,7 +3,7 @@ import {
   SEARCH_REQUEST,
   SEARCH_RESET,
   SEARCH_RESULTS
-} from '../actions/search'
+} from './actions'
 
 const default_state = {
   loading: false,

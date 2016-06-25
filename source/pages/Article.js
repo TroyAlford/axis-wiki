@@ -6,7 +6,7 @@ import {
   loadArticle,
   loadedArticle,
   saveArticle
-}                         from '../redux/actions/article'
+}                         from '../redux/article/actions'
 
 import ComponentBase      from '../application/ComponentBase'
 import ArticleChildren    from '../components/ArticleChildren'
@@ -62,6 +62,10 @@ class Article extends ComponentBase {
   handleDelete() {
     this.props.dispatch(deleteArticle(this.props.params.slug))
   }
+  handleReset() {
+    if (!this.isDirty()) return;
+    this.setState(this.default_state)
+  }
   handleSave() {
     if (!this.isDirty()) return; // Only save if there's something to save.
     
@@ -82,22 +86,16 @@ class Article extends ComponentBase {
     this.setState({ html: html !== this.props.html ? html : null })
   }
   getCurrentHtml() {
-    let html = '';
     switch (this.state.selected_tab) {
       case 0: /* Reading tab */
-        html = this.state.html || this.props.html;
-        break;
+        return this.state.html || this.props.html;
       case 1: /* TinyMCE tab */
-        html = tinyMCE.activeEditor.getContent();
-        break;
+        return tinyMCE.activeEditor.getContent();
       case 2: /* HTML tab */
-        html = this.refs.html.value;
-        break;
+        return this.refs.html.value;
       default:
-        html = this.state.html || this.props.html;
-        break;
+        return this.state.html || this.props.html;
     }
-    return html;
   }
   handleKeyDown(event) {
     if (!event.ctrlKey) return; // Only handle Ctrl+[key] events
@@ -110,13 +108,12 @@ class Article extends ComponentBase {
     }
     event.stopPropagation()
     event.preventDefault()
-    // console.log(`${event.ctrlKey ? 'ctrl+' : ''}${event.key}`)
   }
   handleTabClicked(clicked) {
     if (this.state.selected_tab == clicked.index) return;
 
     this.setState({
-      html: clicked.index !== 0 ? this.props.html : this.state.html,
+      html: this.getCurrentHtml(),
       selected_tab: clicked.index
     })
   }
@@ -200,10 +197,15 @@ class Article extends ComponentBase {
           onChange={this.handleTagChange}
           onlyUnique={true}
         />
-        {!this.isDirty() ? '' :
-          <button className="save button is-success" onClick={this.handleSave}>
-             <Icon name="save" size="small" /><span>Save</span>
-           </button>
+        {this.isDirty() &&
+          <div className="buttons">
+            <button className="save button is-success" onClick={this.handleSave}>
+              <Icon name="save" size="small" /><span>Save</span>
+            </button>
+            <button className="reset button is-danger" onClick={this.handleReset}>
+              <Icon name="undo" size="small" /><span>Reset</span>
+            </button>
+          </div>
         }
       </div>
     )
@@ -211,8 +213,8 @@ class Article extends ComponentBase {
 }
 
 export default connect(
-  state => Object.assign(
-    {}, state.article,
-    { readonly: !state.user.privileges.includes('edit') }
-  )
+  state => ({
+    ...state.article, 
+    readonly: !state.user.privileges.includes('edit'),
+  })
 )(Article);

@@ -1,6 +1,6 @@
 import {
   MEDIA_LOADED
-} from '../actions/media'
+} from './actions'
 
 const default_state = {
   uri: '',

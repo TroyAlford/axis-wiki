@@ -2,7 +2,7 @@ import {
   MESSAGE_ADD,
   MESSAGE_CLEARALL,
   MESSAGE_DISMISS
-} from '../actions/messages'
+} from './actions'
 
 const default_state = []
 

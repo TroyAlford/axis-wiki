@@ -4,12 +4,12 @@ import {
   createStore 
 }                  from 'redux'
 import thunk       from 'redux-thunk'
-import application from '../reducers/application'
-import article     from '../reducers/article'
-import media       from '../reducers/media'
-import messages    from '../reducers/messages'
-import search      from '../reducers/search'
-import user        from '../reducers/user'
+import application from './application/reducer'
+import article     from './article/reducer'
+import media       from './media/reducer'
+import messages    from './messages/reducer'
+import search      from './search/reducer'
+import user        from './user/reducer'
 
 export default createStore(
   combineReducers({

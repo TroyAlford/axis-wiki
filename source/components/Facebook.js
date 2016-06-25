@@ -7,7 +7,12 @@ import ComponentBase            from '../application/ComponentBase'
 import Icon                     from '../components/Icon'
 import { Link }                 from 'react-router'
 
-import { setAnonymous, logoff, logon, updateUserInfo } from '../redux/actions/user'
+import { 
+  setAnonymous, 
+  logoff, 
+  logon, 
+  updateUserInfo 
+} from '../redux/user/actions'
 
 class Facebook extends ComponentBase {
   constructor(props) {

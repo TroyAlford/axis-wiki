@@ -21,49 +21,49 @@
     {
       "uid": "191bcf63575a78def53c907c3d3bf7f0",
       "css": "save",
-      "code": 59395,
+      "code": 59394,
       "src": "entypo"
     },
     {
       "uid": "jqzwo6i8oicjbn049sh2856d8anrqoli",
       "css": "edit",
-      "code": 59397,
+      "code": 59395,
       "src": "typicons"
     },
     {
       "uid": "3a89ddb1c81111c15d6c4e26cc3c546a",
       "css": "settings",
-      "code": 59398,
+      "code": 59396,
       "src": "typicons"
     },
     {
       "uid": "8fc56819afcd07e2786e34f18d39b71b",
       "css": "read",
-      "code": 59399,
+      "code": 59397,
       "src": "iconic"
     },
     {
       "uid": "630529f03c319c01101aa167181b650e",
       "css": "tag",
-      "code": 59400,
+      "code": 59398,
       "src": "elusive"
     },
     {
       "uid": "937a0ad3f6e25611bff801445d6a4885",
       "css": "tags",
-      "code": 59401,
+      "code": 59399,
       "src": "elusive"
     },
     {
       "uid": "da0fd38d651815e3a12f6c030ff1fe5b",
       "css": "sheet",
-      "code": 59402,
+      "code": 59400,
       "src": "entypo"
     },
     {
       "uid": "013d228e7c114d2883cdcf3af243c89f",
       "css": "d10",
-      "code": 59404,
+      "code": 59401,
       "src": "custom_icons",
       "selected": true,
       "svg": {
@@ -77,26 +77,32 @@
     {
       "uid": "t6cy82vd3t5piy0j3uknrlrzpg1ld8y3",
       "css": "search",
-      "code": 59406,
+      "code": 59402,
       "src": "typicons"
     },
     {
       "uid": "4743b088aa95d6f3b6b990e770d3b647",
       "css": "facebook",
-      "code": 59394,
+      "code": 59403,
       "src": "fontawesome"
     },
     {
       "uid": "e82cedfa1d5f15b00c5a81c9bd731ea2",
       "css": "info",
-      "code": 59396,
+      "code": 59404,
       "src": "fontawesome"
     },
     {
       "uid": "c76b7947c957c9b78b11741173c8349b",
       "css": "warning",
-      "code": 59403,
+      "code": 59405,
       "src": "fontawesome"
+    },
+    {
+      "uid": "ce5e29aa5208417700e7f7012a236c00",
+      "css": "undo",
+      "code": 59406,
+      "src": "iconic"
     }
   ]
 }

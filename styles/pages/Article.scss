@@ -72,15 +72,13 @@ $tags-height: 36px;
     position: fixed;
   }
 
-  .save.button {
-    font-weight: bold;
+  .button {
+    // font-weight: bold;
     height: auto;
-    padding-top: 5px;
-    padding-right: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-    position: absolute;
-    left: 3px; top: 3px;
+    padding: 5px;
+    margin: 3px;
+
+    + .button { margin-left: 0; }
   }
   > .menu-button {
     &:not(:hover) {

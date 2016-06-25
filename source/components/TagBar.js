@@ -30,7 +30,7 @@ let TagBar = ({
       return (
         <span key={key} {...other}>
           <a href={`/page/${tag}`}>{tag}</a>
-          { readonly ? '' : <a className={tagProps.classNameRemove} onClick={(e) => onRemove(key)} /> }
+          { readonly && <a className={tagProps.classNameRemove} onClick={(e) => onRemove(key)} /> }
         </span>
       )
     }}

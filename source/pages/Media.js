@@ -3,7 +3,7 @@ import { connect }        from 'react-redux'
 import {
   deleteMedia,
   loadMedia
-}                         from '../redux/actions/media'
+}                         from '../redux/media/actions'
 
 import ComponentBase      from '../application/ComponentBase'
 

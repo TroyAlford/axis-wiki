@@ -1,5 +1,5 @@
-import { loadArticle } from '../actions/article'
-import { addMessage  } from '../actions/messages'
+import { loadArticle } from '../article/actions'
+import { addMessage  } from '../messages/actions'
 
 export const
   MEDIA_DELETE     = 'media.delete',

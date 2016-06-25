@@ -1,7 +1,7 @@
 import _                     from 'lodash'
 import fetch                 from 'isomorphic-fetch'
 import { browserHistory }    from 'react-router'
-import { addMessage }       from '../actions/messages'
+import { addMessage }       from '../messages/actions'
 
 export const
   ARTICLE_LOAD    = 'article.load',

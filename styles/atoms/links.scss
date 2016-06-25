@@ -4,10 +4,11 @@ a {
 
   &.external {
     &:after {
-      content: '\e807';
+      content: '\e800';
       font-family: axis-wiki;
-      font-size: .7rem;
-      margin-left: 3px;
+      font-size: .5rem;
+      margin-left: .25rem;
+      margin-top: -.25rem;
       position: relative;
       top: -3px;
     }

@@ -2,11 +2,11 @@ import _                  from 'lodash'
 import { browserHistory } from 'react-router'
 import { connect }        from 'react-redux'
 
-import { loadArticle }    from '../redux/actions/article'
+import { loadArticle }    from '../redux/article/actions'
 import { 
   searchRequest, 
   searchReset
-}                         from '../redux/actions/search'
+}                         from '../redux/search/actions'
 
 import ComponentBase      from '../application/ComponentBase'
 

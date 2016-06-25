@@ -2,7 +2,7 @@ import {
   USER_LOGON,
   USER_LOGOFF,
   USER_UPDATE
-} from '../actions/user'
+} from './actions'
 
 const default_state = {
   anonymous: true,

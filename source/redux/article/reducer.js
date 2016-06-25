@@ -2,7 +2,7 @@ import {
   ARTICLE_LOAD,
   ARTICLE_LOADED,
   ARTICLE_LOADING
-} from '../actions/article'
+} from './actions'
 
 const default_state = {
   aliases: [],
