@@ -20,20 +20,13 @@ let TagBar = ({
     value={tags}
     inputProps={inputProps} tagProps={tagProps}
     readonly={readonly}
-    renderInput={(props) => {
-      let { onChange, value, ...other } = props
-      return readonly ? '' : 
-        <input type='text' onChange={onChange} value={value} {...other} />
-    }}
-    renderTag={(props) => {
-      let { tag, key, onRemove, ...other } = props
-      return (
-        <span key={key} {...other}>
-          <a href={`/page/${tag}`}>{tag}</a>
-          { readonly && <a className={tagProps.classNameRemove} onClick={(e) => onRemove(key)} /> }
-        </span>
-      )
-    }}
+    renderInput={props => !readonly && <input type="text" {...props} />}
+    renderTag={props => 
+      <span key={props.key} {...props}>
+        <a className="icon icon-tag" href={`/page/${props.tag}`}>{props.tag}</a>
+        { !readonly && <a className={tagProps.classNameRemove} onClick={() => props.onRemove(props.key)} /> }
+      </span>
+    }
     onChange={onChange}
     onlyUnique={onlyUnique}
   />
