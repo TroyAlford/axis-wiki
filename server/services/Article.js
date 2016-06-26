@@ -93,8 +93,11 @@ class Article {
 
     let $includes = $html('include').html('') // Empty all <include> tags
     // Get all of the html attributes of 'include' tags as a single array.
-    let attrs = Object.keys(Object.assign(...$includes.map((ix, el) => el.attribs).get()))
-    _.xor(attrs, ['class', 'from', 'sections']).forEach(attr => $includes.removeAttr(attr))
+    let attrs = _($includes.get())
+      .map(el => _.keys(el.attribs)) // Attributes of every <include> tag as an array
+      .flatten().uniq() // Flatten into a single array, remove all duplicates
+      .xor(['class', 'from', 'sections']) // White-list the allowed attributes
+      .forEach(attr => $includes.removeAttr(attr))
 
     $html('a').each((index, element) => {
       let $el = $html(element);
