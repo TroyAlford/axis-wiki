@@ -1,12 +1,7 @@
-import ComponentBase from '../application/ComponentBase'
-
-export default class Message extends ComponentBase {
-  render() {
-    return (
-      <div className={`message ${this.props.className}`}>
-        <div className="message-header">{this.props.title || ''}</div>
-        <div className="message-body">{this.props.children}</div>
-      </div>
-    );
-  }
-}
+export default Message
+const Message = ({ className = '', title = '', children = null }) => (
+  <div className={`message ${className}`}>
+    <div className="message-header">{title}</div>
+    <div className="message-body">{children}</div>
+  </div>
+)
