@@ -1,4 +1,5 @@
 import React from 'react' // Must be imported for Jest Tests
+import includes from 'lodash/includes'
 import xor from 'lodash/xor'
 
 export default class Editable extends React.Component {
@@ -12,11 +13,16 @@ export default class Editable extends React.Component {
     }
   }
 
+  get current() {
+    if (this.readonly) return this.props.value
+    if (this.dirty) return this.state.value
+    return this.props.value
+  }
+  get original() { return this.props.value }
   get editing() {
     return !this.props.readonly &&
             this.props.editing || this.state.editing === true
   }
-
   get readonly() {
     return this.props.readonly === true
   }
@@ -31,7 +37,7 @@ export default class Editable extends React.Component {
       'boolean',           // Checkboxes
       'number', 'slider'   // Numbers
     ]
-    if (type !== undefined && _.includes(types, type)) return type;
+    if (type !== undefined && includes(types, type)) return type
 
     if (typeof value === 'string')
       return value.includes('\n') ? 'multiline' : 'text'
@@ -43,15 +49,18 @@ export default class Editable extends React.Component {
     return 'text'
   }
 
+  setValue(value) {
+    let current = this.current
+    if (this.props.onChanging(current, value) === false) return;
+    this.setState({ value })
+    this.props.onChange(current, value)
+  }
   handleChange(event) {
-    this.setState({
-      value: event.target.value
-    })
+    this.setValue(event.target.value)
   }
 
   render() {
-    const
-      value = this.dirty && this.state.value || this.props.value,
+    const value = this.current,
       readonly = this.readonly,
       editor = this.editor,
       editing = this.editing,
@@ -66,7 +75,7 @@ export default class Editable extends React.Component {
       <div className={classes.join(' ')}>{
         editor === 'boolean' ?
           <input type="checkbox" checked={!!value} disabled={readonly}
-                 onChange={this.handleChange} />
+                 onChange={this.setValue.bind(this, !value)} />
         : editor === 'slider' ?
           <input type="range" disabled={readonly}
             value={value} step={this.props.step || 0}
@@ -82,12 +91,22 @@ export default class Editable extends React.Component {
           <input type="number" value={value} step={this.props.step || 0}
                  min={this.props.min || 0} max={this.props.max || 100}
           />
-        : readonly || !editing ? // All other types display as text
+        : readonly || !editing ?
+          // Read-Only or not-editing defaults to text in a SPAN
           <span>{this.props.value}</span>
-        : <input type="text" value={value}/>
-        // Default case - render a normal textbox
+          // The Editing default is to render a normal INPUT[type=text]
+        : <input type="text" value={value} onChange={this.handleChange} />
       }
       </div>
     )
   }
+}
+
+Editable.propTypes = {
+  onChange: React.PropTypes.func.isRequired,
+  onChanging: React.PropTypes.func.isRequired,
+}
+Editable.defaultProps = {
+  onChange: () => true,
+  onChanging: () => true,
 }
