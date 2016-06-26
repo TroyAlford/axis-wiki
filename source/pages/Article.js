@@ -1,7 +1,7 @@
 import _                  from 'lodash'
 import { connect }        from 'react-redux'
 import { browserHistory } from 'react-router'
-import { 
+import {
   deleteArticle,
   loadArticle,
   loadedArticle,
@@ -28,11 +28,11 @@ class Article extends ComponentBase {
       this.props.dispatch(loadArticle(this.props.params.slug))
 
     this.isDirty = () => (
-      !!this.state.aliases ||
-      !!this.state.children ||
-      !!this.state.data ||
-      !!this.state.html ||
-      !!this.state.tags
+      this.state.aliases  !== null ||
+      this.state.children !== null ||
+      this.state.data     !== null ||
+      this.state.html     !== null ||
+      this.state.tags     !== null
     );
   }
 
@@ -58,7 +58,7 @@ class Article extends ComponentBase {
       tags: null
     }
   }
-  
+
   handleDelete() {
     this.props.dispatch(deleteArticle(this.props.params.slug))
   }
@@ -68,7 +68,7 @@ class Article extends ComponentBase {
   }
   handleSave() {
     if (!this.isDirty()) return; // Only save if there's something to save.
-    
+
     let article = {
       aliases:  this.state.aliases    || this.props.aliases,
       children: this.state.children   || this.props.children,
@@ -87,14 +87,13 @@ class Article extends ComponentBase {
   }
   getCurrentHtml() {
     switch (this.state.selected_tab) {
-      case 0: /* Reading tab */
-        return this.state.html || this.props.html;
       case 1: /* TinyMCE tab */
         return tinyMCE.activeEditor.getContent();
       case 2: /* HTML tab */
         return this.refs.html.value;
+      case 0: /* Reading tab */
       default:
-        return this.state.html || this.props.html;
+        return this.state.html !== null ? this.state.html : this.props.html;
     }
   }
   handleKeyDown(event) {
@@ -133,9 +132,9 @@ class Article extends ComponentBase {
   }
 
   render() {
-    let reader = 
+    let reader =
       <div>
-        <div dangerouslySetInnerHTML={{ __html: this.state.html || this.props.html }}></div>
+        <div dangerouslySetInnerHTML={{ __html: this.state.html !== null ? this.state.html : this.props.html }}></div>
         <ArticleChildren articles={this.props.children} />
       </div>
 
@@ -152,10 +151,10 @@ class Article extends ComponentBase {
           }, {
             className: 'edit',
             caption: <Icon name="edit" size="small" />,
-            contents: 
+            contents:
               <TinyMCE ref="tinymce"
-                config={editor_config} 
-                content={this.state.html || this.props.html}
+                config={editor_config}
+                content={this.state.html !== null ? this.state.html : this.props.html}
               />
           }, {
             className: 'html',
@@ -163,7 +162,7 @@ class Article extends ComponentBase {
             contents:
               <textarea ref="html"
                 onChange={() => this.setState({ html: this.refs.html.value })}
-                value={this.state.html || this.props.html}
+                value={this.state.html !== null ? this.state.html : this.props.html}
               />
           }, {
             className: 'settings',
@@ -214,7 +213,7 @@ class Article extends ComponentBase {
 
 export default connect(
   state => ({
-    ...state.article, 
+    ...state.article,
     readonly: !state.user.privileges.includes('edit'),
   })
 )(Article);
