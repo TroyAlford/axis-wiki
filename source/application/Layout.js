@@ -29,7 +29,7 @@ class Layout extends ComponentBase {
 
     let inside_editor = this.elementIsWithinEditor(event.target)
     let url = parser.href = event.target.href || event.target.src
-    
+
     if (inside_editor || !url)
       return event.preventDefault();
 
@@ -39,7 +39,7 @@ class Layout extends ComponentBase {
     event.stopPropagation()
 
     let slug = split(parser.pathname, '/').pop()
-    
+
     switch (node_name) {
       case "A":
         return browserHistory.push(parser.pathname)

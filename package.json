@@ -55,11 +55,11 @@
     "browserify-resolutions": "^1.0.6",
     "concat": "github:azer/concat",
     "concat-cli": "^4.0.0",
-    "jest-cli": "*",
+    "jest-cli": "^12.1.1",
     "node-sass": "^3.4.2",
     "nodemon": "^1.9.1",
     "q": "^1.4.1",
-    "react-addons-test-utils": "^15.0.1",
+    "react-addons-test-utils": "^15.1.0",
     "react-helmet": "^3.1.0",
     "redux-devtools": "^3.2.0",
     "superchild": "^0.1.5"
@@ -71,10 +71,11 @@
   },
   "jest": {
     "unmockedModulePathPatterns": [
-      "<rootDir>/node_modules/react",
-      "<rootDir>/node_modules/react-dom",
-      "<rootDir>/node_modules/react-router",
-      "<rootDir>/node_modules/react-addons-test-utils"
+      "<rootDir>/node_modules/react/",
+      "<rootDir>/node_modules/react-dom/",
+      "<rootDir>/node_modules/react-router/",
+      "<rootDir>/node_modules/react-addons-test-utils/",
+      "<rootDir>/node_modules/lodash/"
     ]
   },
   "scripts": {
