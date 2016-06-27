@@ -1,13 +1,10 @@
 import _                    from 'lodash'
-import { html as beautify } from 'js-beautify'
 import bodyParser           from 'body-parser'
 import cheerio              from 'cheerio'
 import cookieParser         from 'cookie-parser'
 import express              from 'express'
 import fs                   from 'fs'
 import path                 from 'path'
-import URL                  from 'url'
-import utils                from 'fs-utils'
 
 import Article              from '../services/Article'
 import Links                from '../services/Links'

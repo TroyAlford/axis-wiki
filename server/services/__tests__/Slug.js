@@ -1,9 +1,5 @@
 jest.unmock('../Slug');
-
-import React      from 'react'
-import ReactDOM   from 'react-dom'
-import TestUtils  from 'react-addons-test-utils'
-import Slug       from '../Slug'
+import Slug from '../Slug'
 
 describe('Slug', () => {
   it('eliminates all but a-z, 0-9, _ and -', () => {
@@ -17,6 +13,16 @@ describe('Slug', () => {
     expect(after).not.toMatch(/^-/);
     expect(after).not.toMatch(/-$/);
   });
+
+  it('normalizes arrays', () => {
+    let before = ['$P3(14L---', '-leading  trailing-', '   ', '<<-empty']
+    let after  = Slug.normalize(before)
+
+    expect(after.length).toEqual(3) // 3rd should be eliminated entirely
+    expect(after[0]).toEqual('p3-14l')
+    expect(after[1]).toEqual('leading-trailing')
+    expect(after[2]).toEqual('empty')
+  })
 
   it('maintains path correctly', () => {
     let before = 'path/to/Slug Which Must Be Changed';

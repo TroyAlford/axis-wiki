@@ -1,9 +1,5 @@
-import _            from 'lodash'
 import bodyParser   from 'body-parser'
-import cheerio      from 'cheerio'
 import express      from 'express'
-import fs           from 'fs'
-import mkdirp       from 'mkdirp'
 import path         from 'path'
 import utils        from 'fs-utils'
 
@@ -21,7 +17,7 @@ var files = {
 navigation.get('/navigation', function(request, response) {
   return response.status(200).send(
     utils.exists(files.navigation)
-      ? utils.readJSONSync(files.navigation) 
+      ? utils.readJSONSync(files.navigation)
       : Config.settings.navigation.default_links
   );
 });

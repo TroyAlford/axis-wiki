@@ -4,7 +4,7 @@ import utils        from 'fs-utils'
 
 import defaults     from '../defaults.json'
 
-let SETTINGS = null;
+let SETTINGS = null, FOLDERS = null
 
 class Config {
   constructor() {
@@ -17,32 +17,30 @@ class Config {
   }
 
   get settings() {
-    if (SETTINGS)
-      return SETTINGS;
+    if (SETTINGS) return SETTINGS
 
-    let 
+    let
       argv        = require('minimist')(process.argv.slice(2)),
       config_path = path.join(__dirname, '../config.json'),
       config      = utils.exists(config_path) ? require(config_path) : {},
       debug       = argv.debugging || false
     ;
 
-    SETTINGS = Object.assign({ debugging: debug }, defaults, config);
+    SETTINGS = { debugging: debug, ...defaults, ...config }
     console.log(`Loaded Configuration`);
 
     return SETTINGS;
   }
 
   get folders() {
-    if (this._folders)
-      return this._folders;
+    if (FOLDERS) return FOLDERS
 
     var storage = this.settings.storage,
       basePath = path.isAbsolute(storage.path)
         ? storage.path
         : path.join(__dirname, '../', storage.path);
 
-    this._folders = {
+    FOLDERS = {
       articles: path.join(basePath, './articles'),
       config:   path.join(basePath, './config'),
       media:    path.join(basePath, './media'),
@@ -50,7 +48,7 @@ class Config {
       users:    path.join(basePath, './users')
     };
 
-    return this._folders;
+    return FOLDERS;
   }
 }
 

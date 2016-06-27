@@ -1,8 +1,6 @@
 import _           from 'lodash'
 import $           from 'cheerio'
 import express     from 'express'
-import fs          from 'fs'
-import path        from 'path'
 import utils       from 'fs-utils'
 
 import grep        from '../helpers/grep'
@@ -33,7 +31,7 @@ let search = module.exports = express()
 
 async function getContentMatches(search_term) {
   return grep(search_term, folders.articles, { ext: 'html' })
-    .then(list => 
+    .then(list =>
       list.map(hit => {
         let name = _(hit.file).split('/').last().replace(/\.html$/g, ''),
             html = utils.readFileSync(hit.file),
@@ -49,7 +47,6 @@ async function getContentMatches(search_term) {
           })
         }).filter(result => !!result) // Only truthy results
 
-        // console.log(`${results.length} filtered results`)
         return {
           title: $html.find('h1,h2,h3,h4,h5,h6').first().text() || _.capitalize(name),
           file:  name,

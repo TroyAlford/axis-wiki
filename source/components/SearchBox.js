@@ -1,4 +1,5 @@
 import ComponentBase      from '../application/ComponentBase'
+import debounce           from 'lodash/debounce'
 import { connect }        from 'react-redux'
 import { searchRequest }  from '../redux/search/actions'
 
@@ -6,7 +7,7 @@ class SearchBox extends ComponentBase {
   constructor(props) {
     super(props)
     this.state = { term: props.term }
-    this.debounced_search = _.debounce(this.search, 500)
+    this.debounced_search = debounce(this.search, 500)
   }
 
   componentWillReceiveProps(props) {
@@ -28,7 +29,7 @@ class SearchBox extends ComponentBase {
         />
         <i className="icon icon-search fa"></i>
       </div>
-    )    
+    )
   }
 }
 

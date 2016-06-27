@@ -9,7 +9,6 @@
 // Note: If both alias_for and aliases is included, the redirect chain will work - but the other fields are irrelevant.
 
 import _          from 'lodash'
-import chokidar   from 'chokidar'
 import fs         from 'fs'
 import path       from 'path'
 import utils      from 'fs-utils'

@@ -1,4 +1,3 @@
-import _                     from 'lodash'
 import fetch                 from 'isomorphic-fetch'
 import { browserHistory }    from 'react-router'
 
@@ -7,31 +6,39 @@ export const SEARCH_REQUEST = 'search.request'
 export const SEARCH_RESET   = 'search.reset'
 export const SEARCH_RESULTS = 'search.results'
 
+const fetch_params = {
+  credentials: 'include',
+  timeout: 1000
+}
+
 export function searchLoading(term) {
+  console.log(`searchLoading for '${term}'`)
   return {
     type: SEARCH_RESULTS,
     term
   }
 }
 export function searchRequest(term = '') {
+  console.log(`searchRequest for '${term}'`)
+
   return dispatch => {
-    dispatch(searchLoading(term));
     if (term.length < 3) return;
+    dispatch(searchLoading(term));
 
     let updated_term = ''
-    return fetch(`/api/search/${term}`, { 
-      credentials: 'include', 
-      timeout: 1000 
-    }).then(response => {
-        updated_term = _(response.url).split('/').last()
+    return fetch(`/api/search/${term}`, fetch_params)
+      .then(response => {
+        let url_sections = response.url.split('/')
+        updated_term = url_sections[url_sections.length - 1]
         return response.json()
       }).then(json => {
-        dispatch(searchResults(updated_term, json))        
+        dispatch(searchResults(updated_term, json))
       })
     ;
   }
 }
 export function searchResults(term, results) {
+  console.log(`searchResults for '${term}'`)
   if (browserHistory.location !== `/search/${term}`)
     browserHistory.push(`/search/${term}`);
 

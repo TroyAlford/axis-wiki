@@ -38,18 +38,18 @@ class Article {
   }
   get_final(slug) {
     let base = this.load(slug);
-    return Object.assign(
-      this.build_html(base.html),
-      this.clean_meta(base),
-      { children: Tags.for(slug) }
-    );
+    return {
+      ...this.build_html(base.html),
+      ...this.clean_meta(base),
+      children: Tags.for(slug)
+    }
   }
 
   load(slug) {
-    return Object.assign(
-      { html: this.load_html(slug) },
-      this.load_meta(slug)
-    )
+    return {
+      ...this.load_meta(slug),
+      html: this.load_html(slug)
+    }
   }
   load_html(slug) {
     let file = path.resolve(this.folders.articles, `${slug}.html`),
@@ -81,10 +81,10 @@ class Article {
   }
 
   clean(article) {
-    return Object.assign(
-      { html: this.clean_html(article.html) },
-      this.clean_meta(article)
-    );
+    return {
+      ...this.clean_meta(article),
+      html: this.clean_html(article.html)
+    }
   }
   clean_html(html) {
     let $html = $.load(html || '');
