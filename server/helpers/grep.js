@@ -24,7 +24,6 @@ export default ($what, where, set_options) => {
   return new Promise((resolve, reject) => {
     const ext_filter = `\\*.${options.ext || '\\*'}`
     const command = `grep -Einr ${what} --include ${ext_filter} ${where}`
-    // console.log(command)
     const grep = spawn(command)
     let matches = [], total_matches = 0
 
@@ -58,7 +57,6 @@ export default ($what, where, set_options) => {
     })
     grep.on('stdout_line', match => {
       if (match && match.length) {
-        // console.log(match)
         matches.push(match)
       }
     })
