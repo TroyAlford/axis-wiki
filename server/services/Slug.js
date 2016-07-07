@@ -4,6 +4,8 @@ export default class Slug {
   static normalize(value, retain_path = false) {
     if (Array.isArray(value)) {
       return Slug.normalize_array(value, retain_path);
+    } else if (typeof value !== 'string') {
+      return ''
     }
 
     let parsed = (/([/]?[\w\d -_]{1,}[/])?(.*)/g).exec(value.toLowerCase());
