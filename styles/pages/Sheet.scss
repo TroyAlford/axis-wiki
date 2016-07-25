@@ -1,4 +1,4 @@
-.attr-highlight {
+.highlight {
   border-radius: 3px;
   background-color: #f0f9f9;
 }
@@ -11,25 +11,25 @@
     border: 5px solid lighten($palette-light-gray, 5%);
   }
 
-  .attr.th {
+  .attribute.th {
     border-radius: 3px;
     background-color: $palette-light-blue;
   }
 
-  .Attributes.section .attr.placeholder {
+  .Attributes.section .attribute.placeholder {
     background-color: transparent;
   }
-  .Attributes.section .attr:not(.th)   { @extend .attr-highlight; }
+  .Attributes.section .attribute:not(.th)   { @extend .highlight; }
   .Traits.section {
-    .attr { width: 100%; }
-    .section-header, .attr { 
+    .attribute { width: 100%; }
+    .section-header, .attribute {
       display: flex;
-      justify-content: space-between; 
+      justify-content: space-between;
     }
-    .attr:nth-child(odd) { @extend .attr-highlight; }
+    .attribute:nth-child(odd) { @extend .highlight; }
   }
   .Skills.section {
-    .attr { width: 100%; }
-    .attr:nth-child(odd) { @extend .attr-highlight; }
+    .attribute { width: 100%; }
+    .attribute:nth-child(odd) { @extend .highlight; }
   }
 }

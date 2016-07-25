@@ -1,73 +1,69 @@
 {
-  "image_url": "http://placehold.it/230x280",
-  "demographics": [
-     { "name": "Player", "value": "Alissa", "cols": 2 }
-    ,{ "name": "Height", "value": "5'9\"" }
-    ,{ "name": "Eyes", "value": "Gold/Amber" }
-
-    ,{ "name": "Homeland", "value": "Aktilles", "cols": 2 }
-    ,{ "name": "Weight", "value": "140 lbs" }
-    ,{ "name": "Hair", "value": "Dark Red" }
-
-    ,{ "name": "Race", "value": ["Asimaar","Half-Elf"] }
-    ,{ "name": "Gender", "value": "Female" }
-    ,{ "name": "Age", "value": "30" }
-    ,{ "name": "Skin", "value": "Tan/Bronze" }
-
-  ],
   "attributes": [
-     { "name": "strength", "value": 1 }
-    ,{ "name": "agility", "value": 0 }
-    ,{ "name": "fitness", "value": 2 }
-    ,{ "name": "intellect", "value": 0 }
-    ,{ "name": "acuity", "value": 0 }
-    ,{ "name": "focus", "value": 0 }
-    ,{ "name": "confidence", "value": 2 }
-    ,{ "name": "intuition", "value": 1 }
-    ,{ "name": "devotion", "value": 2 }
-
-    ,{ "name": "size", "value": 0 }
-    ,{ "name": "natural_armor", "value": 0 }
-  ],
-  "traits": [
-     { "name": "Asimaar: Darkvision", "value": 1 }
-    ,{ "name": "Asimaar: Glamored Armor (G/S)", "value": 1 }
-    ,{ "name": "Asimaar: Halo", "value": 1 }
-    ,{ "name": "Asimaar: Sun-Sense", "value": 1 }
-    ,{ "name": "Asimaar: Gift of Tongues", "value": 1 }
-    ,{ "name": "Elven: Unaging", "value": 2 }
-    ,{ "name": "Elven: Low-Light Vision", "value": 1 }
-    ,{ "name": "Elven: Meditative Rest (8h)", "value": 1 }
-    ,{ "name": "Holy: Blessing of Eyes", "value": "+2/-2" }
-  ],
-  "skills": [
-     { "name": "Archery", "theory": 1, "mastery": 1 }
-    ,{ "name": "Athletics", "theory": 1, "mastery": 1 }
-    ,{ "name": "Combat Sense", "theory": 1, "mastery": 2 }
-    ,{ "name": "Combat: Greatsword", "theory": 2, "mastery": 2 }
-    ,{ "name": "Craft", "theory": 1, "mastery": 1 }
-    ,{ "name": "Empathy", "theory": 1, "mastery": 1 }
-    ,{ "name": "Etiquette", "theory": 1, "mastery": 1 }
-    ,{ "name": "Hand to Hand", "theory": 1, "mastery": 1 }
-    ,{ "name": "Investigation", "theory": 1, "mastery": 1 }
-    ,{ "name": "Leadership", "theory": 2, "mastery": 2 }
-    ,{ "name": "Lore: Religion", "theory": 2, "mastery": 2 }
-    ,{ "name": "Magic: Immolation", "theory": 3, "mastery": 1 }
-    ,{ "name": "Magic: Luminance", "theory": 4, "mastery": 2 }
-    ,{ "name": "Medicine", "theory": 1, "mastery": 1 }
-    ,{ "name": "Navigation: Land", "theory": 1, "mastery": 1 }
-    ,{ "name": "Negotiation", "theory": 1, "mastery": 1 }
-    ,{ "name": "Notice", "theory": 1, "mastery": 2 }
-    ,{ "name": "Parry", "theory": 1, "mastery": 2 }
-    ,{ "name": "Riding", "theory": 1, "mastery": 1 }
-    ,{ "name": "Streetwise", "theory": 1, "mastery": 1 }
-    ,{ "name": "Survival", "theory": 2, "mastery": 2 }
-    ,{ "name": "Teaching", "theory": 1, "mastery": 1 }
-  ],
-  "weapons": [
-     { "name": "Bastard Sword", "damage": "2/3", "range": 1, "hit": 0 }
+    { "key": "image", "value": "http://placehold.it/230x280" },
+    { "key": "acuity", "value": 0 },
+    { "key": "age", "value": 30 },
+    { "key": "agility", "value": 0 },
+    { "key": "confidence", "value": 2 },
+    { "key": "devotion", "value": 2 },
+    { "key": "eyes", "value": "Gold/Amber" },
+    { "key": "fitness", "value": 2 },
+    { "key": "focus", "value": 0 },
+    { "key": "gender", "value": "Female" },
+    { "key": "hair", "value": "Dark Red" },
+    { "key": "height", "value": "5'9\"" },
+    { "key": "homeland", "value": "Aktilles" },
+    { "key": "intellect", "value": 0 },
+    { "key": "intuition", "value": 1 },
+    { "key": "natural_armor", "value": 0 },
+    { "key": "player", "value": "Alissa" },
+    { "key": "race", "value": ["Asimaar","Half-Elf"] },
+    { "key": "size", "value": 0 },
+    { "key": "skin", "value": "Tan/Bronze" },
+    { "key": "strength", "value": 1 },
+    { "key": "weight", "value": "140 lbs" },
   ],
   "armor": [
-     { "name": "Platemail", "head": 0, "arms": 3, "hands": 3, "body": 3, "legs": 3, "feet": 3 }
+    { "key": "platemail", "value": [5, 5, 5, 5, 5, 5], "equipped": false },
+    { "key": "platemail", "value": [0, 3, 3, 3, 3, 3], "equipped": true },
+  ],
+  "weapons": [
+    { "key": "bastard-sword", "value": [2, 3, 1, 0] },
+  ],
+  "merits": [
+    { "key": "darkvision", "category": "Asimaar", "value": 1 },
+    { "key": "blessing-of-eyes", "category": "Holy", "value": [2,-2] },
+    { "key": "gift-of-tongues", "category": "Asimaar", "value": 1 },
+    { "key": "glamored-armor", "category": "Asimaar", "value": 1, "note": "(G/S)" },
+    { "key": "halo", "category": "Asimaar", "value": 1 },
+    { "key": "low-light-vision", "category": "Elven", "value": 1 },
+    { "key": "meditative-rest", "category": "Elven", "value": 1, "note": "(8h)" },
+    { "key": "sun-sense", "category": "Asimaar", "value": 1 },
+    { "key": "unaging", "category": "Elven", "value": 2 },
+  ],
+  "skills": [
+    { "key": "archery", "value": [1, 1] },
+    { "key": "athletics", "value": [1, 1] },
+    { "key": "combat-sense", "value": [1, 2], "category": "Combat" },
+    { "key": "craft", "value": [1, 1] },
+    { "key": "empathy", "value": [1, 1] },
+    { "key": "etiquette", "value": [1, 1] },
+    { "key": "greatsword", "value": [2, 2], "category": "Combat" },
+    { "key": "hand-to-hand", "value": [1, 1] },
+    { "key": "immolation", "value": [3, 1], "category": "Magic" },
+    { "key": "investigation", "value": [1, 1] },
+    { "key": "leadership", "value": [2, 2] },
+    { "key": "lore", "value": [1, 1], "note": "Folklore"},
+    { "key": "lore", "value": [2, 2], "note": "Religion" },
+    { "key": "luminance", "value": [4, 2], "category": "Magic" },
+    { "key": "medicine", "value": [1, 1] },
+    { "key": "navigation", "value": [1, 1], "note": "Land" },
+    { "key": "negotiation", "value": [1, 1] },
+    { "key": "notice", "value": [1, 2] },
+    { "key": "parry", "value": [1, 2] },
+    { "key": "riding", "value": [1, 1] },
+    { "key": "streetwise", "value": [1, 1] },
+    { "key": "survival", "value": [2, 2] },
+    { "key": "teaching", "value": [1, 1] },
   ]
 }
