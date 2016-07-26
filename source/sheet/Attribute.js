@@ -24,7 +24,7 @@ export default class Attribute extends React.Component {
     let display = name ? name : _.startCase(_.toLower(key))
 
     return (
-      <div className={`attribute ${className || ''}`}>
+      <div className={`attribute ${className}`}>
         <Editable className="name" value={display} readonly />
         <Editable className="value" value={value} readonly={this.props.readonly} />
       </div>
@@ -38,17 +38,17 @@ Attribute.splitter =
 const T = React.PropTypes
 
 Attribute.propTypes = {
-  name: T.string.isRequired,
-  slug: T.string,
-  value: T.oneOfType([
-    T.number, T.string,
-    T.arrayOf(T.oneOfType([ T.number, T.string ]))
-  ]).isRequired,
+  attribute: T.shape({
+    key: T.string.isRequired,
+    name: T.string,
+    value: T.oneOfType([ T.number, T.string ]).isRequired,
+  }).isRequired,
   className: T.string,
 }
 Attribute.defaultProps = {
-  name: '',
-  slug: null,
-  value: '',
-  className: null,
+  attribute: {
+    key: '',
+    value: 0,
+  },
+  className: '',
 }
