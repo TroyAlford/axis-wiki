@@ -6,20 +6,40 @@
 .sheet.page {
   font-size: .8em;
 
-  .portrait {
-    border-radius: 5px;
-    border: 5px solid lighten($palette-light-gray, 5%);
+  .columns { margin-bottom: 0; }
+
+  .portrait.column {
+    text-align: center;
+
+    .portrait {
+      border-radius: 5px;
+      border: 5px solid lighten($palette-light-gray, 5%);
+    }
   }
 
-  .attribute.th {
-    border-radius: 3px;
-    background-color: $palette-light-blue;
+  .attribute {
+    min-width: 24%; max-width: 24%;
+    &.cols-2 { min-width: 49%; max-width: 49%; }
   }
 
-  .Attributes.section .attribute.placeholder {
-    background-color: transparent;
+  .Armor.section .section-header {
+    .section-heading:not(:first-child) {
+      padding: 5px 1px;
+    }
+    .armor .value {
+      padding: 5px 1px;
+    }
   }
-  .Attributes.section .attribute:not(.th)   { @extend .highlight; }
+  .Attributes.section {
+    .attribute.placeholder {
+      background-color: transparent;
+    }
+    .attribute.th {
+      border-radius: 3px;
+      background-color: $palette-light-blue;
+    }
+    .attribute:not(.th) { @extend .highlight; }
+  }
   .Traits.section {
     .attribute { width: 100%; }
     .section-header, .attribute {

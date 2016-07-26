@@ -22,14 +22,11 @@ export default class Attribute extends React.Component {
     } = this.props
 
     let display = name ? name : _.startCase(_.toLower(key))
-    let values = Array.isArray(value) ? value : [value]
 
     return (
       <div className={`attribute ${className || ''}`}>
-        <span className="name">{display}</span>
-      {values.map((value, index) =>
-        <span key={index} className="value">{value}</span>
-      )}
+        <Editable className="name" value={display} readonly />
+        <Editable className="value" value={value} readonly={this.props.readonly} />
       </div>
     )
   }

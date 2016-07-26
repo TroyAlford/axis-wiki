@@ -23,6 +23,11 @@
       text-align: left;
       text-transform: capitalize;
     }
+    .value {
+      input[type="text"], textarea {
+        text-align: right;
+      }
+    }
 
     &.cols-2 { width: 49%; }
     &.cols-3 { width: 75%; }

@@ -6,5 +6,8 @@
     font-family: $font-headers;
     font-weight: bold;
     padding: 5px;
+    text-align: center;
+
+    &:first-child { text-align: left; }
   }
 }

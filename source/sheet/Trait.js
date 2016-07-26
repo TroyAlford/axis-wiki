@@ -1,7 +1,7 @@
 import React    from 'react'
 import Editable from '../components/Editable'
 
-export default class Skill extends React.Component {
+export default class Trait extends React.Component {
   render() {
     const { category, name, note, slug, value } = this.props
 
@@ -12,22 +12,20 @@ export default class Skill extends React.Component {
       display = `${display} (${note})`
 
     return (
-      <div className="skill">
+      <div className="trait">
         <Editable className="name" value={display} />
-      {this.props.values.map((value, index) =>
-        <Editable key={index} className="value" value={value} />
-      )}
+        <Editable className="value" value={value} />
       </div>
     )
   }
 }
 
-Skill.propTypes = {
+Trait.propTypes = {
   name: React.PropTypes.string,
   slug: React.PropTypes.string.isRequired,
-  value: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  value: React.PropTypes.number.isRequired,
 }
-Skill.defaultProps = {
-  slug: 'new-skill',
-  value: [0,0],
+Trait.defaultProps = {
+  slug: 'new-trait',
+  value: 0,
 }

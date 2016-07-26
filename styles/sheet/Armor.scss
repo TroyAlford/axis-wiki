@@ -1,0 +1,15 @@
+.armor {
+  align-content: space-between;
+  display: flex;
+  padding: 0 .25em;
+  width: 100%;
+
+  .equipped, .name, .value, .average { padding: 5px; }
+  .name {
+    flex-grow: 1;
+  }
+  .equipped, .value, .average {
+    min-width: 30px;
+    text-align: center;
+  }
+}

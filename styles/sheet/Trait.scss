@@ -1,0 +1,13 @@
+.trait {
+  display: flex;
+  padding: 0 .25em;
+
+  .name, .value { padding: 5px; }
+  .name {
+    flex-grow: 1;
+  }
+  .value {
+    min-width: 30px;
+    text-align: center;
+  }
+}

@@ -7,19 +7,20 @@ import Armor     from '../sheet/Armor'
 import Attribute from '../sheet/Attribute'
 import Section   from '../sheet/Section'
 import Skill     from '../sheet/Skill'
+import Trait     from '../sheet/Trait'
 import Weapon    from '../sheet/Weapon'
 
 export default class Sheet extends ComponentBase {
   constructor(props) {
-    super(props);
+    super(props)
     this._attributes = null
     this.recalculate = true
     this.state = {
-      armor: [],
+      armor: this.props.armor || [],
       attributes: [],
-      weapons: [],
-      merits: [],
-      skills: [],
+      weapons: this.props.weapons || [],
+      skills: this.props.skills || [],
+      traits: this.props.traits || [],
     }
   }
 
@@ -37,14 +38,16 @@ export default class Sheet extends ComponentBase {
       return this._attributes;
 
     this.recalculate = false
+    let armor_attribute = { key: 'armor', calc: '' }
+    let equipped_armor = _.filter(this.state.armor, { equipped: true })
+    armor_attribute.value = !equipped_armor.length ? 0 :
+      _.sum(equipped_armor.map(armor => Array.isArray(armor.value)
+        ? Math.round(_.sum(armor.value) / armor.value.length, 0)
+        : armor.value
+      ))
+
     let attributes = _([
-      { key: 'armor', calc: '',
-        value: _.filter(this.state.armor, { equipped: true })
-          .map(armor => Array.isArray(armor.value)
-            ? Math.round(_.sum(armor.value) / armor.length, 0)
-            : armor.value
-          )
-      },
+      armor_attribute,
       { key: 'body', calc: 'round((agility + fitness + strength) / 3, 0)' },
       { key: 'might', calc: 'round((strength + fitness) / 2, 0) + size' },
       { key: 'mind', calc: 'round((acuity + focus + intellect) / 3, 0)' },
@@ -70,16 +73,18 @@ export default class Sheet extends ComponentBase {
   }
 
   render() {
-    const { armor, merits, skills, weapons } = this.state,
-      attributes = this.attributes(),
-      skills_l = skills.slice(0, Math.ceil(skills.length / 2)),
-      skills_r = skills.slice(Math.ceil(skills.length / 2) + 1)
+    const { armor, traits, weapons } = this.state,
+    skills = this.state.skills.map((skill, index) =>
+      <Skill key={index} slug={skill.key} values={skill.value}
+             name={name} category={skill.category} note={skill.note}
+      />
+    )
 
     return (
       <div className="sheet page">
         <div className="columns">
         {typeof this.attribute('image').value === 'string' &&
-          <div className="column is-one-third">
+          <div className="portrait column is-one-third">
             <img className="portrait" src={this.attribute('image').value} />
           </div>}
           <div className="column">
@@ -125,28 +130,32 @@ export default class Sheet extends ComponentBase {
             <div className="attributes">
               <Attribute attribute={this.attribute('size')} />
               <Attribute attribute={this.attribute('natural_armor')} />
-              <Attribute attribute={this.attribute('might')} />
-              <Attribute attribute={this.attribute('toughness')} />
+              <Attribute attribute={this.attribute('might')} readonly />
+              <Attribute attribute={this.attribute('toughness')} readonly />
             </div>
           </div>
         </div>
         <div className="columns">
           <div className="column is-one-third">
-            <Section name="Traits" header={['Name', 'Cost']}
-                     attrs={this.traits}
-            />
+            <Section name="Traits" header={['Name', 'Cost']}>
+            {traits.map((trait, index) =>
+              <Trait key={index} slug={trait.key} value={trait.value}
+                name={trait.name} category={trait.category} note={trait.note}
+              />
+            )}
+            </Section>
           </div>
           <div className="column">
             <Section name="Skills">
               <div className="columns">
                 <div className="column is-half">
                   <Section header={['Name', 'Th', 'Ms']}>
-                    {skills_l.map((entry, key) => <Skill key={key} name={entry.name} value={entry.value} />)}
+                    {skills.slice(0, Math.ceil(skills.length / 2))}
                   </Section>
                 </div>
                 <div className="column is-half">
                   <Section header={['Name', 'Th', 'Ms']}>
-                    {skills_r.map((entry, key) => <Skill key={key} name={entry.name} value={entry.value} />)}
+                    {skills.slice(Math.ceil(skills.length / 2))}
                   </Section>
                 </div>
               </div>
@@ -156,14 +165,17 @@ export default class Sheet extends ComponentBase {
         <Section name="Equipment">
           <div className="columns">
             <div className="column">
-              <Section header={['Weapon', 'Dmg', 'Range', 'Hit']}>
-                {weapons.map((entry, key) => <Weapon key={key} name={entry.name} values={entry.value} />)}
+              <Section header={['Weapon', 'Dmg', 'Rng', 'Hit']}>
+              {weapons.map((entry, index) =>
+                <Weapon key={index} name={entry.name} values={entry.value} />
+              )}
               </Section>
             </div>
             <div className="column">
-              <Section header={['Armor', 'Head', 'Arms', 'Hand', 'Body', 'Legs', 'Feet', 'Avg']}>
-                <span>{this.attribute('armor').value}</span>
-                {armor.map((entry, key) => <Armor key={key} name={entry.name} values={entry.value} />)}
+              <Section className="Armor" header={['Armor', 'Head', 'Arms', 'Hand', 'Body', 'Legs', 'Feet', 'Avg']}>
+                {armor.map((entry, index) =>
+                  <Armor key={index} equipped={!!entry.equipped} name={entry.name} values={entry.value} />
+                )}
               </Section>
             </div>
           </div>
@@ -179,14 +191,14 @@ Sheet.propTypes = {
   armor:      React.PropTypes.array.isRequired,
   attributes: React.PropTypes.array.isRequired,
   weapons:    React.PropTypes.array.isRequired,
-  merits:     React.PropTypes.array.isRequired,
+  traits:     React.PropTypes.array.isRequired,
   skills:     React.PropTypes.array.isRequired,
 }
 Sheet.defaultProps = {
   armor: [],
   attributes: [],
   weapons: [],
-  merits: [],
+  traits: [],
   skills: [],
   ...example,
 }
