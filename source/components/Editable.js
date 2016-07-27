@@ -1,6 +1,6 @@
 import React from 'react' // Must be imported for Jest Tests
 import includes from 'lodash/includes'
-import xor from 'lodash/xor'
+import difference from 'lodash/difference'
 
 export default class Editable extends React.Component {
   constructor(props) {
@@ -15,8 +15,14 @@ export default class Editable extends React.Component {
     this.focusOnEditor = focusOnEditor.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleKeys = this.handleKeys.bind(this)
+    this.saveAndStopEditing = this.saveAndStopEditing.bind(this)
     this.setValue = this.setValue.bind(this)
     this.toggleEditing = this.toggleEditing.bind(this)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value == this.state.value)
+      this.setState({ value: undefined })
   }
 
   get current() {
@@ -39,7 +45,6 @@ export default class Editable extends React.Component {
     let { type, value } = this.props
     const types = [
       'text', 'multiline', // Strings
-      'dropdown',          // Arrays
       'boolean',           // Checkboxes
       'number', 'slider'   // Numbers
     ]
@@ -50,7 +55,6 @@ export default class Editable extends React.Component {
 
     if (typeof value === 'boolean') return 'boolean'
     if (typeof value === 'number') return 'number'
-    if (Array.isArray(value)) return 'dropdown'
 
     return 'text'
   }
@@ -62,34 +66,49 @@ export default class Editable extends React.Component {
     this.props.onChange(current, value)
   }
   handleChange(event) {
-    this.setValue(event.target.value)
+    let value = event.target.value
+    switch (this.editorType) {
+      case 'slider':
+      case 'number':
+        if (value === '') value = 0
+        value = parseInt(value)
+        if (isNaN(value)) value = this.current
+    }
+    this.setValue(value)
   }
   handleKeys(event) {
-    const { target, key } = event
+    console.log(event)
+    const { target, key, ctrlKey, metaKey } = event
     switch (key) {
       case 'Escape':
-        this.setState({ value: null })
-        this.toggleEditing()
+        this.setState({
+          editing: false,
+          value: undefined
+        })
         break;
       case 'Enter':
-        if (target.nodeName !== 'TEXTAREA') {
-          this.toggleEditing()
+        if (target.nodeName !== 'TEXTAREA' || ctrlKey || metaKey) {
+          this.saveAndStopEditing(event)
         }
+        break;
     }
-    // console.log(target.nodeName, key, event)
   }
   toggleEditing() {
     this.setState({ editing: !this.state.editing })
+  }
+  saveAndStopEditing(event) {
+    this.handleChange(event)
+    this.toggleEditing()
   }
 
   render() {
     this.editor = null
 
-    const value = this.current,
+    const currentValue = this.current,
       readonly = this.readonly,
       editor = this.editorType,
       editing = this.editing,
-      classes = xor([
+      classes = difference([
         'editable',
         this.props.className || '',
         readonly ? 'readonly' : '',
@@ -100,42 +119,44 @@ export default class Editable extends React.Component {
       <div className={classes.join(' ')}>{
         editor === 'boolean' ?
           <input type="checkbox"
-            checked={!!value} disabled={readonly}
-            onChange={this.setValue.bind(this, !value)}
+            checked={!!currentValue} disabled={readonly}
+            onChange={this.setValue.bind(this, !currentValue)}
             ref={this.focusOnEditor}
           />
         : editor === 'slider' ?
           <input type="range" disabled={readonly}
-            value={value} step={this.props.step || 1}
+            value={currentValue} step={this.props.step || 1}
             min={this.props.min || 0} max={this.props.max || 100}
-            onChange={this.handleChange} onBlur={this.toggleEditing}
+            onChange={this.handleChange} onBlur={this.saveAndStopEditing}
             ref={this.focusOnEditor}
           />
         : editor === 'multiline' ?
           readonly || !editing ?
-            <span>{this.props.value.split('\n').map(
+            <span>{currentValue.split('\n').map(
               (line, index) => <p key={index}>{line}</p>
             )}</span>
-          : <textarea cols={value.split('\n').length}
-              onBlur={this.toggleEditing}
+          : <textarea cols={currentValue.split('\n').length}
+              onBlur={this.saveAndStopEditing}
               onChange={this.handleChange}
               onKeyDown={this.handleKeys}
               ref={this.focusOnEditor}
-            >{value}</textarea>
+            >{currentValue}</textarea>
         : editor === 'number' && editing ?
-          <input type="number" value={value} step={this.props.step || 1}
+          <input type="number" value={currentValue} step={this.props.step || 1}
             min={this.props.min || 0} max={this.props.max || 100}
-            onChange={this.handleChange} onBlur={this.toggleEditing}
+            onBlur={this.saveAndStopEditing}
+            onChange={this.handleChange}
+            onKeyDown={this.handleKeys}
             ref={this.focusOnEditor}
           />
         : readonly ?
           // Read-Only or not-editing defaults to text in a SPAN
-          <span>{this.props.value}</span>
+          <span>{currentValue}</span>
         : !editing ?
-          <span onClick={this.toggleEditing}>{this.state.value || this.props.value}</span>
+          <span onClick={this.toggleEditing}>{currentValue}</span>
           // The Editing default is to render a normal INPUT[type=text]
-        : <input type="text" value={value} ref={this.focusOnEditor}
-            onBlur={this.toggleEditing}
+        : <input type="text" value={currentValue} ref={this.focusOnEditor}
+            onBlur={this.saveAndStopEditing}
             onChange={this.handleChange}
             onKeyDown={this.handleKeys}
           />

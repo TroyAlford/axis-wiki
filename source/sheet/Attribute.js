@@ -1,8 +1,9 @@
-import _        from 'lodash'
-import React    from 'react'
-import Editable from '../components/Editable'
+import _             from 'lodash'
+import ComponentBase from '../application/ComponentBase'
+import React         from 'react'
+import Editable      from '../components/Editable'
 
-export default class Attribute extends React.Component {
+export default class Attribute extends ComponentBase {
   parseName(name) {
     if (typeof name !== 'string' || !Attribute.splitter.test(name))
       return name
@@ -11,8 +12,9 @@ export default class Attribute extends React.Component {
     return split.map(item => (item || '').replace(/\s{2,}/g, ' ').trim())
   }
 
-  handleValueChange(index, event) {
-
+  handleValueChange(value) {
+    let { key, name } = this.props.attribute
+    this.props.onChange({ key, name, value })
   }
 
   render() {
@@ -26,7 +28,10 @@ export default class Attribute extends React.Component {
     return (
       <div className={`attribute ${className}`}>
         <Editable className="name" value={display} readonly />
-        <Editable className="value" value={value} readonly={this.props.readonly} />
+        <Editable className="value" value={value}
+          onChange={this.handleValueChange}
+          readonly={this.props.readonly}
+        />
       </div>
     )
   }
@@ -44,6 +49,7 @@ Attribute.propTypes = {
     value: T.oneOfType([ T.number, T.string ]).isRequired,
   }).isRequired,
   className: T.string,
+  onChange: T.func.isRequired,
 }
 Attribute.defaultProps = {
   attribute: {
@@ -51,4 +57,5 @@ Attribute.defaultProps = {
     value: 0,
   },
   className: '',
+  onChange: to => {}
 }

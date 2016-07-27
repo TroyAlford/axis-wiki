@@ -72,6 +72,21 @@ export default class Sheet extends ComponentBase {
     return _.find(this.attributes(), { key }) || { key, value: 0 }
   }
 
+  bindAttribute(name, className = '', readonly = false) {
+    return (
+      <Attribute attribute={this.attribute(name)} className={className}
+        onChange={this.handleAttributeChange} readonly={readonly}
+      />
+    )
+  }
+  handleAttributeChange(attribute) {
+    this.recalculate = true
+    this.setState({ attributes: [
+      ...this.state.attributes.filter(attr => attr.key !== attribute.key),
+      attribute
+    ]})
+  }
+
   render() {
     const { armor, traits, weapons } = this.state,
     skills = this.state.skills.map((skill, index) =>
@@ -89,49 +104,49 @@ export default class Sheet extends ComponentBase {
           </div>}
           <div className="column">
             <div className="Demographics section">
-              <div className="name section-header">Demographics</div>
+              <div className="name">Demographics</div>
               <div className="attributes">
-                <Attribute className="cols-2" attribute={this.attribute('player')} />
-                <Attribute attribute={this.attribute('height')} />
-                <Attribute attribute={this.attribute('eyes')} />
-                <Attribute className="cols-2" attribute={this.attribute('homeland')} />
-                <Attribute attribute={this.attribute('weight')} />
-                <Attribute attribute={this.attribute('hair')} />
-                <Attribute attribute={this.attribute('race')} />
-                <Attribute attribute={this.attribute('gender')} />
-                <Attribute attribute={this.attribute('age')} />
-                <Attribute attribute={this.attribute('skin')} />
+                {this.bindAttribute('player', 'cols-2')}
+                {this.bindAttribute('height')}
+                {this.bindAttribute('eyes')}
+                {this.bindAttribute('homeland', 'cols-2')}
+                {this.bindAttribute('weight')}
+                {this.bindAttribute('hair')}
+                {this.bindAttribute('race')}
+                {this.bindAttribute('gender')}
+                {this.bindAttribute('age')}
+                {this.bindAttribute('skin')}
               </div>
             </div>
             <div className="Attributes section">
               <div className="name">Attributes</div>
               <div className="attributes">
                 <div className="placeholder attribute"></div>
-                <Attribute className="th" attribute={this.attribute('body')} />
-                <Attribute className="th" attribute={this.attribute('mind')} />
-                <Attribute className="th" attribute={this.attribute('spirit')} />
+                {this.bindAttribute('body', 'th', true)}
+                {this.bindAttribute('mind', 'th', true)}
+                {this.bindAttribute('spirit', 'th', true)}
 
-                <Attribute className="th" attribute={this.attribute('potency')} />
-                <Attribute attribute={this.attribute('strength')} />
-                <Attribute attribute={this.attribute('intellect')} />
-                <Attribute attribute={this.attribute('confidence')} />
+                {this.bindAttribute('potency', 'th', true)}
+                {this.bindAttribute('strength')}
+                {this.bindAttribute('intellect')}
+                {this.bindAttribute('confidence')}
 
-                <Attribute className="th" attribute={this.attribute('reflex')} />
-                <Attribute attribute={this.attribute('agility')} />
-                <Attribute attribute={this.attribute('acuity')} />
-                <Attribute attribute={this.attribute('focus')} />
+                {this.bindAttribute('reflex', 'th', true)}
+                {this.bindAttribute('agility')}
+                {this.bindAttribute('acuity')}
+                {this.bindAttribute('intuition')}
 
-                <Attribute className="th" attribute={this.attribute('resilience')} />
-                <Attribute attribute={this.attribute('confidence')} />
-                <Attribute attribute={this.attribute('intuition')} />
-                <Attribute attribute={this.attribute('devotion')} />
+                {this.bindAttribute('resilience', 'th', true)}
+                {this.bindAttribute('fitness')}
+                {this.bindAttribute('focus')}
+                {this.bindAttribute('devotion')}
               </div>
             </div>
             <div className="attributes">
-              <Attribute attribute={this.attribute('size')} />
-              <Attribute attribute={this.attribute('natural_armor')} />
-              <Attribute attribute={this.attribute('might')} readonly />
-              <Attribute attribute={this.attribute('toughness')} readonly />
+              {this.bindAttribute('size')}
+              {this.bindAttribute('natural_armor')}
+              {this.bindAttribute('might', '', true)}
+              {this.bindAttribute('toughness', '', true)}
             </div>
           </div>
         </div>
