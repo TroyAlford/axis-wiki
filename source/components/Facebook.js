@@ -7,11 +7,11 @@ import ComponentBase            from '../application/ComponentBase'
 import Icon                     from '../components/Icon'
 import { Link }                 from 'react-router'
 
-import { 
-  setAnonymous, 
-  logoff, 
-  logon, 
-  updateUserInfo 
+import {
+  setAnonymous,
+  logoff,
+  logon,
+  updateUserInfo
 } from '../redux/user/actions'
 
 class Facebook extends ComponentBase {
@@ -21,6 +21,7 @@ class Facebook extends ComponentBase {
   }
 
   componentDidMount() {
+    if (!window.FB) return;
     FB.Event.subscribe('auth.statusChange', this.handleStatusChange);
 
     window.fbAsyncInit = (() => {
