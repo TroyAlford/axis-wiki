@@ -105,9 +105,7 @@ export default class Sheet extends ComponentBase {
   render() {
     const { armor, traits, weapons } = this.state,
     skills = this.state.skills.map((skill, index) =>
-      <Skill key={index} slug={skill.key} values={skill.value}
-             name={name} category={skill.category} note={skill.note}
-      />
+      <Skill key={index} skill={skill} />
     )
 
     return (
