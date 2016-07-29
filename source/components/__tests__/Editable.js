@@ -63,11 +63,11 @@ describe('Editable', () => {
     }
 
     render(<Editable value={true} editing={true} />)
-    expect(component.editor).toEqual('boolean')
+    expect(component.editorType).toEqual('boolean')
     validateCheckbox()
 
     render(<Editable value='test' type='boolean' editing={true} />)
-    expect(component.editor).toEqual('boolean')
+    expect(component.editorType).toEqual('boolean')
     let checkbox = validateCheckbox()
 
     Simulate.change(checkbox, { target: { value: false }})
