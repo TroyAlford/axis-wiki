@@ -4,14 +4,6 @@ import React         from 'react'
 import Editable      from '../components/Editable'
 
 export default class Attribute extends ComponentBase {
-  parseName(name) {
-    if (typeof name !== 'string' || !Attribute.splitter.test(name))
-      return name
-
-    let split = Attribute.splitter.exec(name).splice(1)
-    return split.map(item => (item || '').replace(/\s{2,}/g, ' ').trim())
-  }
-
   handleValueChange(value) {
     let { key, name } = this.props.attribute
     this.props.onChange({ key, name, value })
@@ -37,19 +29,17 @@ export default class Attribute extends ComponentBase {
   }
 }
 
-Attribute.splitter =
-  new RegExp(/^(?:([a-z0-9 ]*):)?([a-z0-9 ]*)(?:\(([a-z0-9 ]*)\))?/mi)
-
-const T = React.PropTypes
-
 Attribute.propTypes = {
-  attribute: T.shape({
-    key: T.string.isRequired,
-    name: T.string,
-    value: T.oneOfType([ T.number, T.string ]).isRequired,
+  attribute: React.PropTypes.shape({
+    key: React.PropTypes.string.isRequired,
+    name: React.PropTypes.string,
+    value: React.PropTypes.oneOfType([
+      React.PropTypes.number,
+      React.PropTypes.string,
+    ]).isRequired,
   }).isRequired,
-  className: T.string,
-  onChange: T.func.isRequired,
+  className: React.PropTypes.string,
+  onChange: React.PropTypes.func.isRequired,
 }
 Attribute.defaultProps = {
   attribute: {

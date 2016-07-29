@@ -1,7 +1,17 @@
 import React    from 'react'
 import Editable from '../components/Editable'
 
+const nameParserRegEx = new RegExp(/^(?:([a-z0-9 ]*):)?([a-z0-9 ]*)(?:\(([a-z0-9 ]*)\))?/mi)
+
 export default class Skill extends React.Component {
+  static parseName(name) {
+    if (typeof name !== 'string' || !Attribute.splitter.test(name))
+      return name
+
+    let split = nameParserRegEx.exec(name).splice(1)
+    return split.map(item => (item || '').replace(/\s{2,}/g, ' ').trim())
+  }
+
   render() {
     const { category, name, note, slug, value } = this.props
 

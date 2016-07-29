@@ -38,16 +38,15 @@ export default class Sheet extends ComponentBase {
       return this._attributes;
 
     this.recalculate = false
-    let armor_attribute = { key: 'armor', calc: '' }
-    let equipped_armor = _.filter(this.state.armor, { equipped: true })
-    armor_attribute.value = !equipped_armor.length ? 0 :
-      _.sum(equipped_armor.map(armor => Array.isArray(armor.value)
-        ? Math.round(_.sum(armor.value) / armor.value.length, 0)
-        : armor.value
-      ))
 
     let attributes = _([
-      armor_attribute,
+      { key: 'armor', calc: '',
+        value: _(this.state.armor).filter({ equipped: true })
+          .map(armor =>
+            Math.round(_.sum(armor.values) / armor.values.length, 0)
+          )
+          .sum()
+      },
       { key: 'body', calc: 'round((agility + fitness + strength) / 3, 0)' },
       { key: 'might', calc: 'round((strength + fitness) / 2, 0) + size' },
       { key: 'mind', calc: 'round((acuity + focus + intellect) / 3, 0)' },
@@ -79,11 +78,27 @@ export default class Sheet extends ComponentBase {
       />
     )
   }
+  handleArmorChange(index, armor) {
+    this.recalculate = true
+    this.setState({ armor: [
+      ...this.state.armor.slice(0, index),
+      armor,
+      ...this.state.armor.slice(index + 1)
+    ]})
+  }
   handleAttributeChange(attribute) {
     this.recalculate = true
     this.setState({ attributes: [
       ...this.state.attributes.filter(attr => attr.key !== attribute.key),
       attribute
+    ]})
+  }
+  handleWeaponChange(index, weapon) {
+    this.recalculate = true
+    this.setState({ weapons: [
+      ...this.state.weapons.slice(0, index),
+      weapon,
+      ...this.state.weapons.slice(index + 1)
     ]})
   }
 
@@ -181,16 +196,16 @@ export default class Sheet extends ComponentBase {
           <div className="columns">
             <div className="column">
               <Section header={['Weapon', 'Dmg', 'Rng', 'Hit']}>
-              {weapons.map((entry, index) =>
-                <Weapon key={index} name={entry.name} values={entry.value} />
+              {weapons.map((weapon, index) =>
+                <Weapon key={index} weapon={weapon} onChange={this.handleWeaponChange.bind(this, index)} />
               )}
               </Section>
             </div>
             <div className="column">
               <Section className="Armor" header={['Armor', 'Head', 'Arms', 'Hand', 'Body', 'Legs', 'Feet', 'Avg']}>
-                {armor.map((entry, index) =>
-                  <Armor key={index} equipped={!!entry.equipped} name={entry.name} values={entry.value} />
-                )}
+              {armor.map((armor, index) =>
+                <Armor key={index} armor={armor} onChange={this.handleArmorChange.bind(this, index)} />
+              )}
               </Section>
             </div>
           </div>

@@ -24,11 +24,11 @@
     { "key": "weight", "value": "140 lbs" },
   ],
   "armor": [
-    { "key": "platemail", "name": "Chainmail", "value": [2, 2, 2, 2, 2, 2], "equipped": false },
-    { "key": "platemail", "name": "Platemail", "value": [0, 3, 3, 3, 3, 3], "equipped": true },
+    { "key": "platemail", "name": "Chainmail", "values": [2, 2, 2, 2, 2, 2], "equipped": false },
+    { "key": "platemail", "name": "Platemail", "values": [0, 3, 3, 3, 3, 3], "equipped": true },
   ],
   "weapons": [
-    { "key": "bastard-sword", "value": [2, 3, 1] },
+    { "key": "bastard-sword", "values": [2, 3, 1], "equipped": false },
   ],
   "traits": [
     { "key": "darkvision", "category": "Asimaar", "value": 1 },

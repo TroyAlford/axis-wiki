@@ -77,7 +77,6 @@ export default class Editable extends React.Component {
     this.setValue(value)
   }
   handleKeys(event) {
-    console.log(event)
     const { target, key, ctrlKey, metaKey } = event
     switch (key) {
       case 'Escape':
