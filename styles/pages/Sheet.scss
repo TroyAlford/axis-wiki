@@ -39,6 +39,9 @@
       background-color: $palette-light-blue;
     }
     .attribute:not(.th) { @extend .highlight; }
+    .attribute .editable {
+      padding: 5px;
+    }
   }
   .Traits.section {
     .attribute { width: 100%; }

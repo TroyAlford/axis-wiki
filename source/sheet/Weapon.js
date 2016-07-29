@@ -45,9 +45,8 @@ Weapon.propTypes = {
 Weapon.defaultProps = {
   onChange: () => {},
   weapon: {
-    key: 'generic-weapon',
+    key: 'new-weapon',
     equipped: false,
-    name: 'Generic Weapon',
     values: [0, 0, 0],
   },
 }

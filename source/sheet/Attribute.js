@@ -12,7 +12,8 @@ export default class Attribute extends ComponentBase {
   render() {
     const {
       attribute: { key, name, value },
-      className
+      className,
+      readonly,
     } = this.props
 
     let display = name ? name : _.startCase(_.toLower(key))
@@ -22,7 +23,7 @@ export default class Attribute extends ComponentBase {
         <Editable className="name" value={display} readonly />
         <Editable className="value" value={value}
           onChange={this.handleValueChange}
-          readonly={this.props.readonly}
+          readonly={readonly}
         />
       </div>
     )
@@ -34,18 +35,20 @@ Attribute.propTypes = {
     key: React.PropTypes.string.isRequired,
     name: React.PropTypes.string,
     value: React.PropTypes.oneOfType([
+      React.PropTypes.bool,
       React.PropTypes.number,
       React.PropTypes.string,
     ]).isRequired,
   }).isRequired,
   className: React.PropTypes.string,
   onChange: React.PropTypes.func.isRequired,
+  readonly: React.PropTypes.bool,
 }
 Attribute.defaultProps = {
   attribute: {
-    key: '',
     value: 0,
   },
   className: '',
-  onChange: to => {}
+  onChange: to => {},
+  readonly: false,
 }

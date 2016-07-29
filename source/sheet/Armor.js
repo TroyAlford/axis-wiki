@@ -18,6 +18,7 @@ export default class Armor extends ComponentBase {
   render() {
     const { equipped, name, values } = this.props.armor,
       average = Math.round(sum(values) / values.length, 0)
+
     return (
       <div className="armor">
         <Editable className="equipped" value={!!equipped}
@@ -48,7 +49,6 @@ Armor.defaultProps = {
   armor: {
     equipped: false,
     key: 'generic-armor',
-    name: 'Generic Armor',
     values: [0,0,0,0,0,0],
   },
   onChange: () => {},

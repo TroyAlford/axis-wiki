@@ -20,11 +20,6 @@ export default class Editable extends React.Component {
     this.toggleEditing = this.toggleEditing.bind(this)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.value == this.state.value)
-      this.setState({ value: undefined })
-  }
-
   get current() {
     if (this.readonly) return this.props.value
     if (this.dirty) return this.state.value

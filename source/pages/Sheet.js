@@ -42,9 +42,7 @@ export default class Sheet extends ComponentBase {
     let attributes = _([
       { key: 'armor', calc: '',
         value: _(this.state.armor).filter({ equipped: true })
-          .map(armor =>
-            Math.round(_.sum(armor.values) / armor.values.length, 0)
-          )
+          .map(armor => Math.round(_.sum(armor.values) / armor.values.length, 0))
           .sum()
       },
       { key: 'body', calc: 'round((agility + fitness + strength) / 3, 0)' },
@@ -61,8 +59,7 @@ export default class Sheet extends ComponentBase {
 
     const calc = this.calc
     _.filter(attributes, 'calc').forEach(attribute => {
-      if (attribute.value === undefined)
-        attribute['value'] = calc(attribute.calc, attributes)
+      attribute.value = calc(attribute.calc, attributes)
     })
 
     return this._attributes = attributes
@@ -93,6 +90,13 @@ export default class Sheet extends ComponentBase {
       attribute
     ]})
   }
+  handleSkillChange(index, skill) {
+    this.setState({ skills: [
+      ...this.state.skills.slice(0, index),
+      skill,
+      ...this.state.skills.slice(index + 1)
+    ]})
+  }
   handleWeaponChange(index, weapon) {
     this.recalculate = true
     this.setState({ weapons: [
@@ -105,7 +109,9 @@ export default class Sheet extends ComponentBase {
   render() {
     const { armor, traits, weapons } = this.state,
     skills = this.state.skills.map((skill, index) =>
-      <Skill key={index} skill={skill} />
+      <Skill key={index} skill={skill}
+        onChange={this.handleSkillChange.bind(this, index)}
+      />
     )
 
     return (
@@ -193,7 +199,7 @@ export default class Sheet extends ComponentBase {
         <Section name="Equipment">
           <div className="columns">
             <div className="column">
-              <Section header={['Weapon', 'Dmg', 'Rng', 'Hit']}>
+              <Section className="Weapons" header={['Weapon', 'Dmg', 'Rng', 'Hit']}>
               {weapons.map((weapon, index) =>
                 <Weapon key={index} weapon={weapon} onChange={this.handleWeaponChange.bind(this, index)} />
               )}
@@ -216,11 +222,11 @@ export default class Sheet extends ComponentBase {
 const example = require('../../example_sheet.json')
 
 Sheet.propTypes = {
-  armor:      React.PropTypes.array.isRequired,
+  armor: React.PropTypes.array.isRequired,
   attributes: React.PropTypes.array.isRequired,
-  weapons:    React.PropTypes.array.isRequired,
-  traits:     React.PropTypes.array.isRequired,
-  skills:     React.PropTypes.array.isRequired,
+  weapons: React.PropTypes.array.isRequired,
+  traits: React.PropTypes.array.isRequired,
+  skills: React.PropTypes.array.isRequired,
 }
 Sheet.defaultProps = {
   armor: [],
