@@ -8,7 +8,7 @@ const nameParserRegEx = new RegExp(/^(?:([a-z0-9 ]*):)?([a-z0-9 ]*)(?:\(([a-z0-9
 export default class Skill extends ComponentBase {
   static parseName(name) {
     if (typeof name !== 'string' || !nameParserRegEx.test(name))
-      return { category: '', name, note: '' }
+      return { category: '', name: '', note: '' }
 
     let split = nameParserRegEx.exec(name).splice(1)
       .map(item => (item || '').replace(/\s{2,}/g, ' ').trim())
@@ -27,10 +27,10 @@ export default class Skill extends ComponentBase {
 
   displayName() {
     const { skill: { category, key, name, note } } = this.props
-    let display = _.startCase(name) || _.startCase(_.toLower(key))
-    if (category) display = `${_.startCase(category)}: ${display}`
-    if (note) display = `${display} (${_.startCase(note)})`
-    return display
+    let display = name || _.toLower(key)
+    if (category) display = `${category}: ${display}`
+    if (note) display = `${display} (${note})`
+    return _.startCase(display)
   }
 
   handleNameChange(displayName) {
