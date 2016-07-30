@@ -4,14 +4,19 @@ import sum      from 'lodash/sum'
 
 export default class Weapon extends React.Component {
   setEquipped(equipped) {
-    let { key, name, values } = this.props.weapon
-    this.props.onChange({ key, equipped, name, values })
+    this.props.onChange({
+      ...this.props.weapon,
+      equipped
+    })
   }
   handleValueChange(index, value) {
-    let { equipped, key, name, values } = this.props.weapon
-    values[index] = value;
+    let { values }  = this.props.weapon
+    values[index] = value
 
-    this.props.onChange({ equipped, key, name, values })
+    this.props.onChange({
+      ...this.props.weapon,
+      values
+    })
   }
 
   render() {

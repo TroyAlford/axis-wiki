@@ -1,8 +1,6 @@
 .trait {
   display: flex;
-  padding: 0 .25em;
 
-  .name, .value { padding: 5px; }
   .name {
     flex-grow: 1;
   }

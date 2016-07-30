@@ -10,17 +10,20 @@ import Skill     from '../sheet/Skill'
 import Trait     from '../sheet/Trait'
 import Weapon    from '../sheet/Weapon'
 
+const keyObjects = collection => _.map(collection, (el, id) => ({ id, ...el }));
+
 export default class Sheet extends ComponentBase {
   constructor(props) {
     super(props)
     this._attributes = null
     this.recalculate = true
+
     this.state = {
-      armor: this.props.armor || [],
       attributes: [],
-      weapons: this.props.weapons || [],
-      skills: this.props.skills || [],
-      traits: this.props.traits || [],
+      armor: keyObjects(this.props.armor || []),
+      skills: keyObjects(this.props.skills || []),
+      traits: keyObjects(this.props.traits || []),
+      weapons: keyObjects(this.props.weapons || []),
     }
   }
 
@@ -75,14 +78,6 @@ export default class Sheet extends ComponentBase {
       />
     )
   }
-  handleArmorChange(index, armor) {
-    this.recalculate = true
-    this.setState({ armor: [
-      ...this.state.armor.slice(0, index),
-      armor,
-      ...this.state.armor.slice(index + 1)
-    ]})
-  }
   handleAttributeChange(attribute) {
     this.recalculate = true
     this.setState({ attributes: [
@@ -90,29 +85,70 @@ export default class Sheet extends ComponentBase {
       attribute
     ]})
   }
-  handleSkillChange(index, skill) {
-    this.setState({ skills: [
-      ...this.state.skills.slice(0, index),
-      skill,
-      ...this.state.skills.slice(index + 1)
+  handleArmorChange(armor) {
+    this.recalculate = true
+    this.setState({ armor: [
+      ...this.state.armor.filter(el => el.id !== armor.id),
+      armor,
     ]})
   }
-  handleWeaponChange(index, weapon) {
+  handleSkillChange(skill) {
+    this.setState({ skills: [
+      ...this.state.skills.filter(el => el.id !== skill.id),
+      skill,
+    ]})
+  }
+  handleTraitChange(trait) {
+    this.setState({ traits: [
+      ...this.state.traits.filter(el => el.id !== trait.id),
+      trait,
+    ]})
+  }
+  handleWeaponChange(weapon) {
     this.recalculate = true
     this.setState({ weapons: [
-      ...this.state.weapons.slice(0, index),
+      ...this.state.weapons.filter(el => el.id !== weapon.id),
       weapon,
-      ...this.state.weapons.slice(index + 1)
     ]})
   }
 
   render() {
-    const { armor, traits, weapons } = this.state,
-    skills = this.state.skills.map((skill, index) =>
-      <Skill key={index} skill={skill}
-        onChange={this.handleSkillChange.bind(this, index)}
-      />
-    )
+    const armor = _(this.state.armor)
+      .orderBy(['equipped', 'name'], ['desc', 'asc'])
+      .map(armor =>
+        <Armor key={armor.id} armor={armor}
+          onChange={this.handleArmorChange}
+        />
+      ).value(),
+    skills = _(this.state.skills)
+      .sortBy(skill => [
+        skill.category || '',
+        skill.name || skill.key,
+        skill.note || ''
+      ].join('').toLowerCase())
+      .map(skill =>
+        <Skill key={skill.id} skill={skill}
+          onChange={this.handleSkillChange}
+        />
+      ).value(),
+    traits = _(this.state.traits)
+      .sortBy(trait => [
+        trait.category || '',
+        trait.name || trait.key,
+        trait.note || ''
+      ].join('').toLowerCase())
+      .map(trait =>
+        <Trait key={trait.id} trait={trait}
+          onChange={this.handleTraitChange}
+        />
+      ).value(),
+    weapons = _(this.state.weapons)
+      .orderBy(['equipped', 'name'], ['desc', 'asc'])
+      .map(weapon =>
+        <Weapon key={weapon.id} weapon={weapon}
+          onChange={this.handleWeaponChange}
+        />
+      ).value()
 
     return (
       <div className="sheet page">
@@ -134,7 +170,6 @@ export default class Sheet extends ComponentBase {
                 {this.bindAttribute('race')}
                 {this.bindAttribute('gender')}
                 {this.bindAttribute('age')}
-                {this.bindAttribute('skin')}
               </div>
             </div>
             <div className="Attributes section">
@@ -171,12 +206,9 @@ export default class Sheet extends ComponentBase {
         </div>
         <div className="columns">
           <div className="column is-one-third">
-            <Section name="Traits" header={['Name', 'Cost']}>
-            {traits.map((trait, index) =>
-              <Trait key={index} slug={trait.key} value={trait.value}
-                name={trait.name} category={trait.category} note={trait.note}
-              />
-            )}
+            <Section name="Traits"
+              header={['Name', 'Cost']}>
+              {traits}
             </Section>
           </div>
           <div className="column">
@@ -199,17 +231,15 @@ export default class Sheet extends ComponentBase {
         <Section name="Equipment">
           <div className="columns">
             <div className="column">
-              <Section className="Weapons" header={['Weapon', 'Dmg', 'Rng', 'Hit']}>
-              {weapons.map((weapon, index) =>
-                <Weapon key={index} weapon={weapon} onChange={this.handleWeaponChange.bind(this, index)} />
-              )}
+              <Section className="Weapons"
+                header={['Use', 'Weapon', 'Dmg', 'Rng', 'Hit']}>
+                {weapons}
               </Section>
             </div>
             <div className="column">
-              <Section className="Armor" header={['Armor', 'Head', 'Arms', 'Hand', 'Body', 'Legs', 'Feet', 'Avg']}>
-              {armor.map((armor, index) =>
-                <Armor key={index} armor={armor} onChange={this.handleArmorChange.bind(this, index)} />
-              )}
+              <Section className="Armor"
+                header={['Use', 'Armor', 'Head', 'Arms', 'Hand', 'Body', 'Legs', 'Feet', 'Avg']}>
+                {armor}
               </Section>
             </div>
           </div>

@@ -4,12 +4,27 @@
   padding: 0 .25em;
   width: 100%;
 
-  .equipped, .name, .value, .average { padding: 5px; }
   .name {
     flex-grow: 1;
   }
-  .equipped, .value, .average {
+  .equipped {
+    > input[type="checkbox"] {
+      margin: 0 6px;
+      width: 14px;
+    }
+  }
+
+  .equipped, .value {
     min-width: 30px;
     text-align: center;
+  }
+  .equipped > *, .name > *, .average > * {
+    border: 0; margin: 0; padding: 5px;
+    display: block;
+    height: 100%; min-height: 100%; max-height: 100%;
+    line-height: 1.5em;
+    text-align: inherit;
+    vertical-align: middle;
+    width: 100%; min-width: 100%; max-width: 100%;
   }
 }

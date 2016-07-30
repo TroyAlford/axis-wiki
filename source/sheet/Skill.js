@@ -22,15 +22,17 @@ export default class Skill extends ComponentBase {
 
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      displayName: this.displayName(props)
+    }
   }
 
-  displayName() {
-    const { skill: { category, key, name, note } } = this.props
-    let display = name || _.toLower(key)
+  displayName(props = this.props) {
+    const { skill: { category, key, name, note } } = props
+    let display = _.startCase(_.toLower(name || key))
     if (category) display = `${category}: ${display}`
     if (note) display = `${display} (${note})`
-    return _.startCase(display)
+    return display
   }
 
   handleNameChange(displayName) {

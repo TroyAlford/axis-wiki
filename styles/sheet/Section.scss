@@ -16,6 +16,8 @@
     text-transform: capitalize;
   }
 
+  .section-heading:first-child { flex-grow: 1; }
+
   > .section-header {
     align-content: space-between;
     display: flex;
@@ -23,8 +25,6 @@
 
     .section-heading {
       min-width: 30px;
-
-      &:first-child { flex-grow: 1; }
     }
   }
 }

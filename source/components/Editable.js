@@ -104,6 +104,7 @@ export default class Editable extends React.Component {
       editing = this.editing,
       classes = difference([
         'editable',
+        editing ? 'editing' : '',
         this.props.className || '',
         readonly ? 'readonly' : '',
         this.dirty ? 'dirty' : ''
@@ -115,7 +116,6 @@ export default class Editable extends React.Component {
           <input type="checkbox"
             checked={!!currentValue} disabled={readonly}
             onChange={this.setValue.bind(this, !currentValue)}
-            ref={this.focusOnEditor}
           />
         : editor === 'slider' ?
           <input type="range" disabled={readonly}

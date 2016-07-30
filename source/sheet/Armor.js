@@ -5,14 +5,19 @@ import sum           from 'lodash/sum'
 
 export default class Armor extends ComponentBase {
   setEquipped(equipped) {
-    let { key, name, values } = this.props.armor
-    this.props.onChange({ key, equipped, name, values })
+    this.props.onChange({
+      ...this.props.armor,
+      equipped
+    })
   }
   handleValueChange(index, value) {
-    let { equipped, key, name, values } = this.props.armor
-
+    let { values } = this.props.armor
     values[index] = value;
-    this.props.onChange({ key, equipped, name, values })
+
+    this.props.onChange({
+      ...this.props.armor,
+      values
+    })
   }
 
   render() {
@@ -30,7 +35,9 @@ export default class Armor extends ComponentBase {
           onChange={this.handleValueChange.bind(this, index)}
         />
       )}
-        <span className="average">{average}</span>
+        <div className="average value">
+          <span>{average}</span>
+        </div>
       </div>
     )
   }
