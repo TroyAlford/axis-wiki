@@ -140,6 +140,7 @@ export default class Editable extends React.Component {
             min={this.props.min || 0} max={this.props.max || 100}
             onBlur={this.saveAndStopEditing}
             onChange={this.handleChange}
+            onFocus={event => event.target.select()}
             onKeyDown={this.handleKeys}
             ref={this.focusOnEditor}
           />
@@ -152,6 +153,7 @@ export default class Editable extends React.Component {
         : <input type="text" value={currentValue} ref={this.focusOnEditor}
             onBlur={this.saveAndStopEditing}
             onChange={this.handleChange}
+            onFocus={event => event.target.select()}
             onKeyDown={this.handleKeys}
           />
       }
