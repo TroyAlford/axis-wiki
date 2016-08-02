@@ -1,10 +1,11 @@
-import _                  from 'lodash'
+import findIndex          from 'lodash/findIndex'
+import includes           from 'lodash/includes'
 import { browserHistory } from 'react-router'
 import { connect }        from 'react-redux'
 
 import { loadArticle }    from '../redux/article/actions'
-import { 
-  searchRequest, 
+import {
+  searchRequest,
   searchReset
 }                         from '../redux/search/actions'
 
@@ -24,14 +25,14 @@ class Search extends ComponentBase {
   }
 
   getDisplayData() {
-    return _.map(this.props.results, (article, index) => {
+    return this.props.results.map((article, index) => {
       let previews = article.results.map(hit => {
           let words = hit.text.split(' '),
-              index = _.findIndex(words, word => _.includes(
-                word.toLowerCase(), 
+              index = findIndex(words, word => includes(
+                word.toLowerCase(),
                 this.props.term.toLowerCase()
               ));
-          
+
           if (0 > index) // not found
             return { html: hit.text, line: hit.line }
 
@@ -64,7 +65,7 @@ class Search extends ComponentBase {
     return (
       <div className={`search page ${this.props.loading ? 'loading' : ''}`}>
        { results.length
-       ? _.map(results, search_result =>
+       ? results.map(search_result =>
           <div key={search_result.key} className="card result"
                onClick={() => browserHistory.push(`/page/${search_result.slug}`)}>
             <div className="card-content">
@@ -87,7 +88,7 @@ class Search extends ComponentBase {
                   </nav>
                   {search_result.previews.slice(0,3).map((preview, index) => (
                     <div key={index}
-                      className="search-match" 
+                      className="search-match"
                       dangerouslySetInnerHTML={{ __html: preview.html }}
                     ></div>
                   ))}

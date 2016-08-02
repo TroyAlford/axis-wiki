@@ -1,11 +1,12 @@
-import _             from 'lodash'
 import ComponentBase from '../application/ComponentBase'
 import Message       from '../components/Message'
 
 export default class NotFound extends ComponentBase {
   render() {
-    let slug = _(window.location.pathname).split('/').last(),
-        url  = `/page/${slug}`;
+    const parts = window.location.pathname.split('/'),
+          slug = parts[parts.length - 1],
+          url  = `/page/${slug}`
+
   	return (
       <div className="not-found page">
         <Message title="404">

@@ -2,7 +2,7 @@ import ComponentBase      from '../application/ComponentBase'
 import Dropzone           from 'react-dropzone'
 
 import fetch              from 'isomorphic-fetch'
-import { slugify }        from '../utility/Slugs'
+import { slugify }        from '../../utility/Slugs'
 
 export default class UploadPage extends ComponentBase {
   constructor(props) {

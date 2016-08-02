@@ -39,6 +39,6 @@ export default class Navigation extends ComponentBase {
   }
   renderLinks(links) {
     if (!links || !links.length) return '';
-    return <ul key={this.render_key++}>{_.map(links, this.renderLink)}</ul>;
+    return <ul key={this.render_key++}>{links.map(this.renderLink)}</ul>;
   }
 }

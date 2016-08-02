@@ -1,11 +1,13 @@
 import ComponentBase      from '../application/ComponentBase'
-import Icon               from './Icon';
-import { Link }           from 'react-router';
+import Icon               from './Icon'
+import { Link }           from 'react-router'
+import sortBy             from 'lodash/sortBy'
+import startCase          from 'lodash/startCase'
 
 export default class ArticleChildren extends ComponentBase {
   render() {
     let
-      articles   = _.sortBy(this.props.articles),
+      articles   = sortBy(this.props.articles),
       col_count  = this.props.columns || 4,
       columns    = [],
       col_size   = Math.ceil(articles.length / col_count),
@@ -19,9 +21,9 @@ export default class ArticleChildren extends ComponentBase {
       ;
       columns[i] =
         <div key={i} className={classes}>{
-          _.map(list, (slug, index) => 
+          list.map((slug, index) =>
             <div key={index}>
-              <Link to={`/page/${slug}`}>{_.startCase(slug)}</Link>
+              <Link to={`/page/${slug}`}>{startCase(slug)}</Link>
             </div>
           )
         }</div>;

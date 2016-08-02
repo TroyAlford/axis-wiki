@@ -6,7 +6,7 @@ import {
   loadedArticle,
   saveArticle
 }                         from '../redux/article/actions'
-import { slugify }        from '../utility/Slugs'
+import { slugify }        from '../../utility/Slugs'
 import difference         from 'lodash/difference'
 import sortBy             from 'lodash/sortBy'
 import uniq               from 'lodash/uniq'
