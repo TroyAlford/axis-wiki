@@ -35,12 +35,12 @@ describe('Editable', () => {
 
     render(<Editable value='first' editing={true} onChanging={changing} onChange={change} />)
     Simulate.change(rendered().children[0], { target: { value: 'second' }})
-    expect(changing).toBeCalledWith('first', 'second')
-    expect(change).toBeCalledWith('first', 'second')
+    expect(changing).toBeCalledWith('second', 'first')
+    expect(change).toBeCalledWith('second', 'first')
 
     Simulate.change(rendered().children[0], { target: { value: 'third' }})
-    expect(changing).toBeCalledWith('second', 'third')
-    expect(change).toBeCalledWith('second', 'third')
+    expect(changing).toBeCalledWith('third', 'second')
+    expect(change).toBeCalledWith('third', 'second')
   })
 
   it('handles cancellation of changes properly', () => {
@@ -49,7 +49,7 @@ describe('Editable', () => {
 
     render(<Editable value='first' editing={true} onChanging={cancel} onChange={none} />)
     Simulate.change(rendered().children[0], { target: { value: 'second' }})
-    expect(cancel).toBeCalledWith('first', 'second')
+    expect(cancel).toBeCalledWith('second', 'first')
     expect(none).not.toBeCalled()
   })
 
