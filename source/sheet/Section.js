@@ -7,8 +7,8 @@ export default class Section extends React.Component {
     )
     return (
       <div className={`${this.props.name} section ${this.props.className}`}>
-        <div className="name">{this.props.name}</div>
-        <div className="section-header">{headers}</div>
+        {this.props.name && <div className="name">{this.props.name}</div>}
+        {headers.length !== 0 && <div className="section-header">{headers}</div>}
         {this.props.children}
       </div>
     )

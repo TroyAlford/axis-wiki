@@ -8,9 +8,14 @@
     flex-grow: 1;
     font-size: 1.5rem;
   }
-  .name {
+  .name, .xp, .rp, .power {
+    font-size: 0.8rem;
+    padding: .35rem;
+    > * { padding: 0; }
+  }
+  .CharacterName, .name {
     font-weight: bold;
-    padding: 5px;
+    font-family: Ubuntu, Calibri, sans-serif;
   }
   .editable {
     min-width: 40px; max-width: 40px;

@@ -242,7 +242,7 @@ export default class Sheet extends ComponentBase {
               {this.bindAttribute('focus')}
               {this.bindAttribute('devotion')}
             </Section>
-            <Section className="Attributes">
+            <Section className="Combat">
               {this.bindAttribute('size')}
               {this.bindAttribute('natural_armor')}
               {this.bindAttribute('might', '', true)}

@@ -1,14 +1,6 @@
 .sheet.page {
   font-size: .8em;
 
-  .experience.bar {
-    font-family: Ubuntu, Calibri, sans-serif;
-    font-size: 1.0rem;
-    padding: 5px;
-
-    .header { font-weight: bold; }
-  }
-
   .columns { margin-bottom: 0; }
 
   .portrait.column {
@@ -31,7 +23,7 @@
     visibility: hidden;
   }
 
-  .Descriptors.section, .Attributes.section {
+  .Attributes.section, .Descriptors.section, .Combat.section {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -40,16 +32,22 @@
     > .name {
       font-family: Ubuntu, Calibri, sans-serif;
     }
-    .attribute  {
-      min-width: 24%; max-width: 24%;
-      @extend .highlight;
+  }
+  .Attributes.section .attribute  {
+    min-width: 24%; max-width: 24%;
+    @extend .highlight;
 
-      &.th {
-        border-radius: 3px;
-        background-color: $palette-light-blue;
-      }
+    &.th {
+      border-radius: 3px;
+      background-color: $palette-light-blue;
+      .name { font-weight: bold; }
     }
-    .descriptor { min-width: 32%; max-width: 32%; }
+  }
+  .Descriptors.section .descriptor {
+    min-width: 32%; max-width: 32%;
+  }
+  .Combat.section .attribute {
+    min-width: 24%; max-width: 24%;
   }
 
   .Armor.section, .Weapons.section {
