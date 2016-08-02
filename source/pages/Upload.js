@@ -2,6 +2,7 @@ import ComponentBase      from '../application/ComponentBase'
 import Dropzone           from 'react-dropzone'
 
 import fetch              from 'isomorphic-fetch'
+import { slugify }        from '../utility/Slugs'
 
 export default class UploadPage extends ComponentBase {
   constructor(props) {
@@ -20,8 +21,8 @@ export default class UploadPage extends ComponentBase {
     files.forEach(file => {
       let { name, preview, size, type, lastModifiedDate } = file
       uploading.push({
-        name: name.toLowerCase().replace(/[^\w\d\./_]/g, '-').replace(/-{2,}/g, '-'),
-        preview, size, type, lastModifiedDate 
+        name: slugify(name),
+        preview, size, type, lastModifiedDate
       })
       form.append('file', file)
     })
@@ -44,8 +45,8 @@ export default class UploadPage extends ComponentBase {
         uploaded  = _.filter(processed, file => file.errors.length == 0),
         failed    = _.filter(processed, file => file.errors.length != 0)
 
-      this.setState({ 
-        uploading, 
+      this.setState({
+        uploading,
         uploaded: _.uniqBy([...this.state.uploaded, ...uploaded], 'name'),
         failed:   _.uniqBy([...this.state.failed,   ...failed],   'name')
       })
@@ -59,7 +60,7 @@ export default class UploadPage extends ComponentBase {
         <div key={index} className="file">
           <span className="name">{file.name}</span>
           <span className="link">{file.small ? <a href={file.small}>View</a> : null}</span>
-          {!file.errors ? null : _.map(file.errors, (error, index) => 
+          {!file.errors ? null : _.map(file.errors, (error, index) =>
             <div key={index} className="error icon icon-warning">{error}</div>
           )}
         </div>
@@ -69,7 +70,7 @@ export default class UploadPage extends ComponentBase {
 
   render() {
     const { uploading, uploaded, failed } = this.state
-  
+
     return (
       <div className="upload page">
         <Dropzone onDrop={this.onDrop} style={{}} activeStyle={{}}

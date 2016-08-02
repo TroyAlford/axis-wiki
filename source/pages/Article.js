@@ -1,4 +1,3 @@
-import _                  from 'lodash'
 import { connect }        from 'react-redux'
 import { browserHistory } from 'react-router'
 import {
@@ -7,6 +6,11 @@ import {
   loadedArticle,
   saveArticle
 }                         from '../redux/article/actions'
+import { slugify }        from '../utility/Slugs'
+import difference         from 'lodash/difference'
+import sortBy             from 'lodash/sortBy'
+import uniq               from 'lodash/uniq'
+import xor                from 'lodash/xor'
 
 import ComponentBase      from '../application/ComponentBase'
 import ArticleChildren    from '../components/ArticleChildren'
@@ -118,14 +122,15 @@ class Article extends ComponentBase {
   }
 
   handleAliasChange(updated) {
-    let aliases = _(updated).map(alias =>
-      _.toLower(alias).replace(/[^\w\d/_]/g, '-').replace(/-{2,}/g, '-')
-    ).sortBy().difference([this.props.params.slug]).uniq().value();
+    let aliases = uniq(difference(
+      sortBy(updated.map(slugify)),
+      [this.props.params.slug]
+    ))
     this.setState({ aliases });
   }
   handleTagChange(updated) {
-    let tags = _.sortBy(updated);
-    if (_.xor(tags, this.props.tags).length)
+    let tags = sortBy(updated);
+    if (xor(tags, this.props.tags).length)
       this.setState({ tags })
     else
       this.setState({ tags: null })
