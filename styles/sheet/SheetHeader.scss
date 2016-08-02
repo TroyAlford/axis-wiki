@@ -1,0 +1,19 @@
+.sheet-header {
+  border-bottom: 1px solid $palette-blue;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 5px;
+
+  .CharacterName {
+    flex-grow: 1;
+    font-size: 1.5rem;
+  }
+  .name {
+    font-weight: bold;
+    padding: 5px;
+  }
+  .editable {
+    min-width: 40px; max-width: 40px;
+    text-align: center;
+  }
+}

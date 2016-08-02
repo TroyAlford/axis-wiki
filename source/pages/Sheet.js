@@ -1,14 +1,16 @@
-import _         from 'lodash'
-import math      from 'mathjs'
-import React     from 'react'
+import _          from 'lodash'
+import math       from 'mathjs'
+import React      from 'react'
 import ComponentBase from '../application/ComponentBase'
 
-import Armor     from '../sheet/Armor'
-import Attribute from '../sheet/Attribute'
-import Section   from '../sheet/Section'
-import Skill     from '../sheet/Skill'
-import Trait     from '../sheet/Trait'
-import Weapon    from '../sheet/Weapon'
+import Armor       from '../sheet/Armor'
+import Attribute   from '../sheet/Attribute'
+import Descriptor  from '../sheet/Descriptor'
+import Section     from '../sheet/Section'
+import SheetHeader from '../sheet/SheetHeader'
+import Skill       from '../sheet/Skill'
+import Trait       from '../sheet/Trait'
+import Weapon      from '../sheet/Weapon'
 
 const keyObjects = collection => _.map(collection, (el, id) => ({ id, ...el }));
 
@@ -21,10 +23,38 @@ export default class Sheet extends ComponentBase {
     this.state = {
       attributes: [],
       armor: keyObjects(this.props.armor || []),
+      descriptors: this.props.descriptors || [],
       skills: keyObjects(this.props.skills || []),
       traits: keyObjects(this.props.traits || []),
       weapons: keyObjects(this.props.weapons || []),
     }
+  }
+
+  calculate_power() {
+    let power = 0
+
+    let attribute_values = _(this.attributes()).reject(attr =>
+      typeof attr.calc === 'string' ||
+      attr.key === 'natural_armor' || attr.key === 'size'
+    ).map(attr => _.range(attr.value, 0)).flatten().value()
+
+    power += _.reduce(attribute_values, (sum, value) =>
+      sum + Math.pow(value, 3)
+    )
+
+    let skill_values = _(this.state.skills)
+      .map(skill => [
+        ..._.range(skill.values[0], 0),
+        ..._.range(skill.values[1], 1),
+      ]).flatten().value()
+
+    power += _.reduce(skill_values, (sum, value) =>
+      sum + Math.pow(value, 2)
+    )
+
+    power += _.sumBy(this.state.traits, 'value')
+
+    return power
   }
 
   calc(expression, attributes) {
@@ -70,6 +100,9 @@ export default class Sheet extends ComponentBase {
   attribute(key) {
     return _.find(this.attributes(), { key }) || { key, value: 0 }
   }
+  descriptor(key) {
+    return _.find(this.state.descriptors, { key }) || { key, value: '' }
+  }
 
   bindAttribute(name, className = '', readonly = false) {
     return (
@@ -83,6 +116,19 @@ export default class Sheet extends ComponentBase {
     this.setState({ attributes: [
       ...this.state.attributes.filter(attr => attr.key !== attribute.key),
       attribute
+    ]})
+  }
+  bindDescriptor(name, className = '', readonly = false) {
+    return (
+      <Descriptor descriptor={this.descriptor(name)} className={className}
+        onChange={this.handleDescriptorChange} readonly={readonly}
+      />
+    )
+  }
+  handleDescriptorChange(descriptor) {
+    this.setState({ descriptors: [
+      ...this.state.descriptors.filter(desc => desc.key !== descriptor.key),
+      descriptor
     ]})
   }
   handleArmorChange(armor) {
@@ -113,7 +159,8 @@ export default class Sheet extends ComponentBase {
   }
 
   render() {
-    const armor = _(this.state.armor)
+    const characterName = _.startCase(this.props.routeParams.slug),
+    armor = _(this.state.armor)
       .orderBy(['equipped', 'name'], ['desc', 'asc'])
       .map(armor =>
         <Armor key={armor.id} armor={armor}
@@ -152,56 +199,55 @@ export default class Sheet extends ComponentBase {
 
     return (
       <div className="sheet page">
+        <SheetHeader
+          name={characterName}
+          xp={this.descriptor('current_xp').value || 0}
+          rp={this.descriptor('rp').value || 0}
+          power={this.calculate_power()} />
         <div className="columns">
-        {typeof this.attribute('image').value === 'string' &&
+        {typeof this.descriptor('image').value === 'string' &&
           <div className="portrait column is-one-third">
-            <img className="portrait" src={this.attribute('image').value} />
+            <img className="portrait" src={this.descriptor('image').value} />
           </div>}
           <div className="column">
-            <div className="Demographics section">
-              <div className="name">Demographics</div>
-              <div className="attributes">
-                {this.bindAttribute('player', 'cols-2')}
-                {this.bindAttribute('height')}
-                {this.bindAttribute('eyes')}
-                {this.bindAttribute('homeland', 'cols-2')}
-                {this.bindAttribute('weight')}
-                {this.bindAttribute('hair')}
-                {this.bindAttribute('race')}
-                {this.bindAttribute('gender')}
-                {this.bindAttribute('age')}
-              </div>
-            </div>
-            <div className="Attributes section">
-              <div className="name">Attributes</div>
-              <div className="attributes">
-                <div className="placeholder attribute"></div>
-                {this.bindAttribute('body', 'th', true)}
-                {this.bindAttribute('mind', 'th', true)}
-                {this.bindAttribute('spirit', 'th', true)}
+            <Section className="Descriptors">
+              {this.bindDescriptor('player')}
+              {this.bindDescriptor('height')}
+              {this.bindDescriptor('eyes')}
+              {this.bindDescriptor('homeland')}
+              {this.bindDescriptor('weight')}
+              {this.bindDescriptor('hair')}
+              {this.bindDescriptor('race')}
+              {this.bindDescriptor('gender')}
+              {this.bindDescriptor('age')}
+            </Section>
+            <Section name="Attributes">
+              <div className="placeholder attribute"></div>
+              {this.bindAttribute('body', 'th', true)}
+              {this.bindAttribute('mind', 'th', true)}
+              {this.bindAttribute('spirit', 'th', true)}
 
-                {this.bindAttribute('potency', 'th', true)}
-                {this.bindAttribute('strength')}
-                {this.bindAttribute('intellect')}
-                {this.bindAttribute('confidence')}
+              {this.bindAttribute('potency', 'th', true)}
+              {this.bindAttribute('strength')}
+              {this.bindAttribute('intellect')}
+              {this.bindAttribute('confidence')}
 
-                {this.bindAttribute('reflex', 'th', true)}
-                {this.bindAttribute('agility')}
-                {this.bindAttribute('acuity')}
-                {this.bindAttribute('intuition')}
+              {this.bindAttribute('reflex', 'th', true)}
+              {this.bindAttribute('agility')}
+              {this.bindAttribute('acuity')}
+              {this.bindAttribute('intuition')}
 
-                {this.bindAttribute('resilience', 'th', true)}
-                {this.bindAttribute('fitness')}
-                {this.bindAttribute('focus')}
-                {this.bindAttribute('devotion')}
-              </div>
-            </div>
-            <div className="attributes">
+              {this.bindAttribute('resilience', 'th', true)}
+              {this.bindAttribute('fitness')}
+              {this.bindAttribute('focus')}
+              {this.bindAttribute('devotion')}
+            </Section>
+            <Section className="Attributes">
               {this.bindAttribute('size')}
               {this.bindAttribute('natural_armor')}
               {this.bindAttribute('might', '', true)}
               {this.bindAttribute('toughness', '', true)}
-            </div>
+            </Section>
           </div>
         </div>
         <div className="columns">
@@ -254,6 +300,7 @@ const example = require('../../example_sheet.json')
 Sheet.propTypes = {
   armor: React.PropTypes.array.isRequired,
   attributes: React.PropTypes.array.isRequired,
+  descriptors: React.PropTypes.array.isRequired,
   weapons: React.PropTypes.array.isRequired,
   traits: React.PropTypes.array.isRequired,
   skills: React.PropTypes.array.isRequired,
@@ -261,6 +308,7 @@ Sheet.propTypes = {
 Sheet.defaultProps = {
   armor: [],
   attributes: [],
+  descriptors: [],
   weapons: [],
   traits: [],
   skills: [],

@@ -3,15 +3,15 @@ import ComponentBase from '../application/ComponentBase'
 import React         from 'react'
 import Editable      from '../components/Editable'
 
-export default class Attribute extends ComponentBase {
+export default class Descriptor extends ComponentBase {
   handleValueChange(value) {
-    let { key, name } = this.props.attribute
+    let { key, name } = this.props.descriptor
     this.props.onChange({ key, name, value })
   }
 
   render() {
     const {
-      attribute: { key, name, value },
+      descriptor: { key, name, value },
       className,
       readonly,
     } = this.props
@@ -19,18 +19,19 @@ export default class Attribute extends ComponentBase {
     let display = name ? name : _.startCase(_.toLower(key))
 
     return (
-      <div className={`attribute ${className}`}>
+      <div className={`descriptor ${className}`}>
         <Editable className="name" value={display} readonly />
-        <Editable className="value" value={value} min={0} max={10}
-          readonly={readonly} onChange={this.handleValueChange}
+        <Editable className="value" value={value}
+          onChange={this.handleValueChange}
+          readonly={readonly}
         />
       </div>
     )
   }
 }
 
-Attribute.propTypes = {
-  attribute: React.PropTypes.shape({
+Descriptor.propTypes = {
+  descriptor: React.PropTypes.shape({
     key: React.PropTypes.string.isRequired,
     name: React.PropTypes.string,
     value: React.PropTypes.oneOfType([
@@ -43,8 +44,8 @@ Attribute.propTypes = {
   onChange: React.PropTypes.func.isRequired,
   readonly: React.PropTypes.bool,
 }
-Attribute.defaultProps = {
-  attribute: {
+Descriptor.defaultProps = {
+  descriptor: {
     value: 0,
   },
   className: '',

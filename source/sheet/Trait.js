@@ -20,13 +20,6 @@ export default class Trait extends ComponentBase {
     }
   }
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      displayName: this.displayName(props)
-    }
-  }
-
   displayName(props = this.props) {
     const { trait: { category, key, name, note } } = props
     let display = _.startCase(_.toLower(name || key))
@@ -34,10 +27,14 @@ export default class Trait extends ComponentBase {
     if (note) display = `${display} (${note})`
     return display
   }
+  handleValueChange(value) {
+    this.props.onChange({
+      ...this.props.trait,
+      value
+    })
+  }
 
   handleNameChange(displayName) {
-    this.setState({ displayName })
-
     this.props.onChange({
       ...this.props.trait,
       ...Trait.parseName(displayName),
@@ -53,7 +50,7 @@ export default class Trait extends ComponentBase {
     return (
       <div className={`trait ${className}`}>
         <Editable className="name" onChange={this.handleNameChange}
-          value={this.state.displayName || this.displayName()}
+          value={this.displayName()}
         />
         <Editable className="value" value={value} />
       </div>

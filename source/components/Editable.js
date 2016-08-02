@@ -34,7 +34,8 @@ export default class Editable extends React.Component {
     return this.props.readonly === true
   }
   get dirty() {
-    return this.state.value !== undefined
+    return this.state.value !== undefined &&
+           this.state.value !== this.props.value
   }
   get editorType() {
     let { type, value } = this.props
@@ -56,9 +57,9 @@ export default class Editable extends React.Component {
 
   setValue(value) {
     let current = this.current
-    if (this.props.onChanging(current, value) === false) return;
+    if (this.props.onChanging(value, current) === false) return;
     this.setState({ value })
-    this.props.onChange(current, value)
+    this.props.onChange(value, current)
   }
   handleChange(event) {
     let value = event.target.value
@@ -137,7 +138,7 @@ export default class Editable extends React.Component {
             >{currentValue}</textarea>
         : editor === 'number' && editing ?
           <input type="number" value={currentValue} step={this.props.step || 1}
-            min={this.props.min || 0} max={this.props.max || 100}
+            min={this.props.min} max={this.props.max}
             onBlur={this.saveAndStopEditing}
             onChange={this.handleChange}
             onFocus={event => event.target.select()}
@@ -168,6 +169,8 @@ function focusOnEditor(self) {
 }
 
 Editable.propTypes = {
+  max: React.PropTypes.number,
+  min: React.PropTypes.number,
   onChange: React.PropTypes.func.isRequired,
   onChanging: React.PropTypes.func.isRequired,
 }

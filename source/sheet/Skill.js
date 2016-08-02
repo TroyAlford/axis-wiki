@@ -20,13 +20,6 @@ export default class Skill extends ComponentBase {
     }
   }
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      displayName: this.displayName(props)
-    }
-  }
-
   displayName(props = this.props) {
     const { skill: { category, key, name, note } } = props
     let display = _.startCase(_.toLower(name || key))
@@ -36,11 +29,19 @@ export default class Skill extends ComponentBase {
   }
 
   handleNameChange(displayName) {
-    this.setState({ displayName })
-
     this.props.onChange({
       ...this.props.skill,
       ...Skill.parseName(displayName),
+    })
+  }
+
+  handleValueChange(index, value) {
+    let values = this.props.skill.values
+    values[index] = value
+
+    this.props.onChange({
+      ...this.props.skill,
+      values
     })
   }
 
@@ -53,10 +54,13 @@ export default class Skill extends ComponentBase {
     return (
       <div className={`skill ${className}`}>
         <Editable className="name" onChange={this.handleNameChange}
-          value={this.state.displayName || this.displayName()}
+          value={this.displayName()}
         />
       {values.map((value, index) =>
-        <Editable key={index} className="value" value={value} />
+        <Editable key={index} className="value"
+          value={value} min={0} max={10}
+          onChange={this.handleValueChange.bind(this, index)}
+        />
       )}
       </div>
     )

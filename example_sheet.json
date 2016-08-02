@@ -1,34 +1,29 @@
 {
-  "attributes": [
+  "descriptors": [
     { "key": "image", "value": "http://placehold.it/230x280" },
-    { "key": "acuity", "value": 0 },
     { "key": "age", "value": 30 },
-    { "key": "agility", "value": 0 },
-    { "key": "confidence", "value": 2 },
-    { "key": "devotion", "value": 2 },
     { "key": "eyes", "value": "Gold/Amber" },
-    { "key": "fitness", "value": 2 },
-    { "key": "focus", "value": 0 },
     { "key": "gender", "value": "Female" },
     { "key": "hair", "value": "Dark Red" },
     { "key": "height", "value": "5'9\"" },
     { "key": "homeland", "value": "Aktilles" },
-    { "key": "intellect", "value": 0 },
-    { "key": "intuition", "value": 1 },
-    { "key": "natural_armor", "value": 0 },
     { "key": "player", "value": "Alissa" },
     { "key": "race", "value": "Asimaar/Half-Elf" },
-    { "key": "size", "value": 0 },
     { "key": "skin", "value": "Tan/Bronze" },
-    { "key": "strength", "value": 1 },
     { "key": "weight", "value": "140 lbs" },
   ],
-  "armor": [
-    { "key": "platemail", "name": "Chainmail", "values": [2, 2, 2, 2, 2, 2], "equipped": false },
-    { "key": "platemail", "name": "Platemail", "values": [0, 3, 3, 3, 3, 3], "equipped": true },
-  ],
-  "weapons": [
-    { "key": "bastard-sword", "values": [2, 3, 1], "equipped": false },
+  "attributes": [
+    { "key": "acuity", "value": 0 },
+    { "key": "agility", "value": 0 },
+    { "key": "confidence", "value": 2 },
+    { "key": "devotion", "value": 2 },
+    { "key": "fitness", "value": 2 },
+    { "key": "focus", "value": 0 },
+    { "key": "intellect", "value": 0 },
+    { "key": "intuition", "value": 1 },
+    { "key": "strength", "value": 1 },
+    { "key": "natural_armor", "value": 0 },
+    { "key": "size", "value": 0,  },
   ],
   "traits": [
     { "key": "darkvision", "category": "Asimaar", "value": 1 },
@@ -65,5 +60,12 @@
     { "key": "streetwise", "values": [1, 1] },
     { "key": "survival", "values": [2, 2] },
     { "key": "teaching", "values": [1, 1] },
+  ],
+  "armor": [
+    { "key": "platemail", "name": "Chainmail", "values": [2, 2, 2, 2, 2, 2], "equipped": false },
+    { "key": "platemail", "name": "Platemail", "values": [0, 3, 3, 3, 3, 3], "equipped": true },
+  ],
+  "weapons": [
+    { "key": "bastard-sword", "values": [2, 3, 1], "equipped": false },
   ]
 }

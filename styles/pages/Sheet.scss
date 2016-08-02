@@ -1,6 +1,14 @@
 .sheet.page {
   font-size: .8em;
 
+  .experience.bar {
+    font-family: Ubuntu, Calibri, sans-serif;
+    font-size: 1.0rem;
+    padding: 5px;
+
+    .header { font-weight: bold; }
+  }
+
   .columns { margin-bottom: 0; }
 
   .portrait.column {
@@ -17,16 +25,31 @@
     background-color: #f0f9f9;
   }
 
-  .placeholder {
+  .section .placeholder {
+    display: inline-block;
     background: transparent;
     visibility: hidden;
   }
 
-  .Demographics.section .attribute {
-    min-width: 32%; max-width: 32%;
-  }
-  .Attributes.section .attribute {
-    min-width: 24%; max-width: 24%;
+  .Descriptors.section, .Attributes.section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 5px 0 0 0;
+
+    > .name {
+      font-family: Ubuntu, Calibri, sans-serif;
+    }
+    .attribute  {
+      min-width: 24%; max-width: 24%;
+      @extend .highlight;
+
+      &.th {
+        border-radius: 3px;
+        background-color: $palette-light-blue;
+      }
+    }
+    .descriptor { min-width: 32%; max-width: 32%; }
   }
 
   .Armor.section, .Weapons.section {
@@ -48,15 +71,9 @@
   }
 
   .Armor.section .armor:nth-child(odd),
-  .Attributes.section .attribute,
   .Skills.section .skill:nth-child(odd),
   .Traits.section .trait:nth-child(odd),
   .Weapons.section .weapon:nth-child(odd) {
     @extend .highlight;
-  }
-
-  .Attributes.section .attribute.th {
-    border-radius: 3px;
-    background-color: $palette-light-blue;
   }
 }
