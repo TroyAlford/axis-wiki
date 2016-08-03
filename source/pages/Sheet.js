@@ -13,6 +13,9 @@ import Trait       from '../sheet/Trait'
 import Weapon      from '../sheet/Weapon'
 
 const keyObjects = collection => _.map(collection, (el, id) => ({ id, ...el }));
+const createRange = (low, high) => low > high ? [] :
+  Array.apply(null, Array(Math.abs(high - low) + 1))
+       .map((discard, n) => n + low)
 
 export default class Sheet extends ComponentBase {
   constructor(props) {
@@ -34,18 +37,17 @@ export default class Sheet extends ComponentBase {
     let power = 0
 
     let attribute_values = _(this.attributes()).reject(attr =>
-      typeof attr.calc === 'string' ||
-      attr.key === 'natural_armor' || attr.key === 'size'
-    ).map(attr => _.range(attr.value, 0)).flatten().value()
+      attr.hasOwnProperty('calc') || attr.key === 'natural_armor' || attr.key === 'size'
+    ).map(attr => createRange(1, attr.value)).flatten().value()
 
     power += _.reduce(attribute_values, (sum, value) =>
-      sum + Math.pow(value, 3)
+      sum + (value === 1 ? 5 : Math.pow(value, 3))
     )
 
     let skill_values = _(this.state.skills)
       .map(skill => [
-        ..._.range(skill.values[0], 0),
-        ..._.range(skill.values[1], 1),
+        ...createRange(1, skill.values[0]),
+        ...createRange(2, skill.values[1]),
       ]).flatten().value()
 
     power += _.reduce(skill_values, (sum, value) =>
@@ -86,13 +88,13 @@ export default class Sheet extends ComponentBase {
       { key: 'resilience', calc: 'round((devotion + fitness + focus) / 3, 0)' },
       { key: 'spirit', calc: 'round((confidence + devotion + intuition) / 3, 0)' },
       { key: 'toughness', calc: 'round((strength + fitness + size) / 3, 0) + natural_armor + armor' },
+      ..._.differenceBy(this.props.attributes, this.state.attributes, 'key'),
       ...this.state.attributes,
-      ...this.props.attributes,
     ]).uniqBy('key').value()
 
     const calc = this.calc
-    _.filter(attributes, 'calc').forEach(attribute => {
-      attribute.value = calc(attribute.calc, attributes)
+    attributes.filter(attr => !!attr.calc).forEach(attr => {
+      attr.value = calc(attr.calc, attributes)
     })
 
     return this._attributes = attributes
@@ -145,6 +147,7 @@ export default class Sheet extends ComponentBase {
     ]})
   }
   handleTraitChange(trait) {
+    console.log(_.find(this.state.traits, { key: trait.key }), trait)
     this.setState({ traits: [
       ...this.state.traits.filter(el => el.id !== trait.id),
       trait,

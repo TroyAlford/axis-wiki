@@ -58,7 +58,7 @@ export default class Skill extends ComponentBase {
         />
       {values.map((value, index) =>
         <Editable key={index} className="value"
-          value={value} min={0} max={10}
+          value={value} min={1} max={10}
           onChange={this.handleValueChange.bind(this, index)}
         />
       )}
@@ -83,6 +83,6 @@ Skill.defaultProps = {
   onChange: () => {},
   skill: {
     key: 'new-skill',
-    values: [0, 0],
+    values: [1, 1],
   },
 }

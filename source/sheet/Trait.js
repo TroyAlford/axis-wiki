@@ -52,7 +52,9 @@ export default class Trait extends ComponentBase {
         <Editable className="name" onChange={this.handleNameChange}
           value={this.displayName()}
         />
-        <Editable className="value" value={value} />
+        <Editable className="value" value={value}
+          onChange={this.handleValueChange}
+        />
       </div>
     )
   }
