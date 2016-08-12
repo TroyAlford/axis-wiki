@@ -9,6 +9,7 @@ import {
   searchReset
 }                         from '../redux/search/actions'
 
+import React              from 'react'
 import ComponentBase      from '../application/ComponentBase'
 
 class Search extends ComponentBase {
@@ -108,6 +109,24 @@ class Search extends ComponentBase {
       </div>
     )
   }
+}
+
+Search.propTypes = {
+  term: React.PropTypes.string.isRequired,
+  results: React.PropTypes.arrayOf(React.PropTypes.shape({
+    file: React.PropTypes.string.isRequired,
+    image: React.PropTypes.string,
+    results: React.PropTypes.arrayOf(React.PropTypes.shape({
+      line: React.PropTypes.string.isRequired,
+      text: React.PropTypes.string.isRequired,
+    })),
+    title: React.PropTypes.string.isRequired,
+    type: React.PropTypes.string.isRequired,
+  }))
+}
+Search.defaultProps = {
+  term: '',
+  results: [],
 }
 
 export default connect(
