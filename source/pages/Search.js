@@ -112,7 +112,7 @@ class Search extends ComponentBase {
 }
 
 Search.propTypes = {
-  term: React.PropTypes.string.isRequired,
+  loading: React.PropTypes.bool.isRequired,
   results: React.PropTypes.arrayOf(React.PropTypes.shape({
     file: React.PropTypes.string.isRequired,
     image: React.PropTypes.string,
@@ -122,11 +122,13 @@ Search.propTypes = {
     })),
     title: React.PropTypes.string.isRequired,
     type: React.PropTypes.string.isRequired,
-  }))
+  })),
+  term: React.PropTypes.string.isRequired,
 }
 Search.defaultProps = {
-  term: '',
+  loading: true,
   results: [],
+  term: '',
 }
 
 export default connect(

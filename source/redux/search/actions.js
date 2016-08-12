@@ -12,15 +12,12 @@ const fetch_params = {
 }
 
 export function searchLoading(term) {
-  console.log(`searchLoading for '${term}'`)
   return {
     type: SEARCH_RESULTS,
     term
   }
 }
 export function searchRequest(term = '') {
-  console.log(`searchRequest for '${term}'`)
-
   return dispatch => {
     if (term.length < 3) return;
     dispatch(searchLoading(term));
@@ -38,7 +35,6 @@ export function searchRequest(term = '') {
   }
 }
 export function searchResults(term, results) {
-  console.log(`searchResults for '${term}'`)
   if (browserHistory.location !== `/search/${term}`)
     browserHistory.push(`/search/${term}`);
 

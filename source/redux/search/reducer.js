@@ -7,8 +7,8 @@ import {
 
 const default_state = {
   loading: false,
-  results: {},
-  term: ''
+  results: [],
+  term: '',
 }
 
 export default (state = default_state, action) => {
