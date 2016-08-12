@@ -1,7 +1,8 @@
-import { 
-  applyMiddleware, 
-  combineReducers, 
-  createStore 
+import {
+  applyMiddleware,
+  combineReducers,
+  compose,
+  createStore
 }                  from 'redux'
 import thunk       from 'redux-thunk'
 import application from './application/reducer'
@@ -11,6 +12,8 @@ import messages    from './messages/reducer'
 import search      from './search/reducer'
 import user        from './user/reducer'
 
+const initialState = {}
+
 export default createStore(
   combineReducers({
     application,
@@ -19,6 +22,10 @@ export default createStore(
     messages,
     search,
     user
-  }), 
-  applyMiddleware(thunk)
+  }),
+  initialState,
+  compose(
+    applyMiddleware(thunk),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  )
 );
