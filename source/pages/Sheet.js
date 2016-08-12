@@ -130,7 +130,7 @@ export default class Sheet extends ComponentBase {
   handleDescriptorChange(descriptor) {
     this.setState({ descriptors: [
       ...this.state.descriptors.filter(desc => desc.key !== descriptor.key),
-      descriptor
+      descriptor,
     ]})
   }
   handleArmorChange(armor) {
@@ -147,7 +147,6 @@ export default class Sheet extends ComponentBase {
     ]})
   }
   handleTraitChange(trait) {
-    console.log(_.find(this.state.traits, { key: trait.key }), trait)
     this.setState({ traits: [
       ...this.state.traits.filter(el => el.id !== trait.id),
       trait,
