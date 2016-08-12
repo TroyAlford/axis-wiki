@@ -8,7 +8,10 @@ $tags-height: 36px;
   position: absolute;
 
   .readonly {
+    left: 0; right: 0; top: 0; bottom: $tags-height;
+    overflow-y: auto;
     padding: 10px;
+    position: absolute;
   }
   .tab-set {
     left: 0; right: 0; top: 0; bottom: 0;
@@ -25,9 +28,9 @@ $tags-height: 36px;
     }
 
     > .tab {
-      position: absolute;
-      top: $tabs-height; left: 0; right: 0; bottom: $tags-height;
+      left: 0; top: $tabs-height; right: 0; bottom: $tags-height;
       overflow-y: auto;
+      position: absolute;
     }
 
     .tab.edit {
@@ -60,9 +63,9 @@ $tags-height: 36px;
     }
 
     .tab.settings {
-      [class*="callout-"] { 
+      [class*="callout-"] {
         border-radius: 3px;
-        margin: 10px 3px; 
+        margin: 10px 3px;
       }
     }
   }

@@ -60,6 +60,9 @@ class Facebook extends ComponentBase {
             <span>{this.props.name}</span>
           </div>
       }
+      { !this.props.anonymous &&
+        <button onClick={e => { this.props.dispatch(logoff()) }}>Log Off</button>
+      }
       </div>
     )
   }
