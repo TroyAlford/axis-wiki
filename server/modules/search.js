@@ -11,26 +11,25 @@ import Config      from '../services/Config'
 
 const { folders } = Config
 
-let search = module.exports = express()
-  .get('/:search_term', async (request, response) => {
-    let search_term = encode(request.params.search_term).toLowerCase();
+export default express()
+.get('/:search_term', async (request, response) => {
+  let search_term = encode(request.params.search_term).toLowerCase();
 
-    let output = [
-       ... await getContentMatches(search_term)
-    ].filter(result => result) // Only return truthy results
+  let output = [
+    ...await getContentMatches(search_term)
+  ].filter(result => result) // Only return truthy results
 
-    output = sortBy(output.map(entry =>
-      entry.file.match(/.html^/) ? entry : {
-        file: `${entry.file.replace('.html', '')}`,
-        image:   entry.image,
-        results: entry.results,
-        title:   entry.title || entry.file,
-        type:    entry.type
-      }
-    ), ['title']);
-    response.status(200).send(JSON.stringify(output))
-  })
-;
+  output = sortBy(output.map(entry =>
+    entry.file.match(/.html^/) ? entry : {
+      file: `${entry.file.replace('.html', '')}`,
+      image:   entry.image,
+      results: entry.results,
+      title:   entry.title || entry.file,
+      type:    entry.type
+    }
+  ), ['title']);
+  response.status(200).send(JSON.stringify(output))
+})
 
 async function getContentMatches(search_term) {
   return grep(search_term, folders.articles, { ext: 'html' })

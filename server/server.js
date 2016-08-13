@@ -11,15 +11,12 @@ import Facebook     from './middleware/Facebook'
 import Config       from './services/Config'
 import Watcher      from './services/Watcher'
 
-var apis    = {
-  article: require('./modules/article'),
-  config:  require('./modules/config'),
-  my:      require('./modules/my'),
-  search:  require('./modules/search')
-}
-var modules = {
-  media:   require('./modules/media')
-}
+import article_api from './modules/article'
+import config_api  from './modules/config'
+import my_api      from './modules/my'
+import search_api  from './modules/search'
+
+import media_mod   from './modules/media'
 
 Watcher.watch()
 
@@ -27,12 +24,12 @@ var app = express()
 app.use(cookieParser())
 
 /* Non-Static Routes */
-app.use('/api/page',   Facebook, apis.article)
-app.use('/api/config', Facebook, apis.config)
-app.use('/api/my',     Facebook, apis.my)
-app.use('/api/search', Facebook, apis.search)
+app.use('/api/page',   Facebook, article_api)
+app.use('/api/config', Facebook, config_api)
+app.use('/api/my',     Facebook, my_api)
+app.use('/api/search', Facebook, search_api)
 
-app.use('/media',      Facebook, modules.media)
+app.use('/media',      Facebook, media_mod)
 
 /* Static Content Routes */
 const bindStatic = folder => express.static(path.join(__dirname, folder))

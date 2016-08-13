@@ -15,18 +15,6 @@ import Slug            from '../services/Slug'
 var folders = Config.folders;
 var settings = Config.settings.media;
 
-var media = module.exports = express();
-media.use(bodyParser.json()); // Parses application/json
-media.use(bodyParser.urlencoded({ extended: true })); // Parses application/x-www-form-encoded
-
-media.get('/full/*', (req, res) => {
-  let ext       = path.extname(req.url),
-      filename  = path.basename(req.url, ext);
-
-  res.sendFile(`${folders.media}/${filename}.full${ext}`);
-});
-media.get('*', express.static(folders.media));
-
 const fileFilter = (request, file, cb) => {
   file.extension = path.extname(file.originalname).toLowerCase().replace('.', '')
   file.process   = includes(settings.allowed_extensions, file.extension)
@@ -50,7 +38,17 @@ const storage = multer.diskStorage({
 
 const file_middleware = multer({ fileFilter, storage }).array('file')
 
-media.post('/', file_middleware, (request, response) => {
+export default express()
+  .use(bodyParser.json()) // Parses application/json
+  .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
+.get('/full/*', (req, res) => {
+  let ext       = path.extname(req.url),
+      filename  = path.basename(req.url, ext);
+
+  res.sendFile(`${folders.media}/${filename}.full${ext}`);
+})
+.get('*', express.static(folders.media))
+.post('/', file_middleware, (request, response) => {
   if (intersection(request.session.privileges, ['admin', 'edit']).length == 0)
     return response.status(401).send('You do not have sufficient privileges to upload files.')
 
