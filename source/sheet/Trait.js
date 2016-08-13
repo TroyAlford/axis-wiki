@@ -1,4 +1,5 @@
-import _             from 'lodash'
+import startCase     from 'lodash/startCase'
+import toLower       from 'lodash/toLower'
 import React         from 'react'
 import ComponentBase from '../application/ComponentBase'
 import Editable      from '../components/Editable'
@@ -22,7 +23,7 @@ export default class Trait extends ComponentBase {
 
   displayName(props = this.props) {
     const { trait: { category, key, name, note } } = props
-    let display = _.startCase(_.toLower(name || key))
+    let display = startCase(toLower(name || key))
     if (category) display = `${category}: ${display}`
     if (note) display = `${display} (${note})`
     return display

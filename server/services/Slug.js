@@ -1,4 +1,7 @@
-import _ from 'lodash'
+import filter from 'lodash/filter'
+import flow   from 'lodash/flow'
+import map    from 'lodash/map'
+import uniq   from 'lodash/uniq'
 
 export default class Slug {
   static normalize(value, retain_path = false) {
@@ -20,7 +23,10 @@ export default class Slug {
     return retain_path ? path + slug : slug;
   }
   static normalize_array(values, retain_path = false) {
-    return _(values).map(value => Slug.normalize(value, retain_path))
-                    .uniq().value().filter(value => !!value)
+    return flow(
+      map(value => Slug.normalize(value, retain_path)),
+      uniq(),
+      filter(value => !!value)
+    )(values)
   }
 }

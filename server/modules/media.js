@@ -1,4 +1,6 @@
-import _               from 'lodash'
+import includes        from 'lodash/includes'
+import intersection    from 'lodash/intersection'
+
 import bodyParser      from 'body-parser'
 import del             from 'del'
 import express         from 'express'
@@ -27,7 +29,7 @@ media.get('*', express.static(folders.media));
 
 const fileFilter = (request, file, cb) => {
   file.extension = path.extname(file.originalname).toLowerCase().replace('.', '')
-  file.process   = _.includes(settings.allowed_extensions, file.extension)
+  file.process   = includes(settings.allowed_extensions, file.extension)
   if (!file.process)
     request.rejected_files = [...(request.rejected_files || []), file]
 
@@ -49,7 +51,7 @@ const storage = multer.diskStorage({
 const file_middleware = multer({ fileFilter, storage }).array('file')
 
 media.post('/', file_middleware, (request, response) => {
-  if (_.intersection(request.session.privileges, ['admin', 'edit']).length == 0)
+  if (intersection(request.session.privileges, ['admin', 'edit']).length == 0)
     return response.status(401).send('You do not have sufficient privileges to upload files.')
 
   let files_to_process = (request.files || []),

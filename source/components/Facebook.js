@@ -1,4 +1,3 @@
-import _                        from 'lodash'
 import { connect }              from 'react-redux'
 import { facebook as config   } from '../config.json'
 import { facebook as defaults } from '../defaults.json'
@@ -56,7 +55,7 @@ class Facebook extends ComponentBase {
         ? <a href="#" className="login button level-item icon icon-facebook"
              onClick={() => this.props.dispatch(logon())}>Log In</a>
         : <div className="level-item mini profile">
-            <img src={this.props.picture.data.url} width="20px" />
+            { this.props.picture.data && <img src={this.props.picture.data.url} width="20px" /> }
             <span>{this.props.name}</span>
           </div>
       }

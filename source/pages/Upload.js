@@ -1,3 +1,7 @@
+import filter from 'lodash/filter'
+import map    from 'lodash/map'
+import uniqBy from 'lodash/uniqBy'
+
 import ComponentBase      from '../application/ComponentBase'
 import Dropzone           from 'react-dropzone'
 
@@ -37,18 +41,18 @@ export default class UploadPage extends ComponentBase {
     .then(response => response.json())
     .then(json => {
       const
-        files     = _.map(this.state.uploading, file =>
+        files     = map(this.state.uploading, file =>
           Object.assign({}, json[file.name], file)
         ),
-        uploading = _.filter(files, file => !json[file.name]),
-        processed = _.filter(files, file => json[file.name]),
-        uploaded  = _.filter(processed, file => file.errors.length == 0),
-        failed    = _.filter(processed, file => file.errors.length != 0)
+        uploading = filter(files, file => !json[file.name]),
+        processed = filter(files, file => json[file.name]),
+        uploaded  = filter(processed, file => file.errors.length == 0),
+        failed    = filter(processed, file => file.errors.length != 0)
 
       this.setState({
         uploading,
-        uploaded: _.uniqBy([...this.state.uploaded, ...uploaded], 'name'),
-        failed:   _.uniqBy([...this.state.failed,   ...failed],   'name')
+        uploaded: uniqBy([...this.state.uploaded, ...uploaded], 'name'),
+        failed:   uniqBy([...this.state.failed,   ...failed],   'name')
       })
     })
   }
@@ -56,11 +60,11 @@ export default class UploadPage extends ComponentBase {
   renderFiles(files, actionText, className) {
     return <div className={`message ${className} files`}>
       <div className="message-header">{actionText}: {files.length} files</div>
-      <div className="message-body">{_.map(files, (file, index) =>
+      <div className="message-body">{map(files, (file, index) =>
         <div key={index} className="file">
           <span className="name">{file.name}</span>
           <span className="link">{file.small ? <a href={file.small}>View</a> : null}</span>
-          {!file.errors ? null : _.map(file.errors, (error, index) =>
+          {!file.errors ? null : map(file.errors, (error, index) =>
             <div key={index} className="error icon icon-warning">{error}</div>
           )}
         </div>

@@ -1,6 +1,17 @@
-import _          from 'lodash'
-import math       from 'mathjs'
-import React      from 'react'
+import differenceBy from 'lodash/differenceBy'
+import find         from 'lodash/find'
+import flatten      from 'lodash/flatten'
+import flow         from 'lodash/flow'
+import map          from 'lodash/map'
+import reduce       from 'lodash/reduce'
+import reject       from 'lodash/reject'
+import startCase    from 'lodash/startCase'
+import sum          from 'lodash/sum'
+import sumBy        from 'lodash/sumBy'
+import uniqBy       from 'lodash/uniqBy'
+
+import math          from 'mathjs'
+import React         from 'react'
 import ComponentBase from '../application/ComponentBase'
 
 import Armor       from '../sheet/Armor'
@@ -12,7 +23,7 @@ import Skill       from '../sheet/Skill'
 import Trait       from '../sheet/Trait'
 import Weapon      from '../sheet/Weapon'
 
-const keyObjects = collection => _.map(collection, (el, id) => ({ id, ...el }));
+const keyObjects = collection => map(collection, (el, id) => ({ id, ...el }));
 const createRange = (low, high) => low > high ? [] :
   Array.apply(null, Array(Math.abs(high - low) + 1))
        .map((discard, n) => n + low)
@@ -36,25 +47,31 @@ export default class Sheet extends ComponentBase {
   calculate_power() {
     let power = 0
 
-    let attribute_values = _(this.attributes()).reject(attr =>
-      attr.hasOwnProperty('calc') || attr.key === 'natural_armor' || attr.key === 'size'
-    ).map(attr => createRange(1, attr.value)).flatten().value()
+    const attribute_values = flow(
+      reject(attr => attr.hasOwnProperty('calc')),
+      reject({ key: 'natural_armor' }),
+      reject({ key: 'size' }),
+      map(attr => createRange(1, attr.value)),
+      flatten()
+    )(this.attributes())
 
-    power += _.reduce(attribute_values, (sum, value) =>
+    power += reduce(attribute_values, (sum, value) =>
       sum + (value === 1 ? 5 : Math.pow(value, 3))
     )
 
-    let skill_values = _(this.state.skills)
-      .map(skill => [
+    const skill_values = flow(
+      map(skill => [
         ...createRange(1, skill.values[0]),
         ...createRange(2, skill.values[1]),
-      ]).flatten().value()
+      ]),
+      flatten()
+    )(this.state.skills)
 
-    power += _.reduce(skill_values, (sum, value) =>
+    power += reduce(skill_values, (sum, value) =>
       sum + Math.pow(value, 2)
     )
 
-    power += _.sumBy(this.state.traits, 'value')
+    power += sumBy(this.state.traits, 'value')
 
     return power
   }
@@ -74,11 +91,13 @@ export default class Sheet extends ComponentBase {
 
     this.recalculate = false
 
-    let attributes = _([
+    let attributes = uniqBy([
       { key: 'armor', calc: '',
-        value: _(this.state.armor).filter({ equipped: true })
-          .map(armor => Math.round(_.sum(armor.values) / armor.values.length, 0))
-          .sum()
+        value: flow(
+          filter({ equipped: true }),
+          map(armor => Math.round(sum(armor.values) / armor.values.length, 0)),
+          sum()
+        )(this.state.armor)
       },
       { key: 'body', calc: 'round((agility + fitness + strength) / 3, 0)' },
       { key: 'might', calc: 'round((strength + fitness) / 2, 0) + size' },
@@ -88,9 +107,9 @@ export default class Sheet extends ComponentBase {
       { key: 'resilience', calc: 'round((devotion + fitness + focus) / 3, 0)' },
       { key: 'spirit', calc: 'round((confidence + devotion + intuition) / 3, 0)' },
       { key: 'toughness', calc: 'round((strength + fitness + size) / 3, 0) + natural_armor + armor' },
-      ..._.differenceBy(this.props.attributes, this.state.attributes, 'key'),
+      ...differenceBy(this.props.attributes, this.state.attributes, 'key'),
       ...this.state.attributes,
-    ]).uniqBy('key').value()
+    ], 'key')
 
     const calc = this.calc
     attributes.filter(attr => !!attr.calc).forEach(attr => {
@@ -100,10 +119,10 @@ export default class Sheet extends ComponentBase {
     return this._attributes = attributes
   }
   attribute(key) {
-    return _.find(this.attributes(), { key }) || { key, value: 0 }
+    return find(this.attributes(), { key }) || { key, value: 0 }
   }
   descriptor(key) {
-    return _.find(this.state.descriptors, { key }) || { key, value: '' }
+    return find(this.state.descriptors, { key }) || { key, value: '' }
   }
 
   bindAttribute(name, className = '', readonly = false) {
@@ -161,43 +180,47 @@ export default class Sheet extends ComponentBase {
   }
 
   render() {
-    const characterName = _.startCase(this.props.routeParams.slug),
-    armor = _(this.state.armor)
-      .orderBy(['equipped', 'name'], ['desc', 'asc'])
-      .map(armor =>
+    const characterName = startCase(this.props.routeParams.slug),
+    armor = flow(
+      orderBy(['equipped', 'name'], ['desc', 'asc']),
+      map(armor =>
         <Armor key={armor.id} armor={armor}
           onChange={this.handleArmorChange}
         />
-      ).value(),
-    skills = _(this.state.skills)
-      .sortBy(skill => [
+      )
+    )(this.state.armor),
+    skills = flow(
+      sortBy(skill => [
         skill.category || '',
         skill.name || skill.key,
         skill.note || ''
-      ].join('').toLowerCase())
-      .map(skill =>
+      ].join('').toLowerCase()),
+      map(skill =>
         <Skill key={skill.id} skill={skill}
           onChange={this.handleSkillChange}
         />
-      ).value(),
-    traits = _(this.state.traits)
-      .sortBy(trait => [
+      )
+    )(this.state.skills),
+    traits = flow(
+      sortBy(trait => [
         trait.category || '',
         trait.name || trait.key,
         trait.note || ''
-      ].join('').toLowerCase())
-      .map(trait =>
+      ].join('').toLowerCase()),
+      map(trait =>
         <Trait key={trait.id} trait={trait}
           onChange={this.handleTraitChange}
         />
-      ).value(),
-    weapons = _(this.state.weapons)
-      .orderBy(['equipped', 'name'], ['desc', 'asc'])
-      .map(weapon =>
+      )
+    )(this.state.traits),
+    weapons = flow(
+      orderBy(['equipped', 'name'], ['desc', 'asc']),
+      map(weapon =>
         <Weapon key={weapon.id} weapon={weapon}
           onChange={this.handleWeaponChange}
         />
-      ).value()
+      )
+    )(this.state.weapons)
 
     return (
       <div className="sheet page">

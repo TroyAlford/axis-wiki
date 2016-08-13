@@ -1,4 +1,3 @@
-import _                     from 'lodash'
 import fetch                 from 'isomorphic-fetch'
 import { browserHistory }    from 'react-router'
 

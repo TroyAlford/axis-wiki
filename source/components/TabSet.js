@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 export default ({ className = '', tabs = [], tabClicked = (() => {}), active = 0 }) => {
   let active_tab = tabs[active];
   let rendered_tab = !active_tab ? null :

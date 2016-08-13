@@ -1,5 +1,5 @@
-import _                     from 'lodash'
 import fetch                 from 'isomorphic-fetch'
+import last                  from 'lodash/last'
 import { browserHistory }    from 'react-router'
 import { addMessage }       from '../messages/actions'
 
@@ -18,7 +18,7 @@ export function loadArticle(requested_slug) {
     let slug = requested_slug;
     return fetch(`/api/page/${requested_slug}`, { credentials: 'include' })
       .then(response => {
-        slug = _(response.url).split('/').last();
+        slug = last(response.url.split('/'));
         return response.json();
       })
       .then(json => dispatch(loadedArticle(slug, json)))

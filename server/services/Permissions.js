@@ -5,7 +5,8 @@
 //   'permission_name': [user_id_1, user_id_2, user_id_3]
 // }
 
-import _          from 'lodash'
+import uniq       from 'lodash/uniq'
+
 import path       from 'path'
 import utils      from 'fs-utils'
 
@@ -48,8 +49,8 @@ class Permissions {
 
   grant(user_id, permission) {
     let p = permission.toLowerCase(), u = user_id.toString().toLowerCase()
-    this.users[u] = _.uniq([...this.users[u], p])
-    this.permissions[p] = _.uniq([...this.permissions[p], u])
+    this.users[u] = uniq([...this.users[u], p])
+    this.permissions[p] = uniq([...this.permissions[p], u])
   }
   revoke(user_id, permission) {
     let p = permission.toLowerCase(), u = user_id.toString().toLowerCase()

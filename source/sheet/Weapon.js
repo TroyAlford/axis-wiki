@@ -1,6 +1,9 @@
+import startCase from 'lodash/startCase'
+import sum       from 'lodash/sum'
+import toLower   from 'lodash/toLower'
+
 import React    from 'react'
 import Editable from '../components/Editable'
-import sum      from 'lodash/sum'
 
 export default class Weapon extends React.Component {
   setEquipped(equipped) {
@@ -21,7 +24,7 @@ export default class Weapon extends React.Component {
 
   render() {
     const { equipped, key, name, values } = this.props.weapon,
-      display = name ? name : _.startCase(_.toLower(key))
+      display = name ? name : startCase(toLower(key))
     return (
       <div className="weapon">
         <Editable className="equipped" value={!!equipped}

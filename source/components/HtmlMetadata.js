@@ -1,4 +1,3 @@
-import _              from 'lodash'
 import { connect }    from 'react-redux'
 import Helmet         from 'react-helmet'
 import startCase      from 'lodash/startCase'

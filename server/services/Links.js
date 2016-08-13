@@ -8,7 +8,10 @@
 //}
 // Note: If both alias_for and aliases is included, the redirect chain will work - but the other fields are irrelevant.
 
-import _          from 'lodash'
+import difference   from 'lodash/difference'
+import intersection from 'lodash/intersection'
+import union        from 'lodash/union'
+
 import fs         from 'fs'
 import path       from 'path'
 import utils      from 'fs-utils'
@@ -83,14 +86,14 @@ class Links {
     this.links[slug] = this.links[slug] || Links.default_node;
     let existing = this.links[slug].to,
         updated  = Article.build_html(Article.load_html(slug)).links_to,
-        in_both  = _.intersection(existing, updated),
-        to_drop  = _.difference(existing, in_both),
-        to_add   = _.difference(updated, in_both);
+        in_both  = intersection(existing, updated),
+        to_drop  = difference(existing, in_both),
+        to_add   = difference(updated, in_both);
 
-    to_drop.forEach(drop => { this.links[drop].from = _.difference(this.links[drop].from, [slug]) });
+    to_drop.forEach(drop => { this.links[drop].from = difference(this.links[drop].from, [slug]) });
     to_add.forEach(add => {
       if (!this.links[add]) this.links[add] = Links.default_node;
-      this.links[add].from = _.union(this.links[add].from, [slug])
+      this.links[add].from = union(this.links[add].from, [slug])
     });
 
     this.links[slug].exists = true;
@@ -103,9 +106,9 @@ class Links {
     this.links[slug] = this.links[slug] || Links.default_node;
     let existing = this.links[slug].aliases,
         updated  = Article.load_meta(slug).aliases,
-        in_both  = _.intersection(existing, updated),
-        to_drop  = _.difference(existing, in_both),
-        to_add   = _.difference(updated, in_both);
+        in_both  = intersection(existing, updated),
+        to_drop  = difference(existing, in_both),
+        to_add   = difference(updated, in_both);
 
     to_drop.forEach(drop => { delete this.links[drop].alias_for; });
     to_add.forEach(add => {
@@ -128,7 +131,7 @@ class Links {
     this.links[slug].exists = false;
     this.links[slug].to = [];
     existing.forEach((link) => {
-      this.links[link].from = _.difference(this.links[link].from, [slug]);
+      this.links[link].from = difference(this.links[link].from, [slug]);
     });
 
     setTimeout(this.cleanse, THROTTLE);
@@ -168,7 +171,7 @@ class Links {
             Links.default_node,
             rebuilt[link] || {}
           );
-          rebuilt[link].from = _.union(rebuilt[link].from, [slug]);
+          rebuilt[link].from = union(rebuilt[link].from, [slug]);
         });
 
         meta.aliases.forEach(alias => {

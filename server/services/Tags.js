@@ -10,7 +10,10 @@
 //  }
 //}
 
-import _            from 'lodash'
+import difference   from 'lodash/difference'
+import intersection from 'lodash/intersection'
+import union        from 'lodash/union'
+
 import chokidar     from 'chokidar'
 import fs           from 'fs'
 import path         from 'path'
@@ -64,12 +67,12 @@ class Tags {
         json_path = path.join(this.folders.articles, `${slug}.json`),
         json      = utils.exists(json_path) ? utils.readJSONSync(json_path) : {},
         updated   = json.tags,
-        in_both   = _.intersection(existing, updated),
-        to_drop   = _.difference(existing, in_both),
-        to_add    = _.difference(updated, in_both);
+        in_both   = intersection(existing, updated),
+        to_drop   = difference(existing, in_both),
+        to_add    = difference(updated, in_both);
 
-    to_drop.forEach(drop => { this.tags[drop] = _.difference(this.tags[drop], [slug]) });
-    to_add.forEach(add => { this.tags[add] = _.union(this.tags[add], [slug]) });
+    to_drop.forEach(drop => { this.tags[drop] = difference(this.tags[drop], [slug]) });
+    to_add.forEach(add => { this.tags[add] = union(this.tags[add], [slug]) });
 
     this.articles[slug] = updated;
 
@@ -83,9 +86,9 @@ class Tags {
         let slug = file.replace(/.json/, ''),
             json = utils.readJSONSync(path.join(this.folders.articles, file));
 
-        rebuilt.articles[slug] = _.union(rebuilt.articles[slug], json.tags);
+        rebuilt.articles[slug] = union(rebuilt.articles[slug], json.tags);
         (json.tags || []).forEach(tag => {
-          rebuilt.tags[tag] = _.union(rebuilt.tags[tag] || [], [slug]);
+          rebuilt.tags[tag] = union(rebuilt.tags[tag] || [], [slug]);
         });
       });
 
@@ -106,7 +109,7 @@ class Tags {
 
     delete this.articles[slug];
     existing.forEach((tag) => {
-      this.tags[tag] = _.difference(this.tags[tag], [slug]);
+      this.tags[tag] = difference(this.tags[tag], [slug]);
     });
 
     setTimeout(this.cleanse, THROTTLE);

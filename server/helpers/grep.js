@@ -1,4 +1,4 @@
-import _         from 'lodash'
+import map       from 'lodash/map'
 import spawn     from 'superchild'
 
 const default_options = {
@@ -30,7 +30,7 @@ export default ($what, where, set_options) => {
     let finalize = () => {
       let list = {}
 
-      _.map(matches, match => {
+      map(matches, match => {
         let parts = match.split(':'),
             filename = parts[0],
             details = {
@@ -43,7 +43,7 @@ export default ($what, where, set_options) => {
       })
 
       let files = Object.keys(list)
-      resolve(_.map(files, file => ({
+      resolve(map(files, file => ({
         file,
         results: list[file]
       })))

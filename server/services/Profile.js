@@ -1,4 +1,7 @@
-import _                    from 'lodash'
+import flow                 from 'lodash/flow'
+import sortBy               from 'lodash/sortBy'
+import uniq                 from 'lodash/uniq'
+
 import fs                   from 'fs'
 import path                 from 'path'
 import utils                from 'fs-utils'
@@ -38,9 +41,9 @@ export default class Profile {
       profile = Object.assign({}, Profile.default)
     }
 
-    profile.privileges = _(['read',
-      ...Permissions.granted_to(id)
-    ]).uniq().sortBy().value()
+    profile.privileges = flow(uniq(),sortBy())(
+      ['read', ...Permissions.granted_to(id)]
+    )
 
     return profile
   }

@@ -1,5 +1,15 @@
+import difference           from 'lodash/difference'
+import flatten              from 'lodash/flatten'
+import flow                 from 'lodash/flow'
+import forEach              from 'lodash/forEach'
+import keys                 from 'lodash/keys'
+import map                  from 'lodash/map'
+import startCase            from 'lodash/startCase'
+import uniq                 from 'lodash/uniq'
+import union                from 'lodash/union'
+import xor                  from 'lodash/xor'
+
 import $                    from 'cheerio'
-import _                    from 'lodash'
 import { html as beautify } from 'js-beautify'
 import fs                   from 'fs'
 import path                 from 'path'
@@ -58,7 +68,7 @@ class Article {
     try {
       html = utils.readFileSync(file);
     } catch (err) {
-      html = `<h1>${_.startCase(slug)}</h1>`;
+      html = `<h1>${startCase(slug)}</h1>`;
     }
 
     return html;
@@ -93,11 +103,12 @@ class Article {
 
     let $includes = $html('include').html('') // Empty all <include> tags
     // Get all of the html attributes of 'include' tags as a single array.
-    let attrs = _($includes.get())
-      .map(el => _.keys(el.attribs)) // Attributes of every <include> tag as an array
-      .flatten().uniq() // Flatten into a single array, remove all duplicates
-      .xor(['class', 'from', 'sections']) // White-list the allowed attributes
-      .forEach(attr => $includes.removeAttr(attr))
+    let attrs = flow(
+      map(el => keys(el.attribs)), // Attributes of every <include> tag as an array
+      flatten(), uniq(), // Flatten into a single array, remove all duplicates
+      xor(['class', 'from', 'sections']), // White-list the allowed attributes
+      forEach(attr => $includes.removeAttr(attr))
+    )($includes.get())
 
     $html('a').each((index, element) => {
       let $el = $html(element);
@@ -116,7 +127,7 @@ class Article {
   delete(slug) {
     // Removes files only. Reference updates are performed in response to file watchers.
     let base = path.resolve(this.folders.articles, slug);
-    _(['html', 'json']).forEach(ext => {
+    forEach(['html', 'json'], ext => {
       let filename = `${base}.${ext}`;
       if (utils.exists(filename))
         fs.unlinkSync(filename, { force: true });
@@ -144,7 +155,7 @@ class Article {
 
         if ((is_media && !utils.exists(path.join(this.folders.media, path.basename(href)))
         || (!is_media && (!lookup || !lookup.exists)))) {
-          missing_links = _.union(missing_links, [link_slug]);
+          missing_links = union(missing_links, [link_slug]);
           $el.addClass('missing');
         }
 
@@ -185,7 +196,7 @@ class Article {
         html = this.clean_html(article.html),
         meta = this.clean_meta(article);
 
-    meta.aliases = _.difference(meta.aliases, [slug]); // No self-referential aliases.
+    meta.aliases = difference(meta.aliases, [slug]); // No self-referential aliases.
 
     try {
       fs.writeFileSync(`${base}.html`, html);

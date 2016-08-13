@@ -1,4 +1,5 @@
-import _                    from 'lodash'
+import intersection         from 'lodash/intersection'
+
 import bodyParser           from 'body-parser'
 import cheerio              from 'cheerio'
 import cookieParser         from 'cookie-parser'
@@ -25,7 +26,7 @@ var article = module.exports = express()
   .post('/:slug', (request, response) => {
     if (!request.session.id)
       return response.status(401).send('You must be logged in to edit articles.')
-    else if (_.intersection(request.session.privileges, ['admin', 'edit']).length == 0)
+    else if (intersection(request.session.privileges, ['admin', 'edit']).length == 0)
       return response.status(401).send('You do not have sufficient privileges to edit articles.')
 
     let slug    = Slug.normalize(request.params.slug),

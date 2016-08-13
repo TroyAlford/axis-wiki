@@ -1,4 +1,5 @@
-import _             from 'lodash'
+import startCase     from 'lodash/startCase'
+import toLower       from 'lodash/toLower'
 import ComponentBase from '../application/ComponentBase'
 import React         from 'react'
 import Editable      from '../components/Editable'
@@ -16,7 +17,7 @@ export default class Descriptor extends ComponentBase {
       readonly,
     } = this.props
 
-    let display = name ? name : _.startCase(_.toLower(key))
+    let display = name ? name : startCase(toLower(key))
 
     return (
       <div className={`descriptor ${className}`}>

@@ -1,6 +1,11 @@
-import _ from 'lodash'
-import $ from 'cheerio'
-import Slug from './Slug'
+import difference from 'lodash/difference'
+import flow       from 'lodash/flow'
+import map        from 'lodash/map'
+import orderBy    from 'lodash/orderBy'
+import uniq       from 'lodash/uniq'
+
+import $          from 'cheerio'
+import Slug       from './Slug'
 
 export default class Article {
   constructor({
@@ -45,7 +50,7 @@ export default class Article {
       console.warn(`Renderers must be functions, not ${typeof value}`)
   }
 
-  get aliases() { return _.difference(this._aliases, [this.slug]) }
+  get aliases() { return difference(this._aliases, [this.slug]) }
   set aliases(aliases) { this._aliases = slugify(aliases) }
 
   get html() { return this._html }
@@ -68,7 +73,7 @@ export default class Article {
   get slug() { return this._slug || '' }
   set slug(slug) { this._slug = slugify(slug) }
 
-  get tags() { return _.difference(this._tags, [this.slug]) }
+  get tags() { return difference(this._tags, [this.slug]) }
   set tags(tags) { this._tags = slugify(tags) }
 
 }
@@ -85,9 +90,12 @@ function slugify(slugs) {
   if (typeof slugs === 'string')
     return Slug.normalize(slugs)
   else if (Array.isArray(slugs))
-    return _(slugs).map(Slug.normalize)
-      .uniq().orderBy().difference([''])
-      .value()
+    return flow(
+      map(Slug.normalize),
+      uniq(),
+      orderBy(),
+      difference([''])
+    )(slugs)
   else
     return ''
 }
