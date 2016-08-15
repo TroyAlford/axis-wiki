@@ -1,6 +1,6 @@
-import React         from 'react'
 import ComponentBase from '../application/ComponentBase'
 import Editable      from '../components/Editable'
+import * as React         from 'react'
 import sum           from 'lodash/sum'
 
 export default class Armor extends ComponentBase {

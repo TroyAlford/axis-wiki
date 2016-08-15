@@ -1,8 +1,8 @@
-import startCase     from 'lodash/startCase'
-import toLower       from 'lodash/toLower'
-import React         from 'react'
 import ComponentBase from '../application/ComponentBase'
 import Editable      from '../components/Editable'
+import * as React         from 'react'
+import startCase     from 'lodash/startCase'
+import toLower       from 'lodash/toLower'
 
 const nameParserRegEx = new RegExp(/^(?:([a-z0-9 ]*):)?([a-z0-9 ]*)(?:\(([a-z0-9 ]*)\))?/mi)
 

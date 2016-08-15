@@ -1,7 +1,4 @@
 import { connect }              from 'react-redux'
-import { facebook as config   } from '../config.json'
-import { facebook as defaults } from '../defaults.json'
-
 import ComponentBase            from '../application/ComponentBase'
 import Icon                     from '../components/Icon'
 import { Link }                 from 'react-router'
@@ -13,10 +10,13 @@ import {
   updateUserInfo
 } from '../redux/user/actions'
 
+import { facebook as config } from '../config.json'
+import { facebook as defaults } from '../defaults.json'
+
 class Facebook extends ComponentBase {
   constructor(props) {
     super(props);
-    this.config = Object.assign({}, config, defaults);
+    this.config = { ...defaults, ...config }
   }
 
   componentDidMount() {

@@ -2,7 +2,7 @@ import mkdirp       from 'mkdirp'
 import path         from 'path'
 import utils        from 'fs-utils'
 
-import defaults     from '../defaults.json'
+const defaults = require('../defaults.json')
 
 let SETTINGS = null, FOLDERS = null
 

@@ -3,7 +3,8 @@ import { addMessage  } from '../messages/actions'
 
 export const
   MEDIA_DELETE     = 'media.delete',
-  MEDIA_LOAD       = 'media.load'
+  MEDIA_LOAD       = 'media.load',
+  MEDIA_LOADED     = 'media.loaded'
 ;
 
 export function loadMedia(filename) {
@@ -11,20 +12,20 @@ export function loadMedia(filename) {
     return fetch(`/api/media/${filename}`, { credentials: 'include' })
       .then(response => response.json())
       .then(json => dispatch(loadedMedia(filename, json)))
-    ;    
+    ;
   }
 }
 
 export function loadedMedia(filename, media) {
   return {
-    type: 'MEDIA_LOADED',
-    media: Object.assign({}, { filename: filename }, media)
+    type: MEDIA_LOADED,
+    media: { ...media, filename }
   }
 }
 
 export function deleteMedia(filename) {
   return dispatch => {
-    return fetch(`/api/media/${filename}`, { 
+    return fetch(`/api/media/${filename}`, {
       credentials: 'include',
       method: 'DELETE'
     }).then(response => {

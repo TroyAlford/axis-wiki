@@ -1,6 +1,6 @@
-import React from 'react' // Must be imported for Jest Tests
-import includes from 'lodash/includes'
 import difference from 'lodash/difference'
+import includes from 'lodash/includes'
+import * as React from 'react'
 
 export default class Editable extends React.Component {
   constructor(props) {

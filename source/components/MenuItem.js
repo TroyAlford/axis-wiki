@@ -1,6 +1,7 @@
 import ComponentBase  from '../application/ComponentBase'
-import Icon           from './Icon';
-import ReactDOM       from 'react-dom';
+import Icon           from './Icon'
+import * as React          from 'react'
+import * as ReactDOM      from 'react-dom'
 
 export default ({
   caption = '',

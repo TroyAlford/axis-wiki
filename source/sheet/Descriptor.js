@@ -1,8 +1,8 @@
+import ComponentBase from '../application/ComponentBase'
+import Editable      from '../components/Editable'
+import * as React         from 'react'
 import startCase     from 'lodash/startCase'
 import toLower       from 'lodash/toLower'
-import ComponentBase from '../application/ComponentBase'
-import React         from 'react'
-import Editable      from '../components/Editable'
 
 export default class Descriptor extends ComponentBase {
   handleValueChange(value) {

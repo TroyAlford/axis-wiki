@@ -3,7 +3,7 @@ import Helmet         from 'react-helmet'
 import startCase      from 'lodash/startCase'
 
 export default connect(
-  (state) => {
+  state => {
     return {
       defaultTitle: 'Welcome',
       titleTemplate: `%s - ${state.application.name}`,

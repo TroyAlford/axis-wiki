@@ -1,4 +1,7 @@
 {
+  "application": {
+    "name": "Axis Wiki"
+  },
   "facebook": {
     "application_id": "YOUR_APP_ID_HERE",
     "permissions": "public_profile,email"

@@ -1,7 +1,7 @@
 jest.unmock('../Editable');
 
-import React from 'react'
-import ReactDOM from 'react-dom'
+import * as React from 'react'
+import * as ReactDOMfrom 'react-dom'
 import TestUtils from 'react-addons-test-utils'
 import Editable from '../Editable'
 

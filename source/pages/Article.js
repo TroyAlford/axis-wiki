@@ -17,7 +17,7 @@ import ArticleChildren    from '../components/ArticleChildren'
 import Icon               from '../components/Icon'
 import TabSet             from '../components/TabSet'
 import TagBar             from '../components/TagBar'
-import TinyMCE            from 'react-tinymce'
+import * as TinyMCE       from 'react-tinymce'
 
 import editor_config      from '../config/editor'
 

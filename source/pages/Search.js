@@ -9,7 +9,7 @@ import {
   searchReset
 }                         from '../redux/search/actions'
 
-import React              from 'react'
+import * as React              from 'react'
 import ComponentBase      from '../application/ComponentBase'
 
 class Search extends ComponentBase {
