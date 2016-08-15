@@ -1,18 +1,23 @@
-import differenceBy from 'lodash/differenceBy'
-import find         from 'lodash/find'
-import flatten      from 'lodash/flatten'
-import flow         from 'lodash/flow'
-import map          from 'lodash/map'
-import reduce       from 'lodash/reduce'
-import reject       from 'lodash/reject'
-import startCase    from 'lodash/startCase'
-import sum          from 'lodash/sum'
-import sumBy        from 'lodash/sumBy'
-import uniqBy       from 'lodash/uniqBy'
+import {
+  differenceBy,
+  filter,
+  find,
+  flatten,
+  flow,
+  map,
+  orderBy,
+  reduce,
+  reject,
+  sortBy,
+  startCase,
+  sum,
+  sumBy,
+  uniqBy,
+} from 'lodash'
 
-import math          from 'mathjs'
-import React         from 'react'
+import * as React    from 'react'
 import ComponentBase from '../application/ComponentBase'
+import math          from '../mathjs'
 
 import Armor       from '../sheet/Armor'
 import Attribute   from '../sheet/Attribute'
@@ -47,25 +52,25 @@ export default class Sheet extends ComponentBase {
   calculate_power() {
     let power = 0
 
-    const attribute_values = flow(
-      reject(attr => attr.hasOwnProperty('calc')),
-      reject({ key: 'natural_armor' }),
-      reject({ key: 'size' }),
-      map(attr => createRange(1, attr.value)),
-      flatten()
-    )(this.attributes())
+    const attribute_values = flow([
+      array => reject(array, attr => attr.hasOwnProperty('calc')),
+      array => reject(array, { key: 'natural_armor' }),
+      array => reject(array, { key: 'size' }),
+      array => map(array, attr => createRange(1, attr.value)),
+      array => flatten(array)
+    ])(this.attributes())
 
     power += reduce(attribute_values, (sum, value) =>
       sum + (value === 1 ? 5 : Math.pow(value, 3))
     )
 
-    const skill_values = flow(
-      map(skill => [
+    const skill_values = flow([
+      array => map(array, skill => [
         ...createRange(1, skill.values[0]),
         ...createRange(2, skill.values[1]),
       ]),
-      flatten()
-    )(this.state.skills)
+      array => flatten(array)
+    ])(this.state.skills)
 
     power += reduce(skill_values, (sum, value) =>
       sum + Math.pow(value, 2)
@@ -82,7 +87,13 @@ export default class Sheet extends ComponentBase {
 
     attrs.forEach(attr => { hash[attr.key] = attr.value })
 
-    return math.parse(expression).compile().eval(hash)
+    const parser = math.parser()
+    const parsed = math.parse(expression)
+    parsed.traverse(node => {
+      if (node.type === 'SymbolNode')
+        parser.set(node.name, attributes[node.name] || 0)
+    })
+    return parser.eval(expression)
   }
 
   attributes() {
@@ -93,11 +104,11 @@ export default class Sheet extends ComponentBase {
 
     let attributes = uniqBy([
       { key: 'armor', calc: '',
-        value: flow(
-          filter({ equipped: true }),
-          map(armor => Math.round(sum(armor.values) / armor.values.length, 0)),
-          sum()
-        )(this.state.armor)
+        value: flow([
+          array => filter(array, { equipped: true }),
+          array => map(array, armor => Math.round(sum(armor.values) / armor.values.length, 0)),
+          array => sum(array)
+        ])(this.state.armor)
       },
       { key: 'body', calc: 'round((agility + fitness + strength) / 3, 0)' },
       { key: 'might', calc: 'round((strength + fitness) / 2, 0) + size' },
@@ -181,46 +192,46 @@ export default class Sheet extends ComponentBase {
 
   render() {
     const characterName = startCase(this.props.routeParams.slug),
-    armor = flow(
-      orderBy(['equipped', 'name'], ['desc', 'asc']),
-      map(armor =>
+    armor = flow([
+      array => orderBy(array, ['equipped', 'name'], ['desc', 'asc']),
+      array => map(array, armor =>
         <Armor key={armor.id} armor={armor}
           onChange={this.handleArmorChange}
         />
       )
-    )(this.state.armor),
-    skills = flow(
-      sortBy(skill => [
+    ])(this.state.armor),
+    skills = flow([
+      array => sortBy(array, skill => [
         skill.category || '',
         skill.name || skill.key,
         skill.note || ''
       ].join('').toLowerCase()),
-      map(skill =>
+      array => map(array, skill =>
         <Skill key={skill.id} skill={skill}
           onChange={this.handleSkillChange}
         />
       )
-    )(this.state.skills),
-    traits = flow(
-      sortBy(trait => [
+    ])(this.state.skills),
+    traits = flow([
+      array => sortBy(array, trait => [
         trait.category || '',
         trait.name || trait.key,
         trait.note || ''
       ].join('').toLowerCase()),
-      map(trait =>
+      array => map(array, trait =>
         <Trait key={trait.id} trait={trait}
           onChange={this.handleTraitChange}
         />
       )
-    )(this.state.traits),
-    weapons = flow(
-      orderBy(['equipped', 'name'], ['desc', 'asc']),
-      map(weapon =>
+    ])(this.state.traits),
+    weapons = flow([
+      array => orderBy(array, ['equipped', 'name'], ['desc', 'asc']),
+      array => map(array, weapon =>
         <Weapon key={weapon.id} weapon={weapon}
           onChange={this.handleWeaponChange}
         />
       )
-    )(this.state.weapons)
+    ])(this.state.weapons)
 
     return (
       <div className="sheet page">
@@ -320,8 +331,6 @@ export default class Sheet extends ComponentBase {
   }
 }
 
-const example = require('../../example_sheet.json')
-
 Sheet.propTypes = {
   armor: React.PropTypes.array.isRequired,
   attributes: React.PropTypes.array.isRequired,
@@ -337,5 +346,4 @@ Sheet.defaultProps = {
   weapons: [],
   traits: [],
   skills: [],
-  ...example,
 }
