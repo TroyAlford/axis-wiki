@@ -1,6 +1,7 @@
-import { connect }    from 'react-redux'
-import Helmet         from 'react-helmet'
-import startCase      from 'lodash/startCase'
+import { connect } from 'react-redux'
+import Helmet from 'react-helmet'
+
+import { startCase } from 'lodash'
 
 export default connect(
   state => {

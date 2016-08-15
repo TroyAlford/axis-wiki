@@ -1,9 +1,9 @@
-import fetch                 from 'isomorphic-fetch'
-import { browserHistory }    from 'react-router'
+import fetch from 'isomorphic-fetch'
+import { browserHistory } from 'react-router'
 
-export const USER_LOGON      = 'user.logon'
-export const USER_LOGOFF     = 'user.logoff'
-export const USER_UPDATE     = 'user.update'
+export const USER_LOGON = 'user.logon'
+export const USER_LOGOFF = 'user.logoff'
+export const USER_UPDATE = 'user.update'
 
 export function logon() {
   return dispatch => fetch('/api/my/profile', { credentials: 'include' })

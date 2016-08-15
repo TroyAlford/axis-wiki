@@ -3,7 +3,7 @@ import TagsInput from 'react-tagsinput'
 let TagBar = ({
   className = 'tag-bar',
   inputProps = {
-    className: 'tag-bar-input', 
+    className: 'tag-bar-input',
     placeholder: 'add tag'
   },
   tagProps = {
@@ -14,14 +14,14 @@ let TagBar = ({
   tags = [],
   onChange = () => {},
   onlyUnique = true
-}) => 
+}) =>
   <TagsInput
     className={className}
     value={tags}
     inputProps={inputProps} tagProps={tagProps}
     readonly={readonly}
     renderInput={props => !readonly && <input type="text" {...props} />}
-    renderTag={props => 
+    renderTag={props =>
       <span key={props.key} {...props}>
         <a className="icon icon-tag" href={`/page/${props.tag}`}>{props.tag}</a>
         { !readonly && <a className={tagProps.classNameRemove} onClick={() => props.onRemove(props.key)} /> }

@@ -1,7 +1,9 @@
-import ComponentBase      from '../application/ComponentBase'
-import debounce           from 'lodash/debounce'
-import { connect }        from 'react-redux'
-import { searchRequest }  from '../redux/search/actions'
+import ComponentBase from '../application/ComponentBase'
+import { connect } from 'react-redux'
+
+import { debounce } from 'lodash'
+
+import { searchRequest } from '../redux/search/actions'
 
 class SearchBox extends ComponentBase {
   constructor(props) {

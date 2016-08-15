@@ -1,5 +1,5 @@
 import ComponentBase from '../application/ComponentBase'
-import Message       from '../components/Message'
+import Message from '../components/Message'
 
 export default class NotFound extends ComponentBase {
   render() {

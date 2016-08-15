@@ -1,6 +1,9 @@
-import difference from 'lodash/difference'
-import includes from 'lodash/includes'
 import * as React from 'react'
+
+import {
+  difference,
+  includes
+} from 'lodash'
 
 export default class Editable extends React.Component {
   constructor(props) {

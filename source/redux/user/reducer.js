@@ -21,11 +21,11 @@ export default (state = default_state, action) => {
       if (!action.user) return default_state
 
       const { id, name, email, picture, privileges } = action.user
-      return { 
-        ...state, 
-        anonymous: false, 
-        id, email, name, picture, 
-        privileges: privileges || ['read'] 
+      return {
+        ...state,
+        anonymous: false,
+        id, email, name, picture,
+        privileges: privileges || ['read']
       }
     case USER_LOGOFF:
       return { ...default_state, anonymous: true }

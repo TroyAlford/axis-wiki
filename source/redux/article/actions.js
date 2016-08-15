@@ -1,11 +1,10 @@
-import fetch                 from 'isomorphic-fetch'
-import last                  from 'lodash/last'
-import { browserHistory }    from 'react-router'
-import { addMessage }       from '../messages/actions'
+import fetch from 'isomorphic-fetch'
+import { browserHistory } from 'react-router'
+import { addMessage } from '../messages/actions'
 
 export const
-  ARTICLE_LOAD    = 'article.load',
-  ARTICLE_LOADED  = 'article.loaded',
+  ARTICLE_LOAD = 'article.load',
+  ARTICLE_LOADED = 'article.loaded',
   ARTICLE_LOADING = 'article.loading'
 ;
 
@@ -17,12 +16,8 @@ export function loadArticle(requested_slug) {
 
     let slug = requested_slug;
     return fetch(`/api/page/${requested_slug}`, { credentials: 'include' })
-      .then(response => {
-        slug = last(response.url.split('/'));
-        return response.json();
-      })
+      .then(response => response.url.split('/').pop())
       .then(json => dispatch(loadedArticle(slug, json)))
-    ;
   }
 }
 
@@ -43,7 +38,7 @@ export function loadedArticle(slug, article) {
 
 export function deleteArticle(slug) {
   return dispatch => {
-    return fetch(`/api/page/${slug}`, { 
+    return fetch(`/api/page/${slug}`, {
       credentials: 'include',
       method: 'DELETE'
     }).then(response => {

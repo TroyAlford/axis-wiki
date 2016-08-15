@@ -3,14 +3,14 @@ import {
   combineReducers,
   compose,
   createStore
-}                  from 'redux'
-import thunk       from 'redux-thunk'
+} from 'redux'
+import thunk from 'redux-thunk'
 import application from './application/reducer'
-import article     from './article/reducer'
-import media       from './media/reducer'
-import messages    from './messages/reducer'
-import search      from './search/reducer'
-import user        from './user/reducer'
+import article from './article/reducer'
+import media from './media/reducer'
+import messages from './messages/reducer'
+import search from './search/reducer'
+import user from './user/reducer'
 
 const initialState = {}
 

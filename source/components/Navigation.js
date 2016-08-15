@@ -1,4 +1,4 @@
-import ComponentBase      from '../application/ComponentBase'
+import ComponentBase from '../application/ComponentBase'
 import fetch from 'isomorphic-fetch'
 
 export default class Navigation extends ComponentBase {

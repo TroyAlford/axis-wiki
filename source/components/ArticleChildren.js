@@ -1,8 +1,11 @@
-import ComponentBase      from '../application/ComponentBase'
-import Icon               from './Icon'
-import { Link }           from 'react-router'
-import sortBy             from 'lodash/sortBy'
-import startCase          from 'lodash/startCase'
+import ComponentBase from '../application/ComponentBase'
+import Icon from './Icon'
+import { Link } from 'react-router'
+
+import {
+  sortBy,
+  startCase
+} from 'lodash'
 
 export default class ArticleChildren extends ComponentBase {
   render() {

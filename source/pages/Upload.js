@@ -1,12 +1,14 @@
-import filter from 'lodash/filter'
-import map    from 'lodash/map'
-import uniqBy from 'lodash/uniqBy'
+import ComponentBase from '../application/ComponentBase'
+import Dropzone from 'react-dropzone'
 
-import ComponentBase      from '../application/ComponentBase'
-import Dropzone           from 'react-dropzone'
+import fetch from 'isomorphic-fetch'
+import {
+  filter,
+  map,
+  uniqBy
+} from 'lodash'
 
-import fetch              from 'isomorphic-fetch'
-import { slugify }        from '../../utility/Slugs'
+import { slugify } from '../../utility/Slugs'
 
 export default class UploadPage extends ComponentBase {
   constructor(props) {

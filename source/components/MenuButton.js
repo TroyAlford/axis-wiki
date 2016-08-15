@@ -1,5 +1,5 @@
-import ComponentBase      from '../application/ComponentBase'
-import MenuItem           from './MenuItem';
+import ComponentBase from '../application/ComponentBase'
+import MenuItem from './MenuItem';
 
 let expanded = false;
 

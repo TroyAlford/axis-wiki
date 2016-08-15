@@ -1,6 +1,6 @@
-import ComponentBase      from '../application/ComponentBase'
-import Facebook           from '../components/Facebook'
-import SearchBox          from '../components/SearchBox'
+import ComponentBase from '../application/ComponentBase'
+import Facebook from '../components/Facebook'
+import SearchBox from '../components/SearchBox'
 
 export default ({}) =>
   <section className="app-header hero is-info">

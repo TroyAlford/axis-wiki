@@ -1,16 +1,19 @@
-import findIndex          from 'lodash/findIndex'
-import includes           from 'lodash/includes'
 import { browserHistory } from 'react-router'
-import { connect }        from 'react-redux'
+import { connect } from 'react-redux'
 
-import { loadArticle }    from '../redux/article/actions'
+import {
+  findIndex,
+  includes
+} from 'lodash'
+
+import { loadArticle } from '../redux/article/actions'
 import {
   searchRequest,
   searchReset
-}                         from '../redux/search/actions'
+} from '../redux/search/actions'
 
-import * as React              from 'react'
-import ComponentBase      from '../application/ComponentBase'
+import * as React from 'react'
+import ComponentBase from '../application/ComponentBase'
 
 class Search extends ComponentBase {
   componentDidMount() {

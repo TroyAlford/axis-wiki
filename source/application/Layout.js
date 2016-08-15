@@ -1,15 +1,16 @@
-import * as React              from 'react'
-import * as ReactDOM          from 'react-dom'
-import split              from 'lodash/split'
-import { connect }        from 'react-redux'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
+import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 
-import ComponentBase      from '../application/ComponentBase'
-import Header             from '../components/Header'
-import HtmlMetadata       from '../components/HtmlMetadata'
-import Navigation         from '../components/Navigation'
+import { split } from 'lodash'
 
-import { loadArticle }    from '../redux/article/actions'
+import ComponentBase from '../application/ComponentBase'
+import Header from '../components/Header'
+import HtmlMetadata from '../components/HtmlMetadata'
+import Navigation from '../components/Navigation'
+
+import { loadArticle } from '../redux/article/actions'
 
 const parser = document.createElement('a');
 

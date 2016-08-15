@@ -1,25 +1,27 @@
-import { connect }        from 'react-redux'
+import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import {
   deleteArticle,
   loadArticle,
   loadedArticle,
   saveArticle
-}                         from '../redux/article/actions'
-import { slugify }        from '../../utility/Slugs'
-import difference         from 'lodash/difference'
-import sortBy             from 'lodash/sortBy'
-import uniq               from 'lodash/uniq'
-import xor                from 'lodash/xor'
+} from '../redux/article/actions'
+import { slugify } from '../../utility/Slugs'
+import {
+  difference,
+  sortBy,
+  uniq,
+  xor
+} from 'lodash'
 
-import ComponentBase      from '../application/ComponentBase'
-import ArticleChildren    from '../components/ArticleChildren'
-import Icon               from '../components/Icon'
-import TabSet             from '../components/TabSet'
-import TagBar             from '../components/TagBar'
-import * as TinyMCE       from 'react-tinymce'
+import ComponentBase from '../application/ComponentBase'
+import ArticleChildren from '../components/ArticleChildren'
+import Icon from '../components/Icon'
+import TabSet from '../components/TabSet'
+import TagBar from '../components/TagBar'
+import * as TinyMCE from 'react-tinymce'
 
-import editor_config      from '../config/editor'
+import editor_config from '../config/editor'
 
 const tinyMCE = window.tinyMCE;
 

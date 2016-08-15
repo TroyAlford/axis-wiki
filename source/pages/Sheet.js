@@ -15,18 +15,18 @@ import {
   uniqBy,
 } from 'lodash'
 
-import * as React    from 'react'
+import * as React from 'react'
 import ComponentBase from '../application/ComponentBase'
-import math          from '../mathjs'
+import math from '../mathjs'
 
-import Armor       from '../sheet/Armor'
-import Attribute   from '../sheet/Attribute'
-import Descriptor  from '../sheet/Descriptor'
-import Section     from '../sheet/Section'
+import Armor from '../sheet/Armor'
+import Attribute from '../sheet/Attribute'
+import Descriptor from '../sheet/Descriptor'
+import Section from '../sheet/Section'
 import SheetHeader from '../sheet/SheetHeader'
-import Skill       from '../sheet/Skill'
-import Trait       from '../sheet/Trait'
-import Weapon      from '../sheet/Weapon'
+import Skill from '../sheet/Skill'
+import Trait from '../sheet/Trait'
+import Weapon from '../sheet/Weapon'
 
 const keyObjects = collection => map(collection, (el, id) => ({ id, ...el }));
 const createRange = (low, high) => low > high ? [] :

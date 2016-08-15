@@ -1,9 +1,9 @@
-import fetch                 from 'isomorphic-fetch'
-import { browserHistory }    from 'react-router'
+import fetch from 'isomorphic-fetch'
+import { browserHistory } from 'react-router'
 
 export const SEARCH_LOADING = 'search.loading'
 export const SEARCH_REQUEST = 'search.request'
-export const SEARCH_RESET   = 'search.reset'
+export const SEARCH_RESET = 'search.reset'
 export const SEARCH_RESULTS = 'search.results'
 
 const fetch_params = {

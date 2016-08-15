@@ -1,11 +1,11 @@
 import { browserHistory } from 'react-router'
-import { connect }        from 'react-redux'
+import { connect } from 'react-redux'
 import {
   deleteMedia,
   loadMedia
-}                         from '../redux/media/actions'
+} from '../redux/media/actions'
 
-import ComponentBase      from '../application/ComponentBase'
+import ComponentBase from '../application/ComponentBase'
 
 class Media extends ComponentBase {
   constructor(props) {

@@ -1,9 +1,12 @@
-import startCase from 'lodash/startCase'
-import sum       from 'lodash/sum'
-import toLower   from 'lodash/toLower'
+import * as React from 'react'
 
-import * as React     from 'react'
-import Editable  from '../components/Editable'
+import {
+  startCase,
+  sum,
+  toLower
+} from 'lodash'
+
+import Editable from '../components/Editable'
 
 export default class Weapon extends React.Component {
   setEquipped(equipped) {

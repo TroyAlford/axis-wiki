@@ -1,7 +1,7 @@
-import { connect }              from 'react-redux'
-import ComponentBase            from '../application/ComponentBase'
-import Icon                     from '../components/Icon'
-import { Link }                 from 'react-router'
+import { connect } from 'react-redux'
+import ComponentBase from '../application/ComponentBase'
+import Icon from '../components/Icon'
+import { Link } from 'react-router'
 
 import {
   setAnonymous,

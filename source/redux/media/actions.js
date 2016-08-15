@@ -2,9 +2,9 @@ import { loadArticle } from '../article/actions'
 import { addMessage  } from '../messages/actions'
 
 export const
-  MEDIA_DELETE     = 'media.delete',
-  MEDIA_LOAD       = 'media.load',
-  MEDIA_LOADED     = 'media.loaded'
+  MEDIA_DELETE = 'media.delete',
+  MEDIA_LOAD = 'media.load',
+  MEDIA_LOADED = 'media.loaded'
 ;
 
 export function loadMedia(filename) {

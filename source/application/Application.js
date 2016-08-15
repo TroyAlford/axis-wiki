@@ -1,18 +1,18 @@
-import * as React           from 'react'
-import * as ReactDOM       from 'react-dom'
-import { Provider }    from 'react-redux'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
 import { Redirect, Route, Router, browserHistory } from 'react-router'
 import { createStore } from 'redux'
 
-import store           from '../redux/store'
+import store from '../redux/store'
 
-import Layout          from '../application/Layout'
-import NotFound        from '../pages/NotFound'
-import Article         from '../pages/Article'
-import Media           from '../pages/Media'
-import Search          from '../pages/Search'
-import Sheet           from '../pages/Sheet'
-import Upload          from '../pages/Upload'
+import Layout from '../application/Layout'
+import NotFound from '../pages/NotFound'
+import Article from '../pages/Article'
+import Media from '../pages/Media'
+import Search from '../pages/Search'
+import Sheet from '../pages/Sheet'
+import Upload from '../pages/Upload'
 
 const applicationElement = document.getElementById('application')
 
