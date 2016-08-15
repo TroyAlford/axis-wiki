@@ -1,8 +1,10 @@
-import difference from 'lodash/difference'
-import flow       from 'lodash/flow'
-import map        from 'lodash/map'
-import orderBy    from 'lodash/orderBy'
-import uniq       from 'lodash/uniq'
+import {
+  difference,
+  flow,
+  map,
+  orderBy,
+  uniq
+} from 'lodash'
 
 import $          from 'cheerio'
 import Slug       from './Slug'
@@ -91,10 +93,10 @@ function slugify(slugs) {
     return Slug.normalize(slugs)
   else if (Array.isArray(slugs))
     return flow(
-      map(Slug.normalize),
-      uniq(),
-      orderBy(),
-      difference([''])
+      array => map(array, Slug.normalize),
+      array => uniq(array),
+      array => orderBy(array, ),
+      array => difference(array, [''])
     )(slugs)
   else
     return ''

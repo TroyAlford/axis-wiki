@@ -2,7 +2,7 @@ jest.unmock('../Attribute')
 jest.unmock('../../components/Editable')
 
 import * as React from 'react'
-import * as ReactDOMfrom 'react-dom'
+import * as ReactDOM from 'react-dom'
 import TestUtils from 'react-addons-test-utils'
 import Attribute from '../Attribute'
 
@@ -23,7 +23,7 @@ describe('Attribute', () => {
 
   it('renders classes properly', () => {
     render(<Attribute className="test-class" />)
-    expect(rendered().classList).toContain('attribute')
-    expect(rendered().classList).toContain('test-class')
+    expect(rendered().classList.contains('attribute')).toBeTruthy()
+    expect(rendered().classList.contains('test-class')).toBeTruthy()
   })
 })

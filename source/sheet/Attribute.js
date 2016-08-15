@@ -50,6 +50,7 @@ Attribute.propTypes = {
 }
 Attribute.defaultProps = {
   attribute: {
+    key: 'new-attribute',
     value: 0,
   },
   className: '',

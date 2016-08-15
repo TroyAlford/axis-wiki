@@ -2,7 +2,7 @@ jest.unmock('../Skill')
 jest.unmock('../../components/Editable')
 
 import * as React from 'react'
-import * as ReactDOMfrom 'react-dom'
+import * as ReactDOM from 'react-dom'
 import TestUtils from 'react-addons-test-utils'
 import Skill from '../Skill'
 
@@ -59,7 +59,7 @@ describe('Skill', () => {
 
   it('renders classes properly', () => {
     render(<Skill className="test-class" />)
-    expect(rendered().classList).toContain('skill')
-    expect(rendered().classList).toContain('test-class')
+    expect(rendered().classList.contains('skill')).toBeTruthy()
+    expect(rendered().classList.contains('test-class')).toBeTruthy()
   })
 })

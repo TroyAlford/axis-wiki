@@ -1,7 +1,7 @@
 jest.unmock('../Editable');
 
 import * as React from 'react'
-import * as ReactDOMfrom 'react-dom'
+import * as ReactDOM from 'react-dom'
 import TestUtils from 'react-addons-test-utils'
 import Editable from '../Editable'
 
@@ -22,11 +22,11 @@ describe('Editable', () => {
 
   it('renders classes properly', () => {
     render(<Editable className="test-class" />)
-    expect(rendered().classList).toContain('editable')
-    expect(rendered().classList).toContain('test-class')
+    expect(rendered().classList.contains('editable')).toEqual(true)
+    expect(rendered().classList.contains('test-class')).toEqual(true)
 
     render(<Editable readonly={true} />)
-    expect(rendered().classList).toContain('readonly')
+    expect(rendered().classList.contains('readonly')).toEqual(true)
   })
 
   it('raises change events properly', () => {
@@ -72,7 +72,7 @@ describe('Editable', () => {
 
     Simulate.change(checkbox, { target: { value: false }})
     expect(component.dirty).toEqual(true)
-    expect(rendered().classList).toContain('dirty')
+    expect(rendered().classList.contains('dirty')).toEqual(true)
     expect(component.state.value).toEqual(false)
   })
 })

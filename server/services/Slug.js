@@ -1,7 +1,9 @@
-import filter from 'lodash/filter'
-import flow   from 'lodash/flow'
-import map    from 'lodash/map'
-import uniq   from 'lodash/uniq'
+import {
+  filter,
+  flow,
+  map,
+  uniq
+} from 'lodash'
 
 export default class Slug {
   static normalize(value, retain_path = false) {
@@ -24,9 +26,9 @@ export default class Slug {
   }
   static normalize_array(values, retain_path = false) {
     return flow(
-      map(value => Slug.normalize(value, retain_path)),
-      uniq(),
-      filter(value => !!value)
+      array => map(array, value => Slug.normalize(value, retain_path)),
+      array => uniq(array),
+      array => filter(array, value => !!value)
     )(values)
   }
 }
