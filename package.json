@@ -81,10 +81,12 @@
     ]
   },
   "scripts": {
-    "start": "NODE_ENV=production npm run build && NODE_ENV=production babel-node server/server.js",
+    "start": "npm run build-prod && NODE_ENV=production babel-node server/server.js",
     "test": "jest",
     "develop": "npm run watch & npm run serve-watched",
     "build": "npm run clean && (npm run build-jsx & npm run build-css)",
+    "build-dev": "npm run build",
+    "build-prod": "NODE_ENV=production npm run build",
     "build-css": "npm run build-css-app & npm run build-css-dep",
     "build-css-app": "npm run concat-css-app && node-sass build/sass/application.scss -o build/css --output-style compressed --source-map true --source-map-embed",
     "build-css-dep": "node-sass vendor/dependencies.scss -o build/css --output-style compressed --source-map true --source-map-embed",
