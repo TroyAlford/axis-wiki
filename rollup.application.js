@@ -48,10 +48,10 @@ export default {
   },
   plugins,
   targets: [{
-    dest: 'build/js/bundle.js',
+    dest: 'build/js/application.js',
     format: 'iife',
     sourceMap: true,
-    sourceMapFile: '/js/bundle.js',
+    sourceMapFile: '/js/application.js',
   }],
   treeshake: true,
 }
