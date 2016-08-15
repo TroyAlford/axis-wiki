@@ -11,6 +11,15 @@ export function logon() {
     .then(json => {
       if (!json.id) // User does not have a profile set up yet. Create it!
         FB.api('/me', { fields: 'name,email,picture.width(250)' }, fb_profile => {
+          if (fb_profile.error) {
+            switch (fb_profile.error.type) {
+              case 'OAuthException':
+                FB.getLoginStatus()
+                break;
+              default:
+                return console.error('Facebook error:', fb_profile.error)
+            }
+          }
           fetch('/api/my/profile', {
             body: JSON.stringify(fb_profile),
             credentials: 'include',

@@ -16,7 +16,10 @@ export function loadArticle(requested_slug) {
 
     let slug = requested_slug;
     return fetch(`/api/page/${requested_slug}`, { credentials: 'include' })
-      .then(response => response.url.split('/').pop())
+      .then(response => {
+        slug = response.url.split('/').pop()
+        return response.json()
+      })
       .then(json => dispatch(loadedArticle(slug, json)))
   }
 }

@@ -22,7 +22,7 @@ export default (req, res, next) => {
   }
 
   if (cookie) {
-    let 
+    let
       chunks = cookie.split('.', 2),
       rawSignature = chunks[0].replace(/\-/g, '+').replace(/\_/g, '/'),
       hexSignature = encodeToHex(new Buffer(rawSignature, 'base64')),
@@ -37,7 +37,8 @@ export default (req, res, next) => {
 
     if (expectedSignature == hexSignature)
       req.session = Object.assign({ token }, Profile.load(token.user_id))
-  }
+  } else
+    req.session = {}
 
   next();
 }
