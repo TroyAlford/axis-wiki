@@ -1,6 +1,10 @@
 import * as React from 'react'
 
-import { sum } from 'lodash'
+import {
+  startCase,
+  sum,
+  toLower
+} from 'lodash'
 
 import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
@@ -29,15 +33,16 @@ export default class Armor extends ComponentBase {
   }
 
   render() {
-    const { equipped, name, values } = this.props.armor,
-      average = Math.round(sum(values) / values.length, 0)
+    const { equipped, key, name, values } = this.props.armor,
+      average = Math.round(sum(values) / values.length, 0),
+      display = name ? name : startCase(toLower(key))
 
     return (
       <div className="armor">
         <Editable className="equipped" value={!!equipped}
           onChange={this.setEquipped.bind(this, !equipped)}
         />
-        <Editable className="name" value={name}
+        <Editable className="name" value={display}
           onChange={this.handleNameChange.bind(this)}
         />
       {values.map((value, index) =>

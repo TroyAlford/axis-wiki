@@ -4,8 +4,8 @@ export default ({
   size = 'default',
   onClick = (event => {})
 }) => (
-  <span className={`icon is-${size} ${className}`}><i
-    className={`icon-${name}`}
+  <span
+    className={`icon is-${size} ${className}`}
     onClick={onClick}
-  ></i></span>
+  ><i className={`icon-${name}`}></i></span>
 )

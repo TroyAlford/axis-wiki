@@ -14,3 +14,5 @@
 .icon-info:before { content: '\e80c'; } /* '' */
 .icon-warning:before { content: '\e80d'; } /* '' */
 .icon-undo:before { content: '\e80e'; } /* '' */
+.icon-add:before { content: '\e80f'; } /* '' */
+.icon-remove:before { content: '\e810'; } /* '' */

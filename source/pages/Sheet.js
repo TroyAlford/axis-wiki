@@ -22,6 +22,7 @@ import {
   sumBy,
   uniqBy,
 } from 'lodash'
+import Guid from '../../utility/Guid'
 import { slugify } from '../../utility/Slugs'
 
 import * as React from 'react'
@@ -31,6 +32,7 @@ import math from '../mathjs'
 import Armor from '../sheet/Armor'
 import Attribute from '../sheet/Attribute'
 import Descriptor from '../sheet/Descriptor'
+import Icon from '../components/Icon'
 import Section from '../sheet/Section'
 import SheetHeader from '../sheet/SheetHeader'
 import Skill from '../sheet/Skill'
@@ -201,11 +203,23 @@ class Sheet extends ComponentBase {
       descriptor,
     ]})
   }
+  addArmor() {
+    this.setState({ armor: [
+      ...this.state.armor,
+      { key: 'new-armor', id: Guid(), values: [0, 0, 0, 0, 0, 0] }
+    ]})
+  }
   handleArmorChange(armor) {
     this.recalculate = true
     this.setState({ armor: [
       ...this.state.armor.filter(el => el.id !== armor.id),
       { ...armor, key: slugify(armor.name) },
+    ]})
+  }
+  addSkill() {
+    this.setState({ skills: [
+      ...this.state.skills,
+      { key: 'new-skill', id: Guid(), values: [1, 1] }
     ]})
   }
   handleSkillChange(skill) {
@@ -214,10 +228,22 @@ class Sheet extends ComponentBase {
       { ...skill, key: slugify(skill.name) },
     ]})
   }
+  addTrait() {
+    this.setState({ traits: [
+      ...this.state.traits,
+      { key: 'new-trait', id: Guid(), value: 0 }
+    ]})
+  }
   handleTraitChange(trait) {
     this.setState({ traits: [
       ...this.state.traits.filter(el => el.id !== trait.id),
       { ...trait, key: slugify(trait.name) },
+    ]})
+  }
+  addWeapon() {
+    this.setState({ weapons: [
+      ...this.state.weapons,
+      { key: 'new-weapon', id: Guid(), values: [0, 0, 0] }
     ]})
   }
   handleWeaponChange(weapon) {
@@ -326,13 +352,18 @@ class Sheet extends ComponentBase {
         </div>
         <div className="columns">
           <div className="column is-one-third">
-            <Section name="Traits"
-              header={['Name', 'Cost']}>
+            <Section name="Traits" header={['Name', 'Cost']}>
+              <div className="buttons">
+                <Icon name="add" onClick={this.addTrait} />
+              </div>
               {traits}
             </Section>
           </div>
           <div className="column">
             <Section name="Skills">
+              <div className="buttons">
+                <Icon name="add" onClick={this.addSkill} />
+              </div>
               <div className="columns">
                 <div className="column is-half">
                   <Section header={['Name', 'Th', 'Ms']}>
@@ -348,17 +379,23 @@ class Sheet extends ComponentBase {
             </Section>
           </div>
         </div>
-        <Section name="Equipment">
+        <Section className="Equipment">
           <div className="columns">
             <div className="column">
-              <Section className="Weapons"
+              <Section name="Weapons"
                 header={['Use', 'Weapon', 'Dmg', 'Rng', 'Hit']}>
+                <div className="buttons">
+                  <Icon name="add" onClick={this.addWeapon} />
+                </div>
                 {weapons}
               </Section>
             </div>
             <div className="column">
-              <Section className="Armor"
+              <Section name="Armor"
                 header={['Use', 'Armor', 'Head', 'Arms', 'Hand', 'Body', 'Legs', 'Feet', 'Avg']}>
+                <div className="buttons">
+                  <Icon name="add" onClick={this.addArmor} />
+                </div>
                 {armor}
               </Section>
             </div>

@@ -103,6 +103,18 @@
       "css": "undo",
       "code": 59406,
       "src": "iconic"
+    },
+    {
+      "uid": "4ba33d2607902cf690dd45df09774cb0",
+      "css": "add",
+      "code": 59407,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "5211af474d3a9848f67f945e2ccaf143",
+      "css": "remove",
+      "code": 59408,
+      "src": "fontawesome"
     }
   ]
 }

@@ -66,6 +66,7 @@
     .section-heading, .equipped, .name, .value {
       padding: 5px 1px;
     }
+    > .name { padding: 0; }
   }
 
   .Armor.section .armor:nth-child(odd),
@@ -73,5 +74,23 @@
   .Traits.section .trait:nth-child(odd),
   .Weapons.section .weapon:nth-child(odd) {
     @extend .highlight;
+  }
+
+  .Armor.section,
+  .Skills.section,
+  .Traits.section,
+  .Weapons.section {
+    position: relative;
+
+    > .buttons {
+      padding: 2px;
+      position: absolute;
+      top: 0; right: 0;
+
+      > .icon {
+        cursor: pointer;
+        font-size: 1.4em;
+      }
+    }
   }
 }
