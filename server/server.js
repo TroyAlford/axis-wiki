@@ -7,8 +7,9 @@ import path         from 'path'
 import request      from 'request'
 import url          from 'url'
 
-import Facebook     from './middleware/Facebook'
 import Config       from './services/Config'
+import Facebook     from './middleware/Facebook'
+import NoAnonymous  from './middleware/NoAnonymous'
 import Watcher      from './services/Watcher'
 
 import api_article  from './modules/article'
@@ -29,7 +30,7 @@ var app = express()
   .use('/api/page',   Facebook, api_article)
   .use('/api/by',     Facebook, api_by)
   .use('/api/config', Facebook, api_config)
-  .use('/api/my',     Facebook, api_my)
+  .use('/api/my',     Facebook, NoAnonymous, api_my)
   .use('/api/search', Facebook, api_search)
 
   /* Non-Static Content Routes */
