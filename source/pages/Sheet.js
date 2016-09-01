@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 import {
   deleteSheet,
   loadSheet,
@@ -66,10 +67,23 @@ class Sheet extends ComponentBase {
       attributes: [],
       armor: keyObjects(nextProps.armor || []),
       descriptors: nextProps.descriptors || [],
+      slug: nextProps.slug || this.props.params.slug,
       skills: keyObjects(nextProps.skills || []),
       traits: keyObjects(nextProps.traits || []),
       weapons: keyObjects(nextProps.weapons || []),
     })
+
+    if (nextProps.slug !== this.props.slug // New Article is loading
+      && nextProps.slug !== nextProps.params.slug) { // & the page location doesn't show it
+      let path = this.props.route.path.split('/')
+      path.pop()
+      path.push(nextProps.slug)
+      browserHistory.push(path.join('/'))
+    }
+
+    if (this.props.params.slug !== nextProps.params.slug) {
+      this.props.dispatch(loadSheet(nextProps.params.slug, nextProps.params.ownerId))
+    }
   }
 
   calculate_power() {
@@ -214,7 +228,7 @@ class Sheet extends ComponentBase {
   }
 
   render() {
-    const characterName = startCase(this.props.routeParams.slug),
+    const characterName = startCase(this.props.slug),
     armor = flow([
       array => orderBy(array, ['equipped', 'name'], ['desc', 'asc']),
       array => map(array, armor =>
@@ -358,17 +372,21 @@ Sheet.propTypes = {
   armor: React.PropTypes.array.isRequired,
   attributes: React.PropTypes.array.isRequired,
   descriptors: React.PropTypes.array.isRequired,
-  weapons: React.PropTypes.array.isRequired,
-  traits: React.PropTypes.array.isRequired,
+  ownerId: React.PropTypes.string,
   skills: React.PropTypes.array.isRequired,
+  slug: React.PropTypes.string,
+  traits: React.PropTypes.array.isRequired,
+  weapons: React.PropTypes.array.isRequired,
 }
 Sheet.defaultProps = {
   armor: [],
   attributes: [],
   descriptors: [],
-  weapons: [],
-  traits: [],
+  ownerId: undefined,
   skills: [],
+  slug: undefined,
+  traits: [],
+  weapons: [],
 }
 
 export default connect(

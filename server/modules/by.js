@@ -3,13 +3,19 @@ import express              from 'express'
 
 import Profile              from '../services/Profile'
 import Sheet                from '../services/Sheet'
+import Slug                 from '../services/Slug'
 
 export default express()
   .use(bodyParser.json())                         // Parses application/json
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
 
 .get('/:id/sheet/:slug', (request, response) => {
-  const { id, slug } = request.params
+  const { id, slug } = request.params,
+    normalized_slug = Slug.normalize(slug)
+
+  if (slug !== normalized_slug)
+    return response.redirect(`/api/by/${id}/sheet/${normalized_slug}`)
+
   response.send(Sheet.open(id, slug).json())
 })
 
