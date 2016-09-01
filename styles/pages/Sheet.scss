@@ -83,6 +83,7 @@
     position: relative;
 
     > .buttons {
+      display: none;
       padding: 2px;
       position: absolute;
       top: 0; right: 0;
@@ -92,5 +93,6 @@
         font-size: 1.4em;
       }
     }
+    &:hover > .buttons { display: inline-block; }
   }
 }
