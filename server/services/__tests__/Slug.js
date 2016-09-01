@@ -10,7 +10,7 @@ describe('Slug', () => {
   })
 
   it('eliminates all but a-z, 0-9, _ and -', () => {
-    let before = 'Cr4zy+  S1ug with $P3(14L (|-|4r4(73r$'
+    let before = 'Cr4zy+  S1ug.with $P3(14L (|-|4r4(73r$'
     let after  = Slug.normalize(before)
 
     expect(after).toEqual('cr4zy-s1ug-with-p3-14l-4r4-73r')
