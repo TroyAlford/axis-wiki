@@ -78,7 +78,7 @@ class Sheet extends ComponentBase {
       let path = this.props.route.path.split('/')
       path.pop()
       path.push(nextProps.slug)
-      browserHistory.push(path.join('/'))
+      browserHistory.replace(path.join('/'))
     }
 
     if (this.props.params.slug !== nextProps.params.slug) {
