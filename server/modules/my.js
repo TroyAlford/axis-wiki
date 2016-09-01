@@ -6,9 +6,23 @@ import Profile              from '../services/Profile'
 export default express()
   .use(bodyParser.json())                         // Parses application/json
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
-.get('/profile', (request, response) =>
-  response.status(200).send(Profile.load(request.session.id))
-)
+
+.use('/page', (request, response) => {
+  const { url, session: { id } } = request
+  const uri = `/api/by/${id}/page/${url}`.replace('//', '/')
+  response.redirect(uri)
+})
+.use('/sheet', (request, response) => {
+  const { url, session: { id } } = request
+  const uri = `/api/by/${id}/sheet/${url}`.replace('//', '/')
+  response.redirect(uri)
+})
+
+.get('/profile', (request, response) => {
+  const { url, session: { id } } = request
+  const uri = `/api/by/${id}/profile`.replace('//', '/')
+  response.redirect(uri)
+})
 .post('/profile', (request, response) => {
   const { id: posted_id, name, email, picture } = request.body
 
