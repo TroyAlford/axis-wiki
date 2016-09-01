@@ -1,17 +1,4 @@
 {
-  "descriptors": [
-    { "key": "image", "value": "http://placehold.it/230x280" },
-    { "key": "age", "value": 20 },
-    { "key": "eyes", "value": "" },
-    { "key": "gender", "value": "" },
-    { "key": "hair", "value": "" },
-    { "key": "height", "value": "" },
-    { "key": "homeland", "value": "" },
-    { "key": "player", "value": "" },
-    { "key": "race", "value": "" },
-    { "key": "skin", "value": "" },
-    { "key": "weight", "value": "" },
-  ],
   "attributes": [
     { "key": "acuity", "value": 0 },
     { "key": "agility", "value": 0 },
@@ -23,14 +10,24 @@
     { "key": "intuition", "value": 0 },
     { "key": "strength", "value": 0 },
     { "key": "natural_armor", "value": 0 },
-    { "key": "size", "value": 0,  },
+    { "key": "size", "value": 0 }
   ],
-  "traits": [
+  "descriptors": [
+    { "key": "image", "value": "http://placehold.it/230x280" },
+    { "key": "age", "value": 20 },
+    { "key": "eyes", "value": "" },
+    { "key": "gender", "value": "" },
+    { "key": "hair", "value": "" },
+    { "key": "height", "value": "" },
+    { "key": "homeland", "value": "" },
+    { "key": "player", "value": "" },
+    { "key": "race", "value": "" },
+    { "key": "skin", "value": "" },
+    { "key": "weight", "value": "" }
   ],
-  "skills": [
-  ],
-  "armor": [
-  ],
-  "weapons": [
-  ]
+  "skills": [],
+  "traits": [],
+
+  "armor": [],
+  "weapons": []
 }

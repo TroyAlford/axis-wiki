@@ -10,6 +10,7 @@ import article from './article/reducer'
 import media from './media/reducer'
 import messages from './messages/reducer'
 import search from './search/reducer'
+import sheet from './sheet/reducer'
 import user from './user/reducer'
 
 const initialState = {}
@@ -21,6 +22,7 @@ export default createStore(
     media,
     messages,
     search,
+    sheet,
     user
   }),
   initialState,

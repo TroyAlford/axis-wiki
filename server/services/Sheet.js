@@ -1,49 +1,83 @@
+import Config from './Config'
+import path   from 'path'
+import uniqBy from 'lodash/uniqBy'
+import utils  from 'fs-utils'
+
 import defaults from './Sheet.defaults.json'
 
-import Collection from '../helpers/Collection'
-import flow from 'lodash/flow'
-import uniqBy from 'lodash/uniqBy'
+const folders = Config.folders
 
 export default class Sheet {
   constructor(data = {}) {
-    this.armor = new Collection([
-      ...data.armor || [],
-      ...defaults.armor,
-    ], {
-      orderBy: ['equipped', 'name'],
-      orderByDirection: ['desc', 'asc']
-    })
+    this.folders = Config.folders
 
-    this.attributes = new Collection([
+    this.json = this.json.bind(this)
+
+    /* Unique Collections */
+    this.attributes = uniqBy([
       ...data.attributes || [],
       ...defaults.attributes,
-    ], { uniqBy: 'key' })
-
-    this.descriptors = new Collection([
+    ], 'key')
+    this.descriptors = uniqBy([
       ...data.descriptors || [],
       ...defaults.descriptors,
-    ], { uniqBy: 'key' })
-
-    this.skills = new Collection([
+    ], 'key')
+    this.skills = uniqBy([
       ...data.skills || [],
       ...defaults.skills,
-    ], { uniqBy: 'key' })
-
-    this.traits = new Collection([
+    ], 'key')
+    this.traits = uniqBy([
       ...data.traits || [],
       ...defaults.traits,
-    ], { uniqBy: 'key' })
+    ], 'key')
 
-    this.weapons = new Collection([
+    /* Non-Unique Collections */
+    this.armor = [
+      ...data.armor || [],
+      ...defaults.armor,
+    ]
+    this.weapons = [
       ...data.weapons || [],
       ...defaults.weapons,
-    ], {
-      orderBy: ['equipped', 'name'],
-      orderByDirection: ['desc', 'asc']
-    })
+    ]
   }
 
-  descriptors(values) {
+  json() {
+    return {
+      attributes: this.attributes,
+      descriptors: this.descriptors,
+      skills: this.skills,
+      traits: this.traits,
+      armor: this.armor,
+      weapons: this.weapons
+    }
+  }
 
+  static open(ownerId, slug) {
+    const base = path.resolve(folders.users, ownerId),
+          file = path.resolve(base, `${slug}.sheet`)
+
+    let json = undefined
+
+    try {
+      json = utils.readJSONSync(file)
+    } catch (err) {
+      console.log(err.message)
+    }
+
+    return new Sheet(json)
+  }
+  save(ownerId, slug) {
+    const base = path.resolve(folders.users, ownerId),
+          file = path.resolve(base, `${slug}.sheet`)
+
+    try {
+      fs.writeFileSync(file, this.data)
+    } catch (err) {
+      console.log(err.message)
+      return false
+    }
+
+    return true
   }
 }

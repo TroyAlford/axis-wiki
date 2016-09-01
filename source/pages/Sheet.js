@@ -1,3 +1,10 @@
+import { connect } from 'react-redux'
+import {
+  deleteSheet,
+  loadSheet,
+  loadedSheet,
+  saveSheet
+} from '../redux/sheet/actions'
 import {
   differenceBy,
   filter,
@@ -33,11 +40,15 @@ const createRange = (low, high) => low > high ? [] :
   Array.apply(null, Array(Math.abs(high - low) + 1))
        .map((discard, n) => n + low)
 
-export default class Sheet extends ComponentBase {
+class Sheet extends ComponentBase {
   constructor(props) {
     super(props)
     this._attributes = null
     this.recalculate = true
+
+    const { params: { slug, ownerId } } = this.props
+    if (this.props.slug !== slug)
+      this.props.dispatch(loadSheet(slug, ownerId))
 
     this.state = {
       attributes: [],
@@ -47,6 +58,18 @@ export default class Sheet extends ComponentBase {
       traits: keyObjects(this.props.traits || []),
       weapons: keyObjects(this.props.weapons || []),
     }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.recalculate = true
+    this.setState({
+      attributes: [],
+      armor: keyObjects(nextProps.armor || []),
+      descriptors: nextProps.descriptors || [],
+      skills: keyObjects(nextProps.skills || []),
+      traits: keyObjects(nextProps.traits || []),
+      weapons: keyObjects(nextProps.weapons || []),
+    })
   }
 
   calculate_power() {
@@ -347,3 +370,7 @@ Sheet.defaultProps = {
   traits: [],
   skills: [],
 }
+
+export default connect(
+  state => state.sheet
+)(Sheet);
