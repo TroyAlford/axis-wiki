@@ -22,6 +22,7 @@ import {
   sumBy,
   uniqBy,
 } from 'lodash'
+import { slugify } from '../../utility/Slugs'
 
 import * as React from 'react'
 import ComponentBase from '../application/ComponentBase'
@@ -204,26 +205,26 @@ class Sheet extends ComponentBase {
     this.recalculate = true
     this.setState({ armor: [
       ...this.state.armor.filter(el => el.id !== armor.id),
-      armor,
+      { ...armor, key: slugify(armor.name) },
     ]})
   }
   handleSkillChange(skill) {
     this.setState({ skills: [
       ...this.state.skills.filter(el => el.id !== skill.id),
-      skill,
+      { ...skill, key: slugify(skill.name) },
     ]})
   }
   handleTraitChange(trait) {
     this.setState({ traits: [
       ...this.state.traits.filter(el => el.id !== trait.id),
-      trait,
+      { ...trait, key: slugify(trait.name) },
     ]})
   }
   handleWeaponChange(weapon) {
     this.recalculate = true
     this.setState({ weapons: [
       ...this.state.weapons.filter(el => el.id !== weapon.id),
-      weapon,
+      { ...weapon, key: slugify(weapon.name) },
     ]})
   }
 

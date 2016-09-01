@@ -15,6 +15,12 @@ export default class Weapon extends React.Component {
       equipped
     })
   }
+  handleNameChange(name) {
+    this.props.onChange({
+      ...this.props.weapon,
+      name
+    })
+  }
   handleValueChange(index, value) {
     let { values }  = this.props.weapon
     values[index] = value
@@ -33,7 +39,9 @@ export default class Weapon extends React.Component {
         <Editable className="equipped" value={!!equipped}
           onChange={this.setEquipped.bind(this, !equipped)}
         />
-        <Editable className="name" value={display} />
+        <Editable className="name" value={display}
+          onChange={this.handleNameChange.bind(this)}
+        />
       {values.map((value, index) =>
         <Editable key={index} className="value" value={value}
           onChange={this.handleValueChange.bind(this, index)}

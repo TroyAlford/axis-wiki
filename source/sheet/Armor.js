@@ -12,6 +12,12 @@ export default class Armor extends ComponentBase {
       equipped
     })
   }
+  handleNameChange(name) {
+    this.props.onChange({
+      ...this.props.armor,
+      name
+    })
+  }
   handleValueChange(index, value) {
     let { values } = this.props.armor
     values[index] = value;
@@ -31,7 +37,9 @@ export default class Armor extends ComponentBase {
         <Editable className="equipped" value={!!equipped}
           onChange={this.setEquipped.bind(this, !equipped)}
         />
-        <Editable className="name" value={name} />
+        <Editable className="name" value={name}
+          onChange={this.handleNameChange.bind(this)}
+        />
       {values.map((value, index) =>
         <Editable key={index} className="value" value={value}
           onChange={this.handleValueChange.bind(this, index)}
