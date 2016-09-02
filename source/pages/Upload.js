@@ -8,7 +8,7 @@ import {
   uniqBy
 } from 'lodash'
 
-import { slugify } from '../../utility/Slugs'
+import Slug from '../../utility/Slugs'
 
 export default class UploadPage extends ComponentBase {
   constructor(props) {
@@ -27,7 +27,7 @@ export default class UploadPage extends ComponentBase {
     files.forEach(file => {
       let { name, preview, size, type, lastModifiedDate } = file
       uploading.push({
-        name: slugify(name),
+        name: Slug(name),
         preview, size, type, lastModifiedDate
       })
       form.append('file', file)

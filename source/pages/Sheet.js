@@ -23,7 +23,7 @@ import {
   uniqBy,
 } from 'lodash'
 import Guid from '../../utility/Guid'
-import { slugify } from '../../utility/Slugs'
+import Slug from '../../utility/Slugs'
 
 import * as React from 'react'
 import ComponentBase from '../application/ComponentBase'
@@ -34,6 +34,7 @@ import Attribute from '../sheet/Attribute'
 import Descriptor from '../sheet/Descriptor'
 import Icon from '../components/Icon'
 import Section from '../sheet/Section'
+import SkillSection from '../sheet/SkillSection'
 import SheetHeader from '../sheet/SheetHeader'
 import Skill from '../sheet/Skill'
 import Trait from '../sheet/Trait'
@@ -58,7 +59,7 @@ class Sheet extends ComponentBase {
       attributes: [],
       armor: keyObjects(this.props.armor || []),
       descriptors: this.props.descriptors || [],
-      skills: keyObjects(this.props.skills || []),
+      skills: this.props.skills || [],
       traits: keyObjects(this.props.traits || []),
       weapons: keyObjects(this.props.weapons || []),
     }
@@ -71,7 +72,7 @@ class Sheet extends ComponentBase {
       armor: keyObjects(nextProps.armor || []),
       descriptors: nextProps.descriptors || [],
       slug: nextProps.slug || this.props.params.slug,
-      skills: keyObjects(nextProps.skills || []),
+      skills: nextProps.skills || [],
       traits: keyObjects(nextProps.traits || []),
       weapons: keyObjects(nextProps.weapons || []),
     })
@@ -213,19 +214,7 @@ class Sheet extends ComponentBase {
     this.recalculate = true
     this.setState({ armor: [
       ...this.state.armor.filter(el => el.id !== armor.id),
-      { ...armor, key: slugify(armor.name) },
-    ]})
-  }
-  addSkill() {
-    this.setState({ skills: [
-      ...this.state.skills,
-      { key: 'new-skill', id: Guid(), values: [1, 1] }
-    ]})
-  }
-  handleSkillChange(skill) {
-    this.setState({ skills: [
-      ...this.state.skills.filter(el => el.id !== skill.id),
-      { ...skill, key: slugify(skill.name) },
+      { ...armor, key: Slug(armor.name) },
     ]})
   }
   addTrait() {
@@ -237,7 +226,7 @@ class Sheet extends ComponentBase {
   handleTraitChange(trait) {
     this.setState({ traits: [
       ...this.state.traits.filter(el => el.id !== trait.id),
-      { ...trait, key: slugify(trait.name) },
+      { ...trait, key: Slug(trait.name) },
     ]})
   }
   addWeapon() {
@@ -250,7 +239,7 @@ class Sheet extends ComponentBase {
     this.recalculate = true
     this.setState({ weapons: [
       ...this.state.weapons.filter(el => el.id !== weapon.id),
-      { ...weapon, key: slugify(weapon.name) },
+      { ...weapon, key: Slug(weapon.name) },
     ]})
   }
 
@@ -264,18 +253,6 @@ class Sheet extends ComponentBase {
         />
       )
     ])(this.state.armor),
-    skills = flow([
-      array => sortBy(array, skill => [
-        skill.category || '',
-        skill.name || skill.key,
-        skill.note || ''
-      ].join('').toLowerCase()),
-      array => map(array, skill =>
-        <Skill key={skill.id} skill={skill}
-          onChange={this.handleSkillChange}
-        />
-      )
-    ])(this.state.skills),
     traits = flow([
       array => sortBy(array, trait => [
         trait.category || '',
@@ -360,23 +337,7 @@ class Sheet extends ComponentBase {
             </Section>
           </div>
           <div className="column">
-            <Section name="Skills">
-              <div className="buttons">
-                <Icon name="add" onClick={this.addSkill} />
-              </div>
-              <div className="columns">
-                <div className="column is-half">
-                  <Section header={['Name', 'Th', 'Ms']}>
-                    {skills.slice(0, Math.ceil(skills.length / 2))}
-                  </Section>
-                </div>
-                <div className="column is-half">
-                  <Section header={['Name', 'Th', 'Ms']}>
-                    {skills.slice(Math.ceil(skills.length / 2))}
-                  </Section>
-                </div>
-              </div>
-            </Section>
+            <SkillSection skills={this.state.skills} />
           </div>
         </div>
         <Section className="Equipment">

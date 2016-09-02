@@ -1,6 +1,6 @@
 import toLower from 'lodash/toLower'
 
-export function slugify(input) {
+export default function slugify(input) {
   if (typeof input !== 'string')
     return input
 

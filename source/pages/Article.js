@@ -6,7 +6,7 @@ import {
   loadedArticle,
   saveArticle
 } from '../redux/article/actions'
-import { slugify } from '../../utility/Slugs'
+import Slug from '../../utility/Slugs'
 import {
   difference,
   sortBy,
@@ -125,7 +125,7 @@ class Article extends ComponentBase {
 
   handleAliasChange(updated) {
     let aliases = uniq(difference(
-      sortBy(updated.map(slugify)),
+      sortBy(updated.map(Slug)),
       [this.props.params.slug]
     ))
     this.setState({ aliases });

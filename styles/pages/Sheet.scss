@@ -1,6 +1,11 @@
 .sheet.page {
   font-size: .8em;
 
+  .highlight {
+    border-radius: 3px;
+    background-color: #f0f9f9;
+  }
+
   .columns { margin-bottom: 0; }
 
   .portrait.column {
@@ -10,11 +15,6 @@
       border-radius: 5px;
       border: 5px solid lighten($palette-light-gray, 5%);
     }
-  }
-
-  .highlight {
-    border-radius: 3px;
-    background-color: #f0f9f9;
   }
 
   .section .placeholder {
@@ -70,29 +70,8 @@
   }
 
   .Armor.section .armor:nth-child(odd),
-  .Skills.section .skill:nth-child(odd),
   .Traits.section .trait:nth-child(odd),
   .Weapons.section .weapon:nth-child(odd) {
     @extend .highlight;
-  }
-
-  .Armor.section,
-  .Skills.section,
-  .Traits.section,
-  .Weapons.section {
-    position: relative;
-
-    > .buttons {
-      display: none;
-      padding: 2px;
-      position: absolute;
-      top: 0; right: 0;
-
-      > .icon {
-        cursor: pointer;
-        font-size: 1.4em;
-      }
-    }
-    &:hover > .buttons { display: inline-block; }
   }
 }

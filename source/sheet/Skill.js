@@ -4,6 +4,7 @@ import {
   startCase,
   toLower
 } from 'lodash'
+import Slug from '../../utility/Slugs'
 
 import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
@@ -33,11 +34,17 @@ export default class Skill extends ComponentBase {
     return display
   }
 
+  handleEditEnd() {
+    this.props.onEditEnd(this.props.skill)
+  }
+
   handleNameChange(displayName) {
+    const parsed = Skill.parseName(displayName)
     this.props.onChange({
       ...this.props.skill,
-      ...Skill.parseName(displayName),
-    })
+      ...parsed,
+      key: Slug(parsed.name)
+    }, this.props.skill)
   }
 
   handleValueChange(index, value) {
@@ -47,7 +54,7 @@ export default class Skill extends ComponentBase {
     this.props.onChange({
       ...this.props.skill,
       values
-    })
+    }, this.props.skill)
   }
 
   render() {
@@ -58,13 +65,15 @@ export default class Skill extends ComponentBase {
 
     return (
       <div className={`skill ${className}`}>
-        <Editable className="name" onChange={this.handleNameChange}
-          value={this.displayName()}
+        <Editable className="name" value={this.displayName()}
+          onChange={this.handleNameChange}
+          onEditEnd={this.handleEditEnd}
         />
       {values.map((value, index) =>
         <Editable key={index} className="value"
           value={value} min={1} max={10}
           onChange={this.handleValueChange.bind(this, index)}
+          onEditEnd={this.handleEditEnd}
         />
       )}
       </div>
@@ -75,6 +84,7 @@ export default class Skill extends ComponentBase {
 Skill.propTypes = {
   className: React.PropTypes.string,
   onChange: React.PropTypes.func.isRequired,
+  onEditEnd: React.PropTypes.func.isRequired,
   skill: React.PropTypes.shape({
     category: React.PropTypes.string,
     key: React.PropTypes.string.isRequired,
@@ -86,6 +96,7 @@ Skill.propTypes = {
 Skill.defaultProps = {
   className: '',
   onChange: () => {},
+  onEditEnd: () => {},
   skill: {
     key: 'new-skill',
     values: [1, 1],

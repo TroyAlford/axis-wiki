@@ -93,7 +93,12 @@ export default class Editable extends React.Component {
     }
   }
   toggleEditing() {
-    this.setState({ editing: !this.state.editing })
+    const editing = !this.state.editing
+    this.setState({ editing })
+    if (editing)
+      this.props.onEditStart()
+    else
+      this.props.onEditEnd()
   }
   saveAndStopEditing(event) {
     this.handleChange(event)
@@ -177,8 +182,12 @@ Editable.propTypes = {
   min: React.PropTypes.number,
   onChange: React.PropTypes.func.isRequired,
   onChanging: React.PropTypes.func.isRequired,
+  onEditStart: React.PropTypes.func.isRequired,
+  onEditEnd: React.PropTypes.func.isRequired,
 }
 Editable.defaultProps = {
   onChange: () => true,
   onChanging: () => true,
+  onEditStart: () => true,
+  onEditEnd: () => true,
 }
