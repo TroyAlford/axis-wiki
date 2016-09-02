@@ -30,15 +30,18 @@ import ComponentBase from '../application/ComponentBase'
 import math from '../mathjs'
 
 import Armor from '../sheet/Armor'
+import ArmorManager from '../sheet/ArmorManager'
 import Attribute from '../sheet/Attribute'
 import Descriptor from '../sheet/Descriptor'
 import Icon from '../components/Icon'
 import Section from '../sheet/Section'
-import SkillSection from '../sheet/SkillSection'
+import SkillManager from '../sheet/SkillManager'
 import SheetHeader from '../sheet/SheetHeader'
 import Skill from '../sheet/Skill'
 import Trait from '../sheet/Trait'
+import TraitManager from '../sheet/TraitManager'
 import Weapon from '../sheet/Weapon'
+import WeaponManager from '../sheet/WeaponManager'
 
 const keyObjects = collection => map(collection, (el, id) => ({ id, ...el }));
 const createRange = (low, high) => low > high ? [] :
@@ -57,11 +60,7 @@ class Sheet extends ComponentBase {
 
     this.state = {
       attributes: [],
-      armor: keyObjects(this.props.armor || []),
       descriptors: this.props.descriptors || [],
-      skills: this.props.skills || [],
-      traits: keyObjects(this.props.traits || []),
-      weapons: keyObjects(this.props.weapons || []),
     }
   }
 
@@ -72,9 +71,6 @@ class Sheet extends ComponentBase {
       armor: keyObjects(nextProps.armor || []),
       descriptors: nextProps.descriptors || [],
       slug: nextProps.slug || this.props.params.slug,
-      skills: nextProps.skills || [],
-      traits: keyObjects(nextProps.traits || []),
-      weapons: keyObjects(nextProps.weapons || []),
     })
 
     if (nextProps.slug !== this.props.slug // New Article is loading
@@ -204,75 +200,9 @@ class Sheet extends ComponentBase {
       descriptor,
     ]})
   }
-  addArmor() {
-    this.setState({ armor: [
-      ...this.state.armor,
-      { key: 'new-armor', id: Guid(), values: [0, 0, 0, 0, 0, 0] }
-    ]})
-  }
-  handleArmorChange(armor) {
-    this.recalculate = true
-    this.setState({ armor: [
-      ...this.state.armor.filter(el => el.id !== armor.id),
-      { ...armor, key: Slug(armor.name) },
-    ]})
-  }
-  addTrait() {
-    this.setState({ traits: [
-      ...this.state.traits,
-      { key: 'new-trait', id: Guid(), value: 0 }
-    ]})
-  }
-  handleTraitChange(trait) {
-    this.setState({ traits: [
-      ...this.state.traits.filter(el => el.id !== trait.id),
-      { ...trait, key: Slug(trait.name) },
-    ]})
-  }
-  addWeapon() {
-    this.setState({ weapons: [
-      ...this.state.weapons,
-      { key: 'new-weapon', id: Guid(), values: [0, 0, 0] }
-    ]})
-  }
-  handleWeaponChange(weapon) {
-    this.recalculate = true
-    this.setState({ weapons: [
-      ...this.state.weapons.filter(el => el.id !== weapon.id),
-      { ...weapon, key: Slug(weapon.name) },
-    ]})
-  }
 
   render() {
-    const characterName = startCase(this.props.slug),
-    armor = flow([
-      array => orderBy(array, ['equipped', 'name'], ['desc', 'asc']),
-      array => map(array, armor =>
-        <Armor key={armor.id} armor={armor}
-          onChange={this.handleArmorChange}
-        />
-      )
-    ])(this.state.armor),
-    traits = flow([
-      array => sortBy(array, trait => [
-        trait.category || '',
-        trait.name || trait.key,
-        trait.note || ''
-      ].join('').toLowerCase()),
-      array => map(array, trait =>
-        <Trait key={trait.id} trait={trait}
-          onChange={this.handleTraitChange}
-        />
-      )
-    ])(this.state.traits),
-    weapons = flow([
-      array => orderBy(array, ['equipped', 'name'], ['desc', 'asc']),
-      array => map(array, weapon =>
-        <Weapon key={weapon.id} weapon={weapon}
-          onChange={this.handleWeaponChange}
-        />
-      )
-    ])(this.state.weapons)
+    const characterName = startCase(this.props.slug)
 
     return (
       <div className="sheet page">
@@ -329,36 +259,27 @@ class Sheet extends ComponentBase {
         </div>
         <div className="columns">
           <div className="column is-one-third">
-            <Section name="Traits" header={['Name', 'Cost']}>
-              <div className="buttons">
-                <Icon name="add" onClick={this.addTrait} />
-              </div>
-              {traits}
-            </Section>
+            <TraitManager items={this.props.traits}
+              ref={self => this.traitManager = self}
+            />
           </div>
           <div className="column">
-            <SkillSection skills={this.state.skills} />
+            <SkillManager items={this.props.skills}
+              ref={self => this.skillManager = self}
+            />
           </div>
         </div>
         <Section className="Equipment">
           <div className="columns">
             <div className="column">
-              <Section name="Weapons"
-                header={['Use', 'Weapon', 'Dmg', 'Rng', 'Hit']}>
-                <div className="buttons">
-                  <Icon name="add" onClick={this.addWeapon} />
-                </div>
-                {weapons}
-              </Section>
+              <WeaponManager items={this.props.weapons}
+                ref={self => this.weaponManager = self}
+              />
             </div>
             <div className="column">
-              <Section name="Armor"
-                header={['Use', 'Armor', 'Head', 'Arms', 'Hand', 'Body', 'Legs', 'Feet', 'Avg']}>
-                <div className="buttons">
-                  <Icon name="add" onClick={this.addArmor} />
-                </div>
-                {armor}
-              </Section>
+              <ArmorManager items={this.props.armor}
+                ref={self => this.armorManager = self}
+              />
             </div>
           </div>
         </Section>

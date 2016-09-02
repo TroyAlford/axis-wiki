@@ -4,6 +4,7 @@ import {
   startCase,
   toLower
 } from 'lodash'
+import Slug from '../../utility/Slugs'
 
 import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
@@ -32,18 +33,25 @@ export default class Trait extends ComponentBase {
     if (note) display = `${display} (${note})`
     return display
   }
+
+  handleEditEnd() {
+    this.props.onEditEnd(this.props.trait)
+  }
+
+  handleNameChange(displayName) {
+    const parsed = Trait.parseName(displayName)
+    this.props.onChange({
+      ...this.props.trait,
+      ...parsed,
+      key: Slug(parsed.name)
+    }, this.props.trait)
+  }
+
   handleValueChange(value) {
     this.props.onChange({
       ...this.props.trait,
       value
-    })
-  }
-
-  handleNameChange(displayName) {
-    this.props.onChange({
-      ...this.props.trait,
-      ...Trait.parseName(displayName),
-    })
+    }, this.props.trait)
   }
 
   render() {
@@ -54,11 +62,13 @@ export default class Trait extends ComponentBase {
 
     return (
       <div className={`trait ${className}`}>
-        <Editable className="name" onChange={this.handleNameChange}
-          value={this.displayName()}
+        <Editable className="name" value={this.displayName()}
+          onChange={this.handleNameChange}
+          onEditEnd={this.handleEditEnd}
         />
         <Editable className="value" value={value}
           onChange={this.handleValueChange}
+          onEditEnd={this.handleEditEnd}
         />
       </div>
     )

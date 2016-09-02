@@ -5,6 +5,7 @@ import {
   sum,
   toLower
 } from 'lodash'
+import Slug from '../../utility/Slugs'
 
 import Editable from '../components/Editable'
 
@@ -13,13 +14,15 @@ export default class Weapon extends React.Component {
     this.props.onChange({
       ...this.props.weapon,
       equipped
-    })
+    }, this.props.weapon)
   }
+
   handleNameChange(name) {
     this.props.onChange({
       ...this.props.weapon,
-      name
-    })
+      name,
+      key: Slug(name)
+    }, this.props.weapon)
   }
   handleValueChange(index, value) {
     let { values }  = this.props.weapon
@@ -28,7 +31,7 @@ export default class Weapon extends React.Component {
     this.props.onChange({
       ...this.props.weapon,
       values
-    })
+    }, this.props.weapon)
   }
 
   render() {

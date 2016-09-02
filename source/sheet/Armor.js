@@ -5,6 +5,7 @@ import {
   sum,
   toLower
 } from 'lodash'
+import Slug from '../../utility/Slugs'
 
 import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
@@ -14,13 +15,14 @@ export default class Armor extends ComponentBase {
     this.props.onChange({
       ...this.props.armor,
       equipped
-    })
+    }, this.props.armor)
   }
   handleNameChange(name) {
     this.props.onChange({
       ...this.props.armor,
-      name
-    })
+      name,
+      key: Slug(name)
+    }, this.props.armor)
   }
   handleValueChange(index, value) {
     let { values } = this.props.armor
@@ -29,7 +31,7 @@ export default class Armor extends ComponentBase {
     this.props.onChange({
       ...this.props.armor,
       values
-    })
+    }, this.props.armor)
   }
 
   render() {
