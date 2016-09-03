@@ -7,23 +7,14 @@ import {
   saveSheet
 } from '../redux/sheet/actions'
 import {
-  differenceBy,
-  filter,
-  find,
   flatten,
   flow,
   map,
-  orderBy,
   reduce,
   reject,
-  sortBy,
   startCase,
-  sum,
   sumBy,
-  uniqBy,
 } from 'lodash'
-import Guid from '../../utility/Guid'
-import Slug from '../../utility/Slugs'
 
 import * as React from 'react'
 import ComponentBase from '../application/ComponentBase'
@@ -34,7 +25,6 @@ import Attribute from '../sheet/Attribute'
 import AttributeManager from '../sheet/AttributeManager'
 import Descriptor from '../sheet/Descriptor'
 import DescriptorManager from '../sheet/DescriptorManager'
-import Icon from '../components/Icon'
 import Section from '../sheet/Section'
 import SkillManager from '../sheet/SkillManager'
 import SheetHeader from '../sheet/SheetHeader'
@@ -44,7 +34,6 @@ import TraitManager from '../sheet/TraitManager'
 import Weapon from '../sheet/Weapon'
 import WeaponManager from '../sheet/WeaponManager'
 
-const keyObjects = collection => map(collection, (el, id) => ({ id, ...el }));
 const createRange = (low, high) => low > high ? [] :
   Array.apply(null, Array(Math.abs(high - low) + 1))
        .map((discard, n) => n + low)
