@@ -12,22 +12,26 @@ export default class AttributeManager extends CollectionManager {
     super(props)
     this.handleChange = super.handleChange.bind(this)
     this.handleEditEnd = super.handleEditEnd.bind(this)
-    this.whitelist()
+    this.update()
   }
   componentWillReceiveProps(newProps) {
     super.componentWillReceiveProps(newProps)
-    this.whitelist()
-    this.calculate()
+    this.update()
   }
 
-  handleCollectionChange() {
+  update() {
+    this.collection.onChange = null
+
+    this.require()
+    this.whitelist()
     this.calculate()
-    this.props.onChange()
+    this.forceUpdate()
+
+    this.collection.onChange = this.update
+    this.props.onChange(this.collection.sorted)
   }
 
   calculate() {
-    this.require()
-
     let hash = {}
     const addToHash = item => hash[item.key] = item.value
 
@@ -43,23 +47,17 @@ export default class AttributeManager extends CollectionManager {
       return parser.eval(expression)
     }
 
-    this.collection.onChange = null
     computed.forEach(item => {
       this.collection.update(
         { key: item.key },
         { value: calculate(item.calc) }
       )
     })
-    this.collection.onChange = this.handleCollectionChange.bind(this)
-    this.props.onChange()
   }
   require() {
-    this.collection.onChange = null
     const currentKeys = this.collection.keys
     filter(keys, key => !includes(currentKeys, key))
       .forEach(key => this.collection.add({ key, value: 0 }))
-    this.collection.onChange = this.handleCollectionChange.bind(this)
-    this.props.onChange()
   }
   whitelist() {
     this.collection.remove(item => !includes(keys, item.key))

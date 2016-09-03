@@ -7,6 +7,7 @@ import {
   saveSheet
 } from '../redux/sheet/actions'
 import {
+  find,
   flatten,
   flow,
   map,
@@ -61,6 +62,9 @@ class Sheet extends ComponentBase {
     }
   }
 
+  componentDidMount() {
+    this.handleChange('armor', this.armorManager.collection)
+  }
   componentDidUpdate() {
     this.handleChange('armor', this.armorManager.collection)
   }
@@ -98,6 +102,9 @@ class Sheet extends ComponentBase {
   }
 
   handleChange(type, collection) {
+    if (!this.armorManager || !this.attributeManager) return;
+
+    const armor = this.armorManager.collection
     const attributes = this.attributeManager.collection
 
     switch (type) {
@@ -112,7 +119,7 @@ class Sheet extends ComponentBase {
     const characterName = startCase(this.props.slug)
     const armor = { key: 'armor', value: this.equippedArmorValue || 0 }
     const image = find(this.props.descriptors, { key: 'image' })
-    const imageUrl = image && image.value ? image.value : ''
+    const imageUrl = (image && image.value) ? image.value : ''
 
     return (
       <div className="sheet page">

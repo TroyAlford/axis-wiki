@@ -13,11 +13,12 @@ export default class CollectionManager extends ComponentBase {
   componentWillReceiveProps(newProps) {
     this.collection = new Collection(newProps.items, this.settings)
     this.collection.onChange = this.handleCollectionChange.bind(this)
+    this.handleCollectionChange()
   }
 
   handleCollectionChange() {
-    this.setState({}) // Force update
-    this.props.onChange()
+    this.forceUpdate()
+    this.props.onChange(this.collection)
   }
 
   handleChange(updated, previous) {
