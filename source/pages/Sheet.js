@@ -60,6 +60,8 @@ class Sheet extends ComponentBase {
     if (this.props.params.slug !== nextProps.params.slug) {
       this.props.dispatch(loadSheet(nextProps.params.slug, nextProps.params.ownerId))
     }
+
+    this.sheetHeader.props.name = this.getName(nextProps.descriptors)
   }
 
   componentDidMount() {
@@ -115,25 +117,33 @@ class Sheet extends ComponentBase {
     }
   }
 
-  render() {
-    const characterName = startCase(this.props.slug)
-    const armor = { key: 'armor', value: this.equippedArmorValue || 0 }
+  getName(descriptors = this.props.descriptors) {
+    const descriptor = find(descriptors, { key: 'name' })
+    return (descriptor && descriptor.value !== '')
+      ? descriptor.value
+      : startCase(this.props.slug)
+  }
+  getImageUrl() {
     const image = find(this.props.descriptors, { key: 'image' })
-    const imageUrl = (image && image.value) ? image.value : ''
+    return image ? image.value : ''
+  }
 
+  render() {
     return (
       <div className="sheet page">
-        {false && <SheetHeader
-          name={characterName}
-          xp={this.descriptor('current_xp').value || 0}
-          rp={this.descriptor('rp').value || 0}
-          power={this.calculate_power()} />}
+        <SheetHeader
+          name={this.getName()}
+          xp={0}
+          rp={0}
+          power={0}
+          ref={self => this.sheetHeader = self}
+        />
         <div className="columns">
           <div className="column is-one-third">
             <Section name="Portrait">
               <div className="portrait frame">
                 <div className="portrait display" style={{
-                  backgroundImage: `url(${imageUrl})`
+                  backgroundImage: `url(${this.getImageUrl()})`
                 }}></div>
               </div>
             </Section>

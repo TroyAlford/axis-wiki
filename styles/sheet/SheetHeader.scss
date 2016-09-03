@@ -7,18 +7,21 @@
   .CharacterName {
     flex-grow: 1;
     font-size: 1.5rem;
+    > * { padding: 0; }
+  }
+
+  .xp, .rp, .power {
+    min-width: 40px; max-width: 40px;
   }
   .name, .xp, .rp, .power {
     font-size: 0.8rem;
     padding: .35rem;
+    text-align: center;
+
     > * { padding: 0; }
   }
   .CharacterName, .name {
     font-weight: bold;
     font-family: Ubuntu, Calibri, sans-serif;
-  }
-  .editable {
-    min-width: 40px; max-width: 40px;
-    text-align: center;
   }
 }
