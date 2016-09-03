@@ -1,7 +1,7 @@
 import * as React from 'react'
 import CollectionManager from './CollectionManager'
 import Descriptor from './Descriptor'
-import { includes } from 'lodash'
+import { filter, includes } from 'lodash'
 
 export default class DescriptorManager extends CollectionManager {
   constructor(props) {
@@ -10,13 +10,29 @@ export default class DescriptorManager extends CollectionManager {
 
     this.handleChange = super.handleChange.bind(this)
     this.handleEditEnd = super.handleEditEnd.bind(this)
-    this.whitelist()
+    this.update()
   }
   componentWillReceiveProps(newProps) {
     super.componentWillReceiveProps(newProps)
-    this.whitelist()
+    this.update()
   }
 
+  update() {
+    this.collection.onChange = null
+
+    this.require()
+    this.whitelist()
+    this.forceUpdate()
+
+    this.collection.onChange = this.update
+    this.props.onChange(this.collection.sorted)
+  }
+
+  require() {
+    const currentKeys = this.collection.keys
+    filter(keys, key => !includes(currentKeys, key))
+      .forEach(key => this.collection.add({ key, value: '' }))
+  }
   whitelist() {
     this.collection.remove(item => !includes(keys, item.key))
   }
@@ -34,7 +50,7 @@ export default class DescriptorManager extends CollectionManager {
 // Sorted list of keys, used in whitelisting and also
 // as a sort-order for display purposes.
 const keys = [
-  'player',   'height', 'eyes',
+  'name',   'height', 'eyes',
   'homeland', 'weight', 'hair',
   'race',     'gender', 'age',
 ]
