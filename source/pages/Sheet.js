@@ -61,6 +61,10 @@ class Sheet extends ComponentBase {
     }
   }
 
+  componentDidUpdate() {
+    this.handleChange('armor', this.armorManager.collection)
+  }
+
   calculate_power() {
     let power = 0
 
@@ -93,12 +97,22 @@ class Sheet extends ComponentBase {
     return power
   }
 
+  handleChange(type, collection) {
+    const attributes = this.attributeManager.collection
+
+    switch (type) {
+      case 'armor':
+        return attributes.update({ key: 'armor' },
+          { value: this.armorManager.getEquippedValue() }
+        )
+    }
+  }
+
   render() {
     const characterName = startCase(this.props.slug)
-    let image = null
-
-    if (this.descriptors)
-      image = this.descriptors.find({ key: 'image' })
+    const armor = { key: 'armor', value: this.equippedArmorValue || 0 }
+    const image = find(this.props.descriptors, { key: 'image' })
+    const imageUrl = image && image.value ? image.value : ''
 
     return (
       <div className="sheet page">
@@ -108,10 +122,11 @@ class Sheet extends ComponentBase {
           rp={this.descriptor('rp').value || 0}
           power={this.calculate_power()} />}
         <div className="columns">
-        {image && typeof image.value === 'string' &&
           <div className="portrait column is-one-third">
-            <img className="portrait" src={image.value} />
-          </div>}
+            <div className="portrait" style={{
+              backgroundImage: `url(${imageUrl})`
+            }}></div>
+          </div>
           <div className="column">
             <DescriptorManager items={this.props.descriptors}
               ref={self => this.descriptorManager = self}
@@ -143,6 +158,7 @@ class Sheet extends ComponentBase {
             <div className="column">
               <ArmorManager items={this.props.armor}
                 ref={self => this.armorManager = self}
+                onChange={this.handleChange.bind(this, 'armor')}
               />
             </div>
           </div>
