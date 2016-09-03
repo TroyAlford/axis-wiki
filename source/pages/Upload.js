@@ -86,9 +86,9 @@ export default class UploadPage extends ComponentBase {
             or drag and drop into this container
           </span>
         </Dropzone>
-        {uploading.length && this.renderFiles(uploading, 'Uploading', 'is-info')}
-        {uploaded.length  && this.renderFiles(uploaded, 'Uploaded', 'is-success')}
-        {failed.length    && this.renderFiles(failed, 'Failed', 'is-danger')}
+        {uploading.length !== 0 && this.renderFiles(uploading, 'Uploading', 'is-info')}
+        {uploaded.length !== 0  && this.renderFiles(uploaded, 'Uploaded', 'is-success')}
+        {failed.length !== 0    && this.renderFiles(failed, 'Failed', 'is-danger')}
       </div>
     );
   }
