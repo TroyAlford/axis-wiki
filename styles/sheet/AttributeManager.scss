@@ -24,8 +24,10 @@
     min-width: 24%; max-width: 24%;
     order: 2;
 
-    &:nth-child(8n), &:nth-child(8n-1), &:nth-child(8n-2) {
-      background-color: $palette-light-blue;
+    &.strength, &.intellect, &.confidence,
+    &.agility,  &.acuity,    &.intuition,
+    &.fitness,  &.focus,     &.devotion {
+      border: 1px solid darken($palette-light-blue, 10%);
     }
 
     &.body, &.mind, &.spirit,
