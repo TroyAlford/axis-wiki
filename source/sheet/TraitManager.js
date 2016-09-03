@@ -20,6 +20,7 @@ export default class TraitManager extends CollectionManager {
 }
 
 TraitManager.propTypes = {
+  ...CollectionManager.propTypes,
   items: React.PropTypes.arrayOf(React.PropTypes.shape({
     key: React.PropTypes.string.isRequired,
     category: React.PropTypes.string,
@@ -29,6 +30,7 @@ TraitManager.propTypes = {
   })).isRequired,
 }
 TraitManager.defaultProps = {
+  ...CollectionManager.defaultProps,
   headline: 'Traits',
   headers: ['Name', 'Cost'],
   settings: {

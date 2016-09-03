@@ -23,20 +23,22 @@ export default class Collection {
     this.items = []
     this.settings = merge({}, defaults, settings)
 
-    items.forEach(item => this.add(item))
+    this.addAll(items)
   }
 
   emitChanged() {
-    if (typeof this.onChange === 'function')
-      this.onChange()
+    this.items = this.sorted
+    typeof this.onChange === 'function' && this.onChange()
   }
 
   get ids() {
     return this.map(item => item.id)
   }
+
   get keys() {
     return this.map(item => item.key)
   }
+
   get sorted() {
     if (typeof this.settings.orderBy === 'function')
       return orderBy(this.items, this.settings.orderBy)
@@ -45,7 +47,7 @@ export default class Collection {
     return orderBy(this.items, fieldNames, directions)
   }
 
-  add(newItem = {}) {
+  add(newItem = {}, suppressChangeEvent = false) {
     const item = merge({}, this.settings.template, newItem)
 
     if (typeof item.id === 'function')
@@ -54,8 +56,44 @@ export default class Collection {
       item.key = item.key(item)
 
     this.items.push(item)
-    this.emitChanged()
+    !suppressChangeEvent && this.emitChanged()
   }
+
+  addAll(items = []) {
+    const count = this.items.length
+
+    items.forEach(item => this.add(item), true)
+    this.items.length !== count && this.emitChanged()
+  }
+
+  clear() {
+    const count = this.items.length
+    this.items = []
+
+    count !== 0 && this.emitChanged()
+  }
+
+  filter(itemFilter = () => true) {
+    if (includes(['object', 'function'], typeof itemFilter))
+      return filter(this.items, itemFilter)
+    else if (includes(['number', 'string'], typeof itemFilter))
+      return filter(this.items, { id: itemFilter })
+    else
+      return this.items
+  }
+
+  find(itemFilter) {
+    return this.filter(itemFilter).shift()
+  }
+
+  forEach(fn = item => { return }) {
+    this.items.forEach(fn)
+  }
+
+  map(fn = item => item) {
+    return this.items.map(fn)
+  }
+
   remove(itemFilter) {
     const count = this.items.length
 
@@ -64,9 +102,9 @@ export default class Collection {
     else if (inclues(['number', 'string'], typeof itemFilter))
       this.items = reject(this.items, { id: itemFilter })
 
-    if (this.items.length !== count)
-      this.emitChanged()
+    this.items.length !== count && this.emitChanged()
   }
+
   update(itemFilter, updater) {
     let items = this.filter(itemFilter)
 
@@ -78,18 +116,4 @@ export default class Collection {
     this.emitChanged()
   }
 
-  filter(itemFilter = () => true) {
-    if (includes(['object', 'function'], typeof itemFilter))
-      return filter(this.items, itemFilter)
-    else if (includes(['number', 'string'], typeof itemFilter))
-      return filter(this.items, { id: itemFilter })
-    else
-      return this.items
-  }
-  forEach(fn = item => {}) {
-    this.items.forEach(fn)
-  }
-  map(fn = item => {}) {
-    this.items.map(fn)
-  }
 }

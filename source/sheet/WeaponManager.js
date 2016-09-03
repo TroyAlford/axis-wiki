@@ -19,6 +19,7 @@ export default class WeaponManager extends CollectionManager {
 }
 
 WeaponManager.propTypes = {
+  ...CollectionManager.propTypes,
   items: React.PropTypes.arrayOf(React.PropTypes.shape({
     key: React.PropTypes.string.isRequired,
     equipped: React.PropTypes.bool.isRequired,
@@ -27,6 +28,7 @@ WeaponManager.propTypes = {
   })).isRequired,
 }
 WeaponManager.defaultProps = {
+  ...CollectionManager.defaultProps,
   headline: 'Weapons',
   headers: ['Use', 'Name', 'Dmg', 'Rng', 'Hit'],
   settings: {

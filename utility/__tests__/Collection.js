@@ -55,11 +55,11 @@ describe('Collection', () => {
 
     collection.update({ key: 'a' }, { key: 'A', value: 1 })
     expect(collection.keys).toEqual(['A', 'b', 'c'])
-    expect(collection.filter({ key: 'A' })[0].value).toEqual(1)
+    expect(collection.find({ key: 'A' }).value).toEqual(1)
 
     collection.update({ key: 'A' }, item => { item.key = 'a'; item.value = 2 })
     expect(collection.keys).toEqual(['a', 'b', 'c'])
-    expect(collection.filter({ key: 'a' })[0].value).toEqual(2)
+    expect(collection.find({ key: 'a' }).value).toEqual(2)
   })
   it('sorts correctly', () => {
     const original = [

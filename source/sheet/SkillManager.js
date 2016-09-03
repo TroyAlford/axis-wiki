@@ -45,6 +45,7 @@ export default class SkillManager extends CollectionManager {
 }
 
 SkillManager.propTypes = {
+  ...CollectionManager.propTypes,
   items: React.PropTypes.arrayOf(React.PropTypes.shape({
     key: React.PropTypes.string.isRequired,
     category: React.PropTypes.string,
@@ -54,6 +55,7 @@ SkillManager.propTypes = {
   })).isRequired,
 }
 SkillManager.defaultProps = {
+  ...CollectionManager.defaultProps,
   headline: 'Skills',
   headers: ['Name', 'Th', 'Ms', 'Name', 'Th', 'Ms'],
   settings: {

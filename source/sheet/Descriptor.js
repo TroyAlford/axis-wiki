@@ -11,7 +11,10 @@ import Editable from '../components/Editable'
 export default class Descriptor extends ComponentBase {
   handleValueChange(value) {
     let { key, name } = this.props.descriptor
-    this.props.onChange({ key, name, value })
+    this.props.onChange(
+      { key, name, value },
+      this.props.descriptor,
+    )
   }
 
   render() {

@@ -8,14 +8,15 @@ export default class CollectionManager extends ComponentBase {
     super(props)
     this.settings = props.settings
     this.collection = new Collection(props.items, this.settings)
-    this.collection.onChange = this.handleCollectionChange
+    this.collection.onChange = this.handleCollectionChange.bind(this)
   }
   componentWillReceiveProps(newProps) {
     this.collection = new Collection(newProps.items, this.settings)
+    this.collection.onChange = this.handleCollectionChange.bind(this)
   }
 
   handleCollectionChange() {
-    this.forceUpdate()
+    this.setState({}) // Force update
     this.props.onChange()
   }
 
@@ -24,17 +25,13 @@ export default class CollectionManager extends ComponentBase {
       ...updated,
       id: previous.id
     })
-    this.forceUpdate()
   }
   handleEditEnd(item) {
-    if (item.key === '') {
-      this.collection.remove({ id: item.id })
-      this.forceUpdate()
-    }
+    item.key === '' && this.collection.remove({ id: item.id })
   }
 
   renderItem(item) {
-    return null
+    return (this.props.renderItem || this.renderItem || (() => null)).apply()
   }
 
   render() {
@@ -51,10 +48,12 @@ CollectionManager.propTypes = {
   headline: React.PropTypes.string,
   items: React.PropTypes.array.isRequired,
   onChange: React.PropTypes.func.isRequired,
+  renderItem: React.PropTypes.func,
   settings: React.PropTypes.object.isRequired,
 }
 CollectionManager.defaultProps = {
   items: [],
   onChange: () => {},
+  renderItem: () => null,
   settings: {},
 }

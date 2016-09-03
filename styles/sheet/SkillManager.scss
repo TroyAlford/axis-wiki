@@ -12,7 +12,7 @@
 
     &:nth-child(2n+1) { float: left; }
     &:nth-child(2n+2) { float: right; }
-    &:nth-child(4n+1), &:nth-child(4n+2) {
+    &:nth-child(4n), &:nth-child(4n-1) {
       @extend .highlight;
     }
 

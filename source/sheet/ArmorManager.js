@@ -20,6 +20,7 @@ export default class ArmorManager extends CollectionManager {
 }
 
 ArmorManager.propTypes = {
+  ...CollectionManager.propTypes,
   items: React.PropTypes.arrayOf(React.PropTypes.shape({
     key: React.PropTypes.string.isRequired,
     equipped: React.PropTypes.bool.isRequired,
@@ -28,6 +29,7 @@ ArmorManager.propTypes = {
   })).isRequired,
 }
 ArmorManager.defaultProps = {
+  ...CollectionManager.defaultProps,
   headline: 'Armor',
   headers: ['Use', 'Armor', 'Head', 'Arms', 'Hand', 'Body', 'Legs', 'Feet', 'Avg'],
   settings: {
