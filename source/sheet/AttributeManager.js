@@ -50,7 +50,7 @@ export default class AttributeManager extends CollectionManager {
     computed.forEach(item => {
       this.collection.update(
         { key: item.key },
-        { value: calculate(item.calc) }
+        { value: calculate(item.calc), calculated: true }
       )
     })
   }
@@ -66,7 +66,7 @@ export default class AttributeManager extends CollectionManager {
   renderItem(attribute) {
     return (
       <Attribute key={attribute.id} className={attribute.key}
-        attribute={attribute}
+        attribute={attribute} readonly={attribute.calculated}
         onChange={this.handleChange}
         onEditEnd={this.handleEditEnd}
       />
