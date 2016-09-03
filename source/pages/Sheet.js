@@ -129,10 +129,14 @@ class Sheet extends ComponentBase {
           rp={this.descriptor('rp').value || 0}
           power={this.calculate_power()} />}
         <div className="columns">
-          <div className="portrait column is-one-third">
-            <div className="portrait" style={{
-              backgroundImage: `url(${imageUrl})`
-            }}></div>
+          <div className="column is-one-third">
+            <Section name="Portrait">
+              <div className="portrait frame">
+                <div className="portrait display" style={{
+                  backgroundImage: `url(${imageUrl})`
+                }}></div>
+              </div>
+            </Section>
           </div>
           <div className="column">
             <DescriptorManager items={this.props.descriptors}

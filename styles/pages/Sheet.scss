@@ -3,11 +3,18 @@
 
   .columns { margin-bottom: 0; }
 
-  .portrait.column {
+  .Portrait.section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .portrait.frame {
     align-items: center;
     border: 5px solid lighten($palette-light-gray, 5%);
     border-radius: 5px;
     display: flex;
+    flex-grow: 1;
     justify-content: center;
     text-align: center;
     margin: 1% 0 1% 1%;
@@ -21,7 +28,7 @@
       font-size: 5em;
     }
 
-    .portrait {
+    .portrait.display {
       background-position: center center;
       background-size: cover;
       position: absolute;
@@ -33,7 +40,6 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    padding: 5px 0 0 0;
 
     > .name {
       font-family: Ubuntu, Calibri, sans-serif;
