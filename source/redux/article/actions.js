@@ -1,8 +1,8 @@
 import fetch from 'isomorphic-fetch'
-import { browserHistory } from 'react-router'
-import { startCase } from 'lodash'
 import { addMessage } from '../messages/actions'
+import { browserHistory } from 'react-router'
 import { setMetadata } from '../application/actions'
+import { startCase } from 'lodash'
 
 export const
   ARTICLE_LOAD = 'article.load',
@@ -24,7 +24,7 @@ export function loadArticle(requested_slug) {
       })
       .then(json => {
         const title = startCase(slug)
-        const keywords = [...json.aliases, ...json.tags, slug]
+        const keywords = [...json.aliases, ...json.tags, title]
         dispatch(setMetadata(title, keywords))
         dispatch(loadedArticle(slug, json))
       })

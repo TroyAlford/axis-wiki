@@ -1,6 +1,8 @@
 import fetch from 'isomorphic-fetch'
-import { browserHistory } from 'react-router'
 import { addMessage } from '../messages/actions'
+import { browserHistory } from 'react-router'
+import { filter, includes, startCase } from 'lodash'
+import { setMetadata } from '../application/actions'
 
 export const
   SHEET_LOAD = 'sheet.load',
@@ -25,7 +27,17 @@ export function loadSheet(requested_slug, ownerId = undefined) {
         slug = response.url.split('/').pop()
         return response.json()
       })
-      .then(json => dispatch(loadedSheet(slug, json, ownerId)))
+      .then(json => {
+        const title = startCase(slug)
+        const keywords = [
+          ...filter(json.descriptors, descriptor =>
+            includes(['homeland', 'race', 'gender'], descriptor.key)
+          ).map(descriptor => descriptor.value),
+          'sheet', title
+        ]
+        dispatch(setMetadata(title, keywords))
+        dispatch(loadedSheet(slug, json, ownerId))
+      })
   }
 }
 

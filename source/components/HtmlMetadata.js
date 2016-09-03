@@ -1,6 +1,5 @@
-import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-
+import { connect } from 'react-redux'
 import { startCase } from 'lodash'
 
 export default connect(
@@ -10,7 +9,6 @@ export default connect(
       titleTemplate: `%s - ${state.application.name}`,
       title: state.application.title,
       meta: [
-        // { 'name': 'description', 'content': state.article.description },
         { 'name': 'keywords', 'content': state.application.keywords }
       ]
     }
