@@ -8,10 +8,10 @@ export default connect(
     return {
       defaultTitle: 'Welcome',
       titleTemplate: `%s - ${state.application.name}`,
-      title: state.article.title || startCase(state.article.slug),
+      title: state.application.title,
       meta: [
         // { 'name': 'description', 'content': state.article.description },
-        { 'name': 'keywords',    'content': [...state.article.tags, state.article.slug] }
+        { 'name': 'keywords', 'content': state.application.keywords }
       ]
     }
   }
