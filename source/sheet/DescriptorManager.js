@@ -50,9 +50,9 @@ export default class DescriptorManager extends CollectionManager {
 // Sorted list of keys, used in whitelisting and also
 // as a sort-order for display purposes.
 const keys = [
-  'name',   'height', 'eyes',
-  'homeland', 'weight', 'hair',
-  'race',     'gender', 'age',
+  'homeland', 'height', 'eyes',
+  'race',     'weight', 'hair',
+  'concept',  'gender', 'age',
 ]
 
 DescriptorManager.propTypes = {
