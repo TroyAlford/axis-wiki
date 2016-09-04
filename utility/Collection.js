@@ -1,5 +1,6 @@
 import Guid from './Guid'
 import {
+  cloneDeep,
   filter,
   includes,
   isEqual,
@@ -57,10 +58,9 @@ export default class Collection {
     if (!Array.isArray(sent))
       return this.add(sent)
 
+    const before = cloneDeep(this.items)
     const newItems = sent.map(this.applyTemplate.bind(this))
     const newIds = newItems.map(item => item.id)
-
-    const before = [...this.items]
 
     this.items = this.sort([
       ...this.filter(item => !includes(newIds, item.id)),
@@ -123,9 +123,7 @@ export default class Collection {
       this.emitChanged()
   }
 
-  sort(itemsToSort) {
-    const items = (itemsToSort || this.items)
-
+  sort(items) {
     if (typeof this.settings.orderBy === 'function')
       return orderBy(items, this.settings.orderBy)
 
@@ -134,9 +132,8 @@ export default class Collection {
   }
 
   update(itemFilter, updater) {
-    let before = [...this.items]
-
-    let items = this.filter(itemFilter)
+    const before = cloneDeep(this.items)
+    const items = this.filter(itemFilter)
 
     if (typeof updater === 'function')
       items.forEach(updater)
@@ -145,7 +142,7 @@ export default class Collection {
     else
       return console.error(`Collection.update(itemFilter, updater) requires a function or object updater. Found ${typeof updater}`)
 
-    this.items = this.sort()
+    this.items = this.sort(this.items)
 
     if (!isEqual(before, this.items))
       this.emitChanged()
