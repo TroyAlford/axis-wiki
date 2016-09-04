@@ -2,6 +2,7 @@ import * as React from 'react'
 import Collection from '../../utility/Collection'
 import ComponentBase from '../application/ComponentBase'
 import Section from './Section'
+import { isEqual } from 'lodash'
 
 export default class CollectionManager extends ComponentBase {
   constructor(props) {
@@ -13,32 +14,30 @@ export default class CollectionManager extends ComponentBase {
   componentWillReceiveProps(newProps) {
     this.collection = new Collection(newProps.items, this.settings)
     this.collection.onChange = this.handleCollectionChange.bind(this)
-    this.handleCollectionChange()
+
+    if (!isEqual(newProps.items, this.props.items))
+      this.handleCollectionChange()
   }
 
   handleCollectionChange() {
-    this.forceUpdate()
     this.props.onChange(this.collection)
   }
 
   handleChange(updated, previous) {
-    this.collection.update(previous.id, {
-      ...updated,
-      id: previous.id
-    })
+    this.collection.update(previous.id, updated)
   }
   handleEditEnd(item) {
     item.key === '' && this.collection.remove({ id: item.id })
   }
 
   renderItem(item) {
-    return (this.props.renderItem || this.renderItem || (() => null)).apply()
+    return this.props.renderItem(item)
   }
 
   render() {
     return (
       <Section name={this.props.headline} header={this.props.headers}>
-        {this.collection.sorted.map(this.renderItem)}
+        {this.collection.map(this.renderItem)}
       </Section>
     )
   }

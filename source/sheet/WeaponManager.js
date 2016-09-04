@@ -3,16 +3,11 @@ import CollectionManager from './CollectionManager'
 import Weapon from './Weapon'
 
 export default class WeaponManager extends CollectionManager {
-  constructor(props) {
-    super(props)
-    this.handleChange = super.handleChange.bind(this)
-    this.handleEditEnd = super.handleEditEnd.bind(this)
-  }
   renderItem(weapon) {
     return (
       <Weapon key={weapon.id} weapon={weapon}
-        onChange={this.handleChange}
-        onEditEnd={this.handleEditEnd}
+        onChange={super.handleChange.bind(this)}
+        onEditEnd={super.handleEditEnd.bind(this)}
       />
     )
   }

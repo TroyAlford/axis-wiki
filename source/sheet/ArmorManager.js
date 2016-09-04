@@ -4,23 +4,11 @@ import Armor from './Armor'
 import { sum } from 'lodash'
 
 export default class ArmorManager extends CollectionManager {
-  constructor(props) {
-    super(props)
-    this.handleChange = super.handleChange.bind(this)
-    this.handleEditEnd = super.handleEditEnd.bind(this)
-  }
-
-  getEquippedValue() {
-    return sum(this.collection.filter({ equipped: true }).map(armor =>
-      Math.round(sum(armor.values) / armor.values.length, 0)
-    ))
-  }
-
   renderItem(armor) {
     return (
       <Armor key={armor.id} armor={armor}
-        onChange={this.handleChange}
-        onEditEnd={this.handleEditEnd}
+        onChange={super.handleChange.bind(this)}
+        onEditEnd={super.handleEditEnd.bind(this)}
       />
     )
   }

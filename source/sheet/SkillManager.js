@@ -18,25 +18,18 @@ const collectionSettings = {
 }
 
 export default class SkillManager extends CollectionManager {
-  constructor(props) {
-    super(props)
-    this.handleChange = super.handleChange.bind(this)
-    this.handleEditEnd = super.handleEditEnd.bind(this)
-  }
-
   render() {
-    let i = 0, { sorted } = this.collection,
+    let i = 0, items = this.collection.items,
       skills = orderBy(
-        sorted,
-        skill => i++ % Math.ceil(sorted.length / 2)
+        items, skill => i++ % Math.ceil(items.length / 2)
       )
 
     return (
       <Section name={this.props.headline} header={this.props.headers}>
       {skills.map(skill =>
         <Skill key={skill.id} skill={skill}
-          onChange={this.handleChange}
-          onEditEnd={this.handleEditEnd}
+          onChange={super.handleChange.bind(this)}
+          onEditEnd={super.handleEditEnd.bind(this)}
         />
       )}
       </Section>

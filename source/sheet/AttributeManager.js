@@ -4,31 +4,30 @@ import Collection from '../../utility/Collection'
 import CollectionManager from './CollectionManager'
 import Section from './Section'
 
-import { filter, includes } from 'lodash'
+import { filter, includes, isEqual } from 'lodash'
 import math from '../mathjs'
 
 export default class AttributeManager extends CollectionManager {
   constructor(props) {
     super(props)
-    this.handleChange = super.handleChange.bind(this)
-    this.handleEditEnd = super.handleEditEnd.bind(this)
-    this.update()
+    this.collection.onChange = this.update
   }
   componentWillReceiveProps(newProps) {
-    super.componentWillReceiveProps(newProps)
-    this.update()
+    this.collection = new Collection(newProps.items, this.settings)
+    this.collection.onChange = this.update
   }
 
   update() {
+    const before = [...this.collection.items]
     this.collection.onChange = null
 
     this.require()
     this.whitelist()
     this.calculate()
-    this.forceUpdate()
 
     this.collection.onChange = this.update
-    this.props.onChange(this.collection.sorted)
+    if (!isEqual(before, this.collection.items))
+      this.props.onChange(this.collection)
   }
 
   calculate() {
@@ -37,27 +36,29 @@ export default class AttributeManager extends CollectionManager {
 
     this.collection.forEach(addToHash)
 
-    const calculate = expression => {
+    const calc = expression => {
       const parser = math.parser()
       const parsed = math.parse(expression)
       parsed.traverse(node => {
         if (node.type === 'SymbolNode')
           parser.set(node.name, hash[node.name] || 0)
       })
+      parser.set('armor', this.props.armor)
+
       return parser.eval(expression)
     }
 
     computed.forEach(item => {
-      this.collection.update(
-        { key: item.key },
-        { value: calculate(item.calc), calculated: true }
+      this.collection.update({ key: item.key },
+        { value: calc(item.calc), calculated: true }
       )
     })
   }
   require() {
     const currentKeys = this.collection.keys
-    filter(keys, key => !includes(currentKeys, key))
-      .forEach(key => this.collection.add({ key, value: 0 }))
+    const missingKeys = filter(keys, key => !includes(currentKeys, key))
+    const missingItems = missingKeys.map(key => ({ key, value: 0 }))
+    this.collection.addAll(missingItems)
   }
   whitelist() {
     this.collection.remove(item => !includes(keys, item.key))
@@ -67,10 +68,15 @@ export default class AttributeManager extends CollectionManager {
     return (
       <Attribute key={attribute.id} className={attribute.key}
         attribute={attribute} readonly={attribute.calculated}
-        onChange={this.handleChange}
-        onEditEnd={this.handleEditEnd}
+        onChange={super.handleChange.bind(this)}
+        onEditEnd={super.handleEditEnd.bind(this)}
       />
     )
+  }
+
+  render() {
+    this.update()
+    return super.render()
   }
 
 }
@@ -82,7 +88,6 @@ const keys = [
   'reflex', 'agility', 'acuity', 'intuition',
   'resilience', 'fitness', 'focus', 'devotion',
   'size', 'natural_armor', 'might', 'toughness',
-  'armor'
 ]
 
 const computed = [
@@ -98,6 +103,7 @@ const computed = [
 
 AttributeManager.propTypes = {
   ...CollectionManager.propTypes,
+  armor: React.PropTypes.number.isRequired,
   items: React.PropTypes.arrayOf(React.PropTypes.shape({
     key: React.PropTypes.string.isRequired,
     value: React.PropTypes.number.isRequired,
@@ -109,6 +115,7 @@ AttributeManager.propTypes = {
 }
 AttributeManager.defaultProps = {
   ...CollectionManager.defaultProps,
+  armor: 0,
   headline: 'Attributes',
   settings: {
     template: {

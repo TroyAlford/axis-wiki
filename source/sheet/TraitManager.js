@@ -3,17 +3,11 @@ import CollectionManager from './CollectionManager'
 import Trait from './Trait'
 
 export default class TraitManager extends CollectionManager {
-  constructor(props) {
-    super(props)
-    this.handleChange = super.handleChange.bind(this)
-    this.handleEditEnd = super.handleEditEnd.bind(this)
-  }
-
   renderItem(trait) {
     return (
       <Trait key={trait.id} trait={trait}
-        onChange={this.handleChange}
-        onEditEnd={this.handleEditEnd}
+        onChange={super.handleChange.bind(this)}
+        onEditEnd={super.handleEditEnd.bind(this)}
       />
     )
   }

@@ -1,23 +1,24 @@
 import * as React from 'react'
+import Collection from '../../utility/Collection'
 import CollectionManager from './CollectionManager'
 import Descriptor from './Descriptor'
-import { filter, includes } from 'lodash'
+import { filter, includes, isEqual } from 'lodash'
 
 export default class DescriptorManager extends CollectionManager {
   constructor(props) {
     super(props)
-    super.setState = this.setState.bind(this)
-
-    this.handleChange = super.handleChange.bind(this)
-    this.handleEditEnd = super.handleEditEnd.bind(this)
     this.update()
   }
   componentWillReceiveProps(newProps) {
-    super.componentWillReceiveProps(newProps)
-    this.update()
+    this.collection = new Collection(newProps.items, this.settings)
+    this.collection.onChange = this.update
+
+    if (!isEqual(newProps.items, this.props.items))
+      this.update()
   }
 
   update() {
+    const before = [...this.collection.items]
     this.collection.onChange = null
 
     this.require()
@@ -25,13 +26,15 @@ export default class DescriptorManager extends CollectionManager {
     this.forceUpdate()
 
     this.collection.onChange = this.update
-    this.props.onChange(this.collection.sorted)
+    if (!isEqual(before, this.collection.items))
+      this.props.onChange(this.collection)
   }
 
   require() {
     const currentKeys = this.collection.keys
-    filter(keys, key => !includes(currentKeys, key))
-      .forEach(key => this.collection.add({ key, value: '' }))
+    const missingKeys = filter(keys, key => !includes(currentKeys, key))
+    const missingItems = missingKeys.map(key => ({ key, value: '' }))
+    this.collection.addAll(missingItems)
   }
   whitelist() {
     this.collection.remove(item => !includes(keys, item.key))
@@ -40,8 +43,8 @@ export default class DescriptorManager extends CollectionManager {
   renderItem(descriptor) {
     return (
       <Descriptor key={descriptor.id} descriptor={descriptor}
-        onChange={this.handleChange}
-        onEditEnd={this.handleEditEnd}
+        onChange={super.handleChange.bind(this)}
+        onEditEnd={super.handleEditEnd.bind(this)}
       />
     )
   }

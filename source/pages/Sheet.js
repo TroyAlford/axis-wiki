@@ -1,25 +1,19 @@
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import {
+  filter,
+  find,
+  sum,
+} from 'lodash'
+import {
   deleteSheet,
   loadSheet,
   loadedSheet,
   saveSheet
 } from '../redux/sheet/actions'
-import {
-  find,
-  flatten,
-  flow,
-  map,
-  reduce,
-  reject,
-  startCase,
-  sumBy,
-} from 'lodash'
 
 import * as React from 'react'
 import ComponentBase from '../application/ComponentBase'
-
 import Armor from '../sheet/Armor'
 import ArmorManager from '../sheet/ArmorManager'
 import Attribute from '../sheet/Attribute'
@@ -27,9 +21,9 @@ import AttributeManager from '../sheet/AttributeManager'
 import Descriptor from '../sheet/Descriptor'
 import DescriptorManager from '../sheet/DescriptorManager'
 import Section from '../sheet/Section'
-import SkillManager from '../sheet/SkillManager'
 import SheetHeader from '../sheet/SheetHeader'
 import Skill from '../sheet/Skill'
+import SkillManager from '../sheet/SkillManager'
 import Trait from '../sheet/Trait'
 import TraitManager from '../sheet/TraitManager'
 import Weapon from '../sheet/Weapon'
@@ -42,6 +36,8 @@ class Sheet extends ComponentBase {
     const { params: { slug, ownerId } } = this.props
     if (this.props.slug !== slug)
       this.props.dispatch(loadSheet(slug, ownerId))
+
+    this.state = {}
   }
 
   componentWillReceiveProps(nextProps) {
@@ -57,57 +53,26 @@ class Sheet extends ComponentBase {
       this.props.dispatch(loadSheet(nextProps.params.slug, nextProps.params.ownerId))
     }
 
-    this.sheetHeader.props.name = this.getName(nextProps.descriptors)
+    this.state = {}
   }
 
-  componentDidMount() {
-    this.handleChange('armor', this.armorManager.collection)
-  }
-  componentDidUpdate() {
-    this.handleChange('armor', this.armorManager.collection)
-  }
-
-  handleChange(type, collection) {
-    if (!this.armorManager || !this.attributeManager ||
-        !this.skillManager || !this.traitManager ||
-        !this.weaponManager || !this.sheetHeader)
-      return;
-
-    const header = this.sheetHeader
-    const armor = this.armorManager.collection
-    const attributes = this.attributeManager.collection
-    const skills = this.skillManager.collection
-    const traits = this.traitManager.collection
-    const weapons = this.weaponManager.collection
-
-    switch (type) {
-      case 'armor':
-        return attributes.update({ key: 'armor' },
-          { value: this.armorManager.getEquippedValue() }
-        )
-    }
-  }
-
-  getName(descriptors = this.props.descriptors) {
-    const descriptor = find(descriptors, { key: 'name' })
-    return (descriptor && descriptor.value !== '')
-      ? descriptor.value
-      : startCase(this.props.slug)
-  }
   getImageUrl() {
     const image = find(this.props.descriptors, { key: 'image' })
     return image ? image.value : ''
   }
 
   render() {
+    const armor = this.state.armor || this.props.armor
+    const armorValue = sum(filter(armor, { equipped: true }).map(armor =>
+      Math.round(sum(armor.values) / armor.values.length, 0)
+    ))
+
     return (
       <div className="sheet page">
         <SheetHeader
-          name={this.getName()}
-          xp={0}
-          rp={0}
-          power={0}
-          ref={self => this.sheetHeader = self}
+          name={this.state.name || this.props.name}
+          onNameChange={name => this.setState({ name })}
+          xp={0} rp={0}
         />
         <div className="columns">
           <div className="column is-one-third">
@@ -120,37 +85,43 @@ class Sheet extends ComponentBase {
             </Section>
           </div>
           <div className="column">
-            <DescriptorManager items={this.props.descriptors}
-              ref={self => this.descriptorManager = self}
+            <DescriptorManager
+              items={this.state.descriptors || this.props.descriptors}
+              onChange={c => this.setState({ descriptors: c.items })}
             />
-            <AttributeManager items={this.props.attributes}
-              ref={self => this.attributeManager = self}
+            <AttributeManager
+              armor={armorValue}
+              items={this.state.attributes || this.props.attributes}
+              onChange={c => this.setState({ attributes: c.items })}
             />
           </div>
         </div>
         <div className="columns">
           <div className="column is-one-third">
-            <TraitManager items={this.props.traits}
-              ref={self => this.traitManager = self}
+            <TraitManager
+              items={this.state.traits || this.props.traits}
+              onChange={c => this.setState({ traits: c.items })}
             />
           </div>
           <div className="column">
-            <SkillManager items={this.props.skills}
-              ref={self => this.skillManager = self}
+            <SkillManager
+              items={this.state.skills || this.props.skills}
+              onChange={c => this.setState({ skills: c.items })}
             />
           </div>
         </div>
         <Section className="Equipment">
           <div className="columns">
             <div className="column">
-              <WeaponManager items={this.props.weapons}
-                ref={self => this.weaponManager = self}
+              <WeaponManager
+                items={this.state.weapons || this.props.weapons}
+                onChange={c => this.setState({ weapons: c.items })}
               />
             </div>
             <div className="column">
-              <ArmorManager items={this.props.armor}
-                ref={self => this.armorManager = self}
-                onChange={this.handleChange.bind(this, 'armor')}
+              <ArmorManager
+                items={this.state.armor || this.props.armor}
+                onChange={c => this.setState({ armor: c.items })}
               />
             </div>
           </div>
@@ -161,6 +132,7 @@ class Sheet extends ComponentBase {
 }
 
 Sheet.propTypes = {
+  name: React.PropTypes.string.isRequired,
   armor: React.PropTypes.array.isRequired,
   attributes: React.PropTypes.array.isRequired,
   descriptors: React.PropTypes.array.isRequired,
@@ -171,6 +143,7 @@ Sheet.propTypes = {
   weapons: React.PropTypes.array.isRequired,
 }
 Sheet.defaultProps = {
+  name: 'Unnamed Character',
   armor: [],
   attributes: [],
   descriptors: [],
