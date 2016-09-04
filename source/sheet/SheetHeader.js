@@ -6,10 +6,9 @@ import {
   filter,
   flatten,
   flow,
+  includes,
   map,
-  reduce,
-  reject,
-  sumBy,
+  sum,
 } from 'lodash'
 
 export default class SheetHeader extends ComponentBase {
@@ -38,18 +37,34 @@ export default class SheetHeader extends ComponentBase {
     ]
     return flow([
       array => filter(array, attr => includes(attributeKeys, attr.key)),
-      array => map(array, attr => createRange(1, attr.value)),
+      array => map(array, attr => this.createRange(1, attr.value)),
       array => flatten(array),
-      array => reduce(array, (sum, value) =>
-        sum + (value === 1 ? 5 : Math.pow(value, 3))
-      )
-    ])
+      array => map(array, value => value === 1 ? 5 : Math.pow(value, 3)),
+      array => sum(array),
+    ])(this.props.attributes)
   }
   calculateSkills() {
-    return 0
+    return flow([
+      array => map(array, skill => [
+        ...this.createRange(1, skill.values[0]),
+        ...this.createRange(2, skill.values[1]),
+      ]),
+      array => flatten(array),
+      array => map(array, value => Math.pow(value, 2)),
+      array => sum(array),
+    ])(this.props.skills)
   }
   calculateTraits() {
-    return 0
+    return flow([
+      array => map(array, trait => trait.value),
+      array => sum(array)
+    ])(this.props.traits)
+  }
+
+  createRange(low, high) {
+    return low > high ? [] :
+      Array.apply(null, Array(Math.abs(high - low) + 1))
+           .map((discard, n) => n + low)
   }
 
   getName() {
@@ -62,7 +77,6 @@ export default class SheetHeader extends ComponentBase {
     return (
       <div className="sheet-header">
         <Editable className="CharacterName"
-          onChanging={proposed => Slug(proposed) !== ''}
           onChange={name => this.setState({ name })}
           value={this.state.name}
         />
@@ -80,15 +94,12 @@ export default class SheetHeader extends ComponentBase {
 SheetHeader.propTypes = {
   name: React.PropTypes.string.isRequired,
   attributes: React.PropTypes.arrayOf(React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
     value: React.PropTypes.number.isRequired,
   })).isRequired,
   skills: React.PropTypes.arrayOf(React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
     values: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
   })).isRequired,
   traits: React.PropTypes.arrayOf(React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
     value: React.PropTypes.number.isRequired,
   })).isRequired,
 }

@@ -35,10 +35,6 @@ import TraitManager from '../sheet/TraitManager'
 import Weapon from '../sheet/Weapon'
 import WeaponManager from '../sheet/WeaponManager'
 
-const createRange = (low, high) => low > high ? [] :
-  Array.apply(null, Array(Math.abs(high - low) + 1))
-       .map((discard, n) => n + low)
-
 class Sheet extends ComponentBase {
   constructor(props) {
     super(props)
@@ -71,43 +67,18 @@ class Sheet extends ComponentBase {
     this.handleChange('armor', this.armorManager.collection)
   }
 
-  calculate_power() {
-    let power = 0
-
-    const attribute_values = flow([
-      array => reject(array, attr => attr.hasOwnProperty('calc')),
-      array => reject(array, { key: 'natural_armor' }),
-      array => reject(array, { key: 'size' }),
-      array => map(array, attr => createRange(1, attr.value)),
-      array => flatten(array)
-    ])(this.attributes())
-
-    power += reduce(attribute_values, (sum, value) =>
-      sum + (value === 1 ? 5 : Math.pow(value, 3))
-    )
-
-    const skill_values = flow([
-      array => map(array, skill => [
-        ...createRange(1, skill.values[0]),
-        ...createRange(2, skill.values[1]),
-      ]),
-      array => flatten(array)
-    ])(this.state.skills)
-
-    power += reduce(skill_values, (sum, value) =>
-      sum + Math.pow(value, 2)
-    )
-
-    power += sumBy(this.state.traits, 'value')
-
-    return power
-  }
-
   handleChange(type, collection) {
-    if (!this.armorManager || !this.attributeManager) return;
+    if (!this.armorManager || !this.attributeManager ||
+        !this.skillManager || !this.traitManager ||
+        !this.weaponManager || !this.sheetHeader)
+      return;
 
+    const header = this.sheetHeader
     const armor = this.armorManager.collection
     const attributes = this.attributeManager.collection
+    const skills = this.skillManager.collection
+    const traits = this.traitManager.collection
+    const weapons = this.weaponManager.collection
 
     switch (type) {
       case 'armor':
