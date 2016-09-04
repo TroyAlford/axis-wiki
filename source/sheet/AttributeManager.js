@@ -4,7 +4,7 @@ import Collection from '../../utility/Collection'
 import CollectionManager from './CollectionManager'
 import Section from './Section'
 
-import { filter, includes, isEqual } from 'lodash'
+import { cloneDeep, filter, includes, isEqual } from 'lodash'
 import math from '../mathjs'
 
 export default class AttributeManager extends CollectionManager {
@@ -18,7 +18,7 @@ export default class AttributeManager extends CollectionManager {
   }
 
   update() {
-    const before = [...this.collection.items]
+    const before = cloneDeep(this.collection.items)
     this.collection.onChange = null
 
     this.require()

@@ -22,7 +22,7 @@ export default class SheetHeader extends ComponentBase {
     this.setState({ name: nextProps.name })
   }
 
-  calculate() {
+  calculatePower() {
     return (
       this.calculateAttributes()
       + this.calculateSkills()
@@ -72,8 +72,6 @@ export default class SheetHeader extends ComponentBase {
   }
 
   render() {
-    this.calculate()
-
     return (
       <div className="sheet-header">
         <Editable className="CharacterName"
@@ -85,7 +83,7 @@ export default class SheetHeader extends ComponentBase {
         <span className="name">RP Points: </span>
         <Editable className="rp" value={this.props.rp} />
         <span className="name">Total Power: </span>
-        <Editable className="power" value={this.props.power} />
+        <div className="power">{this.calculatePower()}</div>
       </div>
     )
   }

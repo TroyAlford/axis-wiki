@@ -72,6 +72,9 @@ class Sheet extends ComponentBase {
         <SheetHeader
           name={this.state.name || this.props.name}
           onNameChange={name => this.setState({ name })}
+          attributes={this.state.attributes || this.props.attributes}
+          skills={this.state.skills || this.props.skills}
+          traits={this.state.traits || this.props.traits}
           xp={0} rp={0}
         />
         <div className="columns">
