@@ -1,24 +1,35 @@
 .sheet-header {
   border-bottom: 1px solid $palette-blue;
   display: flex;
+  height: 3em;
   flex-direction: row;
-  margin-bottom: 5px;
+  margin-bottom: 20px;
 
   .CharacterName {
     flex-grow: 1;
-    font-size: 1.5rem;
-    > * { padding: 0; }
+    font-size: 1.8em;
+    line-height: 1.8em;
+    > * {
+      padding: 0;
+      font-size: inherit;
+      line-height: inherit;
+    }
   }
 
   .xp, .rp, .power {
-    min-width: 40px; max-width: 40px;
+    width: 40px;
   }
+  .name, .power { padding: 1em 0; }
   .name, .xp, .rp, .power {
-    font-size: 0.8rem;
-    padding: .35rem;
+    font-size: 1em;
+    line-height: 1em;
     text-align: center;
 
-    > * { padding: 0; }
+    > * {
+      font-size: inherit;
+      line-height: inherit;
+      padding: 1em;
+    }
   }
   .CharacterName, .name {
     font-weight: bold;

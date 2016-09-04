@@ -8,11 +8,13 @@
 
   > *:empty { display: none; }
 
-  > .name {
+  > .title {
     border-bottom: 1px solid $palette-blue;
     font-family: Ubuntu, Calibri, sans-serif;
     font-size: 1.4em;
     font-weight: bold;
+    padding-bottom: 2px;
+    margin-bottom: 2px;
     text-transform: capitalize;
     width: 100%;
   }

@@ -25,7 +25,7 @@ export default class SkillManager extends CollectionManager {
       )
 
     return (
-      <Section name={this.props.headline} header={this.props.headers}>
+      <Section title={this.props.title} headers={this.props.headers}>
       {skills.map(skill =>
         <Skill key={skill.id} skill={skill}
           onChange={super.handleChange.bind(this)}
@@ -49,7 +49,7 @@ SkillManager.propTypes = {
 }
 SkillManager.defaultProps = {
   ...CollectionManager.defaultProps,
-  headline: 'Skills',
+  title: 'Skills',
   headers: ['Name', 'Th', 'Ms', 'Name', 'Th', 'Ms'],
   settings: {
     template: {

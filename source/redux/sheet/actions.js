@@ -28,12 +28,12 @@ export function loadSheet(requested_slug, ownerId = undefined) {
         return response.json()
       })
       .then(json => {
-        const title = startCase(slug)
+        const title = json.name || startCase(slug)
         const keywords = [
           ...filter(json.descriptors, descriptor =>
-            includes(['homeland', 'race', 'gender'], descriptor.key)
+            includes(['homeland', 'race'], descriptor.key)
           ).map(descriptor => descriptor.value),
-          'sheet', title
+          'character', title
         ]
         dispatch(setMetadata(title, keywords))
         dispatch(loadedSheet(slug, json, ownerId))

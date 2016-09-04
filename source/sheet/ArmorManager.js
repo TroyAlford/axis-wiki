@@ -25,7 +25,7 @@ ArmorManager.propTypes = {
 }
 ArmorManager.defaultProps = {
   ...CollectionManager.defaultProps,
-  headline: 'Armor',
+  title: 'Armor',
   headers: ['Use', 'Armor', 'Head', 'Arms', 'Hand', 'Body', 'Legs', 'Feet', 'Avg'],
   settings: {
     template: {

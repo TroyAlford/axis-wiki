@@ -79,7 +79,7 @@ class Sheet extends ComponentBase {
         />
         <div className="columns">
           <div className="column is-one-third">
-            <Section name="Portrait">
+            <Section title="Portrait">
               <div className="portrait frame">
                 <div className="portrait display" style={{
                   backgroundImage: `url(${this.getImageUrl()})`

@@ -41,7 +41,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
 
-    > .name {
+    > .title {
       font-family: Ubuntu, Calibri, sans-serif;
     }
   }
@@ -53,6 +53,7 @@
   }
 
   .Armor.section, .Weapons.section {
+    > .title { padding: 0; }
     .section-heading, .weapon, .armor {
       padding: 0 3px;
     }
@@ -68,7 +69,6 @@
     .section-heading, .equipped, .name, .value {
       padding: 5px 1px;
     }
-    > .name { padding: 0; }
   }
 
   .Armor.section .armor:nth-child(odd),

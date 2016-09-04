@@ -24,7 +24,7 @@ WeaponManager.propTypes = {
 }
 WeaponManager.defaultProps = {
   ...CollectionManager.defaultProps,
-  headline: 'Weapons',
+  title: 'Weapons',
   headers: ['Use', 'Name', 'Dmg', 'Rng', 'Hit'],
   settings: {
     template: {

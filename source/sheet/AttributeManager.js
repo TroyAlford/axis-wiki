@@ -107,7 +107,7 @@ AttributeManager.propTypes = {
 AttributeManager.defaultProps = {
   ...CollectionManager.defaultProps,
   armor: 0,
-  headline: 'Attributes',
+  title: 'Attributes',
   settings: {
     template: {
       key: 'new-attribute',

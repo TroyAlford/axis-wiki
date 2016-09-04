@@ -25,7 +25,7 @@ TraitManager.propTypes = {
 }
 TraitManager.defaultProps = {
   ...CollectionManager.defaultProps,
-  headline: 'Traits',
+  title: 'Traits',
   headers: ['Name', 'Cost'],
   settings: {
     template: {

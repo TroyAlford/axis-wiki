@@ -36,7 +36,7 @@ export default class CollectionManager extends ComponentBase {
 
   render() {
     return (
-      <Section name={this.props.headline} header={this.props.headers}>
+      <Section title={this.props.title} headers={this.props.headers}>
         {this.collection.map(this.renderItem)}
       </Section>
     )
@@ -45,15 +45,17 @@ export default class CollectionManager extends ComponentBase {
 
 CollectionManager.propTypes = {
   headers: React.PropTypes.arrayOf(React.PropTypes.string),
-  headline: React.PropTypes.string,
   items: React.PropTypes.array.isRequired,
   onChange: React.PropTypes.func.isRequired,
   renderItem: React.PropTypes.func,
   settings: React.PropTypes.object.isRequired,
+  title: React.PropTypes.string,
 }
 CollectionManager.defaultProps = {
+  headers: [],
   items: [],
   onChange: () => {},
   renderItem: () => null,
   settings: {},
+  title: '',
 }

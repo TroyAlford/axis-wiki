@@ -71,7 +71,7 @@ DescriptorManager.propTypes = {
 }
 DescriptorManager.defaultProps = {
   ...CollectionManager.defaultProps,
-  headline: 'Descriptors',
+  title: 'Descriptors',
   settings: {
     template: {
       key: 'new-descriptor',
