@@ -10,8 +10,10 @@ import Editable from '../components/Editable'
 
 export default class Attribute extends ComponentBase {
   handleValueChange(value) {
-    let { key, name } = this.props.attribute
-    this.props.onChange({ key, name, value }, this.props.attribute)
+    this.props.onChange({
+      ...this.props.attribute,
+      value
+    }, this.props.attribute)
   }
 
   render() {

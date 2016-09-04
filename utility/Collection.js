@@ -124,6 +124,9 @@ export default class Collection {
   }
 
   sort(items) {
+    if (items === undefined)
+      return this.sort(this.items)
+
     if (typeof this.settings.orderBy === 'function')
       return orderBy(items, this.settings.orderBy)
 

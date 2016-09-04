@@ -8,15 +8,6 @@ import { cloneDeep, filter, includes, isEqual } from 'lodash'
 import math from '../mathjs'
 
 export default class AttributeManager extends CollectionManager {
-  constructor(props) {
-    super(props)
-    this.collection.onChange = this.update
-  }
-  componentWillReceiveProps(newProps) {
-    this.collection = new Collection(newProps.items, this.settings)
-    this.collection.onChange = this.update
-  }
-
   update() {
     const before = cloneDeep(this.collection.items)
     this.collection.onChange = null
@@ -25,7 +16,7 @@ export default class AttributeManager extends CollectionManager {
     this.whitelist()
     this.calculate()
 
-    this.collection.onChange = this.update
+    this.collection.onChange = this.handleCollectionChange.bind(this)
     if (!isEqual(before, this.collection.items))
       this.props.onChange(this.collection)
   }
