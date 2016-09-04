@@ -128,7 +128,7 @@ export default class Collection {
       return this.sort(this.items)
 
     if (typeof this.settings.orderBy === 'function')
-      return orderBy(items, this.settings.orderBy)
+      return this.settings.orderBy(items)
 
     const { orderBy: { fieldNames, directions } } = this.settings
     return orderBy(items, fieldNames, directions)

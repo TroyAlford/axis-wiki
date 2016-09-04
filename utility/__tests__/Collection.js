@@ -1,5 +1,6 @@
 jest.unmock('../Collection')
 jest.unmock('../Guid')
+import { orderBy } from 'lodash'
 
 import TestUtils from 'react-addons-test-utils'
 import Collection from '../Collection'
@@ -85,7 +86,7 @@ describe('Collection', () => {
       'alexander appleseed'
     ])
 
-    collection.settings.orderBy = el => `${el.first} ${el.last}`
+    collection.settings.orderBy = list => orderBy(list, el => `${el.first} ${el.last}`)
     names = collection.sort().map(el => `${el.first} ${el.last}`)
     expect(names).toEqual([
       'aaron appleseed',

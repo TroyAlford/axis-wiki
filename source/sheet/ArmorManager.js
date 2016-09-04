@@ -1,7 +1,7 @@
 import * as React from 'react'
 import CollectionManager from './CollectionManager'
 import Armor from './Armor'
-import { sum } from 'lodash'
+import { orderBy, sum } from 'lodash'
 
 export default class ArmorManager extends CollectionManager {
   renderItem(armor) {
@@ -32,6 +32,6 @@ ArmorManager.defaultProps = {
       key: 'new-armor',
       values: [0, 0, 0, 0, 0, 0]
     },
-    orderBy: armor => [!armor.equipped, armor.name]
+    orderBy: list => orderBy(list, armor => [!armor.equipped, armor.name])
   }
 }

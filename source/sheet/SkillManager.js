@@ -3,44 +3,15 @@ import CollectionManager from './CollectionManager'
 import Icon from '../components/Icon'
 import Section from './Section'
 import Skill from './Skill'
-
 import { orderBy } from 'lodash'
 
-const collectionSettings = {
-  template: {
-    key: 'new-skill',
-    values: [1, 1],
-  },
-  orderBy: skill => [
-    skill.category || '',
-    skill.name || skill.key || '',
-    skill.note || ''
-  ].join('').toLowerCase(),
-}
-
 export default class SkillManager extends CollectionManager {
-  render() {
-    let i = 0, items = this.collection.items,
-      skills = orderBy(
-        items, skill => i++ % Math.ceil(items.length / 2)
-      )
-
+  renderItem(skill) {
     return (
-      <Section className={this.props.title}
-        title={[
-          <span>{this.props.title}</span>,
-          <div className="buttons">
-            <Icon name="add" onClick={this.addItem.bind(this)} />
-          </div>
-        ]}
-        headers={this.props.headers}>
-      {skills.map(skill =>
-        <Skill key={skill.id} skill={skill}
-          onChange={super.handleChange.bind(this)}
-          onEditEnd={super.handleEditEnd.bind(this)}
-        />
-      )}
-      </Section>
+      <Skill key={skill.id} skill={skill}
+        onChange={super.handleChange.bind(this)}
+        onEditEnd={super.handleEditEnd.bind(this)}
+      />
     )
   }
 }
@@ -64,10 +35,17 @@ SkillManager.defaultProps = {
       key: 'new-skill',
       values: [1, 1],
     },
-    orderBy: skill => [
-      skill.category || '',
-      skill.name || skill.key || '',
-      skill.note || ''
-    ].join('').toLowerCase(),
+    orderBy: list => {
+      let i = 0
+      const sortedByName = orderBy(list, skill => [
+        skill.category || '',
+        skill.name || skill.key || '',
+        skill.note || ''
+      ].join('').toLowerCase())
+
+      return orderBy(sortedByName,
+        skill => i++ % Math.ceil(list.length / 2)
+      )
+    },
   }
 }

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import CollectionManager from './CollectionManager'
 import Weapon from './Weapon'
+import { orderBy } from 'lodash'
 
 export default class WeaponManager extends CollectionManager {
   renderItem(weapon) {
@@ -31,6 +32,6 @@ WeaponManager.defaultProps = {
       key: 'new-weapon',
       values: [0, 0, 0],
     },
-    orderBy: weapon => [!weapon.equipped, weapon.name]
+    orderBy: list => orderBy(list, weapon => [!weapon.equipped, weapon.name])
   }
 }

@@ -4,7 +4,7 @@ import Collection from '../../utility/Collection'
 import CollectionManager from './CollectionManager'
 import Section from './Section'
 
-import { cloneDeep, filter, includes, isEqual } from 'lodash'
+import { cloneDeep, filter, includes, isEqual, orderBy } from 'lodash'
 import math from '../mathjs'
 
 export default class AttributeManager extends CollectionManager {
@@ -114,6 +114,6 @@ AttributeManager.defaultProps = {
       key: 'new-attribute',
       value: 0,
     },
-    orderBy: attribute => keys.indexOf(attribute.key)
+    orderBy: list => orderBy(list, item => keys.indexOf(item.key))
   }
 }

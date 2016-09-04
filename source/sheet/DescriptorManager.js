@@ -2,7 +2,7 @@ import * as React from 'react'
 import Collection from '../../utility/Collection'
 import CollectionManager from './CollectionManager'
 import Descriptor from './Descriptor'
-import { filter, includes, isEqual } from 'lodash'
+import { filter, includes, isEqual, orderBy } from 'lodash'
 
 export default class DescriptorManager extends CollectionManager {
   constructor(props) {
@@ -78,6 +78,6 @@ DescriptorManager.defaultProps = {
       key: 'new-descriptor',
       value: '',
     },
-    orderBy: descriptor => keys.indexOf(descriptor.key)
+    orderBy: list => orderBy(list, item => keys.indexOf(item.key))
   }
 }

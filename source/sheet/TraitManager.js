@@ -1,6 +1,7 @@
 import * as React from 'react'
 import CollectionManager from './CollectionManager'
 import Trait from './Trait'
+import { orderBy } from 'lodash'
 
 export default class TraitManager extends CollectionManager {
   renderItem(trait) {
@@ -32,10 +33,10 @@ TraitManager.defaultProps = {
       key: 'new-trait',
       value: 0,
     },
-    orderBy: trait => [
+    orderBy: list => orderBy(list, trait => [
       trait.category || '',
       trait.name || trait.key || '',
       trait.note || ''
-    ].join('').toLowerCase(),
+    ].join('').toLowerCase()),
   }
 }
