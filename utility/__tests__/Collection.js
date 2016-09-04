@@ -75,7 +75,7 @@ describe('Collection', () => {
       }
     })
 
-    let names = collection.sorted.map(el =>
+    let names = collection.sort().map(el =>
       `${el.first} ${el.last}`
     )
     expect(names).toEqual([
@@ -86,7 +86,7 @@ describe('Collection', () => {
     ])
 
     collection.settings.orderBy = el => `${el.first} ${el.last}`
-    names = collection.sorted.map(el => `${el.first} ${el.last}`)
+    names = collection.sort().map(el => `${el.first} ${el.last}`)
     expect(names).toEqual([
       'aaron appleseed',
       'alexander appleseed',

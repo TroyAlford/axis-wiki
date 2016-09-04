@@ -2,6 +2,7 @@ import Guid from './Guid'
 import {
   filter,
   includes,
+  isEqual,
   merge,
   orderBy,
   reject,
@@ -27,8 +28,8 @@ export default class Collection {
   }
 
   emitChanged() {
-    this.items = this.sorted
-    typeof this.onChange === 'function' && this.onChange()
+    if (typeof this.onChange === 'function')
+      this.onChange(this)
   }
 
   get ids() {
@@ -39,38 +40,54 @@ export default class Collection {
     return this.map(item => item.key)
   }
 
-  get sorted() {
-    if (typeof this.settings.orderBy === 'function')
-      return orderBy(this.items, this.settings.orderBy)
+  add(sent = {}) {
+    if (sent.id && this.find(sent.id))
+      return this.update(sent.id, sent)
 
-    const { orderBy: { fieldNames, directions } } = this.settings
-    return orderBy(this.items, fieldNames, directions)
+    const item = this.applyTemplate(sent)
+    this.items = this.sort([
+      ...this.items,
+      item
+    ])
+
+    this.emitChanged()
   }
 
-  add(newItem = {}, suppressChangeEvent = false) {
-    const item = merge({}, this.settings.template, newItem)
+  addAll(sent = []) {
+    if (!Array.isArray(sent))
+      return this.add(sent)
+
+    const newItems = sent.map(this.applyTemplate.bind(this))
+    const newIds = newItems.map(item => item.id)
+
+    const before = [...this.items]
+
+    this.items = this.sort([
+      ...this.filter(item => !includes(newIds, item.id)),
+      ...newItems
+    ])
+
+    if (!isEqual(before, this.items))
+      this.emitChanged()
+  }
+
+  applyTemplate(initial = {}) {
+    const item = merge({}, this.settings.template, initial)
 
     if (typeof item.id === 'function')
       item.id = item.id(item)
     if (typeof item.key === 'function')
       item.key = item.key(item)
 
-    this.items.push(item)
-    !suppressChangeEvent && this.emitChanged()
-  }
-
-  addAll(items = []) {
-    const count = this.items.length
-
-    items.forEach(item => this.add(item), true)
-    this.items.length !== count && this.emitChanged()
+    return item
   }
 
   clear() {
-    const count = this.items.length
+    const before = this.items.length
     this.items = []
 
-    count !== 0 && this.emitChanged()
+    if (before !== 0)
+      this.emitChanged()
   }
 
   filter(itemFilter = () => true) {
@@ -102,18 +119,36 @@ export default class Collection {
     else if (inclues(['number', 'string'], typeof itemFilter))
       this.items = reject(this.items, { id: itemFilter })
 
-    this.items.length !== count && this.emitChanged()
+    if (this.items.length !== count)
+      this.emitChanged()
+  }
+
+  sort(itemsToSort) {
+    const items = (itemsToSort || this.items)
+
+    if (typeof this.settings.orderBy === 'function')
+      return orderBy(items, this.settings.orderBy)
+
+    const { orderBy: { fieldNames, directions } } = this.settings
+    return orderBy(items, fieldNames, directions)
   }
 
   update(itemFilter, updater) {
+    let before = [...this.items]
+
     let items = this.filter(itemFilter)
 
     if (typeof updater === 'function')
       items.forEach(updater)
-    else
+    else if (typeof updater === 'object')
       items.forEach(item => merge(item, updater))
+    else
+      return console.error(`Collection.update(itemFilter, updater) requires a function or object updater. Found ${typeof updater}`)
 
-    this.emitChanged()
+    this.items = this.sort()
+
+    if (!isEqual(before, this.items))
+      this.emitChanged()
   }
 
 }
