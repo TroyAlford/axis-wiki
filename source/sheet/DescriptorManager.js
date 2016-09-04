@@ -71,6 +71,7 @@ DescriptorManager.propTypes = {
 }
 DescriptorManager.defaultProps = {
   ...CollectionManager.defaultProps,
+  allowAdd: false,
   title: 'Descriptors',
   settings: {
     template: {

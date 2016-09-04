@@ -10,13 +10,23 @@
 
   > .title {
     border-bottom: 1px solid $palette-blue;
+    display: flex;
+    flex-direction: row;
     font-family: Ubuntu, Calibri, sans-serif;
     font-size: 1.4em;
     font-weight: bold;
+    justify-content: space-between;
     padding-bottom: 2px;
     margin-bottom: 2px;
     text-transform: capitalize;
     width: 100%;
+
+    > span {
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      text-transform: inherit;
+    }
   }
 
   .section-heading:first-child { flex-grow: 1; }

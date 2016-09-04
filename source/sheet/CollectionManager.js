@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Collection from '../../utility/Collection'
 import ComponentBase from '../application/ComponentBase'
+import Icon from '../components/Icon'
 import Section from './Section'
 import { isEqual } from 'lodash'
 
@@ -19,6 +20,10 @@ export default class CollectionManager extends ComponentBase {
       this.handleCollectionChange()
   }
 
+  addItem() {
+    this.collection.add(this.collection.applyTemplate({}))
+  }
+
   handleCollectionChange() {
     this.props.onChange(this.collection)
   }
@@ -35,8 +40,19 @@ export default class CollectionManager extends ComponentBase {
   }
 
   render() {
+    const buttons = []
+    if (this.props.allowAdd)
+      buttons.push(
+        <Icon name="add" onClick={this.addItem.bind(this)} />
+      )
+
     return (
-      <Section title={this.props.title} headers={this.props.headers}>
+      <Section className={this.props.title}
+        title={[
+          <span>{this.props.title}</span>,
+          <div className="buttons">{buttons}</div>
+        ]}
+        headers={this.props.headers}>
         {this.collection.map(this.renderItem)}
       </Section>
     )
@@ -44,6 +60,7 @@ export default class CollectionManager extends ComponentBase {
 }
 
 CollectionManager.propTypes = {
+  allowAdd: React.PropTypes.bool.isRequired,
   headers: React.PropTypes.arrayOf(React.PropTypes.string),
   items: React.PropTypes.array.isRequired,
   onChange: React.PropTypes.func.isRequired,
@@ -52,6 +69,7 @@ CollectionManager.propTypes = {
   title: React.PropTypes.string,
 }
 CollectionManager.defaultProps = {
+  allowAdd: true,
   headers: [],
   items: [],
   onChange: () => {},

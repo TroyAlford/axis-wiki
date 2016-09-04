@@ -1,5 +1,6 @@
 import * as React from 'react'
 import CollectionManager from './CollectionManager'
+import Icon from '../components/Icon'
 import Section from './Section'
 import Skill from './Skill'
 
@@ -25,7 +26,14 @@ export default class SkillManager extends CollectionManager {
       )
 
     return (
-      <Section title={this.props.title} headers={this.props.headers}>
+      <Section className={this.props.title}
+        title={[
+          <span>{this.props.title}</span>,
+          <div className="buttons">
+            <Icon name="add" onClick={this.addItem.bind(this)} />
+          </div>
+        ]}
+        headers={this.props.headers}>
       {skills.map(skill =>
         <Skill key={skill.id} skill={skill}
           onChange={super.handleChange.bind(this)}

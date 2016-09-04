@@ -106,6 +106,7 @@ AttributeManager.propTypes = {
 }
 AttributeManager.defaultProps = {
   ...CollectionManager.defaultProps,
+  allowAdd: false,
   armor: 0,
   title: 'Attributes',
   settings: {
