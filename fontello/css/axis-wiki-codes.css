@@ -17,3 +17,12 @@
 .icon-add:before { content: '\e80f'; } /* '' */
 .icon-remove:before { content: '\e810'; } /* '' */
 .icon-picture:before { content: '\e811'; } /* '' */
+.icon-torso:before { content: '\e812'; } /* '' */
+.icon-backpack:before { content: '\e813'; } /* '' */
+.icon-currency:before { content: '\e814'; } /* '' */
+.icon-arm:before { content: '\e815'; } /* '' */
+.icon-leg:before { content: '\e816'; } /* '' */
+.icon-feet:before { content: '\e817'; } /* '' */
+.icon-head:before { content: '\e818'; } /* '' */
+.icon-weapon:before { content: '\e819'; } /* '' */
+.icon-hand:before { content: '\e81a'; } /* '' */
