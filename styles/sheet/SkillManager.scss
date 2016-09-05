@@ -1,12 +1,21 @@
 .Skills.section {
 
-  .section-heading {
-    &:nth-child(3) { margin-right: 1%; }
-    &:nth-child(3n+1) {
+  .header {
+    .heading {
+      text-align: center;
+    }
+    .Name.heading {
       flex-grow: 1;
+      padding: .25em 5px;
       text-align: left;
     }
+
+    .heading:nth-child(4) {
+      margin: 0 .25em;
+      width: 1%; min-width: 1%; max-width: 1%;
+    }
   }
+
   .skill {
     min-width: 49.5%; max-width: 49.5%;
 

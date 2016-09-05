@@ -1,0 +1,9 @@
+.Descriptors.section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .descriptor {
+    min-width: 32%; max-width: 32%;
+  }
+}

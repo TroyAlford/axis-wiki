@@ -1,6 +1,7 @@
 import * as React from 'react'
 import CollectionManager from './CollectionManager'
 import Armor from './Armor'
+import Icon from '../components/Icon'
 import { orderBy, sum } from 'lodash'
 
 export default class ArmorManager extends CollectionManager {
@@ -26,7 +27,16 @@ ArmorManager.propTypes = {
 ArmorManager.defaultProps = {
   ...CollectionManager.defaultProps,
   title: 'Armor',
-  headers: ['Use', 'Armor', 'Head', 'Arms', 'Hand', 'Body', 'Legs', 'Feet', 'Avg'],
+  headers: [
+    'Use', 'Name',
+    <Icon name="head" />,
+    <Icon name="arm" />,
+    <Icon name="torso" />,
+    <Icon name="hand" />,
+    <Icon name="leg" />,
+    <Icon name="feet" />,
+    'Avg'
+  ],
   settings: {
     template: {
       key: 'new-armor',

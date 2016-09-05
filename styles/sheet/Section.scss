@@ -29,16 +29,27 @@
     }
   }
 
-  .section-heading:first-child { flex-grow: 1; }
-
-  > .section-header {
+  > .header {
     align-content: space-between;
+    border-bottom: 1px solid $palette-blue;
     display: flex;
+    margin: 0;
     padding: 0 .25em;
     width: 100%;
 
-    .section-heading {
+    .heading {
+      font-family: Ubuntu;
+      font-weight: bold;
+      margin: 0;
       min-width: 30px;
+      padding: 3px 0;
+      text-align: center;
+      text-transform: none;
+
+      &:first-child {
+        flex-grow: 1;
+        text-align: left;
+      }
     }
   }
 }

@@ -17,7 +17,13 @@
   }
 
   .xp, .rp, .power {
-    width: 40px;
+    overflow: visible;
+    min-width: 40px;
+
+    span { overflow: inherit; }
+    input {
+      padding: 0;
+    }
   }
   .name, .power { padding: 1em 0; }
   .name, .xp, .rp, .power {

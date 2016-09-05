@@ -29,7 +29,7 @@ SkillManager.propTypes = {
 SkillManager.defaultProps = {
   ...CollectionManager.defaultProps,
   title: 'Skills',
-  headers: ['Name', 'Th', 'Ms', 'Name', 'Th', 'Ms'],
+  headers: ['Name', 'Th', 'Ms', '', 'Name', 'Th', 'Ms'],
   settings: {
     template: {
       key: 'new-skill',

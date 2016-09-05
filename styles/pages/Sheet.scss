@@ -3,76 +3,7 @@
 
   .columns { margin-bottom: 0; }
 
-  .Portrait.section {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-
-  .portrait.frame {
-    align-items: center;
-    border: 5px solid lighten($palette-light-gray, 5%);
-    border-radius: 5px;
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    text-align: center;
-    margin: 1% 0 1% 1%;
-    overflow: hidden;
-    position: relative;
-
-    &:before {
-      color: darken($palette-light-gray, 5%);
-      content: '\e811';
-      font-family: axis-wiki;
-      font-size: 5em;
-    }
-
-    .portrait.display {
-      background-position: center center;
-      background-size: cover;
-      position: absolute;
-      top: 0; right: 0; bottom: 0; left: 0;
-    }
-  }
-
-  .Descriptors.section, .Combat.section {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
-    > .title {
-      font-family: Ubuntu, Calibri, sans-serif;
-    }
-  }
-  .Descriptors.section .descriptor {
-    min-width: 32%; max-width: 32%;
-  }
-  .Combat.section .attribute {
-    min-width: 24%; max-width: 24%;
-  }
-
-  .Armor.section, .Weapons.section {
-    .section-heading, .weapon, .armor {
-      padding: 0 3px;
-    }
-    .section-heading:first-child {
-      flex-grow: 0;
-      text-align: center;
-    }
-    .section-heading:nth-child(2) {
-      flex-grow: 1;
-      padding: 5px;
-      text-align: left;
-    }
-    .section-heading, .equipped, .name, .value {
-      padding: 5px 1px;
-    }
-  }
-
-  .Armor.section .armor:nth-child(odd),
-  .Traits.section .trait:nth-child(odd),
-  .Weapons.section .weapon:nth-child(odd) {
+  .Traits.section .trait:nth-child(odd) {
     background-color: $palette-light-blue;
   }
 }

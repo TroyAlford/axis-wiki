@@ -1,0 +1,32 @@
+.Portrait.section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .portrait.frame {
+    align-items: center;
+    border: 5px solid lighten($palette-light-gray, 5%);
+    border-radius: 5px;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    text-align: center;
+    margin: 1% 0 1% 1%;
+    overflow: hidden;
+    position: relative;
+
+    &:before {
+      color: darken($palette-light-gray, 5%);
+      content: '\e811';
+      font-family: axis-wiki;
+      font-size: 5em;
+    }
+
+    .portrait.display {
+      background-position: center center;
+      background-size: cover;
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+    }
+  }
+}
