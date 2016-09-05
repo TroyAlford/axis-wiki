@@ -1,11 +1,11 @@
-import toLower from 'lodash/toLower'
+import { includes, toLower } from 'lodash'
 
-export default function slugify(input) {
-  if (typeof input !== 'string')
-    return input
-
+export default function Slug(input) {
   if (Array.isArray(input))
-    return input.map(slugify)
+    return input.map(Slug)
+
+  if (!input || includes(['object', 'function'], typeof input))
+    return '' // Return '' for all falsy values, objects and fn's
 
   return toLower(input)
     .replace(/[^\w\d/_]/g, '-')
