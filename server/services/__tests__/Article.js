@@ -86,8 +86,9 @@ describe('Article', () => {
   it('binds "this" to cleaners & renderers correctly', () => {
     const article = new Article('', '')
     let calls = 0
-    function fn(value) {
+    function fn(value, articleParam) {
       expect(this).toEqual(article)
+      expect(articleParam).toEqual(article)
       calls++
     }
 

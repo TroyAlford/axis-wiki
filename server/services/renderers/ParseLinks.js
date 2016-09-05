@@ -6,7 +6,7 @@ import path from 'path'
 import url from 'url'
 import utils from 'fs-utils'
 
-export default function(html) {
+export default function(html, article) {
   const $parser = $.load(html)
 
   const links_to = []
@@ -37,9 +37,9 @@ export default function(html) {
     const href = Url($link.attr('href'))
   })
 
-  if (typeof this === 'object') {
-    this.links_to = orderBy(uniq(links_to))
-    this.missing_links = orderBy(uniq(missing_links))
+  if (typeof article === 'object') {
+    article.links_to = orderBy(uniq(links_to))
+    article.missing_links = orderBy(uniq(missing_links))
   }
   return $parser.html()
 }

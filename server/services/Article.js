@@ -71,13 +71,13 @@ export default class Article {
 
   get cleansedHTML() {
     if (this._cleansedHTML === undefined)
-      this._cleansedHTML = this.runAll(this.cleaners, this._html)
+      this._cleansedHTML = this.runAll(this.cleaners, this._html, this)
 
     return this._cleansedHTML
   }
   get renderedHTML() {
     if (this._renderedHTML === undefined)
-      this._renderedHTML = this.runAll(this.renderers, this.cleansedHTML)
+      this._renderedHTML = this.runAll(this.renderers, this.cleansedHTML, this)
 
     return this._renderedHTML
   }

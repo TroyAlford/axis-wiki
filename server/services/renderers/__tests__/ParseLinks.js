@@ -45,7 +45,7 @@ describe('ParseLinks', () => {
 
     const article = {}
 
-    const after = ParseLinks.apply(article, [before])
+    const after = ParseLinks(before, article)
     expect(after).toEqual(expected)
     expect(article.missing_links).toEqual(['missing-link'])
     expect(article.links_to).toEqual(['missing-link'])
@@ -56,7 +56,7 @@ describe('ParseLinks', () => {
 
     const article = {}
 
-    const after = ParseLinks.apply(article, [before])
+    const after = ParseLinks(before, article)
     expect(after).toEqual(expected)
     expect(article.missing_links).toEqual(['missing-media.jpg'])
     expect(article.links_to).toEqual(['missing-media.jpg'])
