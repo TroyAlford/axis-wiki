@@ -20,6 +20,7 @@ import Attribute from '../sheet/Attribute'
 import AttributeManager from '../sheet/AttributeManager'
 import Descriptor from '../sheet/Descriptor'
 import DescriptorManager from '../sheet/DescriptorManager'
+import JsonFormatter from '../sheet/JsonFormatter'
 import Section from '../sheet/Section'
 import SheetHeader from '../sheet/SheetHeader'
 import Skill from '../sheet/Skill'
@@ -32,12 +33,11 @@ import WeaponManager from '../sheet/WeaponManager'
 class Sheet extends ComponentBase {
   constructor(props) {
     super(props)
+    this.state = defaultState
+    this.formatter = { json: '' }
 
-    const { params: { slug, ownerId } } = this.props
-    if (this.props.slug !== slug)
-      this.props.dispatch(loadSheet(slug, ownerId))
-
-    this.state = {}
+    const { params: { slug, ownerId } } = props
+    props.dispatch(loadSheet(slug, ownerId))
   }
 
   componentWillReceiveProps(nextProps) {
@@ -53,7 +53,15 @@ class Sheet extends ComponentBase {
       this.props.dispatch(loadSheet(nextProps.params.slug, nextProps.params.ownerId))
     }
 
-    this.state = {}
+    this.setState({
+      name: nextProps.name,
+      armor: nextProps.armor,
+      attributes: nextProps.attributes,
+      descriptors: nextProps.descriptors,
+      traits: nextProps.traits,
+      skills: nextProps.skills,
+      weapons: nextProps.weapons
+    })
   }
 
   getImageUrl() {
@@ -62,19 +70,18 @@ class Sheet extends ComponentBase {
   }
 
   render() {
-    const armor = this.state.armor || this.props.armor
-    const armorValue = sum(filter(armor, { equipped: true }).map(armor =>
+    const armorValue = sum(filter(this.state.armor, { equipped: true }).map(armor =>
       Math.round(sum(armor.values) / armor.values.length, 0)
     ))
 
     return (
       <div className="sheet page">
         <SheetHeader
-          name={this.state.name || this.props.name}
+          name={this.state.name}
           onNameChange={name => this.setState({ name })}
-          attributes={this.state.attributes || this.props.attributes}
-          skills={this.state.skills || this.props.skills}
-          traits={this.state.traits || this.props.traits}
+          attributes={this.state.attributes}
+          skills={this.state.skills}
+          traits={this.state.traits}
           xp={0} rp={0}
         />
         <div className="columns">
@@ -89,12 +96,12 @@ class Sheet extends ComponentBase {
           </div>
           <div className="column">
             <DescriptorManager
-              items={this.state.descriptors || this.props.descriptors}
+              items={this.state.descriptors}
               onChange={c => this.setState({ descriptors: c.items })}
             />
             <AttributeManager
               armor={armorValue}
-              items={this.state.attributes || this.props.attributes}
+              items={this.state.attributes}
               onChange={c => this.setState({ attributes: c.items })}
             />
           </div>
@@ -102,13 +109,13 @@ class Sheet extends ComponentBase {
         <div className="columns">
           <div className="column is-one-third">
             <TraitManager
-              items={this.state.traits || this.props.traits}
+              items={this.state.traits}
               onChange={c => this.setState({ traits: c.items })}
             />
           </div>
           <div className="column">
             <SkillManager
-              items={this.state.skills || this.props.skills}
+              items={this.state.skills}
               onChange={c => this.setState({ skills: c.items })}
             />
           </div>
@@ -117,21 +124,34 @@ class Sheet extends ComponentBase {
           <div className="columns">
             <div className="column">
               <WeaponManager
-                items={this.state.weapons || this.props.weapons}
+                items={this.state.weapons}
                 onChange={c => this.setState({ weapons: c.items })}
               />
             </div>
             <div className="column">
               <ArmorManager
-                items={this.state.armor || this.props.armor}
+                items={this.state.armor}
                 onChange={c => this.setState({ armor: c.items })}
               />
             </div>
           </div>
         </Section>
+        <JsonFormatter {...this.state}
+          ref={self => this.formatter = self}
+        />
       </div>
     );
   }
+}
+
+const defaultState = {
+  name: 'Unnamed Character',
+  armor: [],
+  attributes: [],
+  descriptors: [],
+  skills: [],
+  traits: [],
+  weapons: [],
 }
 
 Sheet.propTypes = {
@@ -146,15 +166,9 @@ Sheet.propTypes = {
   weapons: React.PropTypes.array.isRequired,
 }
 Sheet.defaultProps = {
-  name: 'Unnamed Character',
-  armor: [],
-  attributes: [],
-  descriptors: [],
+  ...defaultState,
   ownerId: undefined,
-  skills: [],
   slug: undefined,
-  traits: [],
-  weapons: [],
 }
 
 export default connect(

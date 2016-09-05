@@ -52,7 +52,7 @@ export default class DescriptorManager extends CollectionManager {
 
 // Sorted list of keys, used in whitelisting and also
 // as a sort-order for display purposes.
-const keys = [
+export const keys = [
   'homeland', 'height', 'eyes',
   'race',     'weight', 'hair',
   'concept',  'gender', 'age',

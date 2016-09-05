@@ -73,7 +73,7 @@ export default class AttributeManager extends CollectionManager {
 }
 
 // List of keys for whitelisting.
-const keys = [
+export const keys = [
   'body', 'mind', 'spirit',
   'potency', 'strength', 'intellect', 'confidence',
   'reflex', 'agility', 'acuity', 'intuition',
