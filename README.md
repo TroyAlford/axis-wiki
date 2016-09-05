@@ -10,3 +10,25 @@
 
 ## Contributors
 Pull requests welcome!
+
+## Font Attributions
+- Icon Font built using [Fontello](http://www.fontello.com)
+
+### Icons by [Freepik](http://www.flaticon.com/authors/freepik) from [www.flaticon.com](http://www.flaticon.com)
+- Feet Icon
+- Leg Icon
+- Sword & Shield Icon
+- Torso / Chest Icon
+
+### Icons by [Baianat](http://www.flaticon.com/authors/baianat) from [www.flaticon.com](http://www.flaticon.com)
+- Arm Icon
+
+### Icons by [Gregor Cresnar](http://www.flaticon.com/authors/gregor-cresnar) from [www.flaticon.com](http://www.flaticon.com)
+- Head Icon
+
+### Icons by [Madebyoliver](http://www.flaticon.com/authors/madebyoliver) from [www.flaticon.com](http://www.flaticon.com)
+- Backpack Icon
+- Coins/Money Icon
+
+### Icons by [Vaadin](http://www.flaticon.com/authors/vaadin) from [www.flaticon.com](http://www.flaticon.com)
+- Hand Icon
