@@ -18,7 +18,7 @@ import utils      from 'fs-utils'
 
 import Article    from './Article'
 import Config     from './Config'
-import Slug       from './Slug'
+import Slug       from '../../utility/Slugs'
 
 const THROTTLE = Config.settings.cleanup.throttle;
 
@@ -57,7 +57,7 @@ class Links {
     return this.links[this.resolve(slug)];
   }
   resolve(slug) {
-    let norm = Slug.normalize(slug),
+    let norm = Slug(slug),
         link = this.links[norm];
 
     if (link && link.alias_for && link.alias_for == norm) delete link.alias_for;

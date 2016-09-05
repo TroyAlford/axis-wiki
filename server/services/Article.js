@@ -1,213 +1,105 @@
-import difference           from 'lodash/difference'
-import flatten              from 'lodash/flatten'
-import flow                 from 'lodash/flow'
-import forEach              from 'lodash/forEach'
-import keys                 from 'lodash/keys'
-import map                  from 'lodash/map'
-import startCase            from 'lodash/startCase'
-import uniq                 from 'lodash/uniq'
-import union                from 'lodash/union'
-import xor                  from 'lodash/xor'
+import $ from 'cheerio'
+import { defaultsDeep, difference, flow, orderBy, uniq } from 'lodash'
+import { Slug, Url } from '../../utility/Slugs'
 
-import $                    from 'cheerio'
-import { html as beautify } from 'js-beautify'
-import fs                   from 'fs'
-import path                 from 'path'
-import url                  from 'url'
-import utils                from 'fs-utils'
+import cleaners from './cleaners'
+import renderers from './renderers'
 
-import Config               from './Config'
-import Links                from './Links'
-import Slug                 from './Slug'
-import Tags                 from './Tags'
+const defaults = {
+  aliases: [],
+  data: [],
+  tags: [],
 
-class Article {
-  constructor() {
-    this.folders = Config.folders;
-    this.beauty_settings = Config.settings.html.beautifier;
+  cleaners,
+  renderers,
+}
 
-    this.get_clean = this.get_clean.bind(this);
-    this.get_final = this.get_final.bind(this);
+export default class Article {
+  constructor(slug, html = '', settings = {}) {
+    this.settings = defaultsDeep({}, settings, defaults)
 
-    this.load = this.load.bind(this);
-    this.load_html = this.load_html.bind(this);
-    this.load_meta = this.load_meta.bind(this);
+    this._cleansedHTML = undefined
+    this._renderedHTML = undefined
 
-    this.clean = this.clean.bind(this);
-    this.delete = this.delete.bind(this);
-    this.build_html = this.build_html.bind(this);
+    this.slug = slug
+    this.html = html
 
-    this.get_rooted_url = this.get_rooted_url.bind(this);
-    this.is_local_url = this.is_local_url.bind(this);
+    this.cleaners = this.settings.cleaners
+    this.renderers = this.settings.renderers
 
-    this.save = this.save.bind(this);
+    this.aliases = this.settings.aliases
+    this.data = this.settings.data
+    this.tags = this.settings.tags
   }
 
-  get_clean(slug) {
-    return this.clean(this.load(slug));
-  }
-  get_final(slug) {
-    let base = this.load(slug);
-    return {
-      ...this.build_html(base.html),
-      ...this.clean_meta(base),
-      children: Tags.for(slug)
-    }
+  get cleaners() { return this._cleaners || [] }
+  set cleaners(value) {
+    if (Array.isArray(value))
+      this._cleaners = value.filter(fn => typeof fn === 'function')
+    else if (typeof value === 'function')
+      this._cleaners = [value]
+    else
+      console.warn(`Cleaners must be functions, not ${typeof value}`)
   }
 
-  load(slug) {
-    return {
-      ...this.load_meta(slug),
-      html: this.load_html(slug)
-    }
-  }
-  load_html(slug) {
-    let file = path.resolve(this.folders.articles, `${slug}.html`),
-        html = '';
-
-    try {
-      html = utils.readFileSync(file);
-    } catch (err) {
-      html = `<h1>${startCase(slug)}</h1>`;
-    }
-
-    return html;
-  }
-  load_meta(slug) {
-    let file = path.resolve(this.folders.articles, `${slug}.json`),
-        meta = {};
-
-    try {
-      meta = utils.readJSONSync(file);
-    } catch (err) {
-      meta = {};
-    }
-
-    return {
-      aliases: meta.aliases || [],
-      data:    meta.data    || [],
-      tags:    meta.tags    || []
-    };
+  get renderers() { return this._renderers }
+  set renderers(value) {
+    if (Array.isArray(value))
+      this._renderers = value.filter(fn => typeof fn === 'function')
+    else if (typeof value === 'function')
+      this._renderers = [value]
+    else
+      console.warn(`Renderers must be functions, not ${typeof value}`)
   }
 
-  clean(article) {
-    return {
-      ...this.clean_meta(article),
-      html: this.clean_html(article.html)
-    }
-  }
-  clean_html(html) {
-    let $html = $.load(html || '');
-    $html('style').remove();   // Remove all style tags
-    $html('script').remove();  // Remove all script tags
+  get aliases() { return difference(this._aliases, [this.slug]) }
+  set aliases(aliases) { this._aliases = uniqueSlugs(aliases) }
 
-    let $includes = $html('include').html('') // Empty all <include> tags
-    // Get all of the html attributes of 'include' tags as a single array.
-    let attrs = flow(
-      map(el => keys(el.attribs)), // Attributes of every <include> tag as an array
-      flatten(), uniq(), // Flatten into a single array, remove all duplicates
-      xor(['class', 'from', 'sections']), // White-list the allowed attributes
-      forEach(attr => $includes.removeAttr(attr))
-    )($includes.get())
+  get html() { return this._html }
+  set html(html) {
+    if (typeof html !== 'string')
+      return console.warn(`Article HTML must be set with a string value, not ${typeof html}`)
 
-    $html('a').each((index, element) => {
-      let $el = $html(element);
-      $el.removeAttr('target').removeAttr('class');
-    });
-    return $html.html();
-  }
-  clean_meta(meta) {
-    return {
-      aliases:  Slug.normalize(meta.aliases || []),
-      tags:     Slug.normalize(meta.tags    || []),
-      data:     meta.data || []
-    };
+    if (html === this._html)
+      return;
+    else
+      this._html = html
+
+    this._cleansedHTML = undefined
+    this._renderedHTML = undefined
   }
 
-  delete(slug) {
-    // Removes files only. Reference updates are performed in response to file watchers.
-    let base = path.resolve(this.folders.articles, slug);
-    forEach(['html', 'json'], ext => {
-      let filename = `${base}.${ext}`;
-      if (utils.exists(filename))
-        fs.unlinkSync(filename, { force: true });
-    });
-    return true;
+  get cleansedHTML() {
+    if (this._cleansedHTML === undefined)
+      this._cleansedHTML = this.runAll(this.cleaners, this._html)
+
+    return this._cleansedHTML
+  }
+  get renderedHTML() {
+    if (this._renderedHTML === undefined)
+      this._renderedHTML = this.runAll(this.renderers, this.cleansedHTML)
+
+    return this._renderedHTML
   }
 
-  build_html(html) {
-    let $html         = $.load(html),
-        links_to      = [],
-        missing_links = [];
-    $html('a').each((index, element) => {
-      let href = element.attribs.href,
-          link = url.parse(href),
-          $el  = $html(element);
+  get slug() { return Slug(this._slug || '') }
+  set slug(slug) { this._slug = Slug(slug) }
 
-      if (!this.is_local_url(href)) // External link
-        $el.attr('target', '_new').addClass('external');
-      else { // Internal link
-        let link_slug = Slug.normalize(link.pathname);
-        links_to.push(link_slug);
+  get tags() { return difference(this._tags, [this.slug]) }
+  set tags(tags) { this._tags = uniqueSlugs(tags) }
 
-        let lookup = Links.get(link_slug),
-            is_media = 0 <= link.pathname.indexOf('media/');
-
-        if ((is_media && !utils.exists(path.join(this.folders.media, path.basename(href)))
-        || (!is_media && (!lookup || !lookup.exists)))) {
-          missing_links = union(missing_links, [link_slug]);
-          $el.addClass('missing');
-        }
-
-        element.attribs.href = this.get_rooted_url(link.pathname);
-      }
-      $html('img').each((index, element) => {
-        element.attribs.src = this.get_rooted_url(element.attribs.src);
-      });
-    });
-
-    return {
-      html:          beautify($html.html(), this.beauty_settings),
-      links_to:      Slug.normalize(links_to),
-      missing_links: Slug.normalize(missing_links)
-    };
-  }
-
-  get_rooted_url(value) {
-    if (!this.is_local_url(value)) return value;
-
-    let href = Slug.normalize(value, true).replace(/^[.]{0,}\//g, '');
-    if (href.split('/').length == 1)
-      href = `page/${href}`;
-
-    return `/${href}`;
-  }
-  is_local_url(value) {
-    let link = url.parse(value);
-    return !link.hostname;
-  }
-
-  transclude(article) {
-
-  }
-
-  save(slug, article) {
-    let base = path.resolve(this.folders.articles, slug),
-        html = this.clean_html(article.html),
-        meta = this.clean_meta(article);
-
-    meta.aliases = difference(meta.aliases, [slug]); // No self-referential aliases.
-
-    try {
-      fs.writeFileSync(`${base}.html`, html);
-      fs.writeFileSync(`${base}.json`, JSON.stringify(meta));
-    } catch (err) {
-      console.log(err.message);
-      return false;
-    }
-
-    return true;
+  runAll(functions, ...args) {
+    return flow(functions).apply(this, args)
   }
 }
 
-export default new Article();
+function uniqueSlugs(slugs) {
+  if (!Array.isArray(slugs))
+    return uniqueSlugs([slugs])
+
+  return flow([
+    Slug, uniq,
+    array => difference(array, ['']),
+    orderBy,
+  ])(slugs)
+}

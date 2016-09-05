@@ -1,16 +1,20 @@
-jest.unmock('../Article.new')
-jest.unmock('../Slug')
 jest.unmock('cheerio')
 jest.unmock('lodash')
-import Article from '../Article.new'
+jest.unmock('../Article')
+jest.unmock('../../../utility/Slugs')
+
+jest.mock('../cleaners', () => [])
+jest.mock('../renderers', () => [])
+
+import Article from '../Article'
 
 describe('Article', () => {
   it('slugifies slugs', () => {
-    const before = 'Cr4zy+  S1ug with $P3(14L (|-|4r4(73r$'
-    const expected = 'cr4zy-s1ug-with-p3-14l-4r4-73r'
+    const before = 'A и၀и-Slugified Slug'
+    const expected = 'a-slugified-slug'
 
     // Test based on constructor assignment
-    let article = new Article({ slug: before })
+    let article = new Article(before)
     expect(article.slug).toEqual(expected)
 
     // Test based on property assignment
@@ -30,9 +34,9 @@ describe('Article', () => {
   it('slugifies aliases & tags, but eliminates own slug', () => {
     const slug = 'test'
     const before = ['Cr4zy+ ', '--A$$-', '--TEST--', '$!Sl_g']
-    const expected = ['a', 'cr4zy', 'sl_g']
+    const expected = ['a', 'cr-4-zy', 'sl-g']
 
-    let article = new Article({ slug, aliases: before, tags: before })
+    let article = new Article(slug, '', { aliases: before, tags: before })
     expect(article.aliases).toEqual(expected)
     expect(article.tags).toEqual(expected)
 
@@ -46,49 +50,51 @@ describe('Article', () => {
   })
 
   it('runs all cleaners and renderers at proper times', () => {
-    const first = jest.fn(value => value),
-          second = jest.fn(value => value),
-          third = jest.fn(),
+    const fn = jest.fn(value => value),
           removed = ''
-    const before = [first, second, third, removed]
+    const before = [fn, removed]
 
-    let article = new Article({ cleaners: before, renderers: before })
-    expect(article.cleaners).toEqual([first, second, third])
-    expect(article.renderers).toEqual([first, second, third])
+    let article = new Article('', 'original html')
+    article.cleaners = before
+    article.renderers = before
 
-    // Each fn() should call once on construction, when HTML is set
-    expect(first).toBeCalled(); first.mockClear()
-    expect(second).toBeCalled(); second.mockClear()
-    expect(third).toBeCalled(); third.mockClear()
+    // Removes non-fn's, and calls nothing on construction
+    expect(article.cleaners).toEqual([fn])
+    expect(article.renderers).toEqual([fn])
+    expect(fn).not.toBeCalled(); fn.mockClear()
 
-    // Each fn() should call once as a renderer, to get renderedHTML
+    // fn() should be called when renderedHTML is requested first time
     let rendered = article.renderedHTML
-    expect(first).toBeCalled(); first.mockClear()
-    expect(second).toBeCalled(); second.mockClear()
-    expect(third).toBeCalled(); third.mockClear()
+    expect(fn).toBeCalled(); fn.mockClear()
 
-    // renderedHTML is cached, so a subsequent call shouldn't rerender
+    // renderedHTML is cached, subsequent call = no re-render
     rendered = article.renderedHTML
-    expect(first).not.toBeCalled(); first.mockClear()
-    expect(second).not.toBeCalled(); second.mockClear()
-    expect(third).not.toBeCalled(); third.mockClear()
+    expect(fn).not.toBeCalled(); fn.mockClear()
 
-    // changing HTML should de-cache the renderedHTML, and force re-cleaning
-    article.html = ''
-    expect(first).toBeCalled(); first.mockClear()
-    expect(second).toBeCalled(); second.mockClear()
-    expect(third).toBeCalled(); third.mockClear()
-
-    // Another call to renderedHTML should now call all renderers again
+    article.html = 'original html'
+    // Setting the same HTML again should not pop the cache
+    expect(fn).not.toBeCalled(); fn.mockClear()
     rendered = article.renderedHTML
-    expect(first).toBeCalled(); first.mockClear()
-    expect(second).toBeCalled(); second.mockClear()
-    expect(third).toBeCalled(); third.mockClear()
+    expect(fn).not.toBeCalled(); fn.mockClear()
 
-    // But again, this should be cached.
+    article.html = 'new html'
+    // Setting new HTML should pop the cache
     rendered = article.renderedHTML
-    expect(first).not.toBeCalled(); first.mockClear()
-    expect(second).not.toBeCalled(); second.mockClear()
-    expect(third).not.toBeCalled(); third.mockClear()
+    expect(fn).toBeCalled(); fn.mockClear()
+  })
+
+  it('binds "this" to cleaners & renderers correctly', () => {
+    const article = new Article('', '')
+    let calls = 0
+    function fn(value) {
+      expect(this).toEqual(article)
+      calls++
+    }
+
+    article.renderers = [fn]
+    article.cleaners = [fn]
+
+    article.renderedHTML
+    expect(calls).toEqual(2)
   })
 })

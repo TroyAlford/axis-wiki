@@ -20,7 +20,6 @@ import path         from 'path'
 import utils        from 'fs-utils'
 
 import Config       from './Config'
-import Slug         from './Slug'
 
 const THROTTLE = Config.settings.cleanup.throttle;
 
