@@ -1,16 +1,6 @@
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
-import {
-  filter,
-  find,
-  sum,
-} from 'lodash'
-import {
-  deleteSheet,
-  loadSheet,
-  loadedSheet,
-  saveSheet
-} from '../redux/sheet/actions'
+import { filter, find, pick, sum } from 'lodash'
 
 import * as React from 'react'
 import ComponentBase from '../application/ComponentBase'
@@ -30,38 +20,20 @@ import TraitManager from '../sheet/TraitManager'
 import Weapon from '../sheet/Weapon'
 import WeaponManager from '../sheet/WeaponManager'
 
-class Sheet extends ComponentBase {
+const propsToExtract = [
+  'name', 'armor', 'attributes', 'descriptors',
+  'traits', 'skills', 'weapons'
+]
+
+export default class Sheet extends ComponentBase {
   constructor(props) {
     super(props)
-    this.state = defaultState
+    this.state = { ...defaultState, ...pick(props, propsToExtract) }
     this.formatter = { json: '' }
-
-    const { params: { slug, ownerId } } = props
-    props.dispatch(loadSheet(slug, ownerId))
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.slug !== this.props.slug // New Article is loading
-      && nextProps.slug !== nextProps.params.slug) { // & the page location doesn't show it
-      let path = this.props.route.path.split('/')
-      path.pop()
-      path.push(nextProps.slug)
-      browserHistory.replace(path.join('/'))
-    }
-
-    if (this.props.params.slug !== nextProps.params.slug) {
-      this.props.dispatch(loadSheet(nextProps.params.slug, nextProps.params.ownerId))
-    }
-
-    this.setState({
-      name: nextProps.name,
-      armor: nextProps.armor,
-      attributes: nextProps.attributes,
-      descriptors: nextProps.descriptors,
-      traits: nextProps.traits,
-      skills: nextProps.skills,
-      weapons: nextProps.weapons
-    })
+  componentWillReceiveProps(props) {
+    this.setState({ ...defaultState, ...pick(props, propsToExtract) })
   }
 
   getImageUrl() {
@@ -159,18 +131,8 @@ Sheet.propTypes = {
   armor: React.PropTypes.array.isRequired,
   attributes: React.PropTypes.array.isRequired,
   descriptors: React.PropTypes.array.isRequired,
-  ownerId: React.PropTypes.string,
   skills: React.PropTypes.array.isRequired,
-  slug: React.PropTypes.string,
   traits: React.PropTypes.array.isRequired,
   weapons: React.PropTypes.array.isRequired,
 }
-Sheet.defaultProps = {
-  ...defaultState,
-  ownerId: undefined,
-  slug: undefined,
-}
-
-export default connect(
-  state => state.sheet
-)(Sheet);
+Sheet.defaultProps = defaultState

@@ -53,3 +53,10 @@ export function saveArticle(slug, article, userId = null) {
 
   return true
 }
+
+export function getSheet(slug, userId = null) {
+  const urls = getUrls(slug, userId)
+
+  return utils.exists(urls.sheet)
+    ? utils.readJSONSync(urls.sheet) : undefined
+}

@@ -10,6 +10,7 @@ const default_state = {
   data: [],
   html: '',
   missing_links: [],
+  sheet: undefined,
   tags: []
 }
 

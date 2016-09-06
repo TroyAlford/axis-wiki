@@ -1,18 +1,7 @@
-import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
-import {
-  deleteArticle,
-  loadArticle,
-  loadedArticle,
-  saveArticle
-} from '../redux/article/actions'
-import Slug from '../../utility/Slugs'
-import {
-  difference,
-  sortBy,
-  uniq,
-  xor
-} from 'lodash'
+import { connect } from 'react-redux'
+import { deleteArticle, loadArticle, loadedArticle, saveArticle } from '../redux/article/actions'
+import { difference, sortBy, uniq, xor } from 'lodash'
 
 import ComponentBase from '../application/ComponentBase'
 import ArticleChildren from '../components/ArticleChildren'
@@ -20,6 +9,8 @@ import Icon from '../components/Icon'
 import TabSet from '../components/TabSet'
 import TagBar from '../components/TagBar'
 import TinyMCE from 'react-tinymce'
+import Sheet from './Sheet'
+import Slug from '../../utility/Slugs'
 
 import editor_config from '../config/editor'
 
@@ -51,11 +42,14 @@ class Article extends ComponentBase {
       this.setState(this.default_state)
       this.props.dispatch(loadArticle(nextProps.params.slug))
     }
+
+    if (!this.props.readonly && nextProps.readonly)
+      this.setState(this.default_state)
   }
 
   get default_state() {
     return {
-      selected_tab: 0,
+      selected_tab: 'read',
 
       aliases: null,
       children: null,
@@ -93,11 +87,10 @@ class Article extends ComponentBase {
   }
   getCurrentHtml() {
     switch (this.state.selected_tab) {
-      case 1: /* TinyMCE tab */
+      case 'edit': /* TinyMCE tab */
         return tinyMCE.activeEditor.getContent();
-      case 2: /* HTML tab */
+      case 'html': /* HTML tab */
         return this.refs.html.value;
-      case 0: /* Reading tab */
       default:
         return this.state.html !== null ? this.state.html : this.props.html;
     }
@@ -115,77 +108,92 @@ class Article extends ComponentBase {
     event.preventDefault()
   }
   handleTabClicked(clicked) {
-    if (this.state.selected_tab == clicked.index) return;
+    if (this.state.selected_tab === clicked.key) return;
 
+    const currentHTML = this.getCurrentHtml()
     this.setState({
-      html: this.getCurrentHtml(),
-      selected_tab: clicked.index
+      html: this.props.html === currentHTML ? null : currentHTML,
+      selected_tab: clicked.key
     })
   }
 
   render() {
     const html = this.state.html || this.props.html
-    let reader = [
-      <div key='html' dangerouslySetInnerHTML={{ __html: html }} />,
-      <ArticleChildren key='children' articles={this.props.children} />
-    ]
+
+    const tabs = [{
+      key: 'read',
+      caption: [
+        <Icon key="icon" name="read" />,
+        <span key="text">Article</span>,
+      ],
+      contents: [
+        <div key='html' dangerouslySetInnerHTML={{ __html: html }} />,
+        <ArticleChildren key='children' articles={this.props.children} />
+      ]
+    }]
+    if (this.props.sheet) tabs.push({
+      key: 'sheet',
+      caption: [
+        <Icon key="icon" name="sheet" />,
+        <span key="text">Sheet</span>,
+      ],
+      contents: <Sheet readonly={this.props.readonly}
+                                {...this.props.sheet} />
+    })
 
     const classes = [
       'article', 'page',
       this.props.loading ? 'loading' : '',
     ]
+
     return (
       <div className={classes.join(' ')} onKeyDown={this.handleKeyDown}>
-    { this.props.readonly
-      ? <div className="readonly">{reader}</div>
-      : <TabSet
+        <TabSet
           active={this.state.selected_tab}
-          tabs={[{
-            className: 'read',
-            caption: <Icon name="read" size="small" />,
-            contents: reader
-          }, {
-            className: 'edit',
-            caption: <Icon name="edit" size="small" />,
-            contents:
-              <TinyMCE ref="tinymce"
-                config={editor_config}
-                content={this.state.html !== null ? this.state.html : this.props.html}
-              />
-          }, {
-            className: 'html',
-            caption: <Icon name="html" size="small" />,
-            contents:
-              <textarea ref="html"
-                onChange={() => this.setState({ html: this.refs.html.value })}
-                value={this.state.html !== null ? this.state.html : this.props.html}
-              />
-          }, {
-            className: 'settings',
-            caption: <Icon name="settings" size="small" />,
-            contents:
-              <div className="settings">
-                <h5>Aliases:</h5>
-                <div className="callout-info">Each entry below is used as an alternate name / redirect for this page.</div>
-                <TagBar
-                  className="aliases-editor tag-bar"
-                  tags={this.state.aliases || this.props.aliases}
-                  inputProps={{
-                    className: 'alias-tag tag-bar-input',
-                    placeholder: 'add alias'
-                  }}
-                  readonly={false}
-                  onChange={aliases => this.setState({ aliases })}
-                  onlyUnique={true}
+          tabs={[ ...tabs, ...(this.props.readonly ? [] : [{
+              key: 'edit',
+              caption: [
+                <Icon name="edit" />,
+              ],
+              contents:
+                <TinyMCE ref="tinymce"
+                  config={editor_config}
+                  content={this.state.html !== null ? this.state.html : this.props.html}
                 />
-                <h5>Danger</h5>
-                <button className="button is-danger" onClick={this.handleDelete}>Delete this Article</button>
-                <span className="button-label"><i>Warning: This cannot be undone!</i></span>
-              </div>
-          }]}
+            }, {
+              key: 'html',
+              caption: <Icon name="html" />,
+              contents:
+                <textarea ref="html"
+                  onChange={() => this.setState({ html: this.refs.html.value })}
+                  value={this.state.html !== null ? this.state.html : this.props.html}
+                />
+            }, {
+              key: 'settings',
+              caption: <Icon name="settings" />,
+              contents:
+                <div className="settings">
+                  <h5>Aliases:</h5>
+                  <div className="callout-info">Each entry below is used as an alternate name / redirect for this page.</div>
+                  <TagBar
+                    className="aliases-editor tag-bar"
+                    tags={this.state.aliases || this.props.aliases}
+                    inputProps={{
+                      className: 'alias-tag tag-bar-input',
+                      placeholder: 'add alias'
+                    }}
+                    readonly={false}
+                    onChange={aliases => this.setState({ aliases })}
+                    onlyUnique={true}
+                  />
+                  <h5>Danger</h5>
+                  <button className="button is-danger" onClick={this.handleDelete}>Delete this Article</button>
+                  <span className="button-label"><i>Warning: This cannot be undone!</i></span>
+                </div>
+            }])
+          ]}
           tabClicked={this.handleTabClicked}
         />
-      }
         <TagBar
           tags={this.state.tags || this.props.tags}
           readonly={this.props.readonly}
@@ -195,10 +203,10 @@ class Article extends ComponentBase {
         {!this.isDirty() ? '' :
           <div className="buttons">
             <button className="save button is-success" onClick={this.handleSave}>
-              <Icon name="save" size="small" /><span>Save</span>
+              <Icon name="save" /><span>Save</span>
             </button>
             <button className="reset button is-danger" onClick={this.handleReset}>
-              <Icon name="undo" size="small" /><span>Reset</span>
+              <Icon name="undo" /><span>Reset</span>
             </button>
           </div>
         }

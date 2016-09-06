@@ -26,8 +26,9 @@ export default express()
   const article = Storage.getArticle(slug).rendered
   const { html, meta } = article
   const children = Tags.for(slug)
+  const sheet = Storage.getSheet(slug)
 
-  return response.status(200).send({ ...meta, html, children })
+  return response.status(200).send({ ...meta, html, children, sheet })
 })
 .post('/:slug', (request, response) => {
   if (!request.session.id)
@@ -45,10 +46,9 @@ export default express()
     return response.status(500).send('Unable to save article.');
 
   const children = Tags.for(slug)
-  const rendered = article.rendered
 
   response.status(200).send(
-    pick(rendered, ['html', 'title', 'aliases', 'data', 'tags'])
+    pick(article.rendered, ['html', 'title', 'aliases', 'data', 'tags'])
   )
 })
 .delete('/:slug', (request, response) => {
@@ -63,6 +63,3 @@ export default express()
   else
     return response.status(500).send(`Article ${slug} could not be deleted.`);
 })
-// .post('/rename/:from/to/:to', (request, response) => {
-
-// })
