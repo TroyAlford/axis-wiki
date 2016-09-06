@@ -1,4 +1,4 @@
-import intersection         from 'lodash/intersection'
+import { intersection, pick } from 'lodash'
 
 import bodyParser           from 'body-parser'
 import cheerio              from 'cheerio'
@@ -36,17 +36,24 @@ export default express()
     return response.status(401).send('You do not have sufficient privileges to edit articles.')
 
   let slug    = Slug(request.params.slug),
-      posted  = request.body,
-      saved   = Article.save(slug, posted);
+      posted  = request.body
 
-  if (!saved)
+  const { html, title, aliases, data, tags } = request.body
+  const article = new Article(slug, html, { title, aliases, data, tags })
+
+  if (!Storage.saveArticle(slug, article))
     return response.status(500).send('Unable to save article.');
 
-  response.status(200).send(Article.get_final(slug));
+  const children = Tags.for(slug)
+  const rendered = article.rendered
+
+  response.status(200).send(
+    pick(rendered, ['html', 'title', 'aliases', 'data', 'tags'])
+  )
 })
 .delete('/:slug', (request, response) => {
   let slug = request.params.slug; // Do NOT normalize. DELETE must be exact.
-  if (Article.delete(slug))
+  if (Storage.deleteArticle(slug))
     return response.status(410).send(`Article ${slug} has been removed.`);
   else
     return response.status(500).send(`Article ${slug} could not be deleted.`);
