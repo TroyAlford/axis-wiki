@@ -6,11 +6,12 @@ import replace     from 'rollup-plugin-replace'
 import uglify      from 'rollup-plugin-uglify'
 
 const PRODUCTION = (process.env.NODE_ENV || 'development') === 'production'
+const ENVIRONMENT = JSON.stringify(PRODUCTION ? 'production' : 'development')
 
 const plugins = [
   json(),
   replace({
-    'process.env.NODE_ENV': JSON.stringify('production')
+    'process.env.NODE_ENV': ENVIRONMENT
   }),
   babel({
     babelrc: false,
