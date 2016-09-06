@@ -19,7 +19,7 @@ import ArticleChildren from '../components/ArticleChildren'
 import Icon from '../components/Icon'
 import TabSet from '../components/TabSet'
 import TagBar from '../components/TagBar'
-import * as TinyMCE from 'react-tinymce'
+import TinyMCE from 'react-tinymce'
 
 import editor_config from '../config/editor'
 
@@ -124,14 +124,18 @@ class Article extends ComponentBase {
   }
 
   render() {
-    let reader =
-      <div>
-        <div dangerouslySetInnerHTML={{ __html: this.state.html !== null ? this.state.html : this.props.html }}></div>
-        <ArticleChildren articles={this.props.children} />
-      </div>
+    const html = this.state.html || this.props.html
+    let reader = [
+      <div key='html' dangerouslySetInnerHTML={{ __html: html }} />,
+      <ArticleChildren key='children' articles={this.props.children} />
+    ]
 
+    const classes = [
+      'article', 'page',
+      this.props.loading ? 'loading' : '',
+    ]
     return (
-      <div className={`article page ${this.props.loading ? 'loading' : ''}`} onKeyDown={this.handleKeyDown}>
+      <div className={classes.join(' ')} onKeyDown={this.handleKeyDown}>
     { this.props.readonly
       ? <div className="readonly">{reader}</div>
       : <TabSet
@@ -188,7 +192,7 @@ class Article extends ComponentBase {
           onChange={tags => this.setState({ tags })}
           onlyUnique={true}
         />
-        {this.isDirty() &&
+        {!this.isDirty() ? '' :
           <div className="buttons">
             <button className="save button is-success" onClick={this.handleSave}>
               <Icon name="save" size="small" /><span>Save</span>
