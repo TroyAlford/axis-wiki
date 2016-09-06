@@ -123,21 +123,6 @@ class Article extends ComponentBase {
     })
   }
 
-  handleAliasChange(updated) {
-    let aliases = uniq(difference(
-      sortBy(updated.map(Slug)),
-      [this.props.params.slug]
-    ))
-    this.setState({ aliases });
-  }
-  handleTagChange(updated) {
-    let tags = sortBy(updated);
-    if (xor(tags, this.props.tags).length)
-      this.setState({ tags })
-    else
-      this.setState({ tags: null })
-  }
-
   render() {
     let reader =
       <div>
@@ -186,7 +171,7 @@ class Article extends ComponentBase {
                     placeholder: 'add alias'
                   }}
                   readonly={false}
-                  onChange={this.handleAliasChange}
+                  onChange={aliases => this.setState({ aliases })}
                   onlyUnique={true}
                 />
                 <h5>Danger</h5>
@@ -200,7 +185,7 @@ class Article extends ComponentBase {
         <TagBar
           tags={this.state.tags || this.props.tags}
           readonly={this.props.readonly}
-          onChange={this.handleTagChange}
+          onChange={tags => this.setState({ tags })}
           onlyUnique={true}
         />
         {this.isDirty() &&
