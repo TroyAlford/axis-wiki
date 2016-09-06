@@ -1,11 +1,13 @@
 import $ from 'cheerio'
-import { defaultsDeep, difference, flow, orderBy, uniq } from 'lodash'
+import { defaultsDeep, difference, flow, orderBy, pick, startCase, uniq } from 'lodash'
 import { Extract, Slug, Url } from '../../utility/Slugs'
 
 import cleaners from './cleaners'
 import renderers from './renderers'
 
-const defaults = {
+export const defaults = {
+  title: undefined,
+
   aliases: [],
   data: [],
   tags: [],
@@ -24,6 +26,7 @@ export default class Article {
     this.cleaners = this.settings.cleaners
     this.renderers = this.settings.renderers
 
+    this.title = this.settings.title
     this.aliases = this.settings.aliases
     this.data = this.settings.data
     this.tags = this.settings.tags
@@ -54,13 +57,22 @@ export default class Article {
 
   get html() { return this._html }
   set html(html) {
-    if (typeof html !== 'string')
-      return console.warn(`Article HTML must be set with a string value, not ${typeof html}`)
-
-    if (html === this._html)
-      return;
-    else
+    if (typeof html === 'string')
       this._html = html
+  }
+
+  get title() { return this._title || startCase(this.slug) }
+  set title(title) {
+    if (typeof title === 'string')
+      this._title = title
+  }
+
+  get slug() { return Extract(this._slug || '') }
+  set slug(slug) { this._slug = Extract(slug) }
+
+
+  get meta() {
+    return pick(this, ['title', 'aliases', 'data', 'tags'])
   }
 
   set settings(value) {
@@ -89,9 +101,6 @@ export default class Article {
   get rendered() {
     return this.runAll(this.renderers, this.clean)
   }
-
-  get slug() { return Extract(this._slug || '') }
-  set slug(slug) { this._slug = Extract(slug) }
 
   get tags() { return difference(this._tags, [this.slug]) }
   set tags(tags) { this._tags = uniqueSlugs(tags) }

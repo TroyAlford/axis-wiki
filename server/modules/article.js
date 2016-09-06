@@ -7,21 +7,27 @@ import express              from 'express'
 import fs                   from 'fs'
 import path                 from 'path'
 
-import Article              from '../services/Article'
-import Links                from '../services/Links'
-import Slug                 from '../services/Slug'
+import Article from '../services/Article'
+import * as Storage from '../services/Storage'
+import Links from '../services/Links'
+import Slug from '../../utility/Slugs'
+import Tags from '../services/Tags'
 
 export default express()
-  .use(bodyParser.json())                         // Parses application/json
+  .use(bodyParser.json()) // Parses application/json
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
   .use(cookieParser())
 .get('/:slug', (request, response) => {
-  var slug = Links.resolve(Slug.normalize(request.params.slug));
+  var slug = Links.resolve(Slug(request.params.slug));
 
   if (request.params.slug != slug) // Redirect to normalized slug link
     return response.redirect(slug);
 
-  return response.status(200).send(Article.get_final(slug));
+  const article = Storage.getArticle(slug).rendered
+  const { html, meta } = article
+  const children = Tags.for(slug)
+
+  return response.status(200).send({ ...meta, html, children })
 })
 .post('/:slug', (request, response) => {
   if (!request.session.id)
@@ -29,7 +35,7 @@ export default express()
   else if (intersection(request.session.privileges, ['admin', 'edit']).length == 0)
     return response.status(401).send('You do not have sufficient privileges to edit articles.')
 
-  let slug    = Slug.normalize(request.params.slug),
+  let slug    = Slug(request.params.slug),
       posted  = request.body,
       saved   = Article.save(slug, posted);
 

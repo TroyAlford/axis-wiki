@@ -1,6 +1,6 @@
 import $ from 'cheerio'
 import { orderBy, uniq } from 'lodash'
-import { folders } from '../Config'
+import Config from '../Config'
 import { Url, Extract } from '../../../utility/Slugs'
 import path from 'path'
 import url from 'url'
@@ -47,10 +47,10 @@ export default function(article = { html: '' }) {
 }
 
 function articleExists(slug) {
-  const filePath = path.join(folders.articles, `${slug}.html`)
+  const filePath = path.join(Config.folders.articles, `${slug}.html`)
   return utils.exists(filePath)
 }
 function mediaExists(filename) {
-  const filePath = path.join(folders.media, filename)
+  const filePath = path.join(Config.folders.media, filename)
   return utils.exists(filePath)
 }

@@ -10,7 +10,7 @@ import path            from 'path'
 import Q               from 'q'
 
 import Config          from '../services/Config'
-import Slug            from '../services/Slug'
+import Slug            from '../../utility/Slugs'
 
 var folders = Config.folders;
 var settings = Config.settings.media;
@@ -29,7 +29,7 @@ const storage = multer.diskStorage({
     cb(null, folders.media);
   },
   filename: function(request, file, cb) {
-    file.slug = Slug.normalize(path.basename(file.originalname, file.extension))
+    file.slug = Slug(path.basename(file.originalname, file.extension))
                     .replace('.', '')
 
     cb(null, `${file.slug}.temp.${file.extension}`)

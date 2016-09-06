@@ -9,6 +9,21 @@ jest.mock('../renderers', () => [])
 import Article from '../Article'
 
 describe('Article', () => {
+  it('creates default titles', () => {
+    const article = new Article('new-article')
+    expect(article.title).toEqual('New Article')
+
+    // Titles not set explicitly will change when Slug changes
+    article.slug = 'test-change'
+    expect(article.title).toEqual('Test Change')
+
+    // Explicitly set Titles persist even when Slug changes
+    article.title = 'New Title'
+    expect(article.title).toEqual('New Title')
+    article.slug = 'not-the-same'
+    expect(article.title).toEqual('New Title')
+  })
+
   it('slugifies slugs', () => {
     const before = 'A и၀и-Slugified Slug'
     const expected = 'a-slugified-slug'

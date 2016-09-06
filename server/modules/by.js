@@ -3,7 +3,7 @@ import express              from 'express'
 
 import Profile              from '../services/Profile'
 import Sheet                from '../services/Sheet'
-import Slug                 from '../services/Slug'
+import Slug                 from '../../utility/Slugs'
 
 export default express()
   .use(bodyParser.json())                         // Parses application/json
@@ -11,7 +11,7 @@ export default express()
 
 .get('/:id/sheet/:slug', (request, response) => {
   const { id, slug } = request.params,
-    normalized_slug = Slug.normalize(slug)
+    normalized_slug = Slug(slug)
 
   if (slug !== normalized_slug)
     return response.redirect(`/api/by/${id}/sheet/${normalized_slug}`)

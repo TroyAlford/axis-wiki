@@ -19,6 +19,7 @@ import utils      from 'fs-utils'
 import Article    from './Article'
 import Config     from './Config'
 import Slug       from '../../utility/Slugs'
+import * as Storage from './Storage'
 
 const THROTTLE = Config.settings.cleanup.throttle;
 
@@ -84,8 +85,11 @@ class Links {
   reindex_html(slug) {
     console.log(`${slug} changed: reindexing links.`);
     this.links[slug] = this.links[slug] || Links.default_node;
+
+    const article = Storage.getArticle(slug).clean
+
     let existing = this.links[slug].to,
-        updated  = Article.build_html(Article.load_html(slug)).links_to,
+        updated  = article.links_to,
         in_both  = intersection(existing, updated),
         to_drop  = difference(existing, in_both),
         to_add   = difference(updated, in_both);
@@ -103,9 +107,12 @@ class Links {
   }
   reindex_json(slug) {
     console.log(`${slug} changed: reindexing aliases.`);
+
+    const article = Storage.getArticle(slug).clean
+
     this.links[slug] = this.links[slug] || Links.default_node;
     let existing = this.links[slug].aliases,
-        updated  = Article.load_meta(slug).aliases,
+        updated  = article.aliases,
         in_both  = intersection(existing, updated),
         to_drop  = difference(existing, in_both),
         to_add   = difference(updated, in_both);
@@ -154,31 +161,30 @@ class Links {
     fs.readdirSync(this.folders.articles)
       .filter(name => { return name.endsWith('.html') })
       .forEach(file => {
-        let slug = file.replace(/.html/, ''),
-            html = Article.build_html(Article.load_html(slug)),
-            meta = Article.clean_meta(Article.load_meta(slug));
+        const slug = file.replace(/.html/, '')
+        const article = Storage.getArticle(slug).rendered
 
         // This article exists, because it was listed above. Create it.
-        rebuilt[slug] = Object.assign(
-          Links.default_node,
-          rebuilt[slug] || {},
-          { exists: true, to: html.links_to, aliases: meta.aliases }
-        );
+        rebuilt[slug] = {
+          ...Links.default_node,
+          ...rebuilt[slug] || {},
+          ...{ exists: true, to: article.links_to, aliases: article.aliases }
+        };
 
         // Now parse all `links_to` and add this slug to each entry.
-        html.links_to.forEach(link => {
-          rebuilt[link] = Object.assign(
-            Links.default_node,
-            rebuilt[link] || {}
-          );
-          rebuilt[link].from = union(rebuilt[link].from, [slug]);
-        });
+        article.links_to.forEach(link => {
+          rebuilt[link] = {
+            ...Links.default_node,
+            ...rebuilt[link] || {}
+          }
+          rebuilt[link].from = union(rebuilt[link].from, [slug])
+        })
 
-        meta.aliases.forEach(alias => {
-          rebuilt[alias] = Object.assign(
-            Links.default_node,
-            rebuilt[alias] || {}
-          );
+        article.aliases.forEach(alias => {
+          rebuilt[alias] = {
+            ...Links.default_node,
+            ...rebuilt[alias] || {}
+          }
           if (alias != slug)
             rebuilt[alias].alias_for = slug;
         });
