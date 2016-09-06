@@ -35,7 +35,6 @@ describe('Slug()', () => {
     const after  = Slug(before)
     const expected = ['p-3-14-l', 'leading-trailing', 'empty']
 
-    console.log(after)
     expect(after.length).toEqual(3) // 3rd should be eliminated entirely
     expect(isEqual(after, expected)).toBeTruthy()
   })
