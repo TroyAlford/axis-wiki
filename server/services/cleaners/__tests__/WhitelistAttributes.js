@@ -19,8 +19,8 @@ describe('WhitelistAttributes', () => {
       'a': ['href']
     }
 
-    const after = WhitelistAttributes(before, whitelist)
+    const after = WhitelistAttributes({ html: before }, whitelist)
 
-    expect(after).toEqual(expected)
+    expect(after.html).toEqual(expected)
   })
 })

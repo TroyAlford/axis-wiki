@@ -6,8 +6,8 @@ import path from 'path'
 import url from 'url'
 import utils from 'fs-utils'
 
-export default function(html, article) {
-  const $parser = $.load(html)
+export default function(article = { html: '' }) {
+  const $parser = $.load(article.html)
 
   const links_to = []
   const missing_links = []
@@ -37,11 +37,13 @@ export default function(html, article) {
     const href = Url($link.attr('href'))
   })
 
+  article.html = $parser.html()
   if (typeof article === 'object') {
     article.links_to = orderBy(uniq(links_to))
     article.missing_links = orderBy(uniq(missing_links))
   }
-  return $parser.html()
+
+  return article
 }
 
 function articleExists(slug) {

@@ -1,18 +1,19 @@
 import $ from 'cheerio'
 import { filter } from 'lodash'
 
-const defaultTags = [
+const defaults = [
   'script', 'style',
 ]
 
-export default (html, tags = defaultTags) => {
-  if (!Array.isArray(tags))
-    return html
+export default function(article = { html: '' }, tags = defaults) {
+  if (!article || !article.html || !Array.isArray(tags))
+    return article
 
   const blacklist = filter(tags, tag => typeof tag === 'string')
-  const $parser = $.load(html)
+  const $parser = $.load(article.html || '')
 
   blacklist.forEach(tag => $parser(tag).remove())
+  article.html = $parser.html()
 
-  return $parser.html()
+  return article
 }

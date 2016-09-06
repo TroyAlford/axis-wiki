@@ -1,6 +1,6 @@
 import $ from 'cheerio'
 import { defaultsDeep, difference, flow, orderBy, uniq } from 'lodash'
-import { Slug, Url } from '../../utility/Slugs'
+import { Extract, Slug, Url } from '../../utility/Slugs'
 
 import cleaners from './cleaners'
 import renderers from './renderers'
@@ -17,9 +17,6 @@ const defaults = {
 export default class Article {
   constructor(slug, html = '', settings = {}) {
     this.settings = defaultsDeep({}, settings, defaults)
-
-    this._cleansedHTML = undefined
-    this._renderedHTML = undefined
 
     this.slug = slug
     this.html = html
@@ -64,26 +61,37 @@ export default class Article {
       return;
     else
       this._html = html
-
-    this._cleansedHTML = undefined
-    this._renderedHTML = undefined
   }
 
-  get cleansedHTML() {
-    if (this._cleansedHTML === undefined)
-      this._cleansedHTML = this.runAll(this.cleaners, this._html, this)
+  set settings(value) {
+    this.cleaners = value.cleaners
+    this.renderers = value.renderers
 
-    return this._cleansedHTML
+    this.aliases = value.aliases || []
+    this.data = value.data || []
+    this.tags = value.tags || []
   }
-  get renderedHTML() {
-    if (this._renderedHTML === undefined)
-      this._renderedHTML = this.runAll(this.renderers, this.cleansedHTML, this)
+  get settings() {
+    return {
+      cleaners: this.cleaners,
+      renderers: this.renderers,
 
-    return this._renderedHTML
+      aliases: this.aliases,
+      data: this.data,
+      tags: this.tags,
+    }
   }
 
-  get slug() { return Slug(this._slug || '') }
-  set slug(slug) { this._slug = Slug(slug) }
+  get clean() {
+    const article = new Article(this.slug, this.html, this.settings)
+    return this.runAll(this.cleaners, article)
+  }
+  get rendered() {
+    return this.runAll(this.renderers, this.clean)
+  }
+
+  get slug() { return Extract(this._slug || '') }
+  set slug(slug) { this._slug = Extract(slug) }
 
   get tags() { return difference(this._tags, [this.slug]) }
   set tags(tags) { this._tags = uniqueSlugs(tags) }

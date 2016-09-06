@@ -49,53 +49,56 @@ describe('Article', () => {
     expect(article.aliases).toEqual([])
   })
 
-  it('runs all cleaners and renderers at proper times', () => {
-    const fn = jest.fn(value => value),
-          removed = ''
-    const before = [fn, removed]
+  it('ignores invalid renderers', () => {
+    const fn = jest.fn(() => null)
+    const all = [fn, '', null]
+    const article = new Article('', '', {
+      cleaners: all,
+      renderers: all
+    })
 
-    let article = new Article('', 'original html')
-    article.cleaners = before
-    article.renderers = before
-
-    // Removes non-fn's, and calls nothing on construction
     expect(article.cleaners).toEqual([fn])
     expect(article.renderers).toEqual([fn])
-    expect(fn).not.toBeCalled(); fn.mockClear()
+  })
 
-    // fn() should be called when renderedHTML is requested first time
-    let rendered = article.renderedHTML
-    expect(fn).toBeCalled(); fn.mockClear()
+  it('runs all renderers at proper times', () => {
+    const cleaner = jest.fn(() => null)
+    const renderer = jest.fn(() => null)
+    const article = new Article('', '', {
+      cleaners: [cleaner], renderers: [renderer]
+    })
 
-    // renderedHTML is cached, subsequent call = no re-render
-    rendered = article.renderedHTML
-    expect(fn).not.toBeCalled(); fn.mockClear()
+    // Function should not be called yet
+    expect(cleaner).not.toBeCalled()
+    expect(renderer).not.toBeCalled()
 
-    article.html = 'original html'
-    // Setting the same HTML again should not pop the cache
-    expect(fn).not.toBeCalled(); fn.mockClear()
-    rendered = article.renderedHTML
-    expect(fn).not.toBeCalled(); fn.mockClear()
+    // asking for .clean should run all renderers once
+    article.clean
+    expect(cleaner.mock.calls.length).toEqual(1); cleaner.mockClear()
+    expect(renderer).not.toBeCalled()
 
-    article.html = 'new html'
-    // Setting new HTML should pop the cache
-    rendered = article.renderedHTML
-    expect(fn).toBeCalled(); fn.mockClear()
+    // asking for .rendered should call .clean, then render
+    article.rendered
+    expect(cleaner.mock.calls.length).toEqual(1); cleaner.mockClear()
+    expect(renderer.mock.calls.length).toEqual(1); renderer.mockClear()
   })
 
   it('binds "this" to cleaners & renderers correctly', () => {
     const article = new Article('', '')
+
     let calls = 0
-    function fn(value, articleParam) {
+    function fn(param) {
       expect(this).toEqual(article)
-      expect(articleParam).toEqual(article)
+      expect(param).toEqual(article)
       calls++
+
+      return param
     }
 
-    article.renderers = [fn]
     article.cleaners = [fn]
+    article.renderers = [fn]
 
-    article.renderedHTML
+    article.rendered
     expect(calls).toEqual(2)
   })
 })

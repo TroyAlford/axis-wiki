@@ -1,13 +1,16 @@
 import $ from 'cheerio'
 import { difference, flatten, flow, keys, uniq } from 'lodash'
 
-const defaultWhitelist = {
+const defaults = {
   'a': ['href'],
   'include': ['class', 'from', 'sections'],
 }
 
-export default (html, whitelist = defaultWhitelist) => {
-  const $parser = $.load(html)
+export default function(article = { html: '' }, whitelist = defaults) {
+  if (!article || !article.html || !whitelist)
+    return article
+
+  const $parser = $.load(article.html)
 
   keys(whitelist).forEach(tag => flow([
     tag => $parser(tag).get(),
@@ -16,6 +19,7 @@ export default (html, whitelist = defaultWhitelist) => {
     found => difference(found, whitelist[tag]),
     blacklist => blacklist.forEach(attr => $parser(tag).removeAttr(attr)),
   ])(tag))
+  article.html = $parser.html()
 
-  return $parser.html()
+  return article
 }
