@@ -3,6 +3,7 @@ import { addMessage } from '../messages/actions'
 import { browserHistory } from 'react-router'
 import { setMetadata } from '../application/actions'
 import { startCase } from 'lodash'
+import { Extract } from '../../../utility/Slugs'
 
 export const
   ARTICLE_LOAD = 'article.load',
@@ -19,7 +20,7 @@ export function loadArticle(requested_slug) {
     let slug = requested_slug;
     return fetch(`/api/page/${requested_slug}`, { credentials: 'include' })
       .then(response => {
-        slug = response.url.split('/').pop()
+        slug = Extract(response.url)
         return response.json()
       })
       .then(json => {
