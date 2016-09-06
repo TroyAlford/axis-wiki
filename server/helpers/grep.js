@@ -52,7 +52,7 @@ export default ($what, where, set_options) => {
     grep.on('stderr', data => {
       let error_msg = data.toString('utf8'),
           message   = `grep for ${what} failed: ${error_msg}`
-      console.log(message)
+      console.error(message)
       reject(message)
     })
     grep.on('stdout_line', match => {
