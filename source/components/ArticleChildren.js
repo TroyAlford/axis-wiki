@@ -1,6 +1,5 @@
 import ComponentBase from '../application/ComponentBase'
 import Icon from './Icon'
-import { Link } from 'react-router'
 
 import {
   sortBy,
@@ -26,7 +25,7 @@ export default class ArticleChildren extends ComponentBase {
         <div key={i} className={classes}>{
           list.map((slug, index) =>
             <div key={index}>
-              <Link to={`/page/${slug}`}>{startCase(slug)}</Link>
+              <a href={`/page/${slug}`}>{startCase(slug)}</a>
             </div>
           )
         }</div>;
