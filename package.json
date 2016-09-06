@@ -83,7 +83,7 @@
     ]
   },
   "scripts": {
-    "start": "npm run build-prod && NODE_ENV=production babel-node server/server.js",
+    "start": "npm run build-prod && npm run serve-prod",
     "test": "jest",
     "develop": "npm run watch & npm run serve-watched",
     "build": "npm run clean && (npm run build-jsx & npm run build-css)",
@@ -98,6 +98,7 @@
     "clean": "rm -rf build && mkdirp build && (mkdirp build/js & mkdirp build/css & mkdirp build/sass)",
     "concat-css-app": "concat-cli -f styles/**/*.scss -o build/sass/application.scss",
     "serve": "babel-node server/server.js",
+    "serve-prod": "NODE_ENV=production babel-node server/server.js",
     "serve-watched": "nodemon --watch ./server --exec 'babel-node server/server.js'",
     "watch": "npm run clean && (npm run watch-css & npm run watch-jsx)",
     "watch-css": "npm run watch-css-app & npm run watch-css-dep",
