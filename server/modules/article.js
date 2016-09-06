@@ -52,6 +52,11 @@ export default express()
   )
 })
 .delete('/:slug', (request, response) => {
+  if (!request.session.id)
+    return response.status(401).send('You must be logged in to delete articles.')
+  else if (intersection(request.session.privileges, ['admin', 'edit']).length == 0)
+    return response.status(401).send('You do not have sufficient privileges to delete articles.')
+
   let slug = request.params.slug; // Do NOT normalize. DELETE must be exact.
   if (Storage.deleteArticle(slug))
     return response.status(410).send(`Article ${slug} has been removed.`);

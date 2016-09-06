@@ -9,7 +9,7 @@ const default_state = []
 export default (state = default_state, action) => {
   switch (action.type) {
     case MESSAGE_ADD:
-      return [...state.messages, action.message]
+      return [...state, action.message]
     case MESSAGE_DISMISS:
       return [
         ...state.messages.slice(0, action.id - 1),

@@ -13,9 +13,9 @@ export default (state = default_state, action) => {
       return {
         ...state,
         title: action.title,
-        keywords: action.keywords
+        keywords: action.keywords,
       }
     default:
-      return state;
+      return state
   }
 }

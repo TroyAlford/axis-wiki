@@ -25,7 +25,11 @@ export function loadArticle(requested_slug) {
       })
       .then(json => {
         const title = startCase(slug)
-        const keywords = [...json.aliases, ...json.tags, title]
+        const keywords = [
+          ...(json.aliases || []),
+          ...(json.tags || []),
+          title
+        ]
         dispatch(setMetadata(title, keywords))
         dispatch(loadedArticle(slug, json))
       })

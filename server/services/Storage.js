@@ -1,8 +1,9 @@
-import path from 'path'
-import utils from 'fs-utils'
 import Article from './Article'
 import Config from './Config'
-import { defaults } from 'lodash'
+import fs from 'fs'
+import path from 'path'
+import utils from 'fs-utils'
+import { defaults, values } from 'lodash'
 
 function getUrls(slug, userId = null) {
   const folderPath = userId !== null
@@ -10,16 +11,20 @@ function getUrls(slug, userId = null) {
     : path.resolve(Config.folders.articles, slug)
 
   return {
-    meta: `${folderPath}.json`,
-    html: `${folderPath}.html`,
+    meta:  `${folderPath}.json`,
+    html:  `${folderPath}.html`,
+    sheet: `${folderPath}.sheet`,
   }
 }
 
-export function deleteArticle(slug) {
+export function deleteArticle(slug, userId = null) {
   const urls = getUrls(slug, userId)
-  [urls.meta, urls.html].forEach(filename => {
-    if (utils.exists(filename))
+
+  values(urls).forEach(filename => {
+    if (utils.exists(filename)) {
+      console.warn(`Deleting: ${filename}`)
       fs.unlinkSync(filename, { force: true })
+    }
   })
 
   return true

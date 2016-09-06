@@ -11,15 +11,15 @@ export function addMessage(message) {
   }
 }
 
+export function clearMessages() {
+  return {
+    type: MESSAGE_CLEARALL
+  }
+}
+
 export function dismissMessage(id) {
   return {
     type: MESSAGE_DISMISS,
     id
-  }
-}
-
-export function clearMessages() {
-  return {
-    type: MESSAGE_CLEARALL
   }
 }
