@@ -172,10 +172,9 @@ class Article extends ComponentBase {
 
     return (
       <div className={['article', 'page', this.props.loading ? 'loading' : ''].join(' ')}>
-        <TabSet
+        <TabSet tabs={tabs}
           active={this.state.selected_tab}
-          tabs={tabs}
-          tabClicked={this.handleTabClicked}
+          onTabClicked={this.handleTabClicked}
         />
         <TagBar
           tags={this.state.tags || this.props.tags}

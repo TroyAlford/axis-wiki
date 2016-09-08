@@ -1,6 +1,6 @@
 import { find } from 'lodash'
 
-export default ({ key = '', tabs = [], tabClicked = (() => {}), active = null }) => {
+export default ({ key = '', tabs = [], onTabClicked = (() => {}), active = null }) => {
   if (tabs.length === 0)
     tabs.push({ key: 'blank', innerHTML: '' })
 
@@ -22,7 +22,7 @@ export default ({ key = '', tabs = [], tabClicked = (() => {}), active = null })
       <ul className="tabs">
       {tabs.map((tab, index) =>
         <li key={index} className={`tab ${active == tab.key ? 'is-active' : ''} ${tab.key || ''}`}
-            onClick={tabClicked.bind(this, tab)}>{tab.caption}</li>
+            onClick={onTabClicked.bind(this, tab)}>{tab.caption}</li>
       )}
       </ul>
       {renderedTab}
