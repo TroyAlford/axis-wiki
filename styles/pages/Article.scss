@@ -1,5 +1,5 @@
 $tabs-height: 35px;
-$toolbar-height: 32px;
+$toolbar-height: 31px;
 $tags-height: 36px;
 
 .article.page {
@@ -13,8 +13,11 @@ $tags-height: 36px;
 
     > ul.tabs {
       height: $tabs-height;
-      padding-right: 20px;
-      text-align: right;
+      justify-content: flex-start;
+      padding: 5px 20px 0px 10px;
+
+      > .tab.edit, .tab.settings { margin-left: auto; }
+      > .tab.edit + .tab.settings { margin-left: 0; }
 
       > li.edit.is-active {
         background-color: #f0f0f0;
@@ -27,7 +30,7 @@ $tags-height: 36px;
       position: absolute;
     }
 
-    .tab.edit {
+    > .tab.edit {
       padding: 0;
       top: $tabs-height + $toolbar-height;
 
@@ -41,7 +44,7 @@ $tags-height: 36px;
       }
     }
 
-    .tab.html {
+    > .tab.html {
       padding: 5px;
 
       > textarea {
@@ -97,6 +100,7 @@ $tags-height: 36px;
     border-width: 0 0 1px 0!important;
     display: block!important;
     height: $toolbar-height!important;
+    overflow-y: hidden;
     width: auto!important;
 
     .mce-flow-layout-item { margin: 0; }
@@ -106,6 +110,18 @@ $tags-height: 36px;
     .mce-btn.mce-listbox > button {
       padding-right: 18px;
       > .mce-caret { right: 5px; }
+    }
+
+    .mce-first.mce-btn-group {
+      button {
+        background-color: $color-success;
+        border-radius: 3px;
+        color: $palette-white;
+      }
+    }
+    .mce-ico.icon, .mce-ico.icon:before {
+      font-size: inherit;
+      color: inherit;
     }
   }
 

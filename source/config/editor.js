@@ -12,11 +12,11 @@ export default {
   },
   menubar: false,
   plugins:
-    'anchor advlist autosave fullscreen hr image link lists paste table',
+    'anchor advlist autosave code fullscreen hr image link lists paste table',
   toolbar:
-    'formatselect | bold italic underline | bullist numlist ' +
-    '| hr link anchor | alignleft aligncenter alignright alignjustify ' +
-    '| image table | removeformat | undo redo',
+    'code | formatselect | bold italic underline ' +
+    '| alignleft aligncenter alignright alignjustify ' +
+    '| bullist numlist | hr link | image table | removeformat',
   valid_elements:
     'a[href|target|class|style],img[src|class|style|height|width],' +
     '@[class|colspan|rowspan|style],th,td,' +

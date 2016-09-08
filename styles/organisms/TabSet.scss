@@ -9,7 +9,9 @@
     overflow: visible;
     padding: 5px 5px 0 5px;
 
-    > li, > li + li {
+    > .tab {
+      display: flex;
+      padding: 7px 5px 0 5px;
       background-color: $palette-offwhite;
       border: 1px solid $palette-light-gray;
       border-bottom: 1px solid $color-border-blue;
@@ -17,15 +19,20 @@
       color: lighten($palette-dark-gray, 40%);
       cursor: pointer;
       display: inline-flex;
-      padding: 5px;
+      padding: 7px;
       margin: 2px 0 -1px 0;
+
+      > .icon {
+        height: 1rem;
+        margin: 0 3px;
+      }
 
       &.is-active {
         background: $palette-white;
         border-color: $color-border-blue;
         border-bottom: 1px solid transparent;
         color: $color-text;
-        padding-top: 7px;
+        padding-top: 9px;
         margin: 0 0 -1px 0;
       }
     }

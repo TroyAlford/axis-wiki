@@ -21,7 +21,7 @@ export default ({ key = '', tabs = [], tabClicked = (() => {}), active = null })
     <div className={`tab-set ${key}`}>
       <ul className="tabs">
       {tabs.map((tab, index) =>
-        <li key={index} className={`${active == tab.key ? 'is-active' : ''} ${tab.key || ''}`}
+        <li key={index} className={`tab ${active == tab.key ? 'is-active' : ''} ${tab.key || ''}`}
             onClick={tabClicked.bind(this, tab)}>{tab.caption}</li>
       )}
       </ul>
