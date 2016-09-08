@@ -1,16 +1,36 @@
-.fb .button {
-  border-radius: 5px;
-  padding: 5px;
+.fb {
+  margin: 0 !important;
 
-  background-color: #2b4170;
-  background: -moz-linear-gradient(top, #3b5998, #2b4170);
-  background: -ms-linear-gradient(top, #3b5998, #2b4170);
-  background: -webkit-linear-gradient(top, #3b5998, #2b4170);
-  background: linear-gradient(top, #3b5998, #2b4170);
-  border: 1px solid #2b4170;
-  color: #eee;
-  text-shadow: 0 -1px -1px #1f2f52;
+  .mini.profile {
+    margin-right: 10px;
+  }
 
-  &:hover { color: #fff; }
-  > * { color: inherit; }
+  .button {
+    border-radius: 5px;
+    padding: 5px;
+
+    border: 1px solid #2b4170;
+    box-sizing: border-box;
+    color: #eee;
+    cursor: pointer;
+    height: 25px;
+    margin: 0;
+    text-shadow: 0 -1px -1px #1f2f52;
+
+    &.login {
+      background-color: #2b4170;
+      background: -moz-linear-gradient(top, #3b5998, #2b4170);
+      background: -ms-linear-gradient(top, #3b5998, #2b4170);
+      background: -webkit-linear-gradient(top, #3b5998, #2b4170);
+      background: linear-gradient(top, #3b5998, #2b4170);
+    }
+    &.logout {
+      background-color: lighten(grayscale(#2b4170), 50%);
+      border-color: #999;
+      color: #999;
+    }
+
+    &:hover { color: #fff; }
+    > * { color: inherit; }
+  }
 }

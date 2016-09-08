@@ -59,7 +59,8 @@ class Facebook extends ComponentBase {
           </div>
       }
       { !this.props.anonymous &&
-        <button onClick={e => { this.props.dispatch(logoff()) }}>Log Off</button>
+        <a href="#" className="logout button level-item icon icon-facebook"
+           onClick={e => { this.props.dispatch(logoff())}}>Log Out</a>
       }
       </div>
     )
