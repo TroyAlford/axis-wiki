@@ -152,9 +152,7 @@ class Article extends ComponentBase {
           active={this.state.selected_tab}
           tabs={[ ...tabs, ...(this.props.readonly ? [] : [{
               key: 'edit',
-              caption: [
-                <Icon name="edit" />,
-              ],
+              caption: <Icon key="icon" name="edit" />,
               contents:
                 <TinyMCE ref="tinymce"
                   config={editor_config}
