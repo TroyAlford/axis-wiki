@@ -3,23 +3,18 @@ import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
 import Slug from '../../utility/Slugs'
 import {
-  filter,
-  flatten,
-  flow,
-  includes,
-  map,
-  sum,
+  filter, flatten, flow, includes,
+  map, omit, pick, sum,
 } from 'lodash'
 
 export default class SheetHeader extends ComponentBase {
   constructor(props) {
     super(props)
-    this.state = {
-      name: props.name
-    }
+    this.state = pick(props, ['name', 'xp', 'rp'])
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ name: nextProps.name })
+    const state = pick(nextProps, ['name', 'xp', 'rp'])
+    this.setState(state)
   }
 
   calculatePower() {
@@ -67,21 +62,30 @@ export default class SheetHeader extends ComponentBase {
            .map((discard, n) => n + low)
   }
 
-  getName() {
-    return this.state.name
+  handleChange(key, value) {
+    this.props.onChange(omit({
+      ...this.props,
+      [key]: value
+    }, ['onChange']))
   }
 
   render() {
     return (
       <div className="sheet-header">
         <Editable className="CharacterName"
-          onChange={name => this.setState({ name })}
+          onChange={name => this.handleChange('name', name)}
           value={this.state.name}
         />
         <span className="name">Experience: </span>
-        <Editable className="xp" value={this.props.xp} />
+        <Editable className="xp"
+          onChange={xp => this.handleChange('xp', xp)}
+          value={this.state.xp}
+        />
         <span className="name">RP Points: </span>
-        <Editable className="rp" value={this.props.rp} />
+        <Editable className="rp"
+          onChange={rp => this.handleChange('rp', rp)}
+          value={this.state.rp}
+        />
         <span className="name">Total Power: </span>
         <div className="power">{this.calculatePower()}</div>
       </div>
@@ -100,10 +104,20 @@ SheetHeader.propTypes = {
   traits: React.PropTypes.arrayOf(React.PropTypes.shape({
     value: React.PropTypes.number.isRequired,
   })).isRequired,
+
+  rp: React.PropTypes.number.isRequired,
+  xp: React.PropTypes.number.isRequired,
+
+  onChange: React.PropTypes.func.isRequired,
 }
 SheetHeader.defaultProps = {
   name: 'Unnamed Character',
   attributes: [],
   skills: [],
   traits: [],
+
+  rp: 0,
+  xp: 0,
+
+  onChange: () => {},
 }

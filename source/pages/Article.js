@@ -5,12 +5,13 @@ import { difference, sortBy, uniq, xor } from 'lodash'
 
 import ComponentBase from '../application/ComponentBase'
 import ArticleChildren from '../components/ArticleChildren'
+import Editable from '../components/Editable'
 import Icon from '../components/Icon'
+import Sheet from './Sheet'
+import Slug from '../../utility/Slugs'
 import TabSet from '../components/TabSet'
 import TagBar from '../components/TagBar'
 import TinyMCE from 'react-tinymce'
-import Sheet from './Sheet'
-import Slug from '../../utility/Slugs'
 
 import unboundEditorConfig from '../config/editor'
 
@@ -19,7 +20,10 @@ const tinyMCE = window.tinyMCE;
 class Article extends ComponentBase {
   constructor(props) {
     super(props);
-    this.state = this.defaultState;
+    this.state = {
+      ...this.defaultState,
+      sheet: props.sheet,
+    };
 
     if (this.props.slug !== this.props.params.slug)
       this.props.dispatch(loadArticle(this.props.params.slug))
@@ -44,7 +48,8 @@ class Article extends ComponentBase {
       this.state.aliases  !== null ||
       this.state.children !== null ||
       this.state.data     !== null ||
-      this.state.tags     !== null
+      this.state.tags     !== null ||
+      this.state.title    !== null
     ) })
     Object.defineProperty(this, 'draft', { get: () => {
       switch (this.state.selected_tab) {
@@ -66,8 +71,10 @@ class Article extends ComponentBase {
       this.props.dispatch(loadArticle(nextProps.params.slug))
     }
 
-    if (!this.props.readonly && nextProps.readonly)
-      this.setState(this.defaultState)
+    this.setState({
+      ...this.defaultState,
+      sheet: nextProps.sheet,
+    })
   }
 
   get defaultState() {
@@ -93,7 +100,8 @@ class Article extends ComponentBase {
       children: this.state.children   || this.props.children,
       data:     this.state.data       || this.props.data,
       html:     this.draft,
-      tags:     this.state.tags       || this.props.tags
+      tags:     this.state.tags       || this.props.tags,
+      title:    this.state.title      || this.props.title,
     }
 
     this.props.dispatch(saveArticle(this.props.params.slug, article))
@@ -117,6 +125,7 @@ class Article extends ComponentBase {
         <span key="text">Article</span>,
       ],
       contents: [
+        <h1 key="title">{this.props.title}</h1>,
         <div key='html' dangerouslySetInnerHTML={{ __html: this.props.html }} />,
         <ArticleChildren key='children' articles={this.props.children} />
       ]
@@ -128,8 +137,16 @@ class Article extends ComponentBase {
         <Icon key="icon" name="sheet" />,
         <span key="text">Sheet</span>,
       ],
-      contents: <Sheet readonly={this.props.readonly}
-                                {...this.props.sheet} />
+      contents: [
+        <Sheet key="sheet" {...this.state.sheet}
+          readonly={this.props.readonly}
+          name={this.state.title || this.props.title}
+          onChange={sheet => this.setState({
+            sheet, title: sheet.name
+          })}
+          ref={self => this.sheet = self}
+        />,
+      ]
     })
 
     if (!this.props.readonly) tabs.push({
@@ -137,11 +154,16 @@ class Article extends ComponentBase {
       caption: [
         <Icon key="icon" name="edit" />,
       ],
-      contents:
-        <TinyMCE ref="tinymce"
-          config={this.editorConfig}
+      contents: [
+        <Editable key="title" className="title-editor"
+          onChange={title => this.setState({ title })}
+          placeholder="Page Title"
+          value={this.state.title || this.props.title}
+        />,
+        <TinyMCE key="editor" config={this.editorConfig}
           content={this.state.html || this.props.html}
-        />
+        />,
+      ]
     })
 
     tabs.push({
@@ -185,6 +207,27 @@ class Article extends ComponentBase {
       </div>
     )
   }
+}
+
+Article.propTypes = {
+  aliases: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  children: React.PropTypes.arrayOf(React.PropTypes.element),
+  html: React.PropTypes.string.isRequired,
+  loading: React.PropTypes.bool.isRequired,
+  readonly: React.PropTypes.bool.isRequired,
+  sheet: React.PropTypes.object,
+  slug: React.PropTypes.string.isRequired,
+  tags: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  title: React.PropTypes.string,
+}
+Article.defaultProps = {
+  aliases: [],
+  children: [],
+  html: '',
+  loading: false,
+  readonly: true,
+  sheet: undefined,
+  tags: [],
 }
 
 export default connect(

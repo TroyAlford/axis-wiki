@@ -13,8 +13,7 @@ export default class DescriptorManager extends CollectionManager {
     this.collection = new Collection(newProps.items, this.settings)
     this.collection.onChange = this.update
 
-    if (!isEqual(newProps.items, this.props.items))
-      this.update()
+    this.update()
   }
 
   update() {
@@ -23,11 +22,8 @@ export default class DescriptorManager extends CollectionManager {
 
     this.require()
     this.whitelist()
-    this.forceUpdate()
 
     this.collection.onChange = this.update
-    if (!isEqual(before, this.collection.items))
-      this.props.onChange(this.collection)
   }
 
   require() {

@@ -1,5 +1,6 @@
 $tabs-height: 35px;
 $toolbar-height: 31px;
+$title-editor-height: 46px;
 $tags-height: 36px;
 
 .article.page {
@@ -14,7 +15,7 @@ $tags-height: 36px;
     > ul.tabs {
       height: $tabs-height;
       justify-content: flex-start;
-      padding: 5px 20px 0px 10px;
+      padding: 5px 10px 0px 10px;
 
       > .tab.edit, .tab.settings { margin-left: auto; }
       > .tab.edit + .tab.settings { margin-left: 0; }
@@ -34,12 +35,18 @@ $tags-height: 36px;
       padding: 0;
       top: $tabs-height + $toolbar-height;
 
+      .title-editor {
+        font-size: 2em;
+        font-weight: bold;
+        padding: 0 5px;
+      }
+
       > [id^="react-tinymce"] {
         border: none;
         outline: none;
         padding: 10px;
         position: absolute;
-        left: 0; top: 0; right: 0; bottom: 0;
+        top: $title-editor-height; right: 0; bottom: 0; left: 0;
         width: 100%;
       }
     }

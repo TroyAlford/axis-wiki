@@ -17,8 +17,6 @@ export default class AttributeManager extends CollectionManager {
     this.calculate()
 
     this.collection.onChange = this.handleCollectionChange.bind(this)
-    if (!isEqual(before, this.collection.items))
-      this.props.onChange(this.collection)
   }
 
   calculate() {
@@ -96,10 +94,6 @@ AttributeManager.propTypes = {
   ...CollectionManager.propTypes,
   armor: React.PropTypes.number.isRequired,
   items: React.PropTypes.arrayOf(React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
-    value: React.PropTypes.number.isRequired,
-  })).isRequired,
-  data: React.PropTypes.arrayOf(React.PropTypes.shape({
     key: React.PropTypes.string.isRequired,
     value: React.PropTypes.number.isRequired,
   })).isRequired,

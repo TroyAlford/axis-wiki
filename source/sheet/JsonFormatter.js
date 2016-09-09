@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {
-  defaults, filter, flow, includes, map,
-  omit, omitBy, orderBy, pick,
+  defaults, filter, flow, includes,
+  map, omit, omitBy, orderBy, pick,
 } from 'lodash'
 import { keys as allowedAttributeKeys } from './AttributeManager'
 import { keys as allowedDescriptorKeys } from './DescriptorManager'
@@ -11,6 +11,9 @@ export default class JsonFormatter extends React.Component {
   get cleansed() {
     return {
       name: this.name,
+      rp: this.props.rp || 0,
+      xp: this.props.xp || 0,
+
       armor: this.armor,
       attributes: this.attributes,
       descriptors: this.descriptors,
@@ -139,6 +142,9 @@ function whitelistKeys(array, keys) {
 
 JsonFormatter.propTypes = {
   name: React.PropTypes.string.isRequired,
+  rp: React.PropTypes.number.isRequired,
+  xp: React.PropTypes.number.isRequired,
+
   armor: React.PropTypes.array.isRequired,
   attributes: React.PropTypes.array.isRequired,
   descriptors: React.PropTypes.array.isRequired,
@@ -148,6 +154,9 @@ JsonFormatter.propTypes = {
 }
 JsonFormatter.defaultProps = {
   name: 'Unnamed Character',
+  rp: 0,
+  xp: 0,
+
   armor: [],
   attributes: [],
   descriptors: [],

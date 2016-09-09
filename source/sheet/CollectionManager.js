@@ -43,14 +43,14 @@ export default class CollectionManager extends ComponentBase {
     const buttons = []
     if (this.props.allowAdd)
       buttons.push(
-        <Icon name="add" onClick={this.addItem.bind(this)} />
+        <Icon key="btn-add" name="add" onClick={this.addItem.bind(this)} />
       )
 
     return (
       <Section className={this.props.title}
         title={[
-          <span>{this.props.title}</span>,
-          <div className="buttons">{buttons}</div>
+          <span key="title">{this.props.title}</span>,
+          <div key="buttons" className="buttons">{buttons}</div>
         ]}
         headers={this.props.headers}>
         {this.collection.map(this.renderItem)}
@@ -61,7 +61,10 @@ export default class CollectionManager extends ComponentBase {
 
 CollectionManager.propTypes = {
   allowAdd: React.PropTypes.bool.isRequired,
-  headers: React.PropTypes.arrayOf(React.PropTypes.string),
+  headers: React.PropTypes.arrayOf(React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.element,
+  ])),
   items: React.PropTypes.array.isRequired,
   onChange: React.PropTypes.func.isRequired,
   renderItem: React.PropTypes.func,

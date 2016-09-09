@@ -23,7 +23,7 @@ SkillManager.propTypes = {
     category: React.PropTypes.string,
     name: React.PropTypes.string,
     note: React.PropTypes.string,
-    value: React.PropTypes.number.isRequired,
+    values: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
   })).isRequired,
 }
 SkillManager.defaultProps = {

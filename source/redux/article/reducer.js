@@ -11,6 +11,7 @@ const default_state = {
   html: '',
   missing_links: [],
   sheet: undefined,
+  slug: '',
   tags: []
 }
 

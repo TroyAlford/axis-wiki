@@ -28,7 +28,10 @@ export default class Section extends React.Component {
 
 Section.propTypes = {
   className: React.PropTypes.string,
-  headers: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  headers: React.PropTypes.arrayOf(React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.element,
+  ])).isRequired,
   title: React.PropTypes.oneOfType([
     React.PropTypes.string,
     React.PropTypes.array,

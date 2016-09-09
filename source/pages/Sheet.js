@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
-import { filter, find, pick, sum } from 'lodash'
+import { filter, find, isEqual, pick, sum } from 'lodash'
 
 import * as React from 'react'
 import ComponentBase from '../application/ComponentBase'
@@ -21,7 +21,8 @@ import Weapon from '../sheet/Weapon'
 import WeaponManager from '../sheet/WeaponManager'
 
 const propsToExtract = [
-  'name', 'armor', 'attributes', 'descriptors',
+  'name', 'xp', 'rp',
+  'armor', 'attributes', 'descriptors',
   'traits', 'skills', 'weapons'
 ]
 
@@ -29,16 +30,34 @@ export default class Sheet extends ComponentBase {
   constructor(props) {
     super(props)
     this.state = { ...defaultState, ...pick(props, propsToExtract) }
-    this.formatter = { json: '' }
+    this.formatter = { cleansed: {}, json: '{}' }
   }
 
   componentWillReceiveProps(props) {
-    this.setState({ ...defaultState, ...pick(props, propsToExtract) })
+    const state = { ...defaultState, ...pick(props, propsToExtract) }
+    if (!isEqual(this.state, state))
+      this.setState(state)
   }
 
   getImageUrl() {
     const image = find(this.props.descriptors, { key: 'image' })
     return image ? image.value : ''
+  }
+
+  handleChange(key, value) {
+    if (!isEqual(this.state[key], value)) {
+      this.props.onChange({
+        ...this.state,
+        [key]: value,
+      })
+    }
+  }
+  handleHeaderChange(values) {
+    this.setState(values)
+    this.props.onChange({
+      ...this.state,
+      ...values,
+    })
   }
 
   render() {
@@ -50,11 +69,11 @@ export default class Sheet extends ComponentBase {
       <div className="sheet page">
         <SheetHeader
           name={this.state.name}
-          onNameChange={name => this.setState({ name })}
+          xp={this.state.xp} rp={this.state.rp}
+          onChange={this.handleHeaderChange}
           attributes={this.state.attributes}
           skills={this.state.skills}
           traits={this.state.traits}
-          xp={0} rp={0}
         />
         <div className="columns">
           <div className="column is-one-third">
@@ -69,12 +88,12 @@ export default class Sheet extends ComponentBase {
           <div className="column">
             <DescriptorManager
               items={this.state.descriptors}
-              onChange={c => this.setState({ descriptors: c.items })}
+              onChange={c => this.handleChange('descriptors', c.items)}
             />
             <AttributeManager
               armor={armorValue}
               items={this.state.attributes}
-              onChange={c => this.setState({ attributes: c.items })}
+              onChange={c => this.handleChange('attributes', c.items)}
             />
           </div>
         </div>
@@ -82,13 +101,13 @@ export default class Sheet extends ComponentBase {
           <div className="column is-one-third">
             <TraitManager
               items={this.state.traits}
-              onChange={c => this.setState({ traits: c.items })}
+              onChange={c => this.handleChange('traits', c.items)}
             />
           </div>
           <div className="column">
             <SkillManager
               items={this.state.skills}
-              onChange={c => this.setState({ skills: c.items })}
+              onChange={c => this.handleChange('skills', c.items)}
             />
           </div>
         </div>
@@ -97,13 +116,13 @@ export default class Sheet extends ComponentBase {
             <div className="column">
               <WeaponManager
                 items={this.state.weapons}
-                onChange={c => this.setState({ weapons: c.items })}
+                onChange={c => this.handleChange('weapons', c.items)}
               />
             </div>
             <div className="column">
               <ArmorManager
                 items={this.state.armor}
-                onChange={c => this.setState({ armor: c.items })}
+                onChange={c => this.handleChange('armor', c.items)}
               />
             </div>
           </div>
@@ -134,5 +153,11 @@ Sheet.propTypes = {
   skills: React.PropTypes.array.isRequired,
   traits: React.PropTypes.array.isRequired,
   weapons: React.PropTypes.array.isRequired,
+
+  onChange: React.PropTypes.func.isRequired,
 }
-Sheet.defaultProps = defaultState
+Sheet.defaultProps = {
+  ...defaultState,
+
+  onChange: () => {},
+}
