@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import {
+  clamp,
   difference,
   includes
 } from 'lodash'
@@ -65,7 +66,6 @@ export default class Editable extends React.Component {
   setValue(value) {
     let current = this.current
     if (this.props.readonly || current === value) return; // Don't send false updates.
-    if (this.props.onChanging(value, current) === false) return;
     this.setState({ value })
     this.props.onChange(value, current)
   }
@@ -77,6 +77,10 @@ export default class Editable extends React.Component {
         if (value === '') value = 0
         value = parseInt(value)
         if (isNaN(value)) value = this.current
+        if (this.props.min !== undefined && value < this.props.min)
+          value = this.props.min
+        if (this.props.max !== undefined && value > this.props.max)
+          value = this.props.max
     }
     this.setValue(value)
   }
