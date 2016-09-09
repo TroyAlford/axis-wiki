@@ -17,6 +17,12 @@ $tags-height: 36px;
       justify-content: flex-start;
       padding: 5px 10px 0px 10px;
 
+      > .tab-button {
+        margin: -3px auto 0;
+
+        + .tab.edit { margin-left: 0; }
+      }
+
       > .tab.edit, .tab.settings { margin-left: auto; }
       > .tab.edit + .tab.settings { margin-left: 0; }
 

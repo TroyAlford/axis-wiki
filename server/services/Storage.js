@@ -60,3 +60,11 @@ export function getSheet(slug, userId = null) {
   return utils.exists(urls.sheet)
     ? utils.readJSONSync(urls.sheet) : undefined
 }
+
+export function saveSheet(slug, sheet, userId = null) {
+  const urls = getUrls(slug, userId)
+
+  utils.writeJSONSync(urls.sheet, sheet)
+
+  return true
+}

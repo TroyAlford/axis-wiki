@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { find } from 'lodash'
 
 export default ({ key = '', tabs = [], onTabClicked = (() => {}), active = null }) => {
@@ -20,7 +21,7 @@ export default ({ key = '', tabs = [], onTabClicked = (() => {}), active = null 
   return (
     <div className={`tab-set ${key}`}>
       <ul className="tabs">
-      {tabs.map((tab, index) =>
+      {tabs.map((tab, index) => React.isValidElement(tab) ? tab :
         <li key={index} className={`tab ${active == tab.key ? 'is-active' : ''} ${tab.key || ''}`}
             onClick={onTabClicked.bind(this, tab)}>{tab.caption}</li>
       )}

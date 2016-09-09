@@ -1,5 +1,6 @@
 import chokidar from 'chokidar'
 import path from 'path'
+import { includes } from 'lodash'
 
 import Config from './Config'
 import Links from './Links'
@@ -9,6 +10,7 @@ const CHOKIDAR_OPTIONS = {
   ignoreInitial: true,
   persistent: true
 };
+const watchedExtensions = ['html', 'json']
 
 export default class Watcher {
   static watch() {
@@ -29,6 +31,8 @@ export default class Watcher {
             target = path.basename(filename, which);
 
         which = which.replace('.', '');
+
+        if (!includes(watchedExtensions, which)) return;
 
         Links[`${action}_${which}`](target);
         if (which == 'json') Tags[action](target);

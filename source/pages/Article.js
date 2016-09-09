@@ -7,6 +7,7 @@ import ComponentBase from '../application/ComponentBase'
 import ArticleChildren from '../components/ArticleChildren'
 import Editable from '../components/Editable'
 import Icon from '../components/Icon'
+import JsonSheetFormatter from '../sheet/JsonFormatter'
 import Sheet from './Sheet'
 import Slug from '../../utility/Slugs'
 import TabSet from '../components/TabSet'
@@ -102,6 +103,7 @@ class Article extends ComponentBase {
       html:     this.draft,
       tags:     this.state.tags       || this.props.tags,
       title:    this.state.title      || this.props.title,
+      sheet:    new JsonSheetFormatter(this.state.sheet).cleansed,
     }
 
     this.props.dispatch(saveArticle(this.props.params.slug, article))
@@ -148,6 +150,14 @@ class Article extends ComponentBase {
         />,
       ]
     })
+
+    if (!this.props.readonly && this.state.selected_tab !== 'read')
+      tabs.push(
+        <li key="save" className="tab-button">
+          <a className="icon icon-save button is-success"
+             onClick={this.handleSave}>Save</a>
+        </li>
+      )
 
     if (!this.props.readonly) tabs.push({
       key: 'edit',

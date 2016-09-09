@@ -39,17 +39,20 @@ export default express()
   let slug    = Slug(request.params.slug),
       posted  = request.body
 
-  const { html, title, aliases, data, tags } = request.body
+  const { html, title, aliases, data, tags, sheet } = request.body
   const article = new Article(slug, html, { title, aliases, data, tags })
 
   if (!Storage.saveArticle(slug, article))
-    return response.status(500).send('Unable to save article.');
+    return response.status(500).send('Unable to save article.')
+  if (sheet && !Storage.saveSheet(slug, sheet))
+    return response.status(500).send('Unable to save sheet.')
 
   const children = Tags.for(slug)
 
-  response.status(200).send(
-    pick(article.rendered, ['html', 'title', 'aliases', 'data', 'tags'])
-  )
+  response.status(200).send({
+    ...pick(article.rendered, ['html', 'title', 'aliases', 'data', 'tags']),
+    sheet,
+  })
 })
 .delete('/:slug', (request, response) => {
   if (!request.session.id)
