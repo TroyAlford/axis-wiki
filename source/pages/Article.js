@@ -1,7 +1,7 @@
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { deleteArticle, loadArticle, loadedArticle, saveArticle } from '../redux/article/actions'
-import { difference, sortBy, uniq, xor } from 'lodash'
+import { difference, includes, sortBy, uniq, xor } from 'lodash'
 
 import ComponentBase from '../application/ComponentBase'
 import ArticleChildren from '../components/ArticleChildren'
@@ -63,18 +63,20 @@ class Article extends ComponentBase {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.slug !== this.props.slug // New Article is loading
-      && nextProps.slug !== nextProps.params.slug) // & the page location doesn't show it
-      browserHistory.push(`/page/${nextProps.slug}`)
-
     if (this.props.params.slug !== nextProps.params.slug) {
       this.setState(this.defaultState)
       this.props.dispatch(loadArticle(nextProps.params.slug))
     }
 
+    if (this.props.params.slug !== nextProps.slug) {
+      // Probably a redirect from one slug to another
+      browserHistory.push(`/page/${nextProps.slug}`)
+    }
+
     this.setState({
       ...this.defaultState,
       sheet: nextProps.sheet,
+      // selected_tab,
     })
   }
 

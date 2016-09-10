@@ -7,10 +7,9 @@ export default ({ key = '', tabs = [], onTabClicked = (() => {}), active = null 
 
   if (!active) active = tabs[0].key
 
-  let activeTab = find(tabs, { key: active }) || tabs[0]
-  let renderedTab = null
+  const activeTab = find(tabs, { key: active }) || tabs[0]
 
-  renderedTab = activeTab.innerHTML !== undefined
+  const renderedTab = activeTab.innerHTML !== undefined
     ? <div className={`tab ${activeTab.key || ''}`}
         dangerouslySetInnerHTML={{ __html: activeTab.innerHTML }}
       />
@@ -22,7 +21,7 @@ export default ({ key = '', tabs = [], onTabClicked = (() => {}), active = null 
     <div className={`tab-set ${key}`}>
       <ul className="tabs">
       {tabs.map((tab, index) => React.isValidElement(tab) ? tab :
-        <li key={index} className={`tab ${active == tab.key ? 'is-active' : ''} ${tab.key || ''}`}
+        <li key={index} className={`tab ${activeTab.key == tab.key ? 'is-active' : ''} ${tab.key || ''}`}
             onClick={onTabClicked.bind(this, tab)}>{tab.caption}</li>
       )}
       </ul>
