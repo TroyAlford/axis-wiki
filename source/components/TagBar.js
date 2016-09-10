@@ -32,7 +32,7 @@ export default class TagBar extends React.Component {
         className={className} value={tags} readonly={readonly}
         inputProps={inputSettings} tagProps={tagSettings}
         renderInput={props => !readonly &&
-          <input type="text"
+          <input type="text" ref="input"
             className={props.className}
             placeholder={props.placeholder}
           />
