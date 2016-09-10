@@ -8,6 +8,7 @@ export default class ArmorManager extends CollectionManager {
   renderItem(armor) {
     return (
       <Armor key={armor.id} armor={armor}
+        readonly={this.props.readonly}
         onChange={super.handleChange.bind(this)}
         onEditEnd={super.handleEditEnd.bind(this)}
       />

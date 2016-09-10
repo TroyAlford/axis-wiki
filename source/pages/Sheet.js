@@ -67,7 +67,7 @@ export default class Sheet extends ComponentBase {
 
     return (
       <div className="sheet page">
-        <SheetHeader
+        <SheetHeader readonly={this.props.readonly}
           name={this.state.name}
           xp={this.state.xp} rp={this.state.rp}
           onChange={this.handleHeaderChange}
@@ -86,12 +86,12 @@ export default class Sheet extends ComponentBase {
             </Section>
           </div>
           <div className="column">
-            <DescriptorManager
+            <DescriptorManager readonly={this.props.readonly}
               items={this.state.descriptors}
               onChange={c => this.handleChange('descriptors', c.items)}
             />
             <AttributeManager
-              armor={armorValue}
+              armor={armorValue} readonly={this.props.readonly}
               items={this.state.attributes}
               onChange={c => this.handleChange('attributes', c.items)}
             />
@@ -99,13 +99,13 @@ export default class Sheet extends ComponentBase {
         </div>
         <div className="columns">
           <div className="column is-one-third">
-            <TraitManager
+            <TraitManager readonly={this.props.readonly}
               items={this.state.traits}
               onChange={c => this.handleChange('traits', c.items)}
             />
           </div>
           <div className="column">
-            <SkillManager
+            <SkillManager readonly={this.props.readonly}
               items={this.state.skills}
               onChange={c => this.handleChange('skills', c.items)}
             />
@@ -114,13 +114,13 @@ export default class Sheet extends ComponentBase {
         <Section className="Equipment">
           <div className="columns">
             <div className="column">
-              <WeaponManager
+              <WeaponManager readonly={this.props.readonly}
                 items={this.state.weapons}
                 onChange={c => this.handleChange('weapons', c.items)}
               />
             </div>
             <div className="column">
-              <ArmorManager
+              <ArmorManager readonly={this.props.readonly}
                 items={this.state.armor}
                 onChange={c => this.handleChange('armor', c.items)}
               />
@@ -154,10 +154,14 @@ Sheet.propTypes = {
   traits: React.PropTypes.array.isRequired,
   weapons: React.PropTypes.array.isRequired,
 
+  readonly: React.PropTypes.bool.isRequired,
+
   onChange: React.PropTypes.func.isRequired,
 }
 Sheet.defaultProps = {
   ...defaultState,
+
+  readonly: false,
 
   onChange: () => {},
 }

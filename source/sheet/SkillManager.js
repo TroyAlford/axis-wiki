@@ -9,6 +9,7 @@ export default class SkillManager extends CollectionManager {
   renderItem(skill) {
     return (
       <Skill key={skill.id} skill={skill}
+        readonly={this.props.readonly}
         onChange={super.handleChange.bind(this)}
         onEditEnd={super.handleEditEnd.bind(this)}
       />

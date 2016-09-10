@@ -72,17 +72,17 @@ export default class SheetHeader extends ComponentBase {
   render() {
     return (
       <div className="sheet-header">
-        <Editable className="CharacterName"
+        <Editable className="CharacterName" readonly={this.props.readonly}
           onChange={name => this.handleChange('name', name)}
           value={this.state.name}
         />
         <span className="name">Experience: </span>
-        <Editable className="xp"
+        <Editable className="xp" readonly={this.props.readonly}
           onChange={xp => this.handleChange('xp', xp)}
           value={this.state.xp}
         />
         <span className="name">RP Points: </span>
-        <Editable className="rp"
+        <Editable className="rp" readonly={this.props.readonly}
           onChange={rp => this.handleChange('rp', rp)}
           value={this.state.rp}
         />
@@ -108,6 +108,8 @@ SheetHeader.propTypes = {
   rp: React.PropTypes.number.isRequired,
   xp: React.PropTypes.number.isRequired,
 
+  readonly: React.PropTypes.bool.isRequired,
+
   onChange: React.PropTypes.func.isRequired,
 }
 SheetHeader.defaultProps = {
@@ -118,6 +120,8 @@ SheetHeader.defaultProps = {
 
   rp: 0,
   xp: 0,
+
+  readonly: false,
 
   onChange: () => {},
 }

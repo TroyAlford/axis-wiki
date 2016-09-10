@@ -56,7 +56,8 @@ export default class AttributeManager extends CollectionManager {
   renderItem(attribute) {
     return (
       <Attribute key={attribute.id} className={attribute.key}
-        attribute={attribute} readonly={attribute.calculated}
+        readonly={this.props.readonly || attribute.calculated}
+        attribute={attribute}
         onChange={super.handleChange.bind(this)}
         onEditEnd={super.handleEditEnd.bind(this)}
       />

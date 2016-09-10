@@ -63,10 +63,12 @@ export default class Trait extends ComponentBase {
     return (
       <div className={`trait ${className}`}>
         <Editable className="name" value={this.displayName()}
+          readonly={this.props.readonly}
           onChange={this.handleNameChange}
           onEditEnd={this.handleEditEnd}
         />
         <Editable className="value" value={value}
+          readonly={this.props.readonly}
           onChange={this.handleValueChange}
           onEditEnd={this.handleEditEnd}
         />

@@ -42,13 +42,16 @@ export default class Armor extends ComponentBase {
     return (
       <div className="armor">
         <Editable className="equipped" value={!!equipped}
+          readonly={this.props.readonly}
           onChange={this.setEquipped.bind(this, !equipped)}
         />
         <Editable className="name" value={display}
+          readonly={this.props.readonly}
           onChange={this.handleNameChange.bind(this)}
         />
       {values.map((value, index) =>
         <Editable key={index} className="value" value={value}
+          readonly={this.props.readonly}
           onChange={this.handleValueChange.bind(this, index)}
         />
       )}

@@ -7,6 +7,7 @@ export default class WeaponManager extends CollectionManager {
   renderItem(weapon) {
     return (
       <Weapon key={weapon.id} weapon={weapon}
+        readonly={this.props.readonly}
         onChange={super.handleChange.bind(this)}
         onEditEnd={super.handleEditEnd.bind(this)}
       />

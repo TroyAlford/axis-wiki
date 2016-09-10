@@ -39,6 +39,7 @@ export default class DescriptorManager extends CollectionManager {
   renderItem(descriptor) {
     return (
       <Descriptor key={descriptor.id} descriptor={descriptor}
+        readonly={this.props.readonly}
         onChange={super.handleChange.bind(this)}
         onEditEnd={super.handleEditEnd.bind(this)}
       />

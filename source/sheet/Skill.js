@@ -66,12 +66,14 @@ export default class Skill extends ComponentBase {
     return (
       <div className={`skill ${className}`}>
         <Editable className="name" value={this.displayName()}
+          readonly={this.props.readonly}
           onChange={this.handleNameChange}
           onEditEnd={this.handleEditEnd}
         />
       {values.map((value, index) =>
         <Editable key={index} className="value"
           value={value} min={1} max={10}
+          readonly={this.props.readonly}
           onChange={this.handleValueChange.bind(this, index)}
           onEditEnd={this.handleEditEnd}
         />

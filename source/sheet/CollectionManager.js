@@ -41,7 +41,7 @@ export default class CollectionManager extends ComponentBase {
 
   render() {
     const buttons = []
-    if (this.props.allowAdd)
+    if (!this.props.readonly && this.props.allowAdd)
       buttons.push(
         <Icon key="btn-add" name="add" onClick={this.addItem.bind(this)} />
       )
@@ -53,7 +53,7 @@ export default class CollectionManager extends ComponentBase {
           <div key="buttons" className="buttons">{buttons}</div>
         ]}
         headers={this.props.headers}>
-        {this.collection.map(this.renderItem)}
+        {this.collection.map(item => this.renderItem(item, this.props.readonly))}
       </Section>
     )
   }
@@ -66,17 +66,21 @@ CollectionManager.propTypes = {
     React.PropTypes.element,
   ])),
   items: React.PropTypes.array.isRequired,
-  onChange: React.PropTypes.func.isRequired,
-  renderItem: React.PropTypes.func,
+  readonly: React.PropTypes.bool.isRequired,
   settings: React.PropTypes.object.isRequired,
   title: React.PropTypes.string,
+
+  onChange: React.PropTypes.func.isRequired,
+  renderItem: React.PropTypes.func,
 }
 CollectionManager.defaultProps = {
   allowAdd: true,
   headers: [],
   items: [],
-  onChange: () => {},
-  renderItem: () => null,
+  readonly: false,
   settings: {},
   title: '',
+
+  onChange: () => {},
+  renderItem: () => null,
 }

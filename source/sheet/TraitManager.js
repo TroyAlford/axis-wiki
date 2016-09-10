@@ -7,6 +7,7 @@ export default class TraitManager extends CollectionManager {
   renderItem(trait) {
     return (
       <Trait key={trait.id} trait={trait}
+        readonly={this.props.readonly}
         onChange={super.handleChange.bind(this)}
         onEditEnd={super.handleEditEnd.bind(this)}
       />
