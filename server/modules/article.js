@@ -44,8 +44,11 @@ export default express()
 
   if (!Storage.saveArticle(slug, article))
     return response.status(500).send('Unable to save article.')
+
   if (sheet && !Storage.saveSheet(slug, sheet))
     return response.status(500).send('Unable to save sheet.')
+  else if (sheet === false && !Storage.deleteSheet(slug))
+    return response.status(500).send('Unable to remove sheet.')
 
   const children = Tags.for(slug)
 

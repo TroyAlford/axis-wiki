@@ -18,9 +18,13 @@ $tags-height: 36px;
       padding: 5px 10px 0px 10px;
 
       > .tab-button {
-        margin: -3px auto 0;
+        margin: -3px 0 0 0;
 
-        + .tab.edit { margin-left: 0; }
+        &.save {
+          margin: -3px auto 0;
+
+          + .tab.edit { margin-left: 0; }
+        }
       }
 
       > .tab.edit, .tab.settings { margin-left: auto; }

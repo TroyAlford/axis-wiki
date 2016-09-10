@@ -50,12 +50,14 @@ class Article extends ComponentBase {
       this.state.children !== null ||
       this.state.data     !== null ||
       this.state.tags     !== null ||
-      this.state.title    !== null
+      this.state.title    !== null ||
+      (!this.props.sheet && this.state.sheet)
     ) })
     Object.defineProperty(this, 'draft', { get: () => {
       switch (this.state.selected_tab) {
         case 'edit': /* TinyMCE tab */
-          return tinyMCE.activeEditor.getContent()
+          if (tinyMCE && tinyMCE.activeEditor)
+            return tinyMCE.activeEditor.getContent()
         default:
           return this.state.html || this.props.html
       }
@@ -88,7 +90,10 @@ class Article extends ComponentBase {
       children: null,
       data: null,
       html: null,
-      tags: null
+      tags: null,
+      title: null,
+
+      sheet: false,
     }
   }
 
@@ -105,7 +110,8 @@ class Article extends ComponentBase {
       html:     this.draft,
       tags:     this.state.tags       || this.props.tags,
       title:    this.state.title      || this.props.title,
-      sheet:    new JsonSheetFormatter(this.state.sheet).cleansed,
+      sheet:    !this.state.sheet ? false :
+        new JsonSheetFormatter(this.state.sheet).cleansed,
     }
 
     this.props.dispatch(saveArticle(this.props.params.slug, article))
@@ -135,31 +141,46 @@ class Article extends ComponentBase {
       ]
     }]
 
-    if (this.props.sheet) tabs.push({
-      key: 'sheet',
-      caption: [
-        <Icon key="icon" name="sheet" />,
-        <span key="text">Sheet</span>,
-      ],
-      contents: [
-        <Sheet key="sheet" {...this.state.sheet}
-          readonly={this.props.readonly}
-          name={this.state.title || this.props.title}
-          onChange={sheet => this.setState({
-            sheet, title: sheet.name
-          })}
-          ref={self => this.sheet = self}
-        />,
-      ]
-    })
-
-    if (!this.props.readonly && this.state.selected_tab !== 'read')
+    if (this.state.sheet) {
+      tabs.push({
+        key: 'sheet',
+        caption: [
+          <Icon key="icon" name="sheet" />,
+          <span key="text">Sheet</span>,
+          !this.props.readonly && <i key="btn-remove" className="icon icon-remove"
+            onClick={() => this.setState({ sheet: undefined, selected_tab: 'read' })}
+          />,
+        ],
+        contents: [
+          <Sheet key="sheet" {...this.state.sheet}
+            readonly={this.props.readonly}
+            name={this.state.title || this.props.title}
+            onChange={sheet => this.setState({
+              sheet, title: sheet.name
+            })}
+            ref={self => this.sheet = self}
+          />,
+        ]
+      })
+    } else if (!this.props.readonly) {
       tabs.push(
-        <li key="save" className="tab-button">
-          <a className="icon icon-save button is-success"
-             onClick={this.handleSave}>Save</a>
+        <li key="add-sheet" className="tab-button add-sheet">
+          <a className="icon icon-add button is-info"
+             onClick={() => this.setState({
+              sheet: Sheet.defaultProps,
+              selected_tab: 'sheet',
+            })}
+          >Add Sheet</a>
         </li>
       )
+    }
+
+    if (!this.props.readonly && this.dirty) tabs.push(
+      <li key="save" className="tab-button save">
+        <a className="icon icon-save button is-success"
+           onClick={this.handleSave}>Save</a>
+      </li>
+    )
 
     if (!this.props.readonly) tabs.push({
       key: 'edit',
@@ -240,6 +261,7 @@ Article.defaultProps = {
   readonly: true,
   sheet: undefined,
   tags: [],
+  title: null,
 }
 
 export default connect(
