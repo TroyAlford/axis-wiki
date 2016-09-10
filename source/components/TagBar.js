@@ -31,12 +31,14 @@ export default class TagBar extends React.Component {
       <TagsInput
         className={className} value={tags} readonly={readonly}
         inputProps={inputSettings} tagProps={tagSettings}
-        renderInput={props => !readonly &&
-          <input type="text" ref="input" {...props}
-            className={props.className}
-            placeholder={props.placeholder}
-          />
-        }
+        renderInput={props => {
+          const { addTag, onChange, placeholder, value, ...other } = props
+          return !readonly &&
+            <input type="text" ref="input" {...other}
+              placeholder={placeholder} value={value}
+              onChange={onChange}
+            />
+        }}
         renderTag={props =>
           <span key={props.key} className={props.className}>
             <a className="icon icon-tag" href={`/page/${props.tag}`}>{props.tag}</a>
