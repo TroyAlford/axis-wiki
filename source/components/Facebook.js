@@ -11,22 +11,30 @@ class Facebook extends ComponentBase {
   constructor(props) {
     super(props);
     this.config = { ...defaults, ...config }
+    this.fb_initialized = false
   }
 
   componentDidMount() {
-    window.fbAsyncInit = (() => {
-      FB.init({
-        appId   : this.config.application_id,
-        cookie  : true,   // allows server to access the session
-        status  : true,   // check login status on init
-        version : 'v2.5', // use graph api v2.5
-        xfbml   : true,   // parse social plugins on page
-        frictionlessRequests: true
-      });
-      FB.Event.subscribe('auth.statusChange', this.handleStatusChange)
+    if (window.FB)
+      this.initializeFacebook()
+    else
+      window.fbAsyncInit = this.initializeFacebook.bind(this)
+  }
 
-      FB.getLoginStatus(this.handleStatusChange)
-    }).bind(this)
+  initializeFacebook() {
+    FB.Event.subscribe('auth.statusChange', this.handleStatusChange)
+
+    FB.init({
+      appId   : this.config.application_id,
+      cookie  : true,   // allows server to access the session
+      status  : true,   // check login status on init
+      version : 'v2.5', // use graph api v2.5
+      xfbml   : true,   // parse social plugins on page
+      frictionlessRequests: true
+    })
+    this.fb_initialized = true
+
+    FB.getLoginStatus(this.handleStatusChange)
   }
 
   handleStatusChange(response) {
