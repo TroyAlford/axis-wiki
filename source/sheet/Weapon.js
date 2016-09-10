@@ -1,39 +1,11 @@
 import * as React from 'react'
 
-import {
-  startCase,
-  sum,
-  toLower
-} from 'lodash'
+import { startCase, sum, toLower } from 'lodash'
 import Slug from '../../utility/Slugs'
 
 import Editable from '../components/Editable'
 
 export default class Weapon extends React.Component {
-  setEquipped(equipped) {
-    this.props.onChange({
-      ...this.props.weapon,
-      equipped
-    }, this.props.weapon)
-  }
-
-  handleNameChange(name) {
-    this.props.onChange({
-      ...this.props.weapon,
-      name,
-      key: Slug(name)
-    }, this.props.weapon)
-  }
-  handleValueChange(index, value) {
-    let { values }  = this.props.weapon
-    values[index] = value
-
-    this.props.onChange({
-      ...this.props.weapon,
-      values
-    }, this.props.weapon)
-  }
-
   render() {
     const { equipped, key, name, values } = this.props.weapon,
       display = name ? name : startCase(toLower(key))
@@ -41,16 +13,37 @@ export default class Weapon extends React.Component {
       <div className="weapon">
         <Editable className="equipped" value={!!equipped}
           readonly={this.props.readonly}
-          onChange={this.setEquipped.bind(this, !equipped)}
+          onChange={equipped => {
+            if (equipped === this.props.weapon.equipped) return;
+            this.props.onChange({
+              ...this.props.weapon,
+              equipped,
+            }, this.props.weapon)
+          }}
         />
         <Editable className="name" value={display}
           readonly={this.props.readonly}
-          onChange={this.handleNameChange.bind(this)}
+          onChange={name => {
+            if (name === this.props.weapon.name) return;
+            this.props.onChange({
+              ...this.props.weapon,
+              name, key: Slug(name),
+            }, this.props.weapon)
+          }}
         />
       {values.map((value, index) =>
         <Editable key={index} className="value" value={value}
           readonly={this.props.readonly}
-          onChange={this.handleValueChange.bind(this, index)}
+          onChange={value => {
+            if (value === this.props.weapon.values[index]) return;
+            const values = [...this.props.weapon.values]
+            values[index] = value
+
+            this.props.onChange({
+              ...this.props.weapon,
+              values,
+            }, this.props.weapon)
+          }}
         />
       )}
       </div>

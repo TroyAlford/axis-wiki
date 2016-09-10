@@ -43,6 +43,7 @@ export default class AttributeManager extends CollectionManager {
       )
     })
   }
+
   require() {
     const currentKeys = this.collection.keys
     const missingKeys = filter(keys, key => !includes(currentKeys, key))

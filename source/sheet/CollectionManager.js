@@ -50,10 +50,10 @@ export default class CollectionManager extends ComponentBase {
       <Section className={this.props.title}
         title={[
           <span key="title">{this.props.title}</span>,
-          <div key="buttons" className="buttons">{buttons}</div>
+          <div key="buttons" className="buttons">{buttons}</div>,
         ]}
         headers={this.props.headers}>
-        {this.collection.map(item => this.renderItem(item, this.props.readonly))}
+        {this.collection.map(item => this.renderItem(item))}
       </Section>
     )
   }
