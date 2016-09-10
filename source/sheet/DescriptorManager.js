@@ -5,25 +5,13 @@ import Descriptor from './Descriptor'
 import { filter, includes, isEqual, orderBy } from 'lodash'
 
 export default class DescriptorManager extends CollectionManager {
-  constructor(props) {
-    super(props)
-    this.update()
-  }
-  componentWillReceiveProps(newProps) {
-    this.collection = new Collection(newProps.items, this.settings)
-    this.collection.onChange = this.update
-
-    this.update()
-  }
-
   update() {
-    const before = [...this.collection.items]
     this.collection.onChange = null
 
     this.require()
     this.whitelist()
 
-    this.collection.onChange = this.update
+    this.collection.onChange = this.handleCollectionChange.bind(this)
   }
 
   require() {
@@ -40,12 +28,14 @@ export default class DescriptorManager extends CollectionManager {
     return (
       <Descriptor key={descriptor.id} descriptor={descriptor}
         readonly={this.props.readonly}
-        onEditEnd={updated => {
-          super.handleChange(updated, descriptor)
-          this.props.onChange(this.collection)
-        }}
+        onChange={super.handleChange.bind(this)}
       />
     )
+  }
+
+  render() {
+    this.update()
+    return super.render()
   }
 }
 
