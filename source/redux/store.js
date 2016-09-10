@@ -14,8 +14,6 @@ import search from './search/reducer'
 import sheet from './sheet/reducer'
 import user from './user/reducer'
 
-console.log(window.InitialState)
-
 export default createStore(
   combineReducers({
     application,

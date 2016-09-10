@@ -29,11 +29,6 @@ class Facebook extends ComponentBase {
     }).bind(this)
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { user } = nextProps
-    console.log(user)
-  }
-
   handleStatusChange(response) {
     let { dispatch } = this.props
 

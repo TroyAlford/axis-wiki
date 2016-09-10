@@ -244,7 +244,7 @@ class Article extends ComponentBase {
 
 Article.propTypes = {
   aliases: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  children: React.PropTypes.arrayOf(React.PropTypes.element),
+  children: React.PropTypes.arrayOf(React.PropTypes.string),
   html: React.PropTypes.string.isRequired,
   loading: React.PropTypes.bool.isRequired,
   readonly: React.PropTypes.bool.isRequired,
