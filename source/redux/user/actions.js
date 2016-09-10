@@ -17,7 +17,7 @@ export function loadProfile() {
     }).then(json => json.id
       ? dispatch(setProfile(json))
       : dispatch(setProfile({ id: undefined }))
-    ).catch(error => dispatch(logoff()))
+    ).catch(error => dispatch(setLoggedOff()))
   )
 }
 
