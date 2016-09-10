@@ -1,3 +1,4 @@
+import compression  from 'compression'
 import cookieParser from 'cookie-parser'
 import express      from 'express'
 import fs           from 'fs'
@@ -24,6 +25,7 @@ Watcher.watch()
 const bindStatic = folder => express.static(path.join(__dirname, folder))
 
 var app = express()
+  .use(compression())
   .use(cookieParser())
 
   /* Non-Static Routes */
