@@ -1,21 +1,21 @@
 import compression  from 'compression'
 import cookieParser from 'cookie-parser'
 import express      from 'express'
-import fs           from 'fs'
 import http         from 'http'
 import mkdirp       from 'mkdirp'
 import path         from 'path'
-import request      from 'request'
 import url          from 'url'
+import utils        from 'fs-utils'
 
 import Config       from './services/Config'
 import Facebook     from './middleware/Facebook'
+import Profile      from './services/Profile'
 import NoAnonymous  from './middleware/NoAnonymous'
 import Watcher      from './services/Watcher'
 
 import api_article  from './modules/article'
 import api_by       from './modules/by'
-import api_config   from './modules/config'
+import { default as api_config, getNavigation } from './modules/config'
 import api_my       from './modules/my'
 import api_search   from './modules/search'
 
@@ -44,9 +44,21 @@ var app = express()
   .use('/font',   bindStatic('../fontello/font'))
   .use('/images', bindStatic('../images'))
 
-  .get('*', Facebook, (req, res) => {
-    fs.createReadStream(path.join(__dirname, '../source/index.html'))
-      .pipe(res)
+  .get('*', Facebook, (request, response) => {
+    const profile = request.session.id
+      ? Profile.load(request.session.id)
+      : Profile.default
+
+    const initialState = {
+      navigation: getNavigation(),
+      user: profile,
+    }
+
+    const indexFile = path.join(__dirname, '../source/index.html')
+    let html = utils.readFileSync(indexFile)
+                    .replace('#INITIAL_STATE#', JSON.stringify(initialState))
+
+    response.status(200).send(html)
   })
 
   .listen(Config.settings.server.port, () => {

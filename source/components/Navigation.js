@@ -1,44 +1,58 @@
 import ComponentBase from '../application/ComponentBase'
+import { browserHistory } from 'react-router'
+import { connect } from 'react-redux'
 import fetch from 'isomorphic-fetch'
 
-export default class Navigation extends ComponentBase {
+class Navigation extends ComponentBase {
   constructor(props) {
-    super(props);
-
-    this.render_key = 0;
+    super(props)
     this.state = {
-      links: {}
-    };
-
-    fetch('/api/config/navigation')
-      .then(response => {
-        if (response.status !== 200) return null
-        return response.json()
-      }).then(links => links && this.setState({ links }))
-    ;
+      current: window.location.pathname
+    }
   }
 
-  render() {
-    this.render_key = 0;
+  componentDidMount() {
+    browserHistory.listen(this.routeChanged)
+  }
+
+  routeChanged(route) {
+    this.setState({ current: route.pathname })
+  }
+
+  renderLink(link, index) {
+    const active = this.state.current === link.url
+
     return (
-      <section className="navigation">
-        {this.renderLinks(this.state.links || default_links)}
-      </section>
-    );
-  }
-
-  renderLink(link) {
-    let is_current = link.url == window.location.pathname;
-    return <li key={this.render_key++} className={is_current ? 'is-current' : ''}>
-      {!link.url || is_current
+      <li key={index} className={active ? 'is-current' : ''}>
+      {!link.url || active
         ? <b>{link.text}</b>
         : <a href={link.url}>{link.text}</a>
       }
-      {this.renderLinks(link.children)}
-    </li>;
+        {this.renderChildren(link.children)}
+      </li>
+    )
   }
-  renderLinks(links) {
-    if (!links || !links.length) return '';
-    return <ul key={this.render_key++}>{links.map(this.renderLink)}</ul>;
+
+  renderChildren(children) {
+    if (!children || !children.length) return ''
+    return (
+      <ul>{children.map(this.renderLink)}</ul>
+    )
+  }
+
+  render() {
+    return (
+      <section className="navigation">
+        {this.renderChildren(this.props.links)}
+      </section>
+    );
   }
 }
+
+Navigation.defaultProps = {
+  links: []
+}
+
+export default connect(
+  state => ({ links: state.navigation })
+)(Navigation)

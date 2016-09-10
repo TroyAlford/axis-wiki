@@ -2,12 +2,7 @@ import { connect } from 'react-redux'
 import ComponentBase from '../application/ComponentBase'
 import Icon from '../components/Icon'
 
-import {
-  setAnonymous,
-  logoff,
-  logon,
-  updateUserInfo
-} from '../redux/user/actions'
+import { loadProfile, saveProfile, setProfile, setLoggedOff } from '../redux/user/actions'
 
 import { facebook as config } from '../config.json'
 import { facebook as defaults } from '../defaults.json'
@@ -19,9 +14,6 @@ class Facebook extends ComponentBase {
   }
 
   componentDidMount() {
-    if (!window.FB) return;
-    FB.Event.subscribe('auth.statusChange', this.handleStatusChange);
-
     window.fbAsyncInit = (() => {
       FB.init({
         appId   : this.config.application_id,
@@ -31,28 +23,43 @@ class Facebook extends ComponentBase {
         xfbml   : true,   // parse social plugins on page
         frictionlessRequests: true
       });
+      FB.Event.subscribe('auth.statusChange', this.handleStatusChange)
 
       FB.getLoginStatus(this.handleStatusChange)
     }).bind(this)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { user } = nextProps
+    console.log(user)
   }
 
   handleStatusChange(response) {
     let { dispatch } = this.props
 
     if (response.status === 'connected') // Logged in & authorized
-      dispatch(logon())
+      dispatch(loadProfile())
     else if (response.status === 'not_authorized') // Logged in to FB, not authorized
-      dispatch(logoff())
+      dispatch(setLoggedOff())
     else // User is not logged in to FB
-      dispatch(anonymousUser())
+      dispatch(setLoggedOff())
+  }
+
+  attemptLogin() {
+    if (FB.getAccessToken())
+      this.props.dispatch(loadProfile())
+    else
+      FB.login()
   }
 
   render() {
+    const { dispatch } = this.props
+
     return (
       <div className={`fb level ${this.props.className}`}>
       { this.props.anonymous
         ? <a href="#" className="login button level-item icon icon-facebook"
-             onClick={() => this.props.dispatch(logon())}>Log In</a>
+             onClick={this.attemptLogin}>Log In</a>
         : <div className="level-item mini profile">
             { this.props.picture.data && <img src={this.props.picture.data.url} width="20px" /> }
             <span>{this.props.name}</span>
@@ -60,7 +67,7 @@ class Facebook extends ComponentBase {
       }
       { !this.props.anonymous &&
         <a href="#" className="logout button level-item icon icon-facebook"
-           onClick={e => { this.props.dispatch(logoff())}}>Log Out</a>
+           onClick={() => dispatch(setLoggedOff())}>Log Out</a>
       }
       </div>
     )

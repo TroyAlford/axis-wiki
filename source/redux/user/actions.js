@@ -1,54 +1,56 @@
 import fetch from 'isomorphic-fetch'
 import { browserHistory } from 'react-router'
 
-export const USER_LOGON = 'user.logon'
+export const USER_PROFILE = 'user.profile'
 export const USER_LOGOFF = 'user.logoff'
-export const USER_UPDATE = 'user.update'
 
-export function logon() {
-  return dispatch => fetch('/api/my/profile', { credentials: 'include' })
-    .then(response => response.json())
-    .then(json => {
-      if (!json.id) // User does not have a profile set up yet. Create it!
-        FB.api('/me', { fields: 'name,email,picture.width(250)' }, fb_profile => {
-          if (fb_profile.error) {
-            switch (fb_profile.error.type) {
-              case 'OAuthException':
-                FB.getLoginStatus()
-                break;
-              default:
-                return console.error('Facebook error:', fb_profile.error)
-            }
-          }
-          fetch('/api/my/profile', {
-            body: JSON.stringify(fb_profile),
-            credentials: 'include',
-            headers: new Headers({
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            }),
-            method: 'POST',
-            mode: 'cors'
-          })
-          .then(response => response.json())
-          .then(json => dispatch(updateUserInfo(json)))
-        })
-      else
-        dispatch(updateUserInfo(json))
-    })
+export function loadProfile() {
+  return (dispatch =>
+    fetch('/api/my/profile', { credentials: 'include' })
+    .then(response => {
+      switch (response.status) {
+        case 200:
+          return response.json()
+        default:
+          throw response.json()
+      }
+    }).then(json => json.id
+      ? dispatch(setProfile(json))
+      : dispatch(setProfile({ id: undefined }))
+    ).catch(error => dispatch(logoff()))
+  )
 }
 
-export function logoff() {
+export function saveProfile(profile) {
+  return (dispatch =>
+    fetch('/api/my/profile', {
+      credentials: 'include',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }),
+      method: 'POST',
+      mode: 'cors',
+    }).then(response => {
+      if (response.status === 200 /* OK */)
+        return response.json()
+      else
+        throw response.json()
+    }).then(json => {
+
+    }).catch(error => {
+
+    })
+  )
+}
+
+export function setLoggedOff() {
   return { type: USER_LOGOFF }
 }
 
-export function setAnonymous() {
-  return updateUserInfo(null)
-}
-
-export function updateUserInfo(user) {
+export function setProfile(profile) {
   return {
-    type: USER_UPDATE,
-    user
+    type: USER_PROFILE,
+    profile,
   }
 }

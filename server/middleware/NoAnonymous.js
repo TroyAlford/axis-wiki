@@ -7,7 +7,7 @@ const PREFIX = 'fbsr_';
 export default (request, response, next) => {
   const { session: { id } } = request
   if (id === undefined)
-    return response.status(404).send('Please log in.')
+    return response.status(401).send({ error: 'You must be logged in to perform this action.' })
 
   next();
 }

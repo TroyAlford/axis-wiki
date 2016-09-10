@@ -12,10 +12,12 @@ var files = {
 export default express()
   .use(bodyParser.json()) // Parses application/json
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
-.get('/navigation', function(request, response) {
-  return response.status(200).send(
-    utils.exists(files.navigation)
-      ? utils.readJSONSync(files.navigation)
-      : Config.settings.navigation.default_links
-  );
-})
+.get('/navigation', (request, response) =>
+  response.status(200).send(getNavigation())
+)
+
+export function getNavigation() {
+  return utils.exists(files.navigation)
+    ? utils.readJSONSync(files.navigation)
+    : Config.settings.navigation.default_links
+}

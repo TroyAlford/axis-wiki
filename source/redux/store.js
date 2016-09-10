@@ -9,11 +9,12 @@ import application from './application/reducer'
 import article from './article/reducer'
 import media from './media/reducer'
 import messages from './messages/reducer'
+import navigation from './navigation/reducer'
 import search from './search/reducer'
 import sheet from './sheet/reducer'
 import user from './user/reducer'
 
-const initialState = {}
+console.log(window.InitialState)
 
 export default createStore(
   combineReducers({
@@ -21,11 +22,12 @@ export default createStore(
     article,
     media,
     messages,
+    navigation,
     search,
     sheet,
     user
   }),
-  initialState,
+  window.InitialState || {},
   compose(
     applyMiddleware(thunk),
     window.devToolsExtension ? window.devToolsExtension() : f => f
