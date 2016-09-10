@@ -48,8 +48,20 @@ export function saveArticle(slug, article, userId = null) {
   const urls = getUrls(slug, userId)
 
   const clean = article.clean
-  utils.writeJSONSync(urls.meta, clean.meta)
+  utils.writeFileSync(urls.meta, JSON.stringify(clean.meta))
   utils.writeFileSync(urls.html, clean.html)
+
+  return true
+}
+
+
+export function deleteSheet(slug, userId = null) {
+  const filename = getUrls(slug, userId).sheet
+
+  if (utils.exists(filename)) {
+    console.warn(`Deleting: ${filename}`)
+    fs.unlinkSync(filename, { force: true })
+  }
 
   return true
 }
@@ -64,7 +76,7 @@ export function getSheet(slug, userId = null) {
 export function saveSheet(slug, sheet, userId = null) {
   const urls = getUrls(slug, userId)
 
-  utils.writeJSONSync(urls.sheet, sheet)
+  utils.writeFileSync(urls.sheet, JSON.stringify(sheet))
 
   return true
 }
