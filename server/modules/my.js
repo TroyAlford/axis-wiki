@@ -7,16 +7,16 @@ export default express()
   .use(bodyParser.json())                         // Parses application/json
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
 
-.use('/page', (request, response) => {
-  const { url, session: { id } } = request
-  const uri = `/api/by/${id}/page/${url}`.replace('//', '/')
-  response.redirect(uri)
-})
-.use('/sheet', (request, response) => {
-  const { url, session: { id } } = request
-  const uri = `/api/by/${id}/sheet/${url}`.replace('//', '/')
-  response.redirect(uri)
-})
+// .use('/page', (request, response) => {
+//   const { url, session: { id } } = request
+//   const uri = `/api/by/${id}/page/${url}`.replace('//', '/')
+//   response.redirect(uri)
+// })
+// .use('/sheet', (request, response) => {
+//   const { url, session: { id } } = request
+//   const uri = `/api/by/${id}/sheet/${url}`.replace('//', '/')
+//   response.redirect(uri)
+// })
 
 .get('/profile', (request, response) => {
   const { url, session: { id } } = request
