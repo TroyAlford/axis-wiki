@@ -34,26 +34,6 @@ export default class Trait extends ComponentBase {
     return display
   }
 
-  handleEditEnd() {
-    this.props.onEditEnd(this.props.trait)
-  }
-
-  handleNameChange(displayName) {
-    const parsed = Trait.parseName(displayName)
-    this.props.onChange({
-      ...this.props.trait,
-      ...parsed,
-      key: Slug(parsed.name)
-    }, this.props.trait)
-  }
-
-  handleValueChange(value) {
-    this.props.onChange({
-      ...this.props.trait,
-      value
-    }, this.props.trait)
-  }
-
   render() {
     const {
       className,
@@ -64,13 +44,28 @@ export default class Trait extends ComponentBase {
       <div className={`trait ${className}`}>
         <Editable className="name" value={this.displayName()}
           readonly={this.props.readonly}
-          onChange={this.handleNameChange}
-          onEditEnd={this.handleEditEnd}
+          onEditEnd={name => {
+            const parsed = Trait.parseName(name)
+            const updated = {
+              ...this.props.trait,
+              ...parsed, key: Slug(parsed.name),
+            }
+
+            this.props.onChange(updated, this.props.trait)
+            this.props.onEditEnd(updated, this.props.trait)
+          }}
         />
         <Editable className="value" value={value}
           readonly={this.props.readonly}
-          onChange={this.handleValueChange}
-          onEditEnd={this.handleEditEnd}
+          onChange={value => {
+            if (value === this.props.trait.value) return;
+
+            this.props.onChange({
+              ...this.props.trait,
+              value,
+            }, this.props.trait)
+          }}
+          onEditEnd={() => this.props.onEditEnd(this.props.trait)}
         />
       </div>
     )

@@ -29,9 +29,17 @@ export default class Descriptor extends ComponentBase {
     return (
       <div className={`descriptor ${className}`}>
         <Editable className="name" value={display} readonly />
-        <Editable className="value" value={value}
-          onChange={this.handleValueChange}
-          readonly={readonly}
+        <Editable className="value" value={value} readonly={readonly}
+          onEditEnd={value => {
+            if (value === this.props.descriptor.value) return;
+            const updated = {
+              ...this.props.descriptor,
+              value,
+            }
+
+            this.props.onChange(updated, this.props.descriptor)
+            this.props.onEditEnd(updated, this.props.descriptor)
+          }}
         />
       </div>
     )

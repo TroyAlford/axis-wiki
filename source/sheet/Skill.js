@@ -34,29 +34,6 @@ export default class Skill extends ComponentBase {
     return display
   }
 
-  handleEditEnd() {
-    this.props.onEditEnd(this.props.skill)
-  }
-
-  handleNameChange(displayName) {
-    const parsed = Skill.parseName(displayName)
-    this.props.onChange({
-      ...this.props.skill,
-      ...parsed,
-      key: Slug(parsed.name)
-    }, this.props.skill)
-  }
-
-  handleValueChange(index, value) {
-    let values = this.props.skill.values
-    values[index] = value
-
-    this.props.onChange({
-      ...this.props.skill,
-      values
-    }, this.props.skill)
-  }
-
   render() {
     const {
       className,
@@ -67,15 +44,32 @@ export default class Skill extends ComponentBase {
       <div className={`skill ${className}`}>
         <Editable className="name" value={this.displayName()}
           readonly={this.props.readonly}
-          onChange={this.handleNameChange}
-          onEditEnd={this.handleEditEnd}
+          onEditEnd={name => {
+            const parsed = Skill.parseName(name)
+            const updated = {
+              ...this.props.skill,
+              ...parsed, key: Slug(parsed.name),
+            }
+
+            this.props.onChange(updated, this.props.skill)
+            this.props.onEditEnd(updated, this.props.skill)
+          }}
         />
       {values.map((value, index) =>
         <Editable key={index} className="value"
           value={value} min={1} max={10}
           readonly={this.props.readonly}
-          onChange={this.handleValueChange.bind(this, index)}
-          onEditEnd={this.handleEditEnd}
+          onChange={value => {
+            const values = [...this.props.skill.values]
+            if (value === values[index]) return;
+
+            values[index] = value
+            this.props.onChange({
+              ...this.props.skill,
+              values,
+            }, this.props.skill)
+          }}
+          onEditEnd={() => this.props.onEditEnd(this.props.skill)}
         />
       )}
       </div>

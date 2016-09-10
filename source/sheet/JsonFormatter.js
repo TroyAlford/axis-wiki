@@ -37,7 +37,7 @@ export default class JsonFormatter extends React.Component {
       cleanKeysAndNames,
       array => ensureValueArray(array, 'values', 6, 0),
       array => map(array, item => ({ ...item, equipped: !!item.equipped })),
-      array => map(array, item => pick(item, ['name', 'equipped', 'values'])),
+      array => map(array, item => pick(item, ['key', 'name', 'equipped', 'values'])),
       orderByKeys,
     ])(this.props.armor)
   }
@@ -88,7 +88,7 @@ export default class JsonFormatter extends React.Component {
       cleanKeysAndNames,
       array => ensureValueArray(array, 'values', 3, 0),
       array => map(array, item => ({ ...item, equipped: !!item.equipped })),
-      array => map(array, item => pick(item, ['name', 'equipped', 'values'])),
+      array => map(array, item => pick(item, ['key', 'name', 'equipped', 'values'])),
       orderByKeys,
     ])(this.props.weapons)
   }

@@ -9,7 +9,6 @@ import math from '../mathjs'
 
 export default class AttributeManager extends CollectionManager {
   update() {
-    const before = cloneDeep(this.collection.items)
     this.collection.onChange = null
 
     this.require()
@@ -43,7 +42,6 @@ export default class AttributeManager extends CollectionManager {
       )
     })
   }
-
   require() {
     const currentKeys = this.collection.keys
     const missingKeys = filter(keys, key => !includes(currentKeys, key))

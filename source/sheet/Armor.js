@@ -25,7 +25,7 @@ export default class Armor extends React.Component {
         />
         <Editable className="name" value={display}
           readonly={this.props.readonly}
-          onChange={name => {
+          onEditEnd={name => {
             if (name === this.props.armor.name) return;
             this.props.onChange({
               ...this.props.armor,

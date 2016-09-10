@@ -23,7 +23,7 @@ export default class Weapon extends React.Component {
         />
         <Editable className="name" value={display}
           readonly={this.props.readonly}
-          onChange={name => {
+          onEditEnd={name => {
             if (name === this.props.weapon.name) return;
             this.props.onChange({
               ...this.props.weapon,

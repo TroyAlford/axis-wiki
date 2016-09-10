@@ -1,12 +1,7 @@
 import Guid from './Guid'
 import {
-  cloneDeep,
-  filter,
-  includes,
-  isEqual,
-  merge,
-  orderBy,
-  reject,
+  cloneDeep, filter, includes,
+  isEqual, merge, orderBy, reject,
 } from 'lodash'
 
 const defaults = {
