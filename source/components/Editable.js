@@ -104,9 +104,9 @@ export default class Editable extends React.Component {
     const editing = !this.state.editing
     this.setState({ editing })
     if (editing)
-      this.props.onEditStart()
+      this.props.onEditStart(this.current, this.props.value)
     else
-      this.props.onEditEnd()
+      this.props.onEditEnd(this.current, this.props.value)
   }
   saveAndStopEditing(event) {
     this.handleChange(event)
