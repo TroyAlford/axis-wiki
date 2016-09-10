@@ -57,14 +57,18 @@ Descriptor.propTypes = {
     ]).isRequired,
   }).isRequired,
   className: React.PropTypes.string,
-  onChange: React.PropTypes.func.isRequired,
   readonly: React.PropTypes.bool,
+
+  onChange: React.PropTypes.func.isRequired,
+  onEditEnd: React.PropTypes.func.isRequired,
 }
 Descriptor.defaultProps = {
   descriptor: {
     value: 0,
   },
   className: '',
-  onChange: to => {},
   readonly: false,
+
+  onChange: to => {},
+  onEditEnd: to => {},
 }
