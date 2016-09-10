@@ -47,7 +47,7 @@ var app = express()
   .get('*', Facebook, (request, response) => {
     const profile = request.session.id
       ? Profile.load(request.session.id)
-      : Profile.default
+      : { ...Profile.default, anonymous: true }
 
     const initialState = {
       navigation: getNavigation(),
