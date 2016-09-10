@@ -52,12 +52,12 @@ export default class Profile {
     let filepath = path.resolve(Config.folders.users, `${id}.json`);
 
     try {
-      utils.writeJSONSync(filepath, profile);
+      utils.writeFileSync(filepath, JSON.stringify(profile))
     } catch (err) {
-      console.log(err.message);
-      return false;
+      console.log(err.message)
+      return false
     }
 
-    return true;
+    return true
   }
 }

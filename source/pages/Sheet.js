@@ -53,7 +53,7 @@ export default class Sheet extends ComponentBase {
     }
   }
   handleHeaderChange(values) {
-    this.setState(values)
+    // this.setState(values)
     this.props.onChange({
       ...this.state,
       ...values,

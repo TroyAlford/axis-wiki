@@ -19,9 +19,8 @@ export default express()
 // })
 
 .get('/profile', (request, response) => {
-  const { url, session: { id } } = request
-  const uri = `/api/by/${id}/profile`.replace('//', '/')
-  response.redirect(uri)
+  const { session: { id } } = request
+  response.status(200).send(Profile.load(id))
 })
 .post('/profile', (request, response) => {
   const { id: posted_id, name, email, picture } = request.body

@@ -82,6 +82,7 @@ export default class Article {
     this.aliases = value.aliases || []
     this.data = value.data || []
     this.tags = value.tags || []
+    this.title = value.title || startCase(this.slug)
   }
   get settings() {
     return {
@@ -91,6 +92,7 @@ export default class Article {
       aliases: this.aliases,
       data: this.data,
       tags: this.tags,
+      title: this.title,
     }
   }
 
