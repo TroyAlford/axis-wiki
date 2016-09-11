@@ -1,17 +1,18 @@
-import { connect } from 'react-redux'
 import ComponentBase from '../application/ComponentBase'
+import Cookie from 'js-cookie'
 import Icon from '../components/Icon'
-
+import { connect } from 'react-redux'
 import { loadProfile, saveProfile, setProfile, setLoggedOff } from '../redux/user/actions'
 
 import { facebook as config } from '../config.json'
 import { facebook as defaults } from '../defaults.json'
 
+window.Cookie = Cookie
+
 class Facebook extends ComponentBase {
   constructor(props) {
     super(props);
     this.config = { ...defaults, ...config }
-    this.fb_initialized = false
   }
 
   componentDidMount() {
@@ -22,37 +23,55 @@ class Facebook extends ComponentBase {
   }
 
   initializeFacebook() {
-    FB.Event.subscribe('auth.statusChange', this.handleStatusChange)
-
     FB.init({
       appId   : this.config.application_id,
-      cookie  : true,   // allows server to access the session
+      cookie  : false,  // allows server to access the session
       status  : true,   // check login status on init
       version : 'v2.5', // use graph api v2.5
       xfbml   : true,   // parse social plugins on page
       frictionlessRequests: true
     })
-    this.fb_initialized = true
-
-    FB.getLoginStatus(this.handleStatusChange)
   }
 
   handleStatusChange(response) {
     let { dispatch } = this.props
 
-    if (response.status === 'connected') // Logged in & authorized
+    if (response.status === 'connected') { // Logged in & authorized
+      this.setCookie()
       dispatch(loadProfile())
-    else if (response.status === 'not_authorized') // Logged in to FB, not authorized
+    } else { // Not authorized, or not logged in to FB
+      this.removeCookie()
       dispatch(setLoggedOff())
-    else // User is not logged in to FB
-      dispatch(setLoggedOff())
+    }
   }
 
-  attemptLogin() {
-    if (FB.getAccessToken())
-      this.props.dispatch(loadProfile())
+  logOn() {
+    if (!FB.getAccessToken())
+      FB.login(this.handleStatusChange)
     else
-      FB.login()
+      FB.getLoginStatus(this.handleStatusChange)
+  }
+  logOff() {
+    this.removeCookie()
+    this.props.dispatch(setLoggedOff())
+  }
+
+  setCookie() {
+    const fbAuthResponse = FB.getAuthResponse()
+    const cookieName = `fbsr_${this.config.application_id}`
+    Cookie.set(cookieName, fbAuthResponse.signedRequest, {
+      domain: window.location.hostname,
+      expires: fbAuthResponse.expiresIn,
+      path: '/',
+    })
+  }
+
+  removeCookie() {
+    const cookieName = `fbsr_${this.config.application_id}`
+    if (this.props.id && Cookie.get(cookieName))
+      Cookie.remove(cookieName, {
+        domain: window.location.hostname, path: '/'
+      })
   }
 
   render() {
@@ -62,7 +81,7 @@ class Facebook extends ComponentBase {
       <div className={`fb level ${this.props.className}`}>
       { this.props.anonymous
         ? <a href="#" className="login button level-item icon icon-facebook"
-             onClick={this.attemptLogin}>Log In</a>
+             onClick={this.logOn}>Log In</a>
         : <div className="level-item mini profile">
             { this.props.picture.data && <img src={this.props.picture.data.url} width="20px" /> }
             <span>{this.props.name}</span>
@@ -70,7 +89,7 @@ class Facebook extends ComponentBase {
       }
       { !this.props.anonymous &&
         <a href="#" className="logout button level-item icon icon-facebook"
-           onClick={() => dispatch(setLoggedOff())}>Log Out</a>
+           onClick={this.logOff}>Log Out</a>
       }
       </div>
     )
