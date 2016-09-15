@@ -212,13 +212,15 @@ class Article extends ComponentBase {
               className: 'alias-tag tag-bar-input',
               placeholder: 'add alias'
             }}
-            readonly={false}
+            readonly={this.props.readonly}
             onChange={aliases => this.setState({ aliases })}
             onlyUnique={true}
           />
-          <h5>Danger</h5>
-          <button className="button is-danger" onClick={this.handleDelete}>Delete this Article</button>
-          <span className="button-label"><i>Warning: This cannot be undone!</i></span>
+        {this.props.readonly ? [] : [
+          <h5 key="label">Danger</h5>,
+          <button key="button" className="button is-danger" onClick={this.handleDelete}>Delete this Article</button>,
+          <span key="warning" className="button-label"><i>Warning: This cannot be undone!</i></span>,
+        ]}
         </div>
     })
 
