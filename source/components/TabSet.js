@@ -22,7 +22,7 @@ export default ({ key = '', tabs = [], onTabClicked = (() => {}), active = null 
       <ul className="tabs">
       {tabs.map((tab, index) => React.isValidElement(tab) ? tab :
         <li key={index} className={`tab ${activeTab.key == tab.key ? 'is-active' : ''} ${tab.key || ''}`}
-            onClick={onTabClicked.bind(this, tab)}>{tab.caption}</li>
+            onClick={onTabClicked.bind(null, tab)}>{tab.caption}</li>
       )}
       </ul>
       {renderedTab}

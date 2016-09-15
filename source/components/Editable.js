@@ -1,7 +1,6 @@
 import * as React from 'react'
 
 import {
-  clamp,
   difference,
   includes
 } from 'lodash'
@@ -16,7 +15,12 @@ export default class Editable extends React.Component {
       value: undefined
     }
 
-    this.focusOnEditor = focusOnEditor.bind(this)
+    this.focusOnEditor = self => {
+      if (self && typeof self.focus === 'function')
+        self.focus()
+
+      this.editor = self
+    }
     this.handleChange = this.handleChange.bind(this)
     this.handleKeys = this.handleKeys.bind(this)
     this.saveAndStopEditing = this.saveAndStopEditing.bind(this)
@@ -178,11 +182,6 @@ export default class Editable extends React.Component {
       </div>
     )
   }
-}
-
-function focusOnEditor(self) {
-  if (self) self.focus()
-  this.editor = self;
 }
 
 Editable.propTypes = {
