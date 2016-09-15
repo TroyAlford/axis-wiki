@@ -72,7 +72,7 @@ class Article extends ComponentBase {
 
     if (this.props.params.slug !== nextProps.slug) {
       // Probably a redirect from one slug to another
-      browserHistory.push(`/page/${nextProps.slug}`)
+      browserHistory.replace(`/page/${nextProps.slug}`)
     }
 
     this.setState({
