@@ -13,9 +13,9 @@ export const
 
 const parser  = document.createElement('a');
 
-export function loadArticle(requested_slug) {
+export function loadArticle(requested_slug, flashLoading = true) {
   return dispatch => {
-    dispatch(loadingArticle(requested_slug))
+    if (flashLoading) dispatch(loadingArticle(requested_slug))
 
     let slug = requested_slug;
     return fetch(`/api/page/${requested_slug}`, { credentials: 'include' })
@@ -81,7 +81,7 @@ export function saveArticle(slug, article) {
       mode: 'cors'
     }).then(response => {
       if (response.status == 200 /* OK */) {
-        dispatch(loadArticle(slug))
+        dispatch(loadArticle(slug, false))
       } else if (response.status == 401 /* Unauthorized */)
         dispatch(addMessage(`Your account does not have permission to update the '${slug}' article.`))
       else if (response.status == 500 /* Internal Server Error */)

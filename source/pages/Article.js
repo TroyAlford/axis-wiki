@@ -24,6 +24,7 @@ class Article extends ComponentBase {
     this.state = {
       ...this.defaultState,
       sheet: props.sheet,
+      tab: 'read',
     };
 
     if (this.props.slug !== this.props.params.slug)
@@ -54,7 +55,7 @@ class Article extends ComponentBase {
       (!this.props.sheet && this.state.sheet)
     ) })
     Object.defineProperty(this, 'draft', { get: () => {
-      switch (this.state.selected_tab) {
+      switch (this.state.tab) {
         case 'edit': /* TinyMCE tab */
           if (tinyMCE && tinyMCE.activeEditor)
             return tinyMCE.activeEditor.getContent()
@@ -65,35 +66,32 @@ class Article extends ComponentBase {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.params.slug !== nextProps.slug)
+      browserHistory.replace(`/page/${slug}`)
+      // Probably a redirect from one slug to another
+
     if (this.props.params.slug !== nextProps.params.slug) {
       this.setState(this.defaultState)
       this.props.dispatch(loadArticle(nextProps.params.slug))
-    }
-
-    if (this.props.params.slug !== nextProps.slug) {
-      // Probably a redirect from one slug to another
-      browserHistory.replace(`/page/${nextProps.slug}`)
+      return;
     }
 
     this.setState({
       ...this.defaultState,
-      sheet: nextProps.sheet,
-      // selected_tab,
+      sheet: nextProps.loading
+        ? this.state.sheet
+        : nextProps.sheet,
     })
   }
 
   get defaultState() {
     return {
-      selected_tab: 'read',
-
       aliases: null,
       children: null,
       data: null,
       html: null,
       tags: null,
       title: null,
-
-      sheet: false,
     }
   }
 
@@ -115,15 +113,14 @@ class Article extends ComponentBase {
     }
 
     this.props.dispatch(saveArticle(this.props.params.slug, article))
-    this.setState(this.defaultState)
   }
 
   handleTabClicked(clicked) {
-    if (this.state.selected_tab === clicked.key) return;
+    if (this.state.tab === clicked.key) return;
 
     this.setState({
       html: this.dirty ? this.draft : null,
-      selected_tab: clicked.key
+      tab: clicked.key
     })
   }
 
@@ -148,7 +145,7 @@ class Article extends ComponentBase {
           <Icon key="icon" name="sheet" />,
           <span key="text">Sheet</span>,
           !this.props.readonly && <i key="btn-remove" className="icon icon-remove"
-            onClick={() => this.setState({ sheet: undefined, selected_tab: 'read' })}
+            onClick={() => this.setState({ sheet: undefined, tab: 'read' })}
           />,
         ],
         contents: [
@@ -168,7 +165,7 @@ class Article extends ComponentBase {
           <a className="icon icon-add button is-info"
              onClick={() => this.setState({
               sheet: Sheet.defaultProps,
-              selected_tab: 'sheet',
+              tab: 'sheet',
             })}
           >Add Sheet</a>
         </li>
@@ -228,7 +225,7 @@ class Article extends ComponentBase {
     return (
       <div className={['article', 'page', this.props.loading ? 'loading' : ''].join(' ')}>
         <TabSet tabs={tabs}
-          active={this.state.selected_tab}
+          active={this.state.tab}
           onTabClicked={this.handleTabClicked}
         />
         <TagBar
