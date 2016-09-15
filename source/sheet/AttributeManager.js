@@ -67,7 +67,6 @@ export default class AttributeManager extends CollectionManager {
     this.update()
     return super.render()
   }
-
 }
 
 // List of keys for whitelisting.
@@ -76,10 +75,12 @@ export const keys = [
   'potency', 'strength', 'intellect', 'confidence',
   'reflex', 'agility', 'acuity', 'intuition',
   'resilience', 'fitness', 'focus', 'devotion',
-  'size', 'natural_armor', 'might', 'toughness',
+  'size', 'speed', 'natural_armor',
+  'accuracy', 'might', 'toughness',
 ]
 
 const computed = [
+  { key: 'accuracy', calc: 'round((acuity + focus + intuition) / 3, 0)' },
   { key: 'body', calc: 'round((agility + fitness + strength) / 3, 0)' },
   { key: 'might', calc: 'round((strength + fitness) / 2, 0) + size' },
   { key: 'mind', calc: 'round((acuity + focus + intellect) / 3, 0)' },

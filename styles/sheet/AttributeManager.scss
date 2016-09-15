@@ -38,9 +38,30 @@
       > * { font-weight: bold; }
     }
 
-    &.size, &.natural_armor, &.might, &.toughness {
-      > * { font-weight: bold; }
+    &.size, &.natural_armor, &.speed {
       order: 4;
+    }
+    &.accuracy, &.might, &.toughness {
+      order: 5;
+    }
+
+    &.size, &.accuracy {
+      min-width: 49%;
+      max-width: 49%;
+      &:before {
+        font-weight: bold;
+        min-width: 50%;
+        max-width: 50%;
+        margin: 0 2% 0 0;
+        padding: 5px;
+      }
+    }
+    &.size:before { content: 'Racial:'; }
+    &.accuracy:before { content: 'Combat:'; }
+
+    &.racial, &.combat {
+      > * { font-weight: bold; }
+      > .value { display: none; }
     }
 
     &.armor { display: none; }
