@@ -28,7 +28,7 @@ export default class Attribute extends ComponentBase {
     return (
       <div className={`attribute ${className}`}>
         <Editable className="name" value={display} readonly />
-        <Editable className="value" value={value} min={0} max={10}
+        <Editable className="value" value={value} min={-10} max={10}
           readonly={readonly} onChange={this.handleValueChange}
         />
       </div>

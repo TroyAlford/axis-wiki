@@ -1,9 +1,6 @@
 import * as React from 'react'
 
-import {
-  startCase,
-  toLower
-} from 'lodash'
+import { startCase, toLower } from 'lodash'
 import Slug from '../../utility/Slugs'
 
 import ComponentBase from '../application/ComponentBase'

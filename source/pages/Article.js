@@ -66,7 +66,9 @@ class Article extends ComponentBase {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.slug !== nextProps.slug)
+    const slug = nextProps.slug
+
+    if (this.props.params.slug !== slug)
       browserHistory.replace(`/page/${slug}`)
       // Probably a redirect from one slug to another
 
