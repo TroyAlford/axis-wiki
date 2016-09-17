@@ -1,7 +1,7 @@
 import $ from 'cheerio'
 import Config from '../Config'
 import Links from '../Links'
-import Storage from '../Storage'
+import * as Storage from '../Storage'
 import path from 'path'
 import utils from 'fs-utils'
 import { orderBy, uniq } from 'lodash'
@@ -12,6 +12,7 @@ export default function(article = { html: '' }) {
 
   $parser('include').each((index, element) => {
     const $include = $parser(element)
+    $include.attr('class', 'noedit')
 
     const from = $include.attr('from')
     if (!articleExists(from)) {

@@ -31,7 +31,7 @@ import Transclude from '../Transclude'
 describe('Transclude', () => {
   it('transcludes existing section text', () => {
     const before = '<include from="existing" sections="*"></include>'
-    const expected = '<include from="existing" sections="*"><div id="a">A Text</div><span id="b">B Text</span></include>'
+    const expected = '<include from="existing" sections="*" class="noedit"><div id="a">A Text</div><span id="b">B Text</span></include>'
 
     const after = Transclude({ html: before })
     expect(after.html).toEqual(expected)
@@ -40,7 +40,7 @@ describe('Transclude', () => {
   })
   it('transcludes missing sections as "missing" comment', () => {
     const before = '<include from="missing" sections="*"></include>'
-    const expected = '<include from="missing" sections="*"><!-- Article \'missing\' does not exist --></include>'
+    const expected = '<include from="missing" sections="*" class="noedit"><!-- Article \'missing\' does not exist --></include>'
 
     const after = Transclude({ html: before })
     expect(after.html).toEqual(expected)
@@ -49,7 +49,7 @@ describe('Transclude', () => {
   })
   it('transcludes aliased article references', () => {
     const before = '<include from="redirect" sections="*"></include>'
-    const expected = '<include from="redirect" sections="*"><div id="a">A Text</div><span id="b">B Text</span></include>'
+    const expected = '<include from="redirect" sections="*" class="noedit"><div id="a">A Text</div><span id="b">B Text</span></include>'
 
     const after = Transclude({ html: before })
     expect(after.html).toEqual(expected)
@@ -58,28 +58,28 @@ describe('Transclude', () => {
   })
   it('transcludes named section outerHTML', () => {
     const before = '<include from="existing" sections="a"></include>'
-    const expected = '<include from="existing" sections="a"><div id="a">A Text</div></include>'
+    const expected = '<include from="existing" sections="a" class="noedit"><div id="a">A Text</div></include>'
 
     const after = Transclude({ html: before })
     expect(after.html).toEqual(expected)
   })
   it('transcludes named sections in specified order', () => {
     const before = '<include from="existing" sections="b,a"></include>'
-    const expected = '<include from="existing" sections="b,a"><span id="b">B Text</span><div id="a">A Text</div></include>'
+    const expected = '<include from="existing" sections="b,a" class="noedit"><span id="b">B Text</span><div id="a">A Text</div></include>'
 
     const after = Transclude({ html: before })
     expect(after.html).toEqual(expected)
   })
   it('can transclude the same section twice', () => {
     const before = '<include from="existing" sections="a,a"></include>'
-    const expected = '<include from="existing" sections="a,a"><div id="a">A Text</div><div id="a">A Text</div></include>'
+    const expected = '<include from="existing" sections="a,a" class="noedit"><div id="a">A Text</div><div id="a">A Text</div></include>'
 
     const after = Transclude({ html: before })
     expect(after.html).toEqual(expected)
   })
   it('transcludes multiple references to the same section name in order', () => {
     const before = '<include from="duplicates" sections="a"></include>'
-    const expected = '<include from="duplicates" sections="a"><div id="a">First A Text</div><span id="a">Second A Text</span></include>'
+    const expected = '<include from="duplicates" sections="a" class="noedit"><div id="a">First A Text</div><span id="a">Second A Text</span></include>'
 
     const after = Transclude({ html: before })
     expect(after.html).toEqual(expected)
