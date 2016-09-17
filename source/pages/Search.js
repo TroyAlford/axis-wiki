@@ -53,7 +53,7 @@ class Search extends ComponentBase {
 
       return {
         key:   article.file,
-        hits:  previews.length,
+        hits:  previews.length + article.aliases.length,
         image: article.image,
         slug:  article.file,
         title: article.title,
