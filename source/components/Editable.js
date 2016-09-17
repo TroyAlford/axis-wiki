@@ -70,6 +70,7 @@ export default class Editable extends React.Component {
   setValue(value) {
     let current = this.current
     if (this.props.readonly || current === value) return; // Don't send false updates.
+    if (this.props.onChanging(value, current) === false) return;
     this.setState({ value })
     this.props.onChange(value, current)
   }
