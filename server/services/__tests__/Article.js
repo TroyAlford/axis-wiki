@@ -13,10 +13,6 @@ describe('Article', () => {
     const article = new Article('new-article')
     expect(article.title).toEqual('New Article')
 
-    // Titles not set explicitly will change when Slug changes
-    article.slug = 'test-change'
-    expect(article.title).toEqual('Test Change')
-
     // Explicitly set Titles persist even when Slug changes
     article.title = 'New Title'
     expect(article.title).toEqual('New Title')
