@@ -3,7 +3,7 @@ import { difference, flatten, flow, keys, uniq } from 'lodash'
 
 const defaults = {
   'a': ['href'],
-  'include': ['class', 'from', 'sections'],
+  'include': ['from', 'sections'],
 }
 
 export default function(article = { html: '' }, whitelist = defaults) {
