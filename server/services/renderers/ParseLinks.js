@@ -1,6 +1,7 @@
 import $ from 'cheerio'
 import { orderBy, uniq } from 'lodash'
 import Config from '../Config'
+import Links from '../Links'
 import { Url, Extract } from '../../../utility/Slugs'
 import path from 'path'
 import url from 'url'
@@ -46,7 +47,8 @@ export default function(article = { html: '' }) {
   return article
 }
 
-function articleExists(slug) {
+function articleExists(requested_slug) {
+  const slug = Links.resolve(requested_slug)
   const filePath = path.join(Config.folders.articles, `${slug}.html`)
   return utils.exists(filePath)
 }
