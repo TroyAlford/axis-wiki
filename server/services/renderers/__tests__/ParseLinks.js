@@ -6,7 +6,10 @@ jest.unmock('../ParseLinks')
 jest.unmock('../../../../utility/Slugs')
 
 jest.mock('../../Config', () => ({
-  folders: { articles: '', media: '' }
+  folders: { articles: '', media: '', 'metadata': '' },
+}))
+jest.mock('../../Links', () => ({
+  resolve: slug => slug
 }))
 jest.mock('fs-utils', () => ({
   exists: path => {
