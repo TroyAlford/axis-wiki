@@ -8,9 +8,7 @@
 //}
 // Note: If both alias_for and aliases is included, the redirect chain will work - but the other fields are irrelevant.
 
-import difference   from 'lodash/difference'
-import intersection from 'lodash/intersection'
-import union        from 'lodash/union'
+import { difference, intersection, union } from 'lodash'
 
 import fs         from 'fs'
 import path       from 'path'
@@ -110,7 +108,11 @@ class Links {
 
     const article = Storage.getArticle(slug).clean
 
-    this.links[slug] = this.links[slug] || Links.default_node;
+    this.links[slug] = {
+      ...Links.default_node,
+      ...this.links[slug],
+      title: article.title || slug,
+    }
     let existing = this.links[slug].aliases,
         updated  = article.aliases,
         in_both  = intersection(existing, updated),
@@ -119,10 +121,10 @@ class Links {
 
     to_drop.forEach(drop => { delete this.links[drop].alias_for; });
     to_add.forEach(add => {
-      this.links[add] = Object.assign(
-        Links.default_node,
-        this.links[add]
-      );
+      this.links[add] = {
+        ...Links.default_node,
+        ...this.links[add]
+      };
       if (add != slug) this.links[add].alias_for = slug;
     });
 
@@ -148,7 +150,7 @@ class Links {
     let existing = this.links[slug].aliases;
 
     this.links[slug].aliases = [];
-    existing.forEach((link) => {
+    existing.forEach(link => {
       if (this.links[link].alias_for == slug)
         delete this.links[link].alias_for;
     });
@@ -168,7 +170,12 @@ class Links {
         rebuilt[slug] = {
           ...Links.default_node,
           ...rebuilt[slug] || {},
-          ...{ exists: true, to: article.links_to, aliases: article.aliases }
+          ...{
+            aliases: article.aliases,
+            exists: true,
+            title: article.title,
+            to: article.links_to,
+          },
         };
 
         // Now parse all `links_to` and add this slug to each entry.

@@ -1,10 +1,7 @@
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 
-import {
-  findIndex,
-  includes
-} from 'lodash'
+import { findIndex, includes } from 'lodash'
 
 import { loadArticle } from '../redux/article/actions'
 import {
@@ -29,8 +26,8 @@ class Search extends ComponentBase {
   }
 
   getDisplayData() {
-    return this.props.results.map((article, index) => {
-      let previews = article.results.map(hit => {
+    return this.props.results.map(article => {
+      let previews = (article.results || []).map(hit => {
           let words = hit.text.split(' '),
               index = findIndex(words, word => includes(
                 word.toLowerCase(),
@@ -51,14 +48,16 @@ class Search extends ComponentBase {
             ].join(' '),
             line: hit.line
           }
-        }).filter(preview => preview !== null)
+        })
+      .filter(preview => preview !== null)
 
       return {
-        key:   index,
+        key:   article.file,
         hits:  previews.length,
         image: article.image,
         slug:  article.file,
         title: article.title,
+        subtitle: article.aliases.join(', '),
         previews
       }
     })
@@ -84,7 +83,8 @@ class Search extends ComponentBase {
                 <div className="media-content">
                   <nav className="level">
                     <div className="level-left">
-                      <div className="level-item title is-6"><b>{search_result.title}</b></div>
+                      <div className="level-item is-6"><b>{search_result.title}</b></div>
+                      <div className="level-item subtitle is-6"><i>{search_result.subtitle}</i></div>
                     </div>
                     <div className="level-right">
                       <div className="level-item subtitle is-6"><i>{search_result.hits} hits</i></div>
@@ -124,7 +124,7 @@ Search.propTypes = {
       text: React.PropTypes.string.isRequired,
     })),
     title: React.PropTypes.string.isRequired,
-    type: React.PropTypes.string.isRequired,
+    type: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   })),
   term: React.PropTypes.string.isRequired,
 }

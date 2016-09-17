@@ -1,4 +1,3 @@
-import map       from 'lodash/map'
 import spawn     from 'superchild'
 
 const default_options = {
@@ -12,8 +11,8 @@ const must_escape = ['&', ';'].map(char => ({
 }))
 const regex_metas = ['?', '+', '{', '|', '(', ')']
 
-export default ($what, where, set_options) => {
-  let options = Object.assign({}, default_options, set_options || {})
+export default ($what, where, set_options = {}) => {
+  let options = { ...default_options, ...set_options }
 
   let what = `${$what}`
   regex_metas.forEach(char => what = what.replace(char, `[${char}]`))
@@ -30,7 +29,7 @@ export default ($what, where, set_options) => {
     let finalize = () => {
       let list = {}
 
-      map(matches, match => {
+      matches.forEach(match => {
         let parts = match.split(':'),
             filename = parts[0],
             details = {
@@ -43,7 +42,7 @@ export default ($what, where, set_options) => {
       })
 
       let files = Object.keys(list)
-      resolve(map(files, file => ({
+      resolve(files.map(file => ({
         file,
         results: list[file]
       })))

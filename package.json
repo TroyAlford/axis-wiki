@@ -68,7 +68,7 @@
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-uglify": "^1.0.1",
-    "superchild": "^0.1.5"
+    "superchild": "^0.1.9"
   },
   "browserify": {
     "transform": [
