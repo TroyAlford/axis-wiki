@@ -73,7 +73,8 @@ class Article extends ComponentBase {
       // Probably a redirect from one slug to another
 
     if (this.props.params.slug !== nextProps.params.slug) {
-      this.setState(this.defaultState)
+      // Switching to a new Article
+      this.setState({ ...this.defaultState, tab: 'read' })
       this.props.dispatch(loadArticle(nextProps.params.slug))
       return;
     }
