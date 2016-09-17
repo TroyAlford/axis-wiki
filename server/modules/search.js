@@ -47,8 +47,14 @@ export default express()
   })
 
   const sorted = sortBy(results, result => {
-    const order = includes(result.type, 'article:title')
-      ? 0 : 1
+    let order = ''
+    if (result.title.toLowerCase() === search_term
+      || includes(result.aliases, search_term))
+      order = 0
+    else if (includes(result.type, 'article:title'))
+      order = 1
+    else
+      order = 2
 
     return `${order}-${result.title}`
   })
