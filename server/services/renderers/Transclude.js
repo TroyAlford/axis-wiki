@@ -20,12 +20,13 @@ export default function(article = { html: '' }) {
       return $include.html(`<!-- Article '${from}' does not exist -->`)
     }
 
+    $include.html(`<!-- This content is transcluded from '${from}' - edits may only be made to the original article -->`)
     links_to.push(from)
 
     const sections = $include.attr('sections')
     const $article = $.load(Storage.getArticle(from).html)
     if (sections === '*')
-      return $include.html($article.html())
+      return $include.html($include.html() + $article.html())
 
     sections.split(',').forEach(section => {
       $article(`#${section}`).each((index, element) => {
