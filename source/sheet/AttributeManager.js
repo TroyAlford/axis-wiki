@@ -20,26 +20,31 @@ export default class AttributeManager extends CollectionManager {
 
   calculate() {
     let hash = {}
-    const addToHash = item => hash[item.key] = item.value
+    this.collection.forEach(attr => hash[attr.key] = attr.value)
 
-    this.collection.forEach(addToHash)
+    const calculate = attr => {
+      const { key, max, min, calc } = attr
 
-    const calc = (key, expression) => {
       const parser = math.parser()
-      const parsed = math.parse(expression)
+      const parsed = math.parse(calc)
       parsed.traverse(node => {
         if (node.type === 'SymbolNode')
           parser.set(node.name, hash[node.name] || 0)
       })
       parser.set('armor', this.props.armor)
 
-      hash[key] = parser.eval(expression)
+      hash[key] = parser.eval(calc)
+      if (typeof min === 'number' && hash[key] < min)
+        hash[key] = min
+      if (typeof max === 'number' && hash[max] > max)
+        hash[key] = max
+
       return hash[key]
     }
 
-    computed.forEach(item => {
-      this.collection.update({ key: item.key },
-        { value: calc(item.key, item.calc), calculated: true }
+    computed.forEach(attr => {
+      this.collection.update({ key: attr.key },
+        { value: calculate(attr), calculated: true }
       )
     })
   }
@@ -94,7 +99,7 @@ const computed = [
   { key: 'resilience', calc: 'round((devotion + fitness + focus) / 3, 0)' },
   { key: 'spirit', calc: 'round((confidence + devotion + intuition) / 3, 0)' },
   { key: 'toughness', calc: 'round((strength + fitness + size) / 3, 0) + natural_armor + armor' },
-  { key: 'light_wound', calc: 'size + strength + fitness + armor + natural_armor' },
+  { key: 'light_wound', min: 1, calc: 'size + strength + fitness + armor + natural_armor' },
   { key: 'deep_wound', calc: 'light_wound * 2' },
   { key: 'death_blow', calc: 'deep_wound * 2' },
 ]
