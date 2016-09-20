@@ -41,11 +41,13 @@ export default class SheetHeader extends ComponentBase {
   calculateSkills() {
     return flow([
       array => map(array, skill => [
-        ...this.createRange(1, skill.values[0]),
-        ...this.createRange(2, skill.values[1]),
+        ...this.createRange(1, skill.values[1]),
+        ...this.createRange(2, skill.values[0]),
       ]),
       array => flatten(array),
-      array => map(array, value => Math.pow(value, 2)),
+      array => map(array, value =>
+        value === 1 ? 2 : Math.pow(value, 2)
+      ),
       array => sum(array),
     ])(this.props.skills)
   }
