@@ -29,10 +29,10 @@ $tags-height: 36px;
       .read   { order: 0 }
 
       .read, .sheet    { margin-right: auto; }
-      .html, .settings { margin-left: auto; }
+      .edit, .settings { margin-left: auto; }
 
       .sheet + .read { margin-right: 0; }
-      .html + .settings { margin-left: 0; }
+      .edit + .html + .settings { margin-left: 0; }
     }
 
     > .tab {
