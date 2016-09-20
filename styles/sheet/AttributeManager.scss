@@ -9,20 +9,20 @@
     order: 0;
   }
 
-  &:before {
-    background: transparent;
-    content: 'Placeholder';
-    display: inline-block;
-    margin: 2px;
-    min-width: 24%; max-width: 24%;
-    order: 1;
-    visibility: hidden;
-  }
   .attribute {
     background-color: transparent;
     border-radius: 3px;
     min-width: 24%; max-width: 24%;
     order: 2;
+
+    &.placeholder { visibility: hidden; }
+    &.divider-1, &.divider-2 {
+      > * { display: none; }
+      min-width: 100%;
+      border-bottom: 1px solid lighten($palette-blue, 15%);
+    }
+
+    &.placeholder { order: 0; }
 
     &.strength, &.intellect, &.confidence,
     &.agility,  &.acuity,    &.intuition,
@@ -38,14 +38,13 @@
       > * { font-weight: bold; }
     }
 
-    &.size, &.natural_armor, &.speed {
-      order: 4;
-    }
-    &.accuracy, &.might, &.toughness {
-      order: 5;
-    }
+    &.divider-1 { order: 4; margin: 10px 0 0 0; }
+    &.size, &.natural_armor, &.speed { order: 5; }
+    &.accuracy, &.might, &.toughness { order: 6; }
+    &.divider-2 { order: 7; margin: 0; }
+    &.light_wound, &.deep_wound, &.death_blow, &.health { order: 8; }
 
-    &.size, &.accuracy {
+    &.size, &.accuracy, &.light_wound {
       min-width: 49%;
       max-width: 49%;
       &:before {
@@ -56,8 +55,9 @@
         padding: 5px;
       }
     }
-    &.size:before { content: 'Racial:'; }
-    &.accuracy:before { content: 'Combat:'; }
+    &.size:before { content: 'Racial:' }
+    &.accuracy:before { content: 'Combat:' }
+    &.light_wound:before { content: 'Damage Thresholds:' }
 
     &.racial, &.combat {
       > * { font-weight: bold; }
@@ -67,13 +67,13 @@
     &.armor { display: none; }
   }
 
-  &:after {
-    background: transparent;
-    border-bottom: 1px solid lighten($palette-blue, 15%);
-    content: '';
-    display: block;
-    height: 0; width: 100%;
-    margin: 10px 0 0 0;
-    order: 3;
-  }
+  // &:after {
+  //   background: transparent;
+  //   border-bottom: 1px solid lighten($palette-blue, 15%);
+  //   content: '';
+  //   display: block;
+  //   height: 0; width: 100%;
+  //   margin: 10px 0 0 0;
+  //   order: 3;
+  // }
 }

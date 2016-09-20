@@ -24,7 +24,7 @@ export default class AttributeManager extends CollectionManager {
 
     this.collection.forEach(addToHash)
 
-    const calc = expression => {
+    const calc = (key, expression) => {
       const parser = math.parser()
       const parsed = math.parse(expression)
       parsed.traverse(node => {
@@ -33,12 +33,13 @@ export default class AttributeManager extends CollectionManager {
       })
       parser.set('armor', this.props.armor)
 
-      return parser.eval(expression)
+      hash[key] = parser.eval(expression)
+      return hash[key]
     }
 
     computed.forEach(item => {
       this.collection.update({ key: item.key },
-        { value: calc(item.calc), calculated: true }
+        { value: calc(item.key, item.calc), calculated: true }
       )
     })
   }
@@ -71,12 +72,16 @@ export default class AttributeManager extends CollectionManager {
 
 // List of keys for whitelisting.
 export const keys = [
+  'placeholder',
   'body', 'mind', 'spirit',
   'potency', 'strength', 'intellect', 'confidence',
   'reflex', 'agility', 'acuity', 'intuition',
   'resilience', 'fitness', 'focus', 'devotion',
+  'divider-1',
   'size', 'speed', 'natural_armor',
   'accuracy', 'might', 'toughness',
+  'divider-2',
+  'light_wound', 'deep_wound', 'death_blow',
 ]
 
 const computed = [
@@ -89,6 +94,9 @@ const computed = [
   { key: 'resilience', calc: 'round((devotion + fitness + focus) / 3, 0)' },
   { key: 'spirit', calc: 'round((confidence + devotion + intuition) / 3, 0)' },
   { key: 'toughness', calc: 'round((strength + fitness + size) / 3, 0) + natural_armor + armor' },
+  { key: 'light_wound', calc: 'size + strength + fitness + armor + natural_armor' },
+  { key: 'deep_wound', calc: 'light_wound * 2' },
+  { key: 'death_blow', calc: 'deep_wound * 2' },
 ]
 
 AttributeManager.propTypes = {
