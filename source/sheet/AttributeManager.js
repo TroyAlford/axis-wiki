@@ -16,6 +16,7 @@ export default class AttributeManager extends CollectionManager {
     this.calculate()
 
     this.collection.onChange = this.handleCollectionChange.bind(this)
+    this.handleCollectionChange()
   }
 
   calculate() {
