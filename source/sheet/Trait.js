@@ -6,7 +6,7 @@ import Slug from '../../utility/Slugs'
 import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
 
-const nameParserRegEx = new RegExp(/^(?:([a-z0-9 ]*):)?([a-z0-9 ]*)(?:\(([a-z0-9 ]*)\))?/mi)
+const nameParserRegEx = new RegExp(/^(?:([a-z0-9 ]*):)?([a-z0-9 ]*)(?:\(([^(]*)\))?/mi)
 
 export default class Trait extends ComponentBase {
   static parseName(name) {
