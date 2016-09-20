@@ -46,8 +46,14 @@ export default class CollectionManager extends ComponentBase {
         <Icon key="btn-add" name="add" onClick={this.addItem.bind(this)} />
       )
 
+    let classes = []
+    if (Array.isArray(this.props.title))
+      classes = this.props.title.filter(title => typeof title === 'string')
+    else
+      classes = [this.props.title.toString()]
+
     return (
-      <Section className={this.props.title}
+      <Section className={classes.join(' ')}
         title={[
           <span key="title">{this.props.title}</span>,
           <div key="buttons" className="buttons">{buttons}</div>,
@@ -68,7 +74,13 @@ CollectionManager.propTypes = {
   items: React.PropTypes.array.isRequired,
   readonly: React.PropTypes.bool.isRequired,
   settings: React.PropTypes.object.isRequired,
-  title: React.PropTypes.string,
+  title: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.arrayOf(React.PropTypes.oneOfType([
+      React.PropTypes.element,
+      React.PropTypes.string,
+    ])),
+  ]),
 
   onChange: React.PropTypes.func.isRequired,
   renderItem: React.PropTypes.func,

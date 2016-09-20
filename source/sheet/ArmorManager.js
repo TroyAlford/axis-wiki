@@ -27,7 +27,10 @@ ArmorManager.propTypes = {
 }
 ArmorManager.defaultProps = {
   ...CollectionManager.defaultProps,
-  title: 'Armor',
+  title: [
+    <Icon key="icon" name="torso" />,
+    'Armor',
+  ],
   headers: [
     'Use', 'Name',
     <Icon name="head" />,
@@ -41,6 +44,7 @@ ArmorManager.defaultProps = {
   settings: {
     template: {
       key: 'new-armor',
+      equipped: false,
       values: [0, 0, 0, 0, 0, 0]
     },
     orderBy: list => orderBy(list, armor => [!armor.equipped, armor.name])

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import CollectionManager from './CollectionManager'
+import Icon from '../components/Icon'
 import Weapon from './Weapon'
 import { orderBy } from 'lodash'
 
@@ -26,11 +27,15 @@ WeaponManager.propTypes = {
 }
 WeaponManager.defaultProps = {
   ...CollectionManager.defaultProps,
-  title: 'Weapons',
+  title: [
+    <Icon key="icon" name="weapon" />,
+    'Weapons',
+  ],
   headers: ['Use', 'Name', 'Dmg', 'Rng', 'Hit'],
   settings: {
     template: {
       key: 'new-weapon',
+      equipped: false,
       values: [0, 0, 0],
     },
     orderBy: list => orderBy(list, weapon => [!weapon.equipped, weapon.name])
