@@ -128,22 +128,12 @@ class Article extends ComponentBase {
   }
 
   render() {
-    const tabs = [{
-      key: 'read',
-      caption: [
-        <Icon key="icon" name="read" />,
-        <span key="text">Article</span>,
-      ],
-      contents: [
-        <h1 key="title">{this.props.title}</h1>,
-        <div key='html' dangerouslySetInnerHTML={{ __html: this.props.html }} />,
-        <ArticleChildren key='children' articles={this.props.children} />
-      ]
-    }]
+    const tabs = []
 
     if (this.state.sheet) {
       tabs.push({
         key: 'sheet',
+        className: 'left',
         caption: [
           <Icon key="icon" name="sheet" />,
           <span key="text">Sheet</span>,
@@ -164,7 +154,7 @@ class Article extends ComponentBase {
       })
     } else if (!this.props.readonly) {
       tabs.push(
-        <li key="add-sheet" className="tab-button add-sheet">
+        <li key="add-sheet" className="tab-button sheet left">
           <a className="icon icon-add button is-info"
              onClick={() => this.setState({
               sheet: Sheet.defaultProps,
@@ -175,18 +165,31 @@ class Article extends ComponentBase {
       )
     }
 
+    tabs.push({
+      key: 'read',
+      className: 'left',
+      caption: [
+        <Icon key="icon" name="read" />,
+        <span key="text">Article</span>,
+      ],
+      contents: [
+        <h1 key="title">{this.props.title}</h1>,
+        <div key="html" dangerouslySetInnerHTML={{ __html: this.props.html }} />,
+        <ArticleChildren key='children' articles={this.props.children} />
+      ]
+    })
+
     if (!this.props.readonly && this.dirty) tabs.push(
-      <li key="save" className="tab-button save">
+      <li key="save" className="tab-button save center">
         <a className="icon icon-save button is-success"
            onClick={this.handleSave}>Save</a>
       </li>
     )
 
-    if (!this.props.readonly) tabs.push({
+    if (!this.props.readonly && window.tinyMCE) tabs.push({
       key: 'edit',
-      caption: [
-        <Icon key="icon" name="edit" />,
-      ],
+      className: 'right',
+      caption: <Icon key="icon" name="edit" />,
       contents: [
         <Editable key="title" className="title-editor"
           onChange={title => this.setState({ title })}
@@ -201,6 +204,7 @@ class Article extends ComponentBase {
 
     if (!this.props.readonly) tabs.push({
       key: 'html',
+      className: 'right',
       caption: <Icon key="icon" name="html" />,
       contents: <HtmlEditor
         html={this.state.html || this.props.html}
@@ -211,6 +215,7 @@ class Article extends ComponentBase {
 
     tabs.push({
       key: 'settings',
+      className: 'right',
       caption: [
         <Icon key="icon" name="settings" />,
       ],
