@@ -56,8 +56,8 @@ export default class Skill extends ComponentBase {
           }}
         />
       {values.map((value, index) =>
-        <Editable key={index} className="value"
-          value={value} min={1} max={10}
+        <Editable key={index} className={`value equals-${value}`}
+          value={value} min={0} max={10}
           readonly={this.props.readonly}
           onChange={value => {
             const values = [...this.props.skill.values]

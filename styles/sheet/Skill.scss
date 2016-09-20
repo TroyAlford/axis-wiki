@@ -8,5 +8,7 @@
   .value {
     min-width: 30px;
     text-align: center;
+
+    &.equals-0 { color: transparent; }
   }
 }
