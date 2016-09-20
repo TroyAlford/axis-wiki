@@ -28,15 +28,23 @@ export default class WoundTracker extends ComponentBase {
 
   render() {
     const { light_wounds, deep_wounds } = this.state
-    const { readonly } = this.props
+    const { readonly, resilience } = this.props
     const penalty = this.penalty()
 
+    const classes = ['WoundTracker']
+    if (penalty >= resilience)
+      classes.push('is-critical')
+    else if (penalty >= resilience / 2)
+      classes.push('is-severe')
+    else if (penalty > 0)
+      classes.push('is-damaged')
+
     return (
-      <Section className="WoundTracker">
+      <Section className={classes.join(' ')}>
         <div className="row">
-          <span>Light</span>
-          <span>Deep</span>
-          <span>Penalty</span>
+          <span>Light<br/>Wounds</span>
+          <span>Deep<br/>Wounds</span>
+          <span>Wound<br/>Penalty</span>
         </div>
         <div className="row">
           <Editable readonly={readonly} value={light_wounds}
@@ -55,12 +63,14 @@ export default class WoundTracker extends ComponentBase {
 WoundTracker.propTypes = {
   light_wounds: React.PropTypes.number.isRequired,
   deep_wounds: React.PropTypes.number.isRequired,
+  resilience: React.PropTypes.number.isRequired,
   onChange: React.PropTypes.func.isRequired,
   readonly: React.PropTypes.bool.isRequired,
 }
 WoundTracker.defaultProps = {
   light_wounds: 0,
   deep_wounds: 0,
+  resilience: 0,
   onChange: () => {},
   readonly: false,
 }

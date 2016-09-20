@@ -1,9 +1,18 @@
 .WoundTracker.section {
+  border-radius: 5px;
+  border: 5px solid;
+  border-color: lighten($palette-light-gray, 5%);
+
+  &.is-damaged  { border-color: $palette-beige; }
+  &.is-severe   { border-color: lighten($palette-red, 20%); }
+  &.is-critical { border-color: $palette-red; }
+
   .row {
     display: flex;
     flex-direction: row;
     text-align: center;
 
+    > span { font-weight: bold; }
     > span, > div {
       width: 33.33%;
       text-align: inherit;

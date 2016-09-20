@@ -88,6 +88,7 @@ export default class Sheet extends ComponentBase {
             <WoundTracker
               light_wounds={this.state.light_wounds}
               deep_wounds={this.state.deep_wounds}
+              resilience={(find(this.state.attributes, { key: 'resilience' }) || { value: 0 }).value}
               onChange={values => this.setState(values)}
             />
           </div>
