@@ -1,0 +1,12 @@
+.WoundTracker.section {
+  .row {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+
+    > span, > div {
+      width: 33.33%;
+      text-align: inherit;
+    }
+  }
+}
