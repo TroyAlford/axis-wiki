@@ -18,7 +18,7 @@ export default {
   plugins:
     'anchor advlist autosave code fullscreen hr image link lists noneditable paste table',
   toolbar:
-    'code | formatselect | bold italic underline ' +
+    'formatselect | bold italic underline ' +
     '| alignleft aligncenter alignright alignjustify ' +
     '| bullist numlist | hr link | image table | removeformat',
   valid_elements:

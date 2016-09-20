@@ -1,12 +1,12 @@
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { deleteArticle, loadArticle, loadedArticle, saveArticle } from '../redux/article/actions'
-import { difference, includes, sortBy, uniq, xor } from 'lodash'
+import { deleteArticle, loadArticle, saveArticle } from '../redux/article/actions'
 
 import ComponentBase from '../application/ComponentBase'
 import ArticleChildren from '../components/ArticleChildren'
 import Editable from '../components/Editable'
 import Icon from '../components/Icon'
+import HtmlEditor from '../components/HtmlEditor'
 import JsonSheetFormatter from '../sheet/JsonFormatter'
 import Sheet from './Sheet'
 import Slug from '../../utility/Slugs'
@@ -197,6 +197,16 @@ class Article extends ComponentBase {
           content={this.state.html || this.props.html}
         />,
       ]
+    })
+
+    if (!this.props.readonly) tabs.push({
+      key: 'html',
+      caption: <Icon key="icon" name="html" />,
+      contents: <HtmlEditor
+        html={this.state.html || this.props.html}
+        onChange={html => this.setState({ html })}
+        readonly={this.props.readonly}
+      />,
     })
 
     tabs.push({

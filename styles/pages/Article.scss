@@ -28,7 +28,7 @@ $tags-height: 36px;
       }
 
       > .tab.edit, .tab.settings { margin-left: auto; }
-      > .tab.edit + .tab.settings { margin-left: 0; }
+      > .tab.html + .tab.settings { margin-left: 0; }
 
       > li.edit.is-active {
         background-color: #f0f0f0;
@@ -62,18 +62,7 @@ $tags-height: 36px;
     }
 
     > .tab.html {
-      padding: 5px;
-
-      > textarea {
-        border: none;
-        font-family: monospace;
-        outline: none;
-        padding: 5px;
-        position: absolute;
-        resize: none;
-        left: 0; top: 0; right: 0; bottom: 0;
-        width: 100%;
-      }
+      padding: 0;
     }
 
     .tab.settings {
