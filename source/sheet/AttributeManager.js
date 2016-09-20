@@ -100,8 +100,8 @@ const computed = [
   { key: 'spirit', calc: 'round((confidence + devotion + intuition) / 3, 0)' },
   { key: 'toughness', calc: 'round((strength + fitness + size) / 3, 0) + natural_armor + armor' },
   { key: 'light_wound', min: 1, calc: 'size + strength + fitness + armor + natural_armor' },
-  { key: 'deep_wound', calc: 'light_wound * 2' },
-  { key: 'death_blow', calc: 'deep_wound * 2' },
+  { key: 'deep_wound', min: 2, calc: 'light_wound * 2' },
+  { key: 'death_blow', min: 4, calc: 'deep_wound * 2' },
 ]
 
 AttributeManager.propTypes = {
