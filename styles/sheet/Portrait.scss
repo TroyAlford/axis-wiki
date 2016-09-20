@@ -1,7 +1,7 @@
 .Portrait.section {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex-grow: 1;
 
   .portrait.frame {
     align-items: center;

@@ -2,6 +2,7 @@
   font-size: .8em;
 
   .columns { margin-bottom: 0; }
+  .rows { display: flex; flex-direction: column; }
 
   .Traits.section .trait:nth-child(odd) {
     background-color: $palette-light-blue;

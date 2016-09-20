@@ -19,6 +19,7 @@ import Trait from '../sheet/Trait'
 import TraitManager from '../sheet/TraitManager'
 import Weapon from '../sheet/Weapon'
 import WeaponManager from '../sheet/WeaponManager'
+import WoundTracker from '../sheet/WoundTracker'
 
 const propsToExtract = [
   'name', 'xp', 'rp',
@@ -76,7 +77,7 @@ export default class Sheet extends ComponentBase {
           traits={this.state.traits}
         />
         <div className="columns">
-          <div className="column is-one-third">
+          <div className="column is-one-third rows">
             <Section title="Portrait">
               <div className="portrait frame">
                 <div className="portrait display" style={{
@@ -84,6 +85,11 @@ export default class Sheet extends ComponentBase {
                 }}></div>
               </div>
             </Section>
+            <WoundTracker
+              light_wounds={this.state.light_wounds}
+              deep_wounds={this.state.deep_wounds}
+              onChange={values => this.setState(values)}
+            />
           </div>
           <div className="column">
             <DescriptorManager readonly={this.props.readonly}
@@ -131,7 +137,7 @@ export default class Sheet extends ComponentBase {
           ref={self => this.formatter = self}
         />
       </div>
-    );
+    )
   }
 }
 
