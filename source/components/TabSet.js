@@ -20,10 +20,18 @@ export default ({ key = '', tabs = [], onTabClicked = (() => {}), active = null 
   return (
     <div className={`tab-set ${key}`}>
       <ul className="tabs">
-      {tabs.map((tab, index) => React.isValidElement(tab) ? tab :
-        <li key={index} className={`tab ${activeTab.key == tab.key ? 'is-active' : ''} ${tab.key || ''}`}
-            onClick={onTabClicked.bind(null, tab)}>{tab.caption}</li>
-      )}
+      {tabs.map((tab, index) => {
+        if (React.isValidElement(tab))
+          return tab
+
+        const classes = ['tab', tab.key, tab.className || '']
+        if (activeTab.key == tab.key) classes.push('is-active')
+
+        return (
+          <li key={index} className={classes.filter(c => c).join(' ')}
+              onClick={onTabClicked.bind(null, tab)}>{tab.caption}</li>
+        )
+      })}
       </ul>
       {renderedTab}
     </div>
