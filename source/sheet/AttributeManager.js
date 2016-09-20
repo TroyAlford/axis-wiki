@@ -70,10 +70,8 @@ export default class AttributeManager extends CollectionManager {
     )
   }
 
-  render() {
-    this.update()
-    return super.render()
-  }
+  componentWillMount() { this.update() }
+  componentWillUpdate() { this.update() }
 }
 
 // List of keys for whitelisting.
