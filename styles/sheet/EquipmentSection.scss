@@ -1,4 +1,6 @@
 .Equipment.section {
+  .title > span > .icon { margin-right: 5px; }
+
   .armor, .weapon {
     &:nth-child(odd) {
       background-color: $palette-light-blue;
