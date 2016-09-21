@@ -1,11 +1,20 @@
 .WoundTracker.section {
   border-radius: 5px;
-  border: 5px solid;
-  border-color: lighten($palette-light-gray, 5%);
+  border: 2px solid;
+  border-color: transparent;
 
-  &.is-damaged  { border-color: $palette-beige; }
-  &.is-severe   { border-color: lighten($palette-red, 20%); }
-  &.is-critical { border-color: $palette-red; }
+  &.is-damaged  {
+    border-color: $palette-beige;
+    background: lighten($palette-beige, 10%);
+  }
+  &.is-severe   {
+    border-color: lighten($palette-orange, 30%);
+    background: lighten($palette-orange, 45%);
+  }
+  &.is-critical {
+    border-color: $palette-red;
+    background: lighten($palette-red, 40%);
+  }
 
   .row {
     display: flex;
