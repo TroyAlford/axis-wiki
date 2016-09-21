@@ -13,6 +13,10 @@ export default class JsonFormatter extends React.Component {
       name: this.name,
       rp: this.props.rp || 0,
       xp: this.props.xp || 0,
+      wounds: this.props.wounds || {
+        light: 0,
+        deep: 0,
+      },
 
       armor: this.armor,
       attributes: this.attributes,

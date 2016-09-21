@@ -24,7 +24,7 @@ import WoundTracker from '../sheet/WoundTracker'
 const propsToExtract = [
   'name', 'xp', 'rp',
   'armor', 'attributes', 'descriptors',
-  'traits', 'skills', 'weapons'
+  'traits', 'skills', 'weapons', 'wounds',
 ]
 
 export default class Sheet extends ComponentBase {
@@ -53,25 +53,20 @@ export default class Sheet extends ComponentBase {
       })
     }
   }
-  handleHeaderChange(values) {
-    // this.setState(values)
-    this.props.onChange({
-      ...this.state,
-      ...values,
-    })
-  }
 
   render() {
     const armorValue = sum(filter(this.state.armor, { equipped: true }).map(armor =>
       Math.round(sum(armor.values) / armor.values.length, 0)
     ))
+    const resilienceAttr = find(this.state.attributes, { key: 'resilience' }),
+          resilience = resilienceAttr ? resilienceAttr.value : 0
 
     return (
       <div className="sheet page">
         <SheetHeader readonly={this.props.readonly}
           name={this.state.name}
           xp={this.state.xp} rp={this.state.rp}
-          onChange={this.handleHeaderChange}
+          onChange={values => this.props.onChange({ ...this.state, ...values })}
           attributes={this.state.attributes}
           skills={this.state.skills}
           traits={this.state.traits}
@@ -86,10 +81,8 @@ export default class Sheet extends ComponentBase {
               </div>
             </Section>
             <WoundTracker
-              light_wounds={this.state.light_wounds}
-              deep_wounds={this.state.deep_wounds}
-              resilience={(find(this.state.attributes, { key: 'resilience' }) || { value: 0 }).value}
-              onChange={values => this.setState(values)}
+              onChange={wounds => this.handleChange('wounds', wounds)}
+              resilience={resilience} wounds={this.props.wounds}
             />
           </div>
           <div className="column">
@@ -144,6 +137,13 @@ export default class Sheet extends ComponentBase {
 
 const defaultState = {
   name: 'Unnamed Character',
+  rp: 0,
+  xp: 0,
+  wounds: {
+    light: 0,
+    deep: 0,
+  },
+
   armor: [],
   attributes: [],
   descriptors: [],
@@ -154,6 +154,13 @@ const defaultState = {
 
 Sheet.propTypes = {
   name: React.PropTypes.string.isRequired,
+  rp: React.PropTypes.number.isRequired,
+  xp: React.PropTypes.number.isRequired,
+  wounds: React.PropTypes.shape({
+    light: React.PropTypes.number.isRequired,
+    deep: React.PropTypes.number.isRequired,
+  }),
+
   armor: React.PropTypes.array.isRequired,
   attributes: React.PropTypes.array.isRequired,
   descriptors: React.PropTypes.array.isRequired,

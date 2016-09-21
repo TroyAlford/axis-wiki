@@ -64,11 +64,11 @@ describe('SheetHeader', () => {
     it('calculates correctly', () => {
       const skills = [
         { values: [0, 0] }, // xp:  0
-        { values: [1, 1] }, // xp:  1 = 1^2, free
-        { values: [2, 2] }, // xp:  9 = 2^2 + 1^2, 2^2
-        { values: [3, 3] }, // xp: 27 = 3^2 + 2^2 + 1^2, 2^2 + 1^2
+        { values: [1, 1] }, // xp:  2 = free, 2
+        { values: [2, 2] }, // xp: 10 = 2^2 | 2^2 + 2
+        { values: [3, 3] }, // xp: 28 = 3^2 + 2^2 | 3^2 + 2^2 + 2
       ]
-      const expected = 37 // 0 + 1 + 9 + 27
+      const expected = 40 // 0 + 2 + 10 + 28
 
       render(<SheetHeader skills={skills} />)
       const actual = component.calculateSkills()
