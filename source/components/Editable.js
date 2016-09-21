@@ -22,6 +22,7 @@ export default class Editable extends React.Component {
       this.editor = self
     }
     this.handleChange = this.handleChange.bind(this)
+    this.handleContainerFocus = this.handleContainerFocus.bind(this)
     this.handleKeys = this.handleKeys.bind(this)
     this.saveAndStopEditing = this.saveAndStopEditing.bind(this)
     this.setValue = this.setValue.bind(this)
@@ -118,6 +119,12 @@ export default class Editable extends React.Component {
     this.toggleEditing()
   }
 
+  handleContainerFocus(ev) {
+    if (this.readonly) return
+    if (!this.editing)
+      this.toggleEditing()
+  }
+
   render() {
     this.editor = null
 
@@ -133,8 +140,14 @@ export default class Editable extends React.Component {
         this.dirty ? 'dirty' : ''
       ], [''])
 
+    let props = {}
+    if (!readonly && !editing) {
+      props.tabIndex = "0"
+      props.onFocus = this.handleContainerFocus
+    }
+
     return (
-      <div className={classes.join(' ')}>{
+      <div className={classes.join(' ')} {...props}>{
         editor === 'boolean' ?
           <input type="checkbox"
             checked={!!currentValue} disabled={readonly}
