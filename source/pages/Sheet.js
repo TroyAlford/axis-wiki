@@ -11,6 +11,7 @@ import AttributeManager from '../sheet/AttributeManager'
 import Descriptor from '../sheet/Descriptor'
 import DescriptorManager from '../sheet/DescriptorManager'
 import JsonFormatter from '../sheet/JsonFormatter'
+import Portrait from '../sheet/Portrait'
 import Section from '../sheet/Section'
 import SheetHeader from '../sheet/SheetHeader'
 import Skill from '../sheet/Skill'
@@ -22,7 +23,7 @@ import WeaponManager from '../sheet/WeaponManager'
 import WoundTracker from '../sheet/WoundTracker'
 
 const propsToExtract = [
-  'name', 'xp', 'rp',
+  'image', 'name', 'xp', 'rp',
   'armor', 'attributes', 'descriptors',
   'traits', 'skills', 'weapons', 'wounds',
 ]
@@ -38,11 +39,6 @@ export default class Sheet extends ComponentBase {
     const state = { ...defaultState, ...pick(props, propsToExtract) }
     if (!isEqual(this.state, state))
       this.setState(state)
-  }
-
-  getImageUrl() {
-    const image = find(this.props.descriptors, { key: 'image' })
-    return image ? image.value : ''
   }
 
   handleChange(key, value) {
@@ -73,13 +69,9 @@ export default class Sheet extends ComponentBase {
         />
         <div className="columns">
           <div className="column is-one-third rows">
-            <Section title="Portrait">
-              <div className="portrait frame">
-                <div className="portrait display" style={{
-                  backgroundImage: `url(${this.getImageUrl()})`
-                }}></div>
-              </div>
-            </Section>
+            <Portrait url={this.state.image}
+              onChange={image => this.handleChange('image', image)}
+            />
             <WoundTracker
               onChange={wounds => this.handleChange('wounds', wounds)}
               resilience={resilience} wounds={this.props.wounds}

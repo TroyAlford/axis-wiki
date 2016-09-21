@@ -11,6 +11,7 @@ export default class JsonFormatter extends React.Component {
   get cleansed() {
     return {
       name: this.name,
+      image: this.props.image,
       rp: this.props.rp || 0,
       xp: this.props.xp || 0,
       wounds: this.props.wounds || {
