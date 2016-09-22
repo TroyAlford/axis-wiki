@@ -37,9 +37,12 @@ export default class Trait extends ComponentBase {
       trait: { value }
     } = this.props
 
+    const nameProps = this.props.forceNameEditing ? { editing: true } : {}
+
     return (
       <div className={`trait ${className}`}>
         <Editable className="name" value={this.displayName()}
+          placeholder="Category: Name (Notes)"
           readonly={this.props.readonly}
           onEditEnd={name => {
             const parsed = Trait.parseName(name)
@@ -51,6 +54,7 @@ export default class Trait extends ComponentBase {
             this.props.onChange(updated, this.props.trait)
             this.props.onEditEnd(updated, this.props.trait)
           }}
+          {...nameProps}
         />
         <Editable className="value" value={value}
           readonly={this.props.readonly}
@@ -71,6 +75,7 @@ export default class Trait extends ComponentBase {
 
 Trait.propTypes = {
   className: React.PropTypes.string,
+  forceNameEditing: React.PropTypes.bool,
   onChange: React.PropTypes.func.isRequired,
   trait: React.PropTypes.shape({
     category: React.PropTypes.string,
@@ -82,6 +87,7 @@ Trait.propTypes = {
 }
 Trait.defaultProps = {
   className: '',
+  forceNameEditing: false,
   onChange: () => {},
   trait: {
     key: 'new-trait',

@@ -169,6 +169,7 @@ export default class Editable extends React.Component {
               onBlur={this.saveAndStopEditing}
               onChange={this.handleChange}
               onKeyDown={this.handleKeys}
+              placeholder={this.props.placeholder}
               ref={this.focusOnEditor}
             >{currentValue}</textarea>
         : editor === 'number' && editing ?
@@ -178,6 +179,7 @@ export default class Editable extends React.Component {
             onChange={this.handleChange}
             onFocus={event => event.target.select()}
             onKeyDown={this.handleKeys}
+            placeholder={this.props.placeholder}
             ref={this.focusOnEditor}
           />
         : readonly ?
@@ -191,6 +193,7 @@ export default class Editable extends React.Component {
             onChange={this.handleChange}
             onFocus={event => event.target.select()}
             onKeyDown={this.handleKeys}
+            placeholder={this.props.placeholder}
           />
       }
       </div>
@@ -205,6 +208,7 @@ Editable.propTypes = {
   onChanging: React.PropTypes.func.isRequired,
   onEditStart: React.PropTypes.func.isRequired,
   onEditEnd: React.PropTypes.func.isRequired,
+  placeholder: React.PropTypes.string,
 }
 Editable.defaultProps = {
   onChange: () => true,

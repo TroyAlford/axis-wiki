@@ -14,6 +14,7 @@ export default class Armor extends React.Component {
     return (
       <div className="armor">
         <Editable className="equipped" value={!!equipped}
+          placeholder="Armor Type (Name or Notes)"
           readonly={this.props.readonly}
           onChange={equipped => {
             if (equipped === this.props.armor.equipped) return;

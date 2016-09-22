@@ -12,6 +12,7 @@ export default class Weapon extends React.Component {
     return (
       <div className="weapon">
         <Editable className="equipped" value={!!equipped}
+          placeholder="Weapon Type (Name or Notes)"
           readonly={this.props.readonly}
           onChange={equipped => {
             if (equipped === this.props.weapon.equipped) return;

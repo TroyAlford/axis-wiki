@@ -40,9 +40,12 @@ export default class Skill extends ComponentBase {
       skill: { values }
     } = this.props
 
+    const nameProps = this.props.forceNameEditing ? { editing: true } : {}
+
     return (
       <div className={`skill ${className}`}>
         <Editable className="name" value={this.displayName()}
+          placeholder="Category: Name (Notes)"
           readonly={this.props.readonly}
           onEditEnd={name => {
             const parsed = Skill.parseName(name)
@@ -54,6 +57,7 @@ export default class Skill extends ComponentBase {
             this.props.onChange(updated, this.props.skill)
             this.props.onEditEnd(updated, this.props.skill)
           }}
+          {...nameProps}
         />
       {values.map((value, index) =>
         <Editable key={index} className={`value equals-${value}`}
@@ -81,6 +85,7 @@ Skill.propTypes = {
   className: React.PropTypes.string,
   onChange: React.PropTypes.func.isRequired,
   onEditEnd: React.PropTypes.func.isRequired,
+  forceNameEditing: React.PropTypes.bool.isRequired,
   skill: React.PropTypes.shape({
     category: React.PropTypes.string,
     key: React.PropTypes.string.isRequired,
@@ -91,6 +96,7 @@ Skill.propTypes = {
 }
 Skill.defaultProps = {
   className: '',
+  forceNameEditing: false,
   onChange: () => {},
   onEditEnd: () => {},
   skill: {

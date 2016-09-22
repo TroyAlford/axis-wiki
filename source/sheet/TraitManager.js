@@ -7,6 +7,7 @@ export default class TraitManager extends CollectionManager {
   renderItem(trait) {
     return (
       <Trait key={trait.id} trait={trait}
+        forceNameEditing={!trait.key}
         readonly={this.props.readonly}
         onChange={super.handleChange.bind(this)}
         onEditEnd={super.handleEditEnd.bind(this)}
@@ -31,7 +32,7 @@ TraitManager.defaultProps = {
   headers: ['Name', 'Cost'],
   settings: {
     template: {
-      key: 'new-trait',
+      key: '',
       value: 0,
     },
     orderBy: list => orderBy(list, trait => [

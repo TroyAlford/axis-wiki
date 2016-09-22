@@ -9,6 +9,7 @@ export default class SkillManager extends CollectionManager {
   renderItem(skill) {
     return (
       <Skill key={skill.id} skill={skill}
+        forceNameEditing={!skill.key}
         readonly={this.props.readonly}
         onChange={super.handleChange.bind(this)}
         onEditEnd={super.handleEditEnd.bind(this)}
@@ -33,7 +34,7 @@ SkillManager.defaultProps = {
   headers: ['Name', 'Th', 'Ms', '', 'Name', 'Th', 'Ms'],
   settings: {
     template: {
-      key: 'new-skill',
+      key: '',
       values: [0, 1],
     },
     orderBy: list => {
