@@ -95,6 +95,6 @@ Skill.defaultProps = {
   onEditEnd: () => {},
   skill: {
     key: 'new-skill',
-    values: [1, 1],
+    values: [0, 1],
   },
 }
