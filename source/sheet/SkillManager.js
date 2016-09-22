@@ -34,7 +34,7 @@ SkillManager.defaultProps = {
   settings: {
     template: {
       key: 'new-skill',
-      values: [1, 1],
+      values: [0, 1],
     },
     orderBy: list => {
       let i = 0
