@@ -8,6 +8,7 @@ export default class ArmorManager extends CollectionManager {
   renderItem(armor) {
     return (
       <Armor key={armor.id} armor={armor}
+        forceNameEditing={!armor.key}
         readonly={this.props.readonly}
         onChange={super.handleChange.bind(this)}
         onEditEnd={super.handleEditEnd.bind(this)}
@@ -43,7 +44,7 @@ ArmorManager.defaultProps = {
   ],
   settings: {
     template: {
-      key: 'new-armor',
+      key: '',
       equipped: false,
       values: [0, 0, 0, 0, 0, 0]
     },

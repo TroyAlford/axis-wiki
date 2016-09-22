@@ -9,10 +9,12 @@ export default class Weapon extends React.Component {
   render() {
     const { equipped, key, name, values } = this.props.weapon,
       display = name ? name : startCase(toLower(key))
+
+    const nameProps = this.props.forceNameEditing ? { editing: true } : {}
+
     return (
       <div className="weapon">
         <Editable className="equipped" value={!!equipped}
-          placeholder="Weapon Type (Name or Notes)"
           readonly={this.props.readonly}
           onChange={equipped => {
             if (equipped === this.props.weapon.equipped) return;
@@ -23,14 +25,19 @@ export default class Weapon extends React.Component {
           }}
         />
         <Editable className="name" value={display}
+          placeholder="Weapon Type/Name"
           readonly={this.props.readonly}
           onEditEnd={name => {
             if (name === this.props.weapon.name) return;
-            this.props.onChange({
+            const updated = {
               ...this.props.weapon,
               name, key: Slug(name),
-            }, this.props.weapon)
+            }
+
+            this.props.onChange(updated, this.props.weapon)
+            this.props.onEditEnd(updated, this.props.weapon)
           }}
+          {...nameProps}
         />
       {values.map((value, index) =>
         <Editable key={index} className="value" value={value}
@@ -53,6 +60,7 @@ export default class Weapon extends React.Component {
 }
 
 Weapon.propTypes = {
+  forceNameEditing: React.PropTypes.bool,
   onChange: React.PropTypes.func.isRequired,
   weapon: React.PropTypes.shape({
     key: React.PropTypes.string.isRequired,
@@ -62,6 +70,7 @@ Weapon.propTypes = {
   }),
 }
 Weapon.defaultProps = {
+  forceNameEditing: false,
   onChange: () => {},
   weapon: {
     key: 'new-weapon',

@@ -8,6 +8,7 @@ export default class WeaponManager extends CollectionManager {
   renderItem(weapon) {
     return (
       <Weapon key={weapon.id} weapon={weapon}
+        forceNameEditing={!weapon.key}
         readonly={this.props.readonly}
         onChange={super.handleChange.bind(this)}
         onEditEnd={super.handleEditEnd.bind(this)}
@@ -34,7 +35,7 @@ WeaponManager.defaultProps = {
   headers: ['Use', 'Name', 'Dmg', 'Rng', 'Hit'],
   settings: {
     template: {
-      key: 'new-weapon',
+      key: '',
       equipped: false,
       values: [0, 0, 0],
     },
