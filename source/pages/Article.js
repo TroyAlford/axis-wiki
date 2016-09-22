@@ -30,22 +30,10 @@ class Article extends ComponentBase {
     if (this.props.slug !== this.props.params.slug)
       this.props.dispatch(loadArticle(this.props.params.slug))
 
-    this.editorConfig = {
-      ...unboundEditorConfig,
-      toolbar: 'save | ' + unboundEditorConfig.toolbar,
-      setup: editor => {
-        if (typeof unboundEditorConfig.setup === 'function')
-          unboundEditorConfig.setup(editor)
-
-        editor.addButton('save', {
-          icon: ' icon icon-save',
-          text: 'Save',
-          onclick: this.handleSave
-        })
-      }
-    }
+    this.editorConfig = unboundEditorConfig
 
     Object.defineProperty(this, 'dirty', { get: () => (
+      this.state.tab      === 'edit' ||
       this.props.html     !== this.draft ||
       this.state.aliases  !== null ||
       this.state.children !== null ||

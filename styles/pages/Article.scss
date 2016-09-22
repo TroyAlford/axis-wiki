@@ -117,18 +117,6 @@ $tags-height: 36px;
       padding-right: 18px;
       > .mce-caret { right: 5px; }
     }
-
-    .mce-first.mce-btn-group {
-      button {
-        background-color: $color-success;
-        border-radius: 3px;
-        color: $palette-white;
-      }
-    }
-    .mce-ico.icon, .mce-ico.icon:before {
-      font-size: inherit;
-      color: inherit;
-    }
   }
 
   .tags-editor {

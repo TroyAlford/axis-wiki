@@ -3,6 +3,7 @@ export default {
   autosave_ask_before_unload: false,
   inline: true,
   convert_fonts_to_spans: true,
+  convert_urls: false,
   custom_elements: 'include',
   extended_valid_elements: 'include[class|from|sections]',
   fixed_toolbar_container: '.article.page > .tab-set',
