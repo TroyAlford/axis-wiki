@@ -24,7 +24,7 @@ export function loadArticle(requested_slug, flashLoading = true) {
         return response.json()
       })
       .then(json => {
-        const title = startCase(slug)
+        const title = json.title || startCase(slug)
         const keywords = [
           ...(json.aliases || []),
           ...(json.tags || []),
