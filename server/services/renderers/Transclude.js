@@ -14,25 +14,29 @@ export default function(article = { html: '' }) {
     const $include = $parser(element)
     $include.attr('class', 'noedit')
 
+    let html = []
     const from = $include.attr('from')
     if (!articleExists(from)) {
+      html.push(`<!-- Article '${from}' does not exist -->`)
       missing_links.push(from)
-      return $include.html(`\n<!-- Article '${from}' does not exist -->\n`)
+    } else {
+      html.push(`<!-- Transcluded from '${from}'. To edit, change the original article. -->`)
+      links_to.push(from)
     }
 
-    $include.html(`\n<!-- This content is transcluded from '${from}'; edits may only be made to the original article -->\n`)
-    links_to.push(from)
-
     const sections = $include.attr('sections')
-    const $article = $.load(Storage.getArticle(from).html)
-    if (sections === '*')
-      return $include.html($include.html() + $article.html())
-
-    sections.split(',').forEach(section => {
-      $article(`#${section}`).each((index, element) => {
-        $include.html($include.html() + $.html(element))
+    const $article = $.load(Storage.getArticle(from).html || '')
+    if (sections === '*') {
+      html.push($article.html())
+    } else {
+      sections.split(',').forEach(section => {
+        $article(`#${section}`).each((index, element) => {
+          html.push($.html(element))
+        })
       })
-    })
+    }
+
+    $include.html('\n' + html.map(line => `  ${line}\n`).join(''))
   })
 
   article.html = $parser.html()
