@@ -33,7 +33,7 @@ describe('Transclude', () => {
     const before = '<include from="existing" sections="*"></include>'
     const expected =
       '<include from="existing" sections="*" class="noedit">' +
-        '<!-- This content is transcluded from \'existing\' - edits may only be made to the original article -->' +
+        '\n<!-- This content is transcluded from \'existing\'; edits may only be made to the original article -->\n' +
         '<div id="a">A Text</div>' +
         '<span id="b">B Text</span>' +
       '</include>'
@@ -47,7 +47,7 @@ describe('Transclude', () => {
     const before = '<include from="missing" sections="*"></include>'
     const expected =
       '<include from="missing" sections="*" class="noedit">' +
-        '<!-- Article \'missing\' does not exist -->' +
+        '\n<!-- Article \'missing\' does not exist -->\n' +
       '</include>'
 
     const after = Transclude({ html: before })
@@ -59,7 +59,7 @@ describe('Transclude', () => {
     const before = '<include from="redirect" sections="*"></include>'
     const expected =
       '<include from="redirect" sections="*" class="noedit">' +
-        '<!-- This content is transcluded from \'redirect\' - edits may only be made to the original article -->' +
+        '\n<!-- This content is transcluded from \'redirect\'; edits may only be made to the original article -->\n' +
         '<div id="a">A Text</div>' +
         '<span id="b">B Text</span>' +
       '</include>'
@@ -73,7 +73,7 @@ describe('Transclude', () => {
     const before = '<include from="existing" sections="a"></include>'
     const expected =
       '<include from="existing" sections="a" class="noedit">' +
-        '<!-- This content is transcluded from \'existing\' - edits may only be made to the original article -->' +
+        '\n<!-- This content is transcluded from \'existing\'; edits may only be made to the original article -->\n' +
         '<div id="a">A Text</div>' +
       '</include>'
 
@@ -84,7 +84,7 @@ describe('Transclude', () => {
     const before = '<include from="existing" sections="b,a"></include>'
     const expected =
       '<include from="existing" sections="b,a" class="noedit">' +
-        '<!-- This content is transcluded from \'existing\' - edits may only be made to the original article -->' +
+        '\n<!-- This content is transcluded from \'existing\'; edits may only be made to the original article -->\n' +
         '<span id="b">B Text</span>' +
         '<div id="a">A Text</div>' +
       '</include>'
@@ -96,7 +96,7 @@ describe('Transclude', () => {
     const before = '<include from="existing" sections="a,a"></include>'
     const expected =
       '<include from="existing" sections="a,a" class="noedit">' +
-        '<!-- This content is transcluded from \'existing\' - edits may only be made to the original article -->' +
+        '\n<!-- This content is transcluded from \'existing\'; edits may only be made to the original article -->\n' +
         '<div id="a">A Text</div>' +
         '<div id="a">A Text</div>' +
       '</include>'
@@ -108,7 +108,7 @@ describe('Transclude', () => {
     const before = '<include from="duplicates" sections="a"></include>'
     const expected =
       '<include from="duplicates" sections="a" class="noedit">' +
-        '<!-- This content is transcluded from \'duplicates\' - edits may only be made to the original article -->' +
+        '\n<!-- This content is transcluded from \'duplicates\'; edits may only be made to the original article -->\n' +
         '<div id="a">First A Text</div>' +
         '<span id="a">Second A Text</span>' +
       '</include>'

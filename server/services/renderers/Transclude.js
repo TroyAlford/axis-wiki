@@ -17,10 +17,10 @@ export default function(article = { html: '' }) {
     const from = $include.attr('from')
     if (!articleExists(from)) {
       missing_links.push(from)
-      return $include.html(`<!-- Article '${from}' does not exist -->`)
+      return $include.html(`\n<!-- Article '${from}' does not exist -->\n`)
     }
 
-    $include.html(`<!-- This content is transcluded from '${from}' - edits may only be made to the original article -->`)
+    $include.html(`\n<!-- This content is transcluded from '${from}'; edits may only be made to the original article -->\n`)
     links_to.push(from)
 
     const sections = $include.attr('sections')
