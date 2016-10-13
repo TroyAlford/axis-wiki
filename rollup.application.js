@@ -51,8 +51,8 @@ export default {
   targets: [{
     dest: 'build/js/application.js',
     format: 'iife',
-    sourceMap: true,
-    sourceMapFile: '/js/application.js',
+    sourceMap: !PRODUCTION,
+    sourceMapFile: 'build/js/application.js',
   }],
   treeshake: true,
 }

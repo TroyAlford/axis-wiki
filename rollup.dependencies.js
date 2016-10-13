@@ -17,7 +17,6 @@ const plugins = [
     preferBuiltins: true,
   }),
   commonjs({
-    ignoreGlobal: true,
     include: ['node_modules/**'],
   }),
 ]
@@ -33,8 +32,8 @@ export default {
   targets: [{
     dest: 'build/js/dependencies.js',
     format: 'iife',
-    sourceMap: true,
-    sourceMapFile: '/js/dependencies.js',
+    sourceMap: !PRODUCTION,
+    sourceMapFile: 'build/js/dependencies.js',
   }],
   treeshake: false,
 }
