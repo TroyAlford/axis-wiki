@@ -1,4 +1,3 @@
-import fetch from 'isomorphic-fetch'
 import { browserHistory } from 'react-router'
 
 export const USER_PROFILE = 'user.profile'

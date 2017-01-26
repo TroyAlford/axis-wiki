@@ -1,5 +1,3 @@
-import fetch from 'isomorphic-fetch'
-
 export const NAVIGATION_CHANGE = 'navigation.change'
 
 export function loadNavigation() {

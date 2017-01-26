@@ -1,4 +1,3 @@
-import fetch from 'isomorphic-fetch'
 import { addMessage } from '../messages/actions'
 import { browserHistory } from 'react-router'
 import { filter, includes, startCase } from 'lodash'

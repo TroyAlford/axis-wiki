@@ -1,7 +1,6 @@
 import ComponentBase from '../application/ComponentBase'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import fetch from 'isomorphic-fetch'
 
 class Navigation extends ComponentBase {
   constructor(props) {

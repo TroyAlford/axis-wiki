@@ -1,7 +1,6 @@
 import ComponentBase from '../application/ComponentBase'
 import Dropzone from 'react-dropzone'
 
-import fetch from 'isomorphic-fetch'
 import {
   filter,
   map,
