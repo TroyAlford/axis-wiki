@@ -9,8 +9,10 @@
     "url": "https://github.com/TroyAlford/axis-wiki.git"
   },
   "dependencies": {
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-transform-regenerator": "^6.22.0",
     "body-parser": "^1.15.0",
-    "bulma": "^0.2.1",
+    "bulma": "^0.3.1",
     "cheerio": "^0.22.0",
     "chokidar": "^1.5.1",
     "compression": "^1.6.2",
@@ -32,49 +34,79 @@
     "normalize.css": "^5.0.0",
     "q": "^1.4.1",
     "react": "^15.1.0",
-    "react-ace": "^3.5.0",
+    "react-ace": "^4.1.1",
     "react-dom": "^15.1.0",
     "react-dropzone": "^3.5.1",
-    "react-helmet": "^3.1.0",
-    "react-redux": "^4.4.5",
-    "react-router": "^2.6.1",
+    "react-helmet": "^4.0.0",
+    "react-redux": "^5.0.2",
+    "react-router": "^3.0.2",
     "react-tagsinput": "^3.13.0",
     "react-tinymce": "^0.5.1",
     "redux": "^3.5.2",
-    "redux-thunk": "^2.0.1"
+    "redux-thunk": "^2.0.1",
+    "whatwg-fetch": "^2.0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
-    "babel-jest": "^16.0.0",
+    "babel-jest": "^18.0.0",
     "babel-plugin-lodash": "^3.2.6",
     "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-preset-es2015": "^6.14.0",
-    "babel-preset-es2015-rollup": "^1.2.0",
-    "babel-preset-jest": "^16.0.0",
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "babel-preset-jest": "^18.0.0",
     "babel-preset-react": "*",
     "babel-preset-stage-0": "^6.5.0",
-    "babelify": "^7.2.0",
-    "browserify": "^13.0.0",
-    "browserify-resolutions": "^1.0.6",
-    "concat-glob-cli": "^0.1.0",
-    "jest-cli": "^16.0.1",
-    "node-sass": "^3.4.2",
+    "jest-cli": "^18.1.0",
+    "node-sass": "^4.3.0",
     "nodemon": "^1.9.1",
     "react-addons-test-utils": "^15.1.0",
     "redux-devtools": "^3.2.0",
+    "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.6.1",
-    "rollup-plugin-commonjs": "^5.0.5",
+    "rollup-plugin-commonjs": "^7.0.0",
     "rollup-plugin-json": "^2.0.1",
-    "rollup-plugin-node-builtins": "^2.0.0",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-uglify": "^1.0.1",
     "superchild": "^0.1.9"
   },
-  "browserify": {
-    "transform": [
-      "babelify"
-    ]
+  "scripts": {
+    "start": "npm run build-prod && npm run serve-prod",
+    "test": "jest",
+    "develop": "npm run watch & npm run serve-watched",
+    "build": "npm run build-jsx & npm run build-css",
+    "build-dev": "npm run build",
+    "build-prod": "NODE_ENV=production npm run build",
+    "build-css": "npm run build-css-app & npm run build-css-dep",
+    "build-css-app": "node-sass styles/application.scss -o build/css --output-style compressed --source-map true --source-map-embed --importer node_modules/node-sass-glob-importer/dist/cli.js",
+    "build-css-dep": "node-sass vendor/dependencies.scss -o build/css --output-style compressed --source-map true --source-map-embed",
+    "build-jsx": "npm run build-jsx-app & npm run build-jsx-dep",
+    "build-jsx-app": "rollup -c rollup.application.js",
+    "build-jsx-dep": "rollup -c rollup.dependencies.js",
+    "serve": "babel-node server/server.js",
+    "serve-prod": "NODE_ENV=production babel-node server/server.js",
+    "serve-watched": "nodemon --watch ./server --exec 'babel-node server/server.js'",
+    "watch": "npm run watch-css & npm run watch-jsx",
+    "watch-css": "npm run watch-css-app & npm run watch-css-dep",
+    "watch-css-app": "nodemon --watch ./styles -e css,scss --exec 'npm run build-css-app'",
+    "watch-css-dep": "nodemon --watch ./vendor -e css,scss --exec 'npm run build-css-dep'",
+    "watch-jsx": "npm run watch-jsx-app & npm run watch-jsx-dep",
+    "watch-jsx-app": "nodemon --watch ./source -e js --exec 'npm run build-jsx-app'",
+    "watch-jsx-dep": "nodemon --watch ./vendor -e js --exec 'npm run build-jsx-dep'"
+  },
+  "babel": {
+    "plugins": [
+      "lodash",
+      "syntax-async-functions",
+      "transform-object-rest-spread",
+      "transform-regenerator"
+    ],
+    "presets": [
+      "es2015",
+      "react",
+      "jest"
+    ],
+    "highlightCode": true
   },
   "jest": {
     "unmockedModulePathPatterns": [
@@ -84,30 +116,5 @@
       "<rootDir>/node_modules/react-addons-test-utils/",
       "<rootDir>/node_modules/lodash/"
     ]
-  },
-  "scripts": {
-    "start": "npm run build-prod && npm run serve-prod",
-    "test": "jest",
-    "develop": "npm run watch & npm run serve-watched",
-    "build": "npm run clean && (npm run build-jsx & npm run build-css)",
-    "build-dev": "npm run build",
-    "build-prod": "NODE_ENV=production npm run build",
-    "build-css": "npm run build-css-app & npm run build-css-dep",
-    "build-css-app": "node-sass styles/application.scss -o build/css --output-style compressed --source-map true --source-map-embed --importer node_modules/node-sass-glob-importer/dist/cli.js",
-    "build-css-dep": "node-sass vendor/dependencies.scss -o build/css --output-style compressed --source-map true --source-map-embed",
-    "build-jsx": "npm run build-jsx-app & npm run build-jsx-dep",
-    "build-jsx-app": "rollup -c rollup.application.js",
-    "build-jsx-dep": "rollup -c rollup.dependencies.js",
-    "clean": "rm -rf build && mkdirp build && (mkdirp build/js & mkdirp build/css & mkdirp build/sass)",
-    "serve": "babel-node server/server.js",
-    "serve-prod": "NODE_ENV=production babel-node server/server.js",
-    "serve-watched": "nodemon --watch ./server --exec 'babel-node server/server.js'",
-    "watch": "npm run clean && (npm run watch-css & npm run watch-jsx)",
-    "watch-css": "npm run watch-css-app & npm run watch-css-dep",
-    "watch-css-app": "nodemon --watch ./styles -e css,scss --exec 'npm run build-css-app'",
-    "watch-css-dep": "nodemon --watch ./vendor -e css,scss --exec 'npm run build-css-dep'",
-    "watch-jsx": "npm run watch-jsx-app & npm run watch-jsx-dep",
-    "watch-jsx-app": "nodemon --watch ./source -e js --exec 'npm run build-jsx-app'",
-    "watch-jsx-dep": "nodemon --watch ./vendor -e js --exec 'npm run build-jsx-dep'"
   }
 }

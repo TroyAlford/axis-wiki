@@ -1,5 +1,0 @@
-{
-  "plugins": ["transform-object-rest-spread", "lodash"],
-  "presets": ["es2015", "stage-0", "react", "jest"],
-  "highlightCode": true
-}
