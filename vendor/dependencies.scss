@@ -4,4 +4,8 @@
 
 @import "../node_modules/normalize.css/normalize";
 
+@import "../styles/palette";
+
+$blue: $palette-blue;
+
 @import "../node_modules/bulma/bulma";
