@@ -4,7 +4,7 @@ import intersection    from 'lodash/intersection'
 import bodyParser      from 'body-parser'
 import del             from 'del'
 import express         from 'express'
-import lwip            from 'lwip'
+import jimp            from 'jimp'
 import multer          from 'multer'
 import path            from 'path'
 import Q               from 'q'
@@ -62,93 +62,111 @@ export default express()
           filename = `${slug}.${extension}`,
           temp_filepath = path.resolve(folders.media, file.filename)
 
-    let opener = Q.defer(),
-        sm_processor = Q.defer(),
-        lg_processor = Q.defer(),
-        promises = [sm_processor.promise, lg_processor.promise]
-
-    let result = results[filename] = {
+    const result = results[filename] = {
       errors: [],
-      large: false,
-      small: false
+      large: null,
+      small: null,
     }
 
-    processors = [...processors, ...promises]
-
-    lwip.open(temp_filepath, (error, image) => {
+    jimp.read(temp_filepath, (error, image) => {
       if (error) {
         console.log(`Media Uploaded => ${filename} failed to .open() for processing. Invalid file.`)
         result.errors.push(`An error occurred while attempting to process this file. It may be corrupt or have an incorrect file extension.`)
-        lg_processor.reject(error)
-        sm_processor.reject(error)
-        opener.reject(error)
-      } else
-        opener.resolve(image)
+        return;
+      }
+
+      const lg_w = Math.min(settings.lg_image_width, image.w)
+      const lg_name = `${slug}.full.${extension}`
+      const lg_path = path.resolve(folders.media, lg_name)
+
+      const sm_w = Math.min(settings.sm_image_width, image.w)
+      const sm_name = `${slug}.${extension}`
+      const sm_path = path.resolve(folders.media, sm_name)
+
+      image.clone()
+        .resize(lg_w, jimp.AUTO).write(lg_path)
+        .resize(sm_w, jimp.AUTO).write(sm_path)
+
+      result.large = `/media/${lg_name}`
+      result.small = `/media/${sm_name}`
     })
 
-    opener.promise.then(image => {
-      const
-        name_lg = `${slug}.full.${extension}`,
-        path_lg = path.resolve(folders.media, name_lg),
-        w_lg = Math.min(settings.lg_image_width, image.width()),
-        h_lg = Math.round(image.height() * (w_lg / image.width())),
+    // processors = [...processors, ...promises]
 
-        name_sm = `${slug}.${extension}`,
-        path_sm = path.resolve(folders.media, name_sm),
-        w_sm = Math.min(settings.sm_image_width, image.width()),
-        h_sm = Math.round(image.height() * (w_sm / image.width()))
+    // lwip.open(temp_filepath, (error, image) => {
+    //   if (error) {
+    //     console.log(`Media Uploaded => ${filename} failed to .open() for processing. Invalid file.`)
+    //     result.errors.push(`An error occurred while attempting to process this file. It may be corrupt or have an incorrect file extension.`)
+    //     lg_processor.reject(error)
+    //     sm_processor.reject(error)
+    //     opener.reject(error)
+    //   } else
+    //     opener.resolve(image)
+    // })
 
-      console.log(`Media Upload => Processing ${filename}`)
-      image.clone((error, large) => {
-        if (error) {
-          console.log(`Media Upload => ${filename} failed to .clone() for large-size processing`)
-          result.errors.push(`An error occurred while saving the large format version of this file.`)
-          result.large = null
-          lg_processor.reject(error)
-          return
-        }
+    // opener.promise.then(image => {
+    //   const
+    //     name_lg = `${slug}.full.${extension}`,
+    //     path_lg = path.resolve(folders.media, name_lg),
+    //     w_lg = Math.min(settings.lg_image_width, image.width()),
+    //     h_lg = Math.round(image.height() * (w_lg / image.width())),
 
-        large.batch()
-        .resize(w_lg, h_lg)
-        .writeFile(path_lg, extension, error => {
-          if (error) {
-            console.log(`Media Upload => ${filename} failed to .writeFile() for large-size processing\n ==> ${error}`)
-            result.errors.push(`An error occurred while saving the large format version of this file.`)
-            result.large = null
-            lg_processor.reject(error)
-          } else {
-            console.log(`Media Upload => ${filename} => ${name_lg} saved`)
-            result.large = `/media/${name_lg}`
-            lg_processor.resolve(name_lg)
-          }
-        })
-      })
+    //     name_sm = `${slug}.${extension}`,
+    //     path_sm = path.resolve(folders.media, name_sm),
+    //     w_sm = Math.min(settings.sm_image_width, image.width()),
+    //     h_sm = Math.round(image.height() * (w_sm / image.width()))
 
-      image.clone((error, small) => {
-        if (error) {
-          console.log(`Media Upload => ${filename} failed to .clone() for small-size processing`)
-          result.errors.push(`An error occurred while saving the small format version of this file.`)
-          result.small = null
-          sm_processor.reject(error)
-          return
-        }
+    //   console.log(`Media Upload => Processing ${filename}`)
+    //   image.clone((error, large) => {
+    //     if (error) {
+    //       console.log(`Media Upload => ${filename} failed to .clone() for large-size processing`)
+    //       result.errors.push(`An error occurred while saving the large format version of this file.`)
+    //       result.large = null
+    //       lg_processor.reject(error)
+    //       return
+    //     }
 
-        small.batch()
-        .resize(w_sm, h_sm)
-        .writeFile(path_sm, extension, error => {
-          if (error) {
-            console.log(`Media Upload => ${filename} failed to .writeFile() for small-size processing\n ==> ${error}`)
-            result.errors.push(`An error occurred while saving the small format version of this file.`)
-            result.small = null
-            sm_processor.reject(error)
-          } else {
-            console.log(`Media Upload => ${filename} => ${name_sm} saved`)
-            result.small = `/media/${name_sm}`
-            sm_processor.resolve(name_sm)
-          }
-        })
-      })
-    })
+    //     large.batch()
+    //     .resize(w_lg, h_lg)
+    //     .writeFile(path_lg, extension, error => {
+    //       if (error) {
+    //         console.log(`Media Upload => ${filename} failed to .writeFile() for large-size processing\n ==> ${error}`)
+    //         result.errors.push(`An error occurred while saving the large format version of this file.`)
+    //         result.large = null
+    //         lg_processor.reject(error)
+    //       } else {
+    //         console.log(`Media Upload => ${filename} => ${name_lg} saved`)
+    //         result.large = `/media/${name_lg}`
+    //         lg_processor.resolve(name_lg)
+    //       }
+    //     })
+    //   })
+
+    //   image.clone((error, small) => {
+    //     if (error) {
+    //       console.log(`Media Upload => ${filename} failed to .clone() for small-size processing`)
+    //       result.errors.push(`An error occurred while saving the small format version of this file.`)
+    //       result.small = null
+    //       sm_processor.reject(error)
+    //       return
+    //     }
+
+    //     small.batch()
+    //     .resize(w_sm, h_sm)
+    //     .writeFile(path_sm, extension, error => {
+    //       if (error) {
+    //         console.log(`Media Upload => ${filename} failed to .writeFile() for small-size processing\n ==> ${error}`)
+    //         result.errors.push(`An error occurred while saving the small format version of this file.`)
+    //         result.small = null
+    //         sm_processor.reject(error)
+    //       } else {
+    //         console.log(`Media Upload => ${filename} => ${name_sm} saved`)
+    //         result.small = `/media/${name_sm}`
+    //         sm_processor.resolve(name_sm)
+    //       }
+    //     })
+    //   })
+    // })
   })
 
   files_rejected.forEach(file => {
@@ -159,10 +177,10 @@ export default express()
     }
   })
 
-  Q.allSettled(processors).then(() => {
-    let files_to_delete = request.files.map(f => path.resolve(folders.media, f.filename))
-    console.log(`Media Upload Finished => Deleting: \n ==> ${files_to_delete.join('\n ==> ')}`)
-    del(files_to_delete, { force: true })
-    response.status(200).send(results)
-  })
+  // Q.allSettled(processors).then(() => {
+  let files_to_delete = request.files.map(f => path.resolve(folders.media, f.filename))
+  console.log(`Media Upload Finished => Deleting: \n ==> ${files_to_delete.join('\n ==> ')}`)
+  del(files_to_delete, { force: true })
+  response.status(200).send(results)
+  // })
 })
