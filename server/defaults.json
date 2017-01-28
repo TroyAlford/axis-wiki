@@ -23,8 +23,16 @@
   },
   "media": {
     "allowed_extensions": ["gif","jpg","png"],
-    "lg_image_width": 1000,
-    "sm_image_width": 250
+    "images": {
+      "large": {
+        "maxWidth": 1000,
+        "maxHeight": 1000
+      },
+      "small": {
+        "maxWidth": 250,
+        "maxHeight": 250
+      }
+    }
   },
   "navigation": {
     "default_links": [
