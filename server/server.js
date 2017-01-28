@@ -16,6 +16,7 @@ import Watcher      from './services/Watcher'
 import api_article  from './modules/article'
 import api_by       from './modules/by'
 import { default as api_config, getNavigation } from './modules/config'
+import api_monitor  from './modules/monitor'
 import api_my       from './modules/my'
 import api_search   from './modules/search'
 
@@ -29,11 +30,12 @@ var app = express()
   .use(cookieParser())
 
   /* Non-Static Routes */
-  .use('/api/page',   Facebook, api_article)
-  .use('/api/by',     Facebook, api_by)
-  .use('/api/config', Facebook, api_config)
-  .use('/api/my',     Facebook, NoAnonymous, api_my)
-  .use('/api/search', Facebook, api_search)
+  .use('/api/page',    Facebook, api_article)
+  .use('/api/by',      Facebook, api_by)
+  .use('/api/config',  Facebook, api_config)
+  .use('/api/monitor', Facebook, api_monitor)
+  .use('/api/my',      Facebook, NoAnonymous, api_my)
+  .use('/api/search',  Facebook, api_search)
 
   /* Non-Static Content Routes */
   .use('/media',      Facebook, module_media)
