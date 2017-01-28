@@ -2,13 +2,13 @@ jest.unmock('cheerio')
 jest.unmock('path')
 jest.unmock('url')
 
-jest.unmock('../ParseLinks')
-jest.unmock('../../../../utility/Slugs')
+jest.unmock('./ParseLinks')
+jest.unmock('../../../utility/Slugs')
 
-jest.mock('../../Config', () => ({
+jest.mock('../Config', () => ({
   folders: { articles: '', media: '', 'metadata': '' },
 }))
-jest.mock('../../Links', () => ({
+jest.mock('../Links', () => ({
   resolve: slug => slug
 }))
 jest.mock('fs-utils', () => ({
@@ -17,7 +17,7 @@ jest.mock('fs-utils', () => ({
   },
 }))
 
-import ParseLinks from '../ParseLinks'
+import ParseLinks from './ParseLinks'
 
 describe('ParseLinks', () => {
   it('marks external links correctly', () => {

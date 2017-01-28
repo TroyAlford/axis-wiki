@@ -1,10 +1,10 @@
-jest.unmock('../Skill')
-jest.unmock('../../components/Editable')
+jest.unmock('./Skill')
+jest.unmock('../components/Editable')
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import TestUtils from 'react-addons-test-utils'
-import Skill from '../Skill'
+import Skill from './Skill'
 
 describe('Skill', () => {
   let parent    = null,

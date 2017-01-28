@@ -1,7 +1,7 @@
-jest.unmock('../BlacklistTags')
+jest.unmock('./BlacklistTags')
 jest.unmock('cheerio')
 
-import BlacklistTags from '../BlacklistTags'
+import BlacklistTags from './BlacklistTags'
 
 describe('BlacklistTags', () => {
   it('strips tags correctly', () => {

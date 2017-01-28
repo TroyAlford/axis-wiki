@@ -1,7 +1,7 @@
-jest.unmock('../Slugs')
+jest.unmock('./Slugs')
 
 import TestUtils from 'react-addons-test-utils'
-import { Slug, Url } from '../Slugs'
+import { Slug, Url } from './Slugs'
 import { isEqual } from 'lodash'
 
 describe('Slug()', () => {

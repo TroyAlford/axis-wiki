@@ -1,12 +1,12 @@
 jest.unmock('cheerio')
 jest.unmock('lodash')
-jest.unmock('../Article')
-jest.unmock('../../../utility/Slugs')
+jest.unmock('./Article')
+jest.unmock('../../utility/Slugs')
 
-jest.mock('../cleaners', () => [])
-jest.mock('../renderers', () => [])
+jest.mock('./cleaners', () => [])
+jest.mock('./renderers', () => [])
 
-import Article from '../Article'
+import Article from './Article'
 
 describe('Article', () => {
   it('creates default titles', () => {

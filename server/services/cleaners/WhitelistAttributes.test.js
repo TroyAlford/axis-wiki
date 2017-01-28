@@ -1,7 +1,7 @@
-jest.unmock('../WhitelistAttributes')
+jest.unmock('./WhitelistAttributes')
 jest.unmock('cheerio')
 
-import WhitelistAttributes from '../WhitelistAttributes'
+import WhitelistAttributes from './WhitelistAttributes'
 
 describe('WhitelistAttributes', () => {
   it('strips tags correctly', () => {

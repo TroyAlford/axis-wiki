@@ -1,10 +1,10 @@
-jest.unmock('../Attribute')
-jest.unmock('../../components/Editable')
+jest.unmock('./Attribute')
+jest.unmock('../components/Editable')
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import TestUtils from 'react-addons-test-utils'
-import Attribute from '../Attribute'
+import Attribute from './Attribute'
 
 describe('Attribute', () => {
   let parent    = null,

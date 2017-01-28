@@ -1,12 +1,12 @@
-jest.unmock('../Transclude')
+jest.unmock('./Transclude')
 jest.unmock('cheerio')
 jest.unmock('path')
 jest.unmock('url')
 
-jest.unmock('../../../../utility/Slugs')
+jest.unmock('../../../utility/Slugs')
 
-jest.mock('../../Config', () => ({ folders: { articles: '', media: '' } }))
-jest.mock('../../Storage', () => ({
+jest.mock('../Config', () => ({ folders: { articles: '', media: '' } }))
+jest.mock('../Storage', () => ({
   getArticle: from =>
     from === "missing" ? {} :
     from === "duplicates"
@@ -24,11 +24,11 @@ jest.mock('fs-utils', () => ({
   },
 }))
 
-jest.mock('../../Links', () => ({
+jest.mock('../Links', () => ({
   resolve: slug => slug === 'redirect' ? 'resolved' : slug
 }))
 
-import Transclude from '../Transclude'
+import Transclude from './Transclude'
 
 describe('Transclude', () => {
   it('transcludes existing section text', () => {

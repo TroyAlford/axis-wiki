@@ -1,9 +1,9 @@
-jest.unmock('../Collection')
-jest.unmock('../Guid')
+jest.unmock('./Collection')
+jest.unmock('./Guid')
 import { orderBy } from 'lodash'
 
 import TestUtils from 'react-addons-test-utils'
-import Collection from '../Collection'
+import Collection from './Collection'
 
 describe('Collection', () => {
   it('generates ids if needed', () => {

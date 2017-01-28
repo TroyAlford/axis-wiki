@@ -1,9 +1,9 @@
-jest.unmock('../SheetHeader')
+jest.unmock('./SheetHeader')
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import TestUtils from 'react-addons-test-utils'
-import SheetHeader from '../SheetHeader'
+import SheetHeader from './SheetHeader'
 
 describe('SheetHeader', () => {
   let parent    = null,

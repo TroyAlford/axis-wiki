@@ -1,9 +1,9 @@
-jest.unmock('../Editable');
+jest.unmock('./Editable');
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import TestUtils from 'react-addons-test-utils'
-import Editable from '../Editable'
+import Editable from './Editable'
 
 describe('Editable', () => {
   let parent    = null,

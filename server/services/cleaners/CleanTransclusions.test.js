@@ -1,8 +1,8 @@
-jest.unmock('../CleanTransclusions')
+jest.unmock('./CleanTransclusions')
 jest.unmock('cheerio')
-jest.unmock('../../../../utility/Slugs')
+jest.unmock('../../../utility/Slugs')
 
-import CleanTransclusions from '../CleanTransclusions'
+import CleanTransclusions from './CleanTransclusions'
 
 describe('CleanTransclusions', () => {
   it('strips tag contents', () => {
