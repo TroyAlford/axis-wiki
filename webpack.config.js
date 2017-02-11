@@ -5,6 +5,7 @@ const webpack = require('webpack')
 
 const ENVIRONMENT = process.env.NODE_ENV
 const PRODUCTION = ENVIRONMENT === 'production'
+const SOURCEMAP = process.env.SOURCEMAP
 
 const library = 'axis-wiki'
 const filename = PRODUCTION ? `${library}.min.js` : `${library}.js`
@@ -38,6 +39,7 @@ const serverSideModules = fs.readdirSync('node_modules')
 module.exports = [
   Object.assign({}, bundle, {
     /* Main JS Bundle */
+    devtool: SOURCEMAP ? 'inline-source-map' : 'none',
     entry: `${__dirname}/source/application/Application.js`,
     externals: {
       'react': 'React',
