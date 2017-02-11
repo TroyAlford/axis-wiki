@@ -1,5 +1,6 @@
 import compression  from 'compression'
 import cookieParser from 'cookie-parser'
+import cors         from 'cors'
 import express      from 'express'
 import http         from 'http'
 import mkdirp       from 'mkdirp'
@@ -28,6 +29,8 @@ const bindStatic = folder => express.static(path.join(__dirname, folder))
 var app = express()
   .use(compression())
   .use(cookieParser())
+  .use(cors())
+  .options('*', cors())
 
   /* Non-Static Routes */
   .use('/api/page',    Facebook, api_article)

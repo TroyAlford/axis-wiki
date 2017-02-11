@@ -1,6 +1,7 @@
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { deleteArticle, loadArticle, saveArticle } from '../redux/article/actions'
+import JsxParser from 'react-jsx-parser'
 
 import ComponentBase from '../application/ComponentBase'
 import ArticleChildren from '../components/ArticleChildren'
@@ -162,7 +163,7 @@ class Article extends ComponentBase {
       ],
       contents: [
         <h1 key="title">{this.props.title}</h1>,
-        <div key="html" dangerouslySetInnerHTML={{ __html: this.props.html }} />,
+        <JsxParser key="viewer" jsx={this.props.html || ''} />,
         <ArticleChildren key='children' articles={this.props.children} />
       ]
     })
