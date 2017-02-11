@@ -1,0 +1,22 @@
+machine:
+  timezone:
+    America/Los_Angeles
+
+  database:
+    override:
+      - echo "Skipping DB config"
+
+  dependencies:
+    cache_directories:
+      - ~/.cache/yarn
+    override:
+      - yarn --ignore-engines
+
+  machine:
+    environment:
+      PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
+
+  test:
+    override:
+      - yarn test
+      - yarn build
