@@ -5,7 +5,7 @@ jest.unmock('url')
 jest.unmock('./ParseLinks')
 jest.unmock('../../../utility/Slugs')
 
-jest.mock('../../config/server', () => ({
+jest.mock('../../../config/server', () => ({
   folders: { articles: '', media: '', 'metadata': '' },
 }))
 jest.mock('../Links', () => ({

@@ -5,7 +5,7 @@ jest.unmock('url')
 
 jest.unmock('../../../utility/Slugs')
 
-jest.mock('../Config', () => ({ folders: { articles: '', media: '' } }))
+jest.mock('../../../config/server', () => ({ folders: { articles: '', media: '' } }))
 jest.mock('../Storage', () => ({
   getArticle: from =>
     from === "missing" ? {} :
