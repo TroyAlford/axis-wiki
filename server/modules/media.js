@@ -1,6 +1,3 @@
-import includes        from 'lodash/includes'
-import intersection    from 'lodash/intersection'
-
 import bodyParser      from 'body-parser'
 import del             from 'del'
 import express         from 'express'
@@ -8,17 +5,16 @@ import jimp            from 'jimp'
 import multer          from 'multer'
 import path            from 'path'
 
-import Config          from '../services/Config'
-import Slug            from '../../utility/Slugs'
+import config          from '../../config/server'
+import { includes, intersection } from 'lodash/includes'
+import { resizeAll }      from '../helpers/image_processor'
+import Slug               from '../../utility/Slugs'
 
-import { resizeAll }   from '../helpers/image_processor'
-
-var folders = Config.folders;
-var settings = Config.settings.media;
+const { folders, media } = config
 
 const fileFilter = (request, file, cb) => {
   file.extension = path.extname(file.originalname).toLowerCase().replace('.', '')
-  file.process   = includes(settings.allowed_extensions, file.extension)
+  file.process   = includes(media.extensions, file.extension)
   if (!file.process)
     request.rejected_files = [...(request.rejected_files || []), file]
 
@@ -54,7 +50,7 @@ export default express()
     return response.status(401).send('You do not have sufficient privileges to upload files.')
 
   // First, report errors for any files that were rejected
-  const allowed = `.${settings.allowed_extensions.join(', .')}`
+  const allowed = `.${media.extensions.join(', .')}`
   const rejections = (request.rejected_files || []).reduce((results, file) => {
     results[file.originalname] = {
       errors: [`Only files with the extensions ${allowed} are allowed for upload.`],
@@ -67,12 +63,12 @@ export default express()
     tempPath: file.path,
     destinations: [{
       path: path.join(folders.media, `${file.slug}.full.${file.extension}`),
-      maxWidth: settings.images.large.maxWidth,
-      maxHeight: settings.images.large.maxHeight,
+      maxWidth: media.largeSizePixels,
+      maxHeight: media.largeSizePixels,
     }, {
       path: path.join(folders.media, `${file.slug}.${file.extension}`),
-      maxWidth: settings.images.small.maxWidth,
-      maxHeight: settings.images.small.maxHeight,
+      maxWidth: media.smallSizePixels,
+      maxHeight: media.smallSizePixels,
     }]
   }))
 

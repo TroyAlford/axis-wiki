@@ -1,5 +1,5 @@
 import $ from 'cheerio'
-import Config from '../Config'
+import config from '../../../config/server'
 import Links from '../Links'
 import * as Storage from '../Storage'
 import path from 'path'
@@ -54,10 +54,10 @@ export default function(article = { html: '' }) {
 
 function articleExists(requested_slug) {
   const slug = Links.resolve(requested_slug)
-  const filePath = path.join(Config.folders.articles, `${slug}.html`)
+  const filePath = path.join(config.folders.articles, `${slug}.html`)
   return utils.exists(filePath)
 }
 function mediaExists(filename) {
-  const filePath = path.join(Config.folders.media, filename)
+  const filePath = path.join(config.folders.media, filename)
   return utils.exists(filePath)
 }

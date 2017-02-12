@@ -8,7 +8,6 @@ import path         from 'path'
 import url          from 'url'
 import utils        from 'fs-utils'
 
-import Config       from './services/Config'
 import Facebook     from './middleware/Facebook'
 import Profile      from './services/Profile'
 import NoAnonymous  from './middleware/NoAnonymous'
@@ -20,6 +19,8 @@ import { default as api_config, getNavigation } from './modules/config'
 import api_monitor  from './modules/monitor'
 import api_my       from './modules/my'
 import api_search   from './modules/search'
+
+import config       from '../config/server'
 
 import module_media from './modules/media'
 
@@ -66,7 +67,7 @@ var app = express()
     response.status(200).send(html)
   })
 
-  .listen(Config.settings.server.port, () => {
-    console.log(`Express server running on port ${Config.settings.server.port}`)
+  .listen(config.port, () => {
+    console.log(`Express server running on port ${config.port}`)
   })
 ;

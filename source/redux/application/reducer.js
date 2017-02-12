@@ -1,11 +1,9 @@
-import { application as config } from '../../config.json'
-import { application as defaults } from '../../defaults.json'
-
+import config from '../../../config/config'
 import {
   PAGE_METADATA,
 } from './actions'
 
-const default_state = { ...defaults, ...config }
+const default_state = config.application
 
 export default (state = default_state, action) => {
   switch (action.type) {

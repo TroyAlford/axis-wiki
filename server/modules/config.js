@@ -3,10 +3,10 @@ import express      from 'express'
 import path         from 'path'
 import utils        from 'fs-utils'
 
-import Config       from '../services/Config'
+import config       from '../../config/server'
 
-var files = {
-  navigation: path.resolve(Config.folders.config, 'navigation.json')
+const files = {
+  navigation: path.resolve(config.folders.config, 'navigation.json')
 };
 
 export default express()
@@ -19,5 +19,5 @@ export default express()
 export function getNavigation() {
   return utils.exists(files.navigation)
     ? utils.readJSONSync(files.navigation)
-    : Config.settings.navigation.default_links
+    : []
 }

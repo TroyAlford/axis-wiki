@@ -4,15 +4,14 @@ import Icon from '../components/Icon'
 import { connect } from 'react-redux'
 import { loadProfile, saveProfile, setProfile, setLoggedOff } from '../redux/user/actions'
 
-import { facebook as config } from '../config.json'
-import { facebook as defaults } from '../defaults.json'
+import config from '../../config/config'
 
 window.Cookie = Cookie
 
 class Facebook extends ComponentBase {
   constructor(props) {
     super(props);
-    this.config = { ...defaults, ...config }
+    this.config = config.facebook
   }
 
   componentDidMount() {

@@ -5,14 +5,13 @@
 //   'permission_name': [user_id_1, user_id_2, user_id_3]
 // }
 
-import uniq       from 'lodash/uniq'
-
 import path       from 'path'
 import utils      from 'fs-utils'
 
-import Config     from './Config'
+import { uniq }   from 'lodash'
+import config     from '../../config/server'
 
-const THROTTLE = Config.settings.cleanup.throttle;
+const THROTTLE = config.cleanup.throttle;
 
 class Permissions {
   constructor() {
@@ -32,9 +31,9 @@ class Permissions {
     this.reload = this.reload.bind(this)
     this.save = this.save.bind(this)
 
-    this.folders = Config.folders;
-    this.files = { 
-      permissions: path.resolve(this.folders.users, 'permissions.json') 
+    this.folders = config.folders;
+    this.files = {
+      permissions: path.resolve(this.folders.users, 'permissions.json')
     };
 
     setTimeout(this.reload, 0);
@@ -74,7 +73,7 @@ class Permissions {
     let u = user_id.toString().toLowerCase()
     console.log(`User ${u} removed: removing all permissions.`)
     (this.users[u] || []).forEach(p => {
-      this.permissions[p] = this.permissions[p].filter(id => 
+      this.permissions[p] = this.permissions[p].filter(id =>
         id !== u // Remove the user from the permission's list
       )
     })

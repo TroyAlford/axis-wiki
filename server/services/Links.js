@@ -15,11 +15,11 @@ import path       from 'path'
 import utils      from 'fs-utils'
 
 import Article    from './Article'
-import Config     from './Config'
+import config     from '../../config/server'
 import Slug       from '../../utility/Slugs'
 import * as Storage from './Storage'
 
-const THROTTLE = Config.settings.cleanup.throttle;
+const THROTTLE = config.cleanup.throttle;
 
 class Links {
   constructor() {
@@ -37,7 +37,7 @@ class Links {
     this.unindex_html = this.unindex_html.bind(this);
     this.unindex_json = this.unindex_json.bind(this);
 
-    this.folders = Config.folders;
+    this.folders = config.folders;
     this.files = { links: path.resolve(this.folders.metadata, 'links.json') };
 
     setTimeout(this.rebuild, 0);
@@ -160,6 +160,10 @@ class Links {
 
   rebuild() {
     let rebuilt = {};
+    if (!utils.isDir(this.folders.articles)) {
+      console.error(`${this.folders.articles} is not a valid directory.`)
+      return;
+    }
     fs.readdirSync(this.folders.articles)
       .filter(name => { return name.endsWith('.html') })
       .forEach(file => {

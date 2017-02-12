@@ -19,9 +19,9 @@ import fs           from 'fs'
 import path         from 'path'
 import utils        from 'fs-utils'
 
-import Config       from './Config'
+import config       from '../../config/server'
 
-const THROTTLE = Config.settings.cleanup.throttle;
+const THROTTLE = config.cleanup.throttle;
 
 class Tags {
   constructor() {
@@ -34,7 +34,7 @@ class Tags {
     this.reindex = this.reindex.bind(this);
     this.reload = this.reload.bind(this);
 
-    this.folders = Config.folders;
+    this.folders = config.folders;
     this.files = { tags: path.resolve(this.folders.metadata, 'tags.json') };
 
     setTimeout(this.rebuild, 0);

@@ -6,7 +6,7 @@ import fs                   from 'fs'
 import path                 from 'path'
 import utils                from 'fs-utils'
 
-import Config               from '../services/Config'
+import config               from '../../config/server'
 import Permissions          from '../services/Permissions'
 
 export default class Profile {
@@ -22,7 +22,7 @@ export default class Profile {
 
   static delete(id) {
     // Removes files only. Reference updates are performed in response to file watchers.
-    let filepath = path.resolve(Config.folders.users, `${id}.json`);
+    let filepath = path.resolve(config.folders.users, `${id}.json`);
     if (utils.exists(filepath))
       fs.unlinkSync(filepath, { force: true });
 
@@ -32,7 +32,7 @@ export default class Profile {
   static load(id) {
     if (!id) return Profile.default
 
-    let file = path.resolve(Config.folders.users, `${id}.json`),
+    let file = path.resolve(config.folders.users, `${id}.json`),
         profile = {}
 
     try {
@@ -49,7 +49,7 @@ export default class Profile {
   }
 
   static save(id, profile) {
-    let filepath = path.resolve(Config.folders.users, `${id}.json`);
+    let filepath = path.resolve(config.folders.users, `${id}.json`);
 
     try {
       utils.writeFileSync(filepath, JSON.stringify(profile))

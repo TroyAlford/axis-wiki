@@ -1,15 +1,14 @@
-import Config from './Config'
 import path   from 'path'
-import uniqBy from 'lodash/uniqBy'
 import utils  from 'fs-utils'
+
+import { uniqBy } from 'lodash'
+import config from '../../config/server'
 
 import defaults from './Sheet.defaults.json'
 
-const folders = Config.folders
-
 export default class Sheet {
   constructor(data = {}) {
-    this.folders = Config.folders
+    this.folders = config.folders
 
     this.json = this.json.bind(this)
 

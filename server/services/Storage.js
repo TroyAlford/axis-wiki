@@ -1,5 +1,5 @@
 import Article from './Article'
-import Config from './Config'
+import config from '../../config/server'
 import fs from 'fs'
 import path from 'path'
 import utils from 'fs-utils'
@@ -7,8 +7,8 @@ import { defaults, values } from 'lodash'
 
 function getUrls(slug, userId = null) {
   const folderPath = userId !== null
-    ? path.resolve(Config.folders.users, userId, slug)
-    : path.resolve(Config.folders.articles, slug)
+    ? path.resolve(config.folders.users, userId, slug)
+    : path.resolve(config.folders.articles, slug)
 
   return {
     meta:  `${folderPath}.json`,

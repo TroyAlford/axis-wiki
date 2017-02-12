@@ -2,7 +2,7 @@ import chokidar from 'chokidar'
 import path from 'path'
 import { includes } from 'lodash'
 
-import Config from './Config'
+import config from '../../config/server'
 import Links from './Links'
 import Tags from './Tags'
 
@@ -14,7 +14,7 @@ const watchedExtensions = ['html', 'json']
 
 export default class Watcher {
   static watch() {
-    chokidar.watch(`${Config.folders.articles}/*`, CHOKIDAR_OPTIONS)
+    chokidar.watch(`${config.folders.articles}/*`, CHOKIDAR_OPTIONS)
       .on('raw', (event, filename, details) => {
         if (filename == null) { // On Windows, the filename is null. Fully reindex.
           Links.rebuild();
@@ -23,7 +23,7 @@ export default class Watcher {
         }
 
         if (path.dirname(filename) != '.' && // Windows = '.', and only events for files in the subdir
-            path.dirname(filename) != Config.folders.articles) // *nix = full path
+            path.dirname(filename) != config.folders.articles) // *nix = full path
           return;
 
         let which = path.extname(filename),

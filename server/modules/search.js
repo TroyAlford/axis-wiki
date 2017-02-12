@@ -5,11 +5,9 @@ import express     from 'express'
 import path        from 'path'
 import utils       from 'fs-utils'
 
+import { folders } from '../../config/server'
 import grep        from '../helpers/grep'
-import Config      from '../services/Config'
 import Links       from '../services/Links'
-
-const { folders } = Config
 
 export default express()
 .get('/:search_term', async (request, response) => {
