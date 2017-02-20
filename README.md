@@ -11,6 +11,9 @@
 ## Contributors
 Pull requests welcome!
 
+## Icon Attribution
+Axis Icon: Gyroscope by Arthur Shlain from [the Noun Project](https://thenounproject.com)
+
 ## Font Attributions
 - Icon Font built using [Fontello](http://www.fontello.com)
 

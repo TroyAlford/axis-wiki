@@ -45,6 +45,7 @@ var app = express()
   .use('/media',      Facebook, module_media)
 
   /* Static Content Routes */
+  .use('/favicon.png', bindStatic('../source/favicon.png'))
   .use('/css',    bindStatic('../build/css'))
   .use('/js',     bindStatic('../build/js'))
   .use('/font',   bindStatic('../fontello/font'))
