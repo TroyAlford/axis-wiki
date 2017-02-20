@@ -42,6 +42,7 @@ module.exports = [
     devtool: SOURCEMAP ? 'inline-source-map' : 'none',
     entry: `${__dirname}/source/application/Application.js`,
     externals: {
+      'React': 'React',
       'react': 'React',
       'react-dom': 'ReactDOM',
       'react-router': 'ReactRouter',
