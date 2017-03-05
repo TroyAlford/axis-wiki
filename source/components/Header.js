@@ -1,8 +1,8 @@
-import ComponentBase from '../application/ComponentBase'
+import React from 'react'
 import FacebookWrapper from '../components/FacebookWrapper'
 import SearchBox from '../components/SearchBox'
 
-export default ({}) =>
+const Header = () => (
   <section className="app-header hero is-info">
     <div className="hero-head">
       <nav className="nav">
@@ -17,3 +17,6 @@ export default ({}) =>
       </nav>
     </div>
   </section>
+)
+
+export default Header
