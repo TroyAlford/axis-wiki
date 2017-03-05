@@ -1,7 +1,7 @@
 import { addMessage } from '../messages/actions'
 import { browserHistory } from 'react-router'
 import { filter, includes, startCase } from 'lodash'
-import { setMetadata } from '../application/actions'
+import { setMetadata } from '../page/actions'
 
 export const
   SHEET_LOAD = 'sheet.load',

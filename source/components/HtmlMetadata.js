@@ -1,16 +1,17 @@
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
-import { startCase } from 'lodash'
 
 export default connect(
-  state => {
+  (state) => {
     return {
-      defaultTitle: 'Welcome',
-      titleTemplate: `%s - ${state.application.name}`,
-      title: state.application.title,
-      meta: [
-        { 'name': 'keywords', 'content': state.application.keywords }
-      ]
+      defaultTitle:  'Welcome',
+      titleTemplate: `%s - ${state.config.application.name}`,
+      title:         state.page.title,
+
+      meta: [{
+        name:    'keywords',
+        content: state.page.keywords,
+      }],
     }
   }
 )(Helmet)
