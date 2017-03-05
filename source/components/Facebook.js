@@ -1,28 +1,29 @@
-import ComponentBase from '../application/ComponentBase'
 import Cookie from 'js-cookie'
+import React from 'react'
+import ComponentBase from '../application/ComponentBase'
 
 function asyncLoadSDK(language = 'en_US') {
   ((d, s, id) => {
-    const element = d.getElementsByTagName(s)[0];
-    const fjs = element;
-    let js = element;
-    if (d.getElementById(id)) { return; }
-    js = d.createElement(s); js.id = id;
-    js.src = `//connect.facebook.net/${language}/all.js`;
-    fjs.parentNode.insertBefore(js, fjs);
-  })(document, 'script', 'facebook-jssdk');
+    const element = d.getElementsByTagName(s)[0]
+    const fjs = element
+    let js = element
+    if (d.getElementById(id)) { return }
+    js = d.createElement(s); js.id = id
+    js.src = `//connect.facebook.net/${language}/all.js`
+    fjs.parentNode.insertBefore(js, fjs)
+  })(document, 'script', 'facebook-jssdk')
 }
 
 export default class Facebook extends ComponentBase {
   constructor(props) {
     super(props)
 
-    const { config: { app_id } } = props
-    this.state = { cookieName: `fbsr_${app_id}` }
+    const { config: { appId } } = props
+    this.state = { cookieName: `fbsr_${appId}` }
   }
   componentWillReceiveProps(props) {
-    const { config: { app_id } } = props
-    this.setState({ cookieName: `fbsr_${app_id}` })
+    const { config: { appId } } = props
+    this.setState({ cookieName: `fbsr_${appId}` })
   }
 
   componentDidMount() {
@@ -31,18 +32,18 @@ export default class Facebook extends ComponentBase {
     }
 
     window.fbAsyncInit = () => { this.initializeFacebook() }
-    asyncLoadSDK()
+    return asyncLoadSDK()
   }
 
   initializeFacebook() {
-    const { version, config: { app_id } } = this.props
-    FB.init({
-      appId:  app_id,
+    const { version, config: { appId } } = this.props
+    window.FB.init({
+      appId,
       cookie: false, // disable - control this explicitly
       xfbml:  true, // parse social plugins on page
       version, // use props-specified graph api version
     })
-    FB.getLoginStatus(this.handleStatus)
+    window.FB.getLoginStatus(this.handleStatus)
   }
 
   handleStatus(response) {
@@ -57,18 +58,19 @@ export default class Facebook extends ComponentBase {
   }
 
   loadProfile() {
-    FB.api('/me', { fields: this.props.fields }, (me) => {
+    window.FB.api('/me', { fields: this.props.fields }, (me) => {
       this.props.onUserLoaded(me)
       this.updateCookie()
     })
   }
 
   logOn() {
-    FB.getLoginStatus(response => {
-      if (response.status === 'connected')
+    window.FB.getLoginStatus((response) => {
+      if (response.status === 'connected') {
         this.loadProfile()
-      else
-        FB.login(this.loadProfile)
+      } else {
+        window.FB.login(this.loadProfile)
+      }
     })
   }
 
@@ -78,61 +80,63 @@ export default class Facebook extends ComponentBase {
   }
 
   removeCookie() {
-    const cookieName = `fbsr_${this.props.config.app_id}`
+    const cookieName = `fbsr_${this.props.config.appId}`
     if (this.props.user.id && Cookie.get(cookieName)) {
       Cookie.remove(cookieName, {
         domain: window.location.hostname,
-        path: '/',
+        path:   '/',
       })
     }
   }
 
   updateCookie() {
-    const fbAuthResponse = FB.getAuthResponse()
-    const cookieName = `fbsr_${this.props.config.app_id}`
+    const fbAuthResponse = window.FB.getAuthResponse()
+    const cookieName = `fbsr_${this.props.config.appId}`
     Cookie.set(cookieName, fbAuthResponse.signedRequest, {
-      domain: window.location.hostname,
+      domain:  window.location.hostname,
       expires: fbAuthResponse.expiresIn,
-      path: '/',
+      path:    '/',
     })
   }
 
   render() {
-    const { className, config, dispatch, user, version } = this.props
-    const anonymous = !Boolean(user.id)
+    const { className, user, version } = this.props
+    const anonymous = !(user.id)
+    const imageSrc = [
+      '//graph.facebook.com',
+      version, user.id,
+      'picture?height=24&width=24',
+    ].join('/')
 
     return (
-      <div className={`fb level ${className}`}>
-      { anonymous ? [
-        <a href="#" key="link"
-           className="login button level-item icon icon-facebook"
-           onClick={this.logOn}>Log In</a>
-      ] : [
-        <img key="picture" src={`//graph.facebook.com/${version}/${user.id}/picture?height=24&width=24`} />,
-        <a href="#" key="link"
-           className="logout button level-item icon icon-facebook"
-           onClick={this.logOff}>
-          Log Out
-        </a>
-      ]}
+      <div className={`fb ${className}`}>
+        { anonymous ? (
+          <button onClick={this.logOn} className="login button icon icon-facebook">Log In</button>
+        ) : [
+          <img key="picture" alt="" src={imageSrc} />,
+          <button
+            key="btn" onClick={this.logOff}
+            className="logout button icon icon-facebook"
+          >Log Out</button>,
+        ]}
       </div>
     )
   }
 }
 
 Facebook.propTypes = {
-  fields: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  fields:  React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   version: React.PropTypes.string.isRequired,
 
   onAuthResponse: React.PropTypes.func.isRequired,
-  onLoggedOff: React.PropTypes.func.isRequired,
-  onUserLoaded: React.PropTypes.func.isRequired,
+  onLoggedOff:    React.PropTypes.func.isRequired,
+  onUserLoaded:   React.PropTypes.func.isRequired,
 }
 Facebook.defaultProps = {
-  fields: ['id', 'email', 'name', 'picture'],
+  fields:  ['id', 'email', 'name', 'picture'],
   version: 'v2.8',
 
-  onAuthResponse: (authResponse) => {},
-  onLoggedOff: () => {},
-  onUserLoaded: (user) => {},
+  onAuthResponse: (authResponse) => {}, // eslint-disable-line no-unused-vars
+  onLoggedOff:    () => {},
+  onUserLoaded:   (user) => {}, // eslint-disable-line no-unused-vars
 }
