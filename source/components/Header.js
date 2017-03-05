@@ -1,5 +1,5 @@
 import ComponentBase from '../application/ComponentBase'
-import Facebook from '../components/Facebook'
+import FacebookWrapper from '../components/FacebookWrapper'
 import SearchBox from '../components/SearchBox'
 
 export default ({}) =>
@@ -11,7 +11,7 @@ export default ({}) =>
           <span className="subtitle is-3">RPG</span>
         </div>
         <div className="nav-right">
-          <Facebook className="nav-item" />
+          <FacebookWrapper className="nav-item" />
           <SearchBox className="nav-item" />
         </div>
       </nav>

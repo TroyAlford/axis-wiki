@@ -15,12 +15,12 @@ export function loadProfile() {
       }
     }).then(json => json.id
       ? dispatch(setProfile(json))
-      : dispatch(setProfile({ id: undefined }))
+      : dispatch(setLoggedOff())
     ).catch(error => dispatch(setLoggedOff()))
   )
 }
 
-export function saveProfile(profile) {
+export function updateProfile(profile) {
   return (dispatch =>
     fetch('/api/my/profile', {
       credentials: 'include',
@@ -35,10 +35,10 @@ export function saveProfile(profile) {
         return response.json()
       else
         throw response.json()
-    }).then(json => {
-
+    }).then(profile => {
+      dispatch(setProfile(profile))
     }).catch(error => {
-
+      console.warn('Error retrieving profile:', error)
     })
   )
 }

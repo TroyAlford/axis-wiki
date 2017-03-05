@@ -1,63 +1,95 @@
 import ComponentBase from '../application/ComponentBase'
 import Cookie from 'js-cookie'
-import Icon from '../components/Icon'
-import { connect } from 'react-redux'
-import { loadProfile, saveProfile, setProfile, setLoggedOff } from '../redux/user/actions'
 
-import config from '../../config/config'
+function asyncLoadSDK(language = 'en_US') {
+  ((d, s, id) => {
+    const element = d.getElementsByTagName(s)[0];
+    const fjs = element;
+    let js = element;
+    if (d.getElementById(id)) { return; }
+    js = d.createElement(s); js.id = id;
+    js.src = `//connect.facebook.net/${language}/all.js`;
+    fjs.parentNode.insertBefore(js, fjs);
+  })(document, 'script', 'facebook-jssdk');
+}
 
-window.Cookie = Cookie
-
-class Facebook extends ComponentBase {
+export default class Facebook extends ComponentBase {
   constructor(props) {
-    super(props);
-    this.config = config.facebook
+    super(props)
+
+    const { config: { app_id } } = props
+    this.state = { cookieName: `fbsr_${app_id}` }
+  }
+  componentWillReceiveProps(props) {
+    const { config: { app_id } } = props
+    this.setState({ cookieName: `fbsr_${app_id}` })
   }
 
   componentDidMount() {
-    if (window.FB)
-      this.initializeFacebook()
-    else
-      window.fbAsyncInit = this.initializeFacebook.bind(this)
+    if (document.getElementById('facebook-jssdk') && window.FB) {
+      return this.initializeFacebook()
+    }
+
+    window.fbAsyncInit = () => { this.initializeFacebook() }
+    asyncLoadSDK()
   }
 
   initializeFacebook() {
+    const { version, config: { app_id } } = this.props
     FB.init({
-      appId   : this.config.application_id,
-      cookie  : false,  // allows server to access the session
-      status  : true,   // check login status on init
-      version : 'v2.5', // use graph api v2.5
-      xfbml   : true,   // parse social plugins on page
-      frictionlessRequests: true
+      appId:  app_id,
+      cookie: false, // disable - control this explicitly
+      xfbml:  true, // parse social plugins on page
+      version, // use props-specified graph api version
     })
+    FB.getLoginStatus(this.handleStatus)
   }
 
-  handleStatusChange(response) {
-    let { dispatch } = this.props
-
-    if (response.status === 'connected') { // Logged in & authorized
-      this.setCookie()
-      dispatch(loadProfile())
-    } else { // Not authorized, or not logged in to FB
-      this.removeCookie()
-      dispatch(setLoggedOff())
+  handleStatus(response) {
+    const cookie = Cookie.get(this.state.cookieName)
+    if (cookie && response.status === 'connected') {
+      // Logged in, authorized
+      this.loadProfile()
+    } else {
+      // Not authorized, or not logged in to FB
+      this.logOff()
     }
   }
 
-  logOn() {
-    if (!FB.getAccessToken())
-      FB.login(this.handleStatusChange)
-    else
-      FB.getLoginStatus(this.handleStatusChange)
-  }
-  logOff() {
-    this.removeCookie()
-    this.props.dispatch(setLoggedOff())
+  loadProfile() {
+    FB.api('/me', { fields: this.props.fields }, (me) => {
+      this.props.onUserLoaded(me)
+      this.updateCookie()
+    })
   }
 
-  setCookie() {
+  logOn() {
+    FB.getLoginStatus(response => {
+      if (response.status === 'connected')
+        this.loadProfile()
+      else
+        FB.login(this.loadProfile)
+    })
+  }
+
+  logOff() {
+    this.removeCookie()
+    this.props.onLoggedOff()
+  }
+
+  removeCookie() {
+    const cookieName = `fbsr_${this.props.config.app_id}`
+    if (this.props.user.id && Cookie.get(cookieName)) {
+      Cookie.remove(cookieName, {
+        domain: window.location.hostname,
+        path: '/',
+      })
+    }
+  }
+
+  updateCookie() {
     const fbAuthResponse = FB.getAuthResponse()
-    const cookieName = `fbsr_${this.config.application_id}`
+    const cookieName = `fbsr_${this.props.config.app_id}`
     Cookie.set(cookieName, fbAuthResponse.signedRequest, {
       domain: window.location.hostname,
       expires: fbAuthResponse.expiresIn,
@@ -65,36 +97,42 @@ class Facebook extends ComponentBase {
     })
   }
 
-  removeCookie() {
-    const cookieName = `fbsr_${this.config.application_id}`
-    if (this.props.id && Cookie.get(cookieName))
-      Cookie.remove(cookieName, {
-        domain: window.location.hostname, path: '/'
-      })
-  }
-
   render() {
-    const { dispatch } = this.props
+    const { className, config, dispatch, user, version } = this.props
+    const anonymous = !Boolean(user.id)
 
     return (
-      <div className={`fb level ${this.props.className}`}>
-      { this.props.anonymous
-        ? <a href="#" className="login button level-item icon icon-facebook"
-             onClick={this.logOn}>Log In</a>
-        : <div className="level-item mini profile">
-            { this.props.picture.data && <img src={this.props.picture.data.url} width="20px" /> }
-            <span>{this.props.name}</span>
-          </div>
-      }
-      { !this.props.anonymous &&
-        <a href="#" className="logout button level-item icon icon-facebook"
-           onClick={this.logOff}>Log Out</a>
-      }
+      <div className={`fb level ${className}`}>
+      { anonymous ? [
+        <a href="#" key="link"
+           className="login button level-item icon icon-facebook"
+           onClick={this.logOn}>Log In</a>
+      ] : [
+        <img key="picture" src={`//graph.facebook.com/${version}/${user.id}/picture?height=24&width=24`} />,
+        <a href="#" key="link"
+           className="logout button level-item icon icon-facebook"
+           onClick={this.logOff}>
+          Log Out
+        </a>
+      ]}
       </div>
     )
   }
 }
 
-export default connect(
-  state => state.user
-)(Facebook)
+Facebook.propTypes = {
+  fields: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  version: React.PropTypes.string.isRequired,
+
+  onAuthResponse: React.PropTypes.func.isRequired,
+  onLoggedOff: React.PropTypes.func.isRequired,
+  onUserLoaded: React.PropTypes.func.isRequired,
+}
+Facebook.defaultProps = {
+  fields: ['id', 'email', 'name', 'picture'],
+  version: 'v2.8',
+
+  onAuthResponse: (authResponse) => {},
+  onLoggedOff: () => {},
+  onUserLoaded: (user) => {},
+}

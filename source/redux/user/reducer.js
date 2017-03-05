@@ -5,10 +5,9 @@ import {
 
 const default_state = {
   anonymous: true,
-  id: '',
+  id: undefined,
   email: '',
   name: '',
-  picture: {},
   privileges: ['read']
 }
 
@@ -18,16 +17,20 @@ export default (state = default_state, action) => {
     case USER_PROFILE:
       if (!action.profile) return default_state
 
-      const { id, name, email, picture, privileges } = action.profile
+      const { id, name, email, privileges } = action.profile
       return {
         ...state,
+        id, email, name,
         anonymous: false,
-        id, email, name, picture,
-        privileges: privileges || ['read']
+        privileges: privileges || ['read'],
       }
 
     case USER_LOGOFF:
-      return { ...default_state, anonymous: true }
+      return {
+        ...default_state,
+        anonymous: true,
+        privileges: privileges || ['read'],
+      }
 
     default:
       return state
