@@ -3,31 +3,32 @@ import utils from 'fs-utils'
 import config from './config'
 
 export function setting(key, defaultValue) {
+  // eslint-disable-next-line no-mixed-operators
   return process && process.env && process.env[key] || defaultValue
 }
 
-const _contentPath = setting('STORAGE_PATH', path.join(__dirname, '/content'))
-const contentPath = !path.isAbsolute(_contentPath)
-  ? path.join(__dirname, _contentPath)
-  : _contentPath
+let contentPath = setting('STORAGE_PATH', path.join(__dirname, '/content'))
+contentPath = !path.isAbsolute(contentPath)
+  ? path.join(__dirname, contentPath)
+  : contentPath
 
 const folders = ['articles', 'config', 'media', 'metadata', 'users']
-  .reduce((folders, folderName) => ({
-    ...folders,
-    [folderName]: path.join(contentPath, `./${folderName}`)
+  .reduce((hash, name) => ({
+    ...hash,
+    [name]: path.join(contentPath, `./${name}`),
   }), {})
 
-for (let folder in folders) {
+Object.keys(folders).forEach((folder) => {
   if (!utils.isDir(folders[folder])) {
-    console.error(`Folder missing: ${folders[folder]}`)
+    console.error(`Folder missing: ${folders[folder]}`) // eslint-disable-line no-console
   }
-}
+})
 
 export default {
   ...config,
 
   cleanup: {
-    throttle: 5000 // ms
+    throttle: 5000, // ms
   },
   facebook: {
     ...config.facebook,

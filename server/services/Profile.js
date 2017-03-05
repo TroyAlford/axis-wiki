@@ -1,39 +1,36 @@
-import flow                 from 'lodash/flow'
-import sortBy               from 'lodash/sortBy'
-import uniq                 from 'lodash/uniq'
-
-import fs                   from 'fs'
-import path                 from 'path'
-import utils                from 'fs-utils'
-
-import config               from '../../config/server'
-import Permissions          from '../services/Permissions'
+import fs from 'fs'
+import path from 'path'
+import utils from 'fs-utils'
+import { flow, sortBy, uniq } from 'lodash'
+import config from '../../config/server'
+import Permissions from '../services/Permissions'
 
 export default class Profile {
   static get default() {
     return {
-      id: '',
+      id:    undefined,
       email: '',
-      name: '',
-      picture: {},
-      privileges: ['read']
+      name:  '',
+
+      privileges: ['read'],
     }
   }
 
   static delete(id) {
     // Removes files only. Reference updates are performed in response to file watchers.
-    let filepath = path.resolve(config.folders.users, `${id}.json`);
-    if (utils.exists(filepath))
-      fs.unlinkSync(filepath, { force: true });
+    const filepath = path.resolve(config.folders.users, `${id}.json`)
+    if (utils.exists(filepath)) {
+      fs.unlinkSync(filepath, { force: true })
+    }
 
-    return true;
+    return true
   }
 
   static load(id) {
     if (!id) return Profile.default
 
-    let file = path.resolve(config.folders.users, `${id}.json`),
-        profile = {}
+    const file = path.resolve(config.folders.users, `${id}.json`)
+    let profile = {}
 
     try {
       profile = utils.readJSONSync(file)
@@ -41,7 +38,7 @@ export default class Profile {
       profile = Object.assign({}, Profile.default)
     }
 
-    profile.privileges = flow(uniq(),sortBy())(
+    profile.privileges = flow(uniq(), sortBy())(
       ['read', ...Permissions.granted_to(id)]
     )
 
@@ -49,15 +46,14 @@ export default class Profile {
   }
 
   static save(id, profile) {
-    let filepath = path.resolve(config.folders.users, `${id}.json`);
+    const filepath = path.resolve(config.folders.users, `${id}.json`)
 
     try {
       utils.writeFileSync(filepath, JSON.stringify(profile))
+      return true
     } catch (err) {
-      console.log(err.message)
+      console.log(err.message) // eslint-disable-line no-console
       return false
     }
-
-    return true
   }
 }

@@ -3,32 +3,34 @@ import {
   USER_LOGOFF,
 } from './actions'
 
-const default_state = {
-  anonymous: true,
-  id: undefined,
-  email: '',
-  name: '',
-  privileges: ['read']
+const DEFAULTS = {
+  id:         undefined,
+  anonymous:  true,
+  email:      '',
+  name:       '',
+  privileges: ['read'],
 }
 
-export default (state = default_state, action) => {
+export default (state = DEFAULTS, action) => {
   switch (action.type) {
 
     case USER_PROFILE:
-      if (!action.profile) return default_state
+      if (!action.profile) return DEFAULTS
 
       const { id, name, email, privileges } = action.profile
       return {
         ...state,
-        id, email, name,
-        anonymous: false,
+        id,
+        email,
+        name,
+        anonymous:  false,
         privileges: privileges || ['read'],
       }
 
     case USER_LOGOFF:
       return {
-        ...default_state,
-        anonymous: true,
+        ...DEFAULTS,
+        anonymous:  true,
         privileges: privileges || ['read'],
       }
 

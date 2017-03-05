@@ -50,7 +50,21 @@ export default class Facebook extends ComponentBase {
     const cookie = Cookie.get(this.state.cookieName)
     if (cookie && response.status === 'connected') {
       // Logged in, authorized
-      this.loadProfile()
+      window.FB.api('/me/permissions', {}, ({ data }) => {
+        const granted = data.filter(
+          ({ status }) => status === 'granted'
+        ).map(({ permission }) => permission)
+
+        const denied = this.props.scope.filter(scope => granted.indexOf(scope) === -1)
+        if (denied.length) {
+          window.FB.login(this.loadProfile, {
+            scope:     this.props.scope.join(','),
+            auth_type: 'rerequest',
+          })
+        } else {
+          this.loadProfile()
+        }
+      })
     } else {
       // Not authorized, or not logged in to FB
       this.logOff()
@@ -69,7 +83,9 @@ export default class Facebook extends ComponentBase {
       if (response.status === 'connected') {
         this.loadProfile()
       } else {
-        window.FB.login(this.loadProfile)
+        window.FB.login(this.loadProfile, {
+          scope: this.props.scope.join(','),
+        })
       }
     })
   }
@@ -126,6 +142,7 @@ export default class Facebook extends ComponentBase {
 
 Facebook.propTypes = {
   fields:  React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  scope:   React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   version: React.PropTypes.string.isRequired,
 
   onAuthResponse: React.PropTypes.func.isRequired,
@@ -133,7 +150,8 @@ Facebook.propTypes = {
   onUserLoaded:   React.PropTypes.func.isRequired,
 }
 Facebook.defaultProps = {
-  fields:  ['id', 'email', 'name', 'picture'],
+  fields:  ['id', 'email', 'gender', 'locale', 'name', 'picture'],
+  scope:   ['public_profile', 'email'],
   version: 'v2.8',
 
   onAuthResponse: (authResponse) => {}, // eslint-disable-line no-unused-vars
