@@ -1,23 +1,14 @@
-export function setting(key, defaultValue) {
-  return process && process.env && process.env[key] || defaultValue
-}
-
 export default {
   application: {
-    name: setting('APPLICATION_NAME', "Axis Wiki"),
+    name: process.env.APPLICATION_NAME || "Axis Wiki",
   },
   facebook: {
-    app_id:
-      setting('FB_APP_ID', undefined),
-    permissions:
-      setting('FB_PERMISSIONS', "public_profile,email"),
+    app_id: process.env.FB_APP_ID || undefined,
+    permissions: process.env.FB_PERMISSIONS || "public_profile,email",
   },
   media: {
-    extensions:
-      setting('MEDIA_EXTENSIONS', 'gif,jpg,png').split(','),
-    largeSizePixels:
-      setting('MEDIA_PIXELS_LARGE', 1000),
-    smallSizePixels:
-      setting('MEDIA_PIXELS_SMALL', 250),
+    extensions: (process.env.MEDIA_EXTENSIONS || 'gif,jpg,png').split(','),
+    largeSizePixels: process.env.MEDIA_PIXELS_LARGE || 1000,
+    smallSizePixels: process.env.MEDIA_PIXELS_SMALL || 250,
   },
 }

@@ -7,6 +7,7 @@ import {
 import thunk from 'redux-thunk'
 import application from './application/reducer'
 import article from './article/reducer'
+import config from './config/reducer'
 import media from './media/reducer'
 import messages from './messages/reducer'
 import navigation from './navigation/reducer'
@@ -18,6 +19,7 @@ export default createStore(
   combineReducers({
     application,
     article,
+    config,
     media,
     messages,
     navigation,

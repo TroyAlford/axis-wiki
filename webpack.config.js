@@ -3,6 +3,15 @@ const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
 
+const VARIABLES = [
+  'APPLICATION_NAME',
+  'FB_APP_ID',
+  'FB_PERMISSIONS',
+  'MEDIA_EXTENSIONS',
+  'MEDIA_PIXELS_LARGE',
+  'MEDIA_PIXELS_SMALL',
+]
+
 const ENVIRONMENT = process.env.NODE_ENV
 const PRODUCTION = ENVIRONMENT === 'production'
 const SOURCEMAP = process.env.SOURCEMAP
@@ -36,6 +45,13 @@ const serverSideModules = fs.readdirSync('node_modules')
   .filter(x => ['.bin'].indexOf(x) === -1)
   .reduce((mods, mod) => Object.assign(mods, { [mod]: `commonjs ${mod}` }))
 
+const ConfigPlugin = new webpack.DefinePlugin({
+  'process.env': VARIABLES.reduce((o, key) => {
+    o[key] = JSON.stringify(process.env[key] || false)
+    return o
+  }, {})
+})
+
 module.exports = [
   Object.assign({}, bundle, {
     /* Main JS Bundle */
@@ -51,7 +67,7 @@ module.exports = [
       filename: 'application.js',
       path: `${__dirname}/build/js`,
     }),
-    plugins: PRODUCTION ? [uglify] : [],
+    plugins: PRODUCTION ? [ConfigPlugin, uglify] : [ConfigPlugin],
   }),
 
   Object.assign({}, bundle, {

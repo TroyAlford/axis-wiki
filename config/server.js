@@ -1,6 +1,10 @@
 import path from 'path'
 import utils from 'fs-utils'
-import config, { setting } from './config'
+import config from './config'
+
+export function setting(key, defaultValue) {
+  return process && process.env && process.env[key] || defaultValue
+}
 
 const _contentPath = setting('STORAGE_PATH', path.join(__dirname, '/content'))
 const contentPath = !path.isAbsolute(_contentPath)
