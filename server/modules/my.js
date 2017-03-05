@@ -27,7 +27,7 @@ export default express()
 
   // if request.session.id isn't set, this is a new Profile
   const id = request.session.id || posted_id,
-        profile = { id, name, email, picture }
+        profile = { id, name, email }
 
   if (!Profile.save(profile.id, profile))
     return response.status(500).send('Unable to save profile.')
