@@ -3,7 +3,7 @@ export default {
     name: process.env.APPLICATION_NAME || 'Axis Wiki',
   },
   facebook: {
-    app_id:      process.env.FB_APP_ID || undefined,
+    appId:       process.env.FB_APP_ID || undefined,
     permissions: process.env.FB_PERMISSIONS || 'public_profile,email',
   },
   media: {

@@ -1,54 +1,46 @@
-import crypto  from 'crypto'
-import config  from '../../config/server'
+import crypto from 'crypto'
+import config from '../../config/server'
 import Profile from '../services/Profile'
 
-const PREFIX = 'fbsr_';
+const PREFIX = 'fbsr_'
+
+const toHex = byte => ((byte < 16) ? '0' : '') + byte.toString(16)
+const encodeToHex = buffer => buffer.reduce(
+  (encoded, byte) => encoded + toHex(byte)
+, '')
 
 export default (req, res, next) => {
-  const
-    { app_id, app_secret } = config.facebook,
-    cookie_name = `${PREFIX}${app_id}`,
-    header_name = `X-${PREFIX}${app_secret}`,
-    cookie      = req.header(header_name) || req.cookies[cookie_name]
-  ;
+  const { appId, appSecret } = config.facebook
+  const cookieName = `${PREFIX}${appId}`
+  const headerName = `X-${PREFIX}${appSecret}`
+  const cookie = req.header(headerName) || req.cookies[cookieName]
 
-  let hmac = null;
+  req.session = {} // eslint-disable-line no-param-reassign
+
+  let hmac = null
   try {
-    hmac = crypto.createHmac('sha256', app_secret);
-  } catch (err) { // app_secret is probably not set-up
-    req.session = {};
-    next();
-    return;
+    hmac = crypto.createHmac('sha256', appSecret)
+  } catch (err) { // appSecret is probably not set-up
+    next()
+    return
   }
 
   if (cookie) {
-    const
-      chunks = cookie.split('.', 2),
-      rawSignature = chunks[0].replace(/\-/g, '+').replace(/\_/g, '/'),
-      hexSignature = encodeToHex(new Buffer(rawSignature, 'base64')),
-      rawToken = new Buffer(chunks[1].replace(/\-/g, '+').replace(/\_/g, '/'), 'base64').toString(),
-      token = JSON.parse(rawToken),
-      hmac = crypto.createHmac('sha256', app_secret)
-    ;
+    const chunks = cookie.split('.', 2)
+    const rawSignature = chunks[0].replace(/-/g, '+').replace(/_/g, '/')
+    const hexSignature = encodeToHex(new Buffer(rawSignature, 'base64'))
+    const rawToken = new Buffer(chunks[1].replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString()
+    const token = JSON.parse(rawToken)
 
-    hmac.update(chunks[1]);
+    hmac.update(chunks[1])
 
-    const expectedSignature = hmac.digest('hex');
+    const expectedSignature = hmac.digest('hex')
 
-    if (expectedSignature == hexSignature)
+    if (expectedSignature === hexSignature) {
+      // eslint-disable-next-line no-param-reassign
       req.session = Object.assign({ token }, Profile.load(token.user_id))
-  } else
-    req.session = {}
+    }
+  }
 
-  next();
-}
-
-const toHex = byte => ((byte < 16) ? '0' : '') + byte.toString(16);
-
-function encodeToHex(buffer) {
-  let encoded = '';
-  for (let byte of buffer)
-    encoded += toHex(byte);
-
-  return encoded;
+  next()
 }
