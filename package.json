@@ -63,6 +63,7 @@
     "babel-preset-jest": "^19.0.0",
     "babel-preset-react": "*",
     "babel-watch": "^2.0.6",
+    "foreman": "^2.0.0",
     "jest-cli": "^19.0.2",
     "node-sass": "^4.5.0",
     "nodemon": "^1.11.0",
