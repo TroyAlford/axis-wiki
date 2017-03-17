@@ -4,6 +4,15 @@ import { extractSlug, slugify } from '../../utility/Slugs'
 import cleaners from './cleaners'
 import renderers from './renderers'
 
+const ALIASES = Symbol('aliases')
+const HTML = Symbol('html')
+const SLUG = Symbol('slug')
+const TAGS = Symbol('tags')
+const TITLE = Symbol('title')
+
+const CLEANERS = Symbol('cleaners')
+const RENDERERS = Symbol('renderers')
+
 export const DEFAULTS = {
   title: undefined,
 
@@ -28,6 +37,7 @@ function uniqueSlugs(slugs) {
 }
 
 export default class Article {
+  /* eslint-disable no-console */
   constructor(slug, html = '', settings = {}) {
     this.settings = defaultsDeep({}, settings, DEFAULTS)
 
@@ -43,43 +53,47 @@ export default class Article {
     this.tags = this.settings.tags
   }
 
-  get cleaners() { return this._cleaners || [] }
+  get cleaners() { return this[CLEANERS] || [] }
   set cleaners(value) {
-    if (Array.isArray(value))
-      this._cleaners = value.filter(fn => typeof fn === 'function')
-    else if (typeof value === 'function')
-      this._cleaners = [value]
-    else
+    if (Array.isArray(value)) {
+      this[CLEANERS] = value.filter(fn => typeof fn === 'function')
+    } else if (typeof value === 'function') {
+      this[CLEANERS] = [value]
+    } else {
       console.warn(`Cleaners must be functions, not ${typeof value}`)
+    }
   }
 
-  get renderers() { return this._renderers }
+  get renderers() { return this[RENDERERS] }
   set renderers(value) {
-    if (Array.isArray(value))
-      this._renderers = value.filter(fn => typeof fn === 'function')
-    else if (typeof value === 'function')
-      this._renderers = [value]
-    else
+    if (Array.isArray(value)) {
+      this[RENDERERS] = value.filter(fn => typeof fn === 'function')
+    } else if (typeof value === 'function') {
+      this[RENDERERS] = [value]
+    } else {
       console.warn(`Renderers must be functions, not ${typeof value}`)
+    }
   }
 
-  get aliases() { return difference(this._aliases, [this.slug]) }
-  set aliases(aliases) { this._aliases = uniqueSlugs(aliases) }
+  get aliases() { return difference(this[ALIASES], [this.slug]) }
+  set aliases(aliases) { this[ALIASES] = uniqueSlugs(aliases) }
 
-  get html() { return this._html }
+  get html() { return this[HTML] }
   set html(html) {
-    if (typeof html === 'string')
-      this._html = html
+    if (typeof html === 'string') {
+      this[HTML] = html
+    }
   }
 
-  get title() { return this._title || startCase(this.slug) }
+  get title() { return this[TITLE] || startCase(this.slug) }
   set title(title) {
-    if (typeof title === 'string')
-      this._title = title
+    if (typeof title === 'string') {
+      this[TITLE] = title
+    }
   }
 
-  get slug() { return extractSlug(this._slug || '') }
-  set slug(slug) { this._slug = extractSlug(slug) }
+  get slug() { return extractSlug(this[SLUG] || '') }
+  set slug(slug) { this[SLUG] = extractSlug(slug) }
 
 
   get meta() {
@@ -97,13 +111,13 @@ export default class Article {
   }
   get settings() {
     return {
-      cleaners: this.cleaners,
+      cleaners:  this.cleaners,
       renderers: this.renderers,
 
       aliases: this.aliases,
-      data: this.data,
-      tags: this.tags,
-      title: this.title,
+      data:    this.data,
+      tags:    this.tags,
+      title:   this.title,
     }
   }
 
@@ -115,8 +129,8 @@ export default class Article {
     return this.runAll(this.renderers, this.clean)
   }
 
-  get tags() { return difference(this._tags, [this.slug]) }
-  set tags(tags) { this._tags = uniqueSlugs(tags) }
+  get tags() { return difference(this[TAGS], [this.slug]) }
+  set tags(tags) { this[TAGS] = uniqueSlugs(tags) }
 
   runAll(functions, ...args) {
     return flow(functions).apply(this, args)

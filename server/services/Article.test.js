@@ -1,3 +1,5 @@
+import Article from './Article'
+
 jest.unmock('cheerio')
 jest.unmock('lodash')
 jest.unmock('./Article')
@@ -5,8 +7,6 @@ jest.unmock('../../utility/Slugs')
 
 jest.mock('./cleaners', () => [])
 jest.mock('./renderers', () => [])
-
-import Article from './Article'
 
 describe('Article', () => {
   it('creates default titles', () => {
@@ -25,7 +25,7 @@ describe('Article', () => {
     const expected = 'a-slugified-slug'
 
     // Test based on constructor assignment
-    let article = new Article(before)
+    const article = new Article(before)
     expect(article.slug).toEqual(expected)
 
     // Test based on property assignment
@@ -47,7 +47,7 @@ describe('Article', () => {
     const before = ['Cr4zy+ ', '--A$$-', '--TEST--', '$!Sl_g']
     const expected = ['a', 'cr-4-zy', 'sl-g']
 
-    let article = new Article(slug, '', { aliases: before, tags: before })
+    const article = new Article(slug, '', { aliases: before, tags: before })
     expect(article.aliases).toEqual(expected)
     expect(article.tags).toEqual(expected)
 
@@ -64,8 +64,8 @@ describe('Article', () => {
     const fn = jest.fn(() => null)
     const all = [fn, '', null]
     const article = new Article('', '', {
-      cleaners: all,
-      renderers: all
+      cleaners:  all,
+      renderers: all,
     })
 
     expect(article.cleaners).toEqual([fn])
@@ -76,7 +76,8 @@ describe('Article', () => {
     const cleaner = jest.fn(() => null)
     const renderer = jest.fn(() => null)
     const article = new Article('', '', {
-      cleaners: [cleaner], renderers: [renderer]
+      cleaners:  [cleaner],
+      renderers: [renderer],
     })
 
     // Function should not be called yet
@@ -84,12 +85,12 @@ describe('Article', () => {
     expect(renderer).not.toBeCalled()
 
     // asking for .clean should run all renderers once
-    article.clean
+    article.clean // eslint-disable-line
     expect(cleaner.mock.calls.length).toEqual(1); cleaner.mockClear()
     expect(renderer).not.toBeCalled()
 
     // asking for .rendered should call .clean, then render
-    article.rendered
+    article.rendered // eslint-disable-line
     expect(cleaner.mock.calls.length).toEqual(1); cleaner.mockClear()
     expect(renderer.mock.calls.length).toEqual(1); renderer.mockClear()
   })
@@ -101,7 +102,7 @@ describe('Article', () => {
     function fn(param) {
       expect(this).toEqual(article)
       expect(param).toEqual(article)
-      calls++
+      calls += 1
 
       return param
     }
@@ -109,7 +110,7 @@ describe('Article', () => {
     article.cleaners = [fn]
     article.renderers = [fn]
 
-    article.rendered
+    article.rendered // eslint-disable-line
     expect(calls).toEqual(2)
   })
 })
