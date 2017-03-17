@@ -1,14 +1,15 @@
 import * as React from 'react'
 
-import { startCase, sum, toLower } from 'lodash'
-import Slug from '../../utility/Slugs'
+import { startCase, toLower } from 'lodash'
+import { slugify } from '../../utility/Slugs'
 
 import Editable from '../components/Editable'
 
 export default class Weapon extends React.Component {
   render() {
-    const { equipped, key, name, values } = this.props.weapon,
-      display = name ? name : startCase(toLower(key))
+    /* jslint-disable no-shadow */
+    const { equipped, key, name, values } = this.props.weapon
+    const display = name || startCase(toLower(key))
 
     const nameProps = this.props.forceNameEditing ? { editing: true } : {}
 
@@ -16,7 +17,7 @@ export default class Weapon extends React.Component {
       <div className="weapon">
         <Editable className="equipped" value={!!equipped}
           readonly={this.props.readonly}
-          onChange={equipped => {
+          onChange={(equipped) => {
             if (equipped === this.props.weapon.equipped) return;
             this.props.onChange({
               ...this.props.weapon,
@@ -27,11 +28,12 @@ export default class Weapon extends React.Component {
         <Editable className="name" value={display}
           placeholder="Weapon Type/Name"
           readonly={this.props.readonly}
-          onEditEnd={name => {
-            if (name === this.props.weapon.name) return;
+          onEditEnd={(name) => {
+            if (name === this.props.weapon.name) return
             const updated = {
               ...this.props.weapon,
-              name, key: Slug(name),
+              name,
+              key: slugify(name),
             }
 
             this.props.onChange(updated, this.props.weapon)
@@ -61,20 +63,28 @@ export default class Weapon extends React.Component {
 
 Weapon.propTypes = {
   forceNameEditing: React.PropTypes.bool,
-  onChange: React.PropTypes.func.isRequired,
+
+  readonly: React.PropTypes.bool,
+
   weapon: React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
+    key:      React.PropTypes.string.isRequired,
     equipped: React.PropTypes.bool.isRequired,
-    name: React.PropTypes.string,
-    values: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+    name:     React.PropTypes.string,
+    values:   React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
   }),
+
+  onChange: React.PropTypes.func.isRequired,
 }
 Weapon.defaultProps = {
   forceNameEditing: false,
-  onChange: () => {},
+
+  readonly: false,
+
   weapon: {
-    key: 'new-weapon',
+    key:      'new-weapon',
     equipped: false,
-    values: [0, 0, 0],
+    values:   [0, 0, 0],
   },
+
+  onChange: () => {},
 }

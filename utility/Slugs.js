@@ -1,55 +1,58 @@
 import { difference, includes, kebabCase, toLower } from 'lodash'
 
-export function Slug(input) {
-  if (Array.isArray(input))
-    return difference(input.map(Slug), [''])
+function strip(string) {
+  return string
+    .replace(/\s/g, ' ')
+    .replace(/[^a-z0-9_.-]/gi, '-')
+}
 
-  if (!input || includes(['object', 'function'], typeof input))
+export function slugify(input) {
+  if (Array.isArray(input)) {
+    return difference(input.map(slugify), [''])
+  }
+
+  if (!input || includes(['object', 'function'], typeof input)) {
     return '' // Return '' for all falsy values, objects and fn's
+  }
 
   const lowercase = toLower(strip(input))
   return lowercase.split('.').map(kebabCase).join('.')
   // Split file.ext and kebab-case each section, then rejoin
 }
-export default Slug
 
-export function Extract(input) {
-  if (Array.isArray(input))
-    return difference(input.map(Extract), [''])
+export function extractSlug(input) {
+  if (Array.isArray(input)) {
+    return difference(input.map(extractSlug), [''])
+  }
 
-  if (typeof input !== 'string')
-    return ''
+  if (typeof input !== 'string') return ''
 
-  return Slug(
-    input.split(/[\/\\]/g).pop()
+  return slugify(
+    input.split(/[/\\]/g).pop()
          .split(/[?#]/g).shift()
   )
 }
-export function Url(input) {
-  if (Array.isArray(input))
-    return difference(input.map(Url), [''])
+export function slugifyUrl(input) {
+  if (Array.isArray(input)) {
+    return difference(input.map(slugifyUrl), [''])
+  }
 
-  if (typeof input !== 'string')
-    return ''
+  if (typeof input !== 'string') return ''
 
   let result = []
 
-  let [file, ...path] = input.split('/').reverse()
-  let [slug, extension] = file.split('.')
+  const [file, ...path] = input.split('/').reverse()
+  const [slug, extension] = file.split('.')
 
-  if (path.length)
+  if (path.length) {
     result = [path.reverse().join('/'), '/']
+  }
 
-  result.push(Slug(slug))
+  result.push(slugify(slug))
 
-  if (extension)
+  if (extension) {
     result = [...result, '.', extension]
+  }
 
   return result.join('')
-}
-
-function strip(string) {
-  return string
-    .replace(/\s/g, ' ')
-    .replace(/[^a-z0-9_.-]/gi, '-')
 }

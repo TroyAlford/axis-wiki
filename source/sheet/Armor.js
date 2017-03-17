@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { startCase, sum, toLower } from 'lodash'
-import Slug from '../../utility/Slugs'
+import slugify from '../../utility/Slugs'
 
 import Editable from '../components/Editable'
 
@@ -17,7 +17,7 @@ export default class Armor extends React.Component {
       <div className="armor">
         <Editable className="equipped" value={!!equipped}
           readonly={this.props.readonly}
-          onChange={equipped => {
+          onChange={(equipped) => {
             if (equipped === this.props.armor.equipped) return;
             this.props.onChange({
               ...this.props.armor,
@@ -29,10 +29,11 @@ export default class Armor extends React.Component {
           placeholder="Armor Type/Name"
           readonly={this.props.readonly}
           onEditEnd={name => {
-            if (name === this.props.armor.name) return;
+            if (name === this.props.armor.name) return
             const updated = {
               ...this.props.armor,
-              name, key: Slug(name)
+              key: slugify(name),
+              name,
             }
             this.props.onChange(updated, this.props.armor)
             this.props.onEditEnd(updated, this.props.armor)
@@ -65,19 +66,23 @@ export default class Armor extends React.Component {
 Armor.propTypes = {
   armor: React.PropTypes.shape({
     equipped: React.PropTypes.bool.isRequired,
-    key: React.PropTypes.string.isRequired,
-    name: React.PropTypes.string,
-    values: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+    key:      React.PropTypes.string.isRequired,
+    name:     React.PropTypes.string,
+    values:   React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
   }).isRequired,
   forceNameEditing: React.PropTypes.bool,
+
   onChange: React.PropTypes.func.isRequired,
+  readonly: React.PropTypes.bool,
 }
 Armor.defaultProps = {
   armor: {
     equipped: false,
-    key: 'generic-armor',
-    values: [0,0,0,0,0,0],
+    key:      'generic-armor',
+    values:   [0, 0, 0, 0, 0, 0],
   },
   forceNameEditing: false,
+
   onChange: () => {},
+  readonly: false,
 }

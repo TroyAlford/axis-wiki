@@ -1,9 +1,9 @@
-import bodyParser           from 'body-parser'
-import express              from 'express'
+import bodyParser from 'body-parser'
+import express from 'express'
 
-import Profile              from '../services/Profile'
-import Sheet                from '../services/Sheet'
-import Slug                 from '../../utility/Slugs'
+import Profile from '../services/Profile'
+// import Sheet from '../services/Sheet'
+// import { slugify } from '../../utility/Slugs'
 
 export default express()
   .use(bodyParser.json())                         // Parses application/json

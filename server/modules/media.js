@@ -1,75 +1,77 @@
-import bodyParser      from 'body-parser'
-import del             from 'del'
-import express         from 'express'
-import jimp            from 'jimp'
-import multer          from 'multer'
-import path            from 'path'
+import bodyParser from 'body-parser'
+import del from 'del'
+import express from 'express'
+import multer from 'multer'
+import path from 'path'
 
-import config          from '../../config/server'
-import { includes, intersection } from 'lodash/includes'
-import { resizeAll }      from '../helpers/image_processor'
-import Slug               from '../../utility/Slugs'
+import { includes, intersection } from 'lodash'
+import config from '../../config/server'
+import { resizeAll } from '../helpers/image_processor'
+import { slugify } from '../../utility/Slugs'
 
 const { folders, media } = config
 
 const fileFilter = (request, file, cb) => {
   file.extension = path.extname(file.originalname).toLowerCase().replace('.', '')
-  file.process   = includes(media.extensions, file.extension)
-  if (!file.process)
+  file.process = includes(media.extensions, file.extension)
+  if (!file.process) {
     request.rejected_files = [...(request.rejected_files || []), file]
+  }
 
   cb(null, file.process)
 }
 
 const storage = multer.diskStorage({
-  destination: function(request, file, cb) {
-    cb(null, folders.media);
+  destination: (request, file, cb) => {
+    cb(null, folders.media)
   },
-  filename: function(request, file, cb) {
-    file.slug = Slug(path.basename(file.originalname, file.extension))
-                    .replace('.', '')
+  filename: (request, file, cb) => {
+    file.slug = slugify(path.basename(file.originalname, file.extension))
+                  .replace('.', '')
 
     cb(null, `${file.slug}.temp.${file.extension}`)
-  }
+  },
 })
 
-const file_middleware = multer({ fileFilter, storage }).array('file')
+const fileMiddleware = multer({ fileFilter, storage }).array('file')
 
 export default express()
   .use(bodyParser.json()) // Parses application/json
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
 .get('/full/*', (req, res) => {
-  let ext       = path.extname(req.url),
-      filename  = path.basename(req.url, ext);
+  const ext = path.extname(req.url)
+  const filename = path.basename(req.url, ext)
 
-  res.sendFile(`${folders.media}/${filename}.full${ext}`);
+  res.sendFile(`${folders.media}/${filename}.full${ext}`)
 })
 .get('*', express.static(folders.media))
-.post('/', file_middleware, (request, response) => {
-  if (intersection(request.session.privileges, ['admin', 'edit']).length === 0)
+.post('/', fileMiddleware, (request, response) => {
+  if (intersection(request.session.privileges, ['admin', 'edit']).length === 0) {
     return response.status(401).send('You do not have sufficient privileges to upload files.')
+  }
 
   // First, report errors for any files that were rejected
   const allowed = `.${media.extensions.join(', .')}`
   const rejections = (request.rejected_files || []).reduce((results, file) => {
     results[file.originalname] = {
       errors: [`Only files with the extensions ${allowed} are allowed for upload.`],
-      paths: [],
+      paths:  [],
     }
   }, {})
 
   const processors = (request.files || []).map(file => ({
     filename: file.originalname,
     tempPath: file.path,
+
     destinations: [{
-      path: path.join(folders.media, `${file.slug}.full.${file.extension}`),
-      maxWidth: media.largeSizePixels,
+      path:      path.join(folders.media, `${file.slug}.full.${file.extension}`),
+      maxWidth:  media.largeSizePixels,
       maxHeight: media.largeSizePixels,
     }, {
-      path: path.join(folders.media, `${file.slug}.${file.extension}`),
-      maxWidth: media.smallSizePixels,
+      path:      path.join(folders.media, `${file.slug}.${file.extension}`),
+      maxWidth:  media.smallSizePixels,
       maxHeight: media.smallSizePixels,
-    }]
+    }],
   }))
 
   Promise.all(
@@ -79,14 +81,14 @@ export default express()
           ...result,
           filename: entry.filename,
           tempPath: entry.tempPath,
-          paths: result.paths.map(p => path.relative(folders.media, p))
+          paths:    result.paths.map(p => path.relative(folders.media, p)),
         }))
     )
   )
   .catch(console.error)
-  .then(processed => {
+  .then((processed) => {
     const tempPaths = processed.map(file => file.tempPath)
-    console.log(`Media Upload Finished => Deleting:`)
+    console.log('Media Upload Finished => Deleting:')
     tempPaths.forEach(path => console.log(` ==> ${path}`))
     del(tempPaths, { force: true })
 
@@ -96,9 +98,11 @@ export default express()
     ...results,
     [file.filename]: {
       errors: file.errors || undefined,
-      paths: file.paths || [],
-    }
+      paths:  file.paths || [],
+    },
   }), {}))
-  .then(processed => { console.log('Processed', processed); return ({ ...rejections, ...processed }) })
+  .then(processed => ({ ...rejections, ...processed }))
   .then(results => response.status(200).send(results))
+
+  return true
 })

@@ -1,9 +1,8 @@
 import $ from 'cheerio'
-import { Slug } from '../../../utility/Slugs'
+import { slugify } from '../../../utility/Slugs'
 
-export default function(article = { html: '' }) {
-  if (!article || !article.html)
-    return article
+export default function (article = { html: '' }) {
+  if (!article || !article.html) return article
 
   const $parser = $.load(article.html)
   $parser('include').each((index, element) => {
@@ -12,19 +11,21 @@ export default function(article = { html: '' }) {
     $include.html('') // Remove contents
 
     let from = $include.attr('from') || ''
-    if (!from) // Invalid from attr = remove include entirely
+    if (!from) { // Invalid from attr = remove include entirely
       return $include.remove()
+    }
 
-    from = Slug(from)
+    from = slugify(from)
     $include.attr('from', from)
 
     let sections = $include.attr('sections') || '*'
-    if (sections !== '*')
-      sections = Slug(sections.split(','))
+    if (sections !== '*') {
+      sections = slugify(sections.split(','))
                   .filter(s => !!s) // Eliminate blank sections
                   .join(',')
+    }
 
-    $include.attr('sections', sections)
+    return $include.attr('sections', sections)
   })
 
   article.html = $parser.html()

@@ -2,7 +2,7 @@ import $ from 'cheerio'
 import { orderBy, uniq } from 'lodash'
 import config from '../../../config/server'
 import Links from '../Links'
-import { Url, Extract } from '../../../utility/Slugs'
+import { extractSlug, slugifyUrl } from '../../../utility/Slugs'
 import path from 'path'
 import url from 'url'
 import utils from 'fs-utils'
@@ -21,7 +21,7 @@ export default function(article = { html: '' }) {
       return $link.attr('target', '_new').addClass('external')
 
     // Internal Link
-    const filename = Extract($link.attr('href') || '') || ''
+    const filename = extractSlug($link.attr('href') || '') || ''
     const isMedia = 0 <= filename.indexOf('.')
 
     const exists = isMedia ? mediaExists(filename) : articleExists(filename)
@@ -35,7 +35,7 @@ export default function(article = { html: '' }) {
 
     links_to.push(filename)
 
-    const href = Url($link.attr('href'))
+    const href = slugifyUrl($link.attr('href'))
   })
 
   article.html = $parser.html()

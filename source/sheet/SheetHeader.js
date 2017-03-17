@@ -1,7 +1,6 @@
 import * as React from 'react'
 import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
-import Slug from '../../utility/Slugs'
 import {
   filter, flatten, flow, includes,
   map, omit, pick, sum,

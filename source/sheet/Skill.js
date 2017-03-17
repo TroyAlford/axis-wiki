@@ -1,10 +1,7 @@
- import * as React from 'react'
+import React from 'react'
 
-import {
-  startCase,
-  toLower
-} from 'lodash'
-import Slug from '../../utility/Slugs'
+import { startCase, toLower } from 'lodash'
+import { slugify } from '../../utility/Slugs'
 
 import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
@@ -12,18 +9,15 @@ import Editable from '../components/Editable'
 const nameParserRegEx = new RegExp(/^(?:([a-z0-9 ]*):)?([a-z0-9 ]*)(?:\(([^(]*)\))?/mi)
 
 export default class Skill extends ComponentBase {
-  static parseName(name) {
-    if (typeof name !== 'string' || !nameParserRegEx.test(name))
+  static parseName(unparsed) {
+    if (typeof unparsed !== 'string' || !nameParserRegEx.test(unparsed)) {
       return { category: '', name: '', note: '' }
+    }
 
-    let split = nameParserRegEx.exec(name).splice(1)
+    const [category, name, note] = nameParserRegEx.exec(unparsed).splice(1)
       .map(item => (item || '').replace(/\s{2,}/g, ' ').trim())
 
-    return {
-      category: split[0],
-      name: split[1],
-      note: split[2],
-    }
+    return { category, name, note }
   }
 
   displayName(props = this.props) {
@@ -35,9 +29,10 @@ export default class Skill extends ComponentBase {
   }
 
   render() {
+    /* eslint-disable no-shadow */
     const {
       className,
-      skill: { values }
+      skill: { values },
     } = this.props
 
     const nameProps = this.props.forceNameEditing ? { editing: true } : {}
@@ -47,11 +42,12 @@ export default class Skill extends ComponentBase {
         <Editable className="name" value={this.displayName()}
           placeholder="Category: Name (Notes)"
           readonly={this.props.readonly}
-          onEditEnd={name => {
+          onEditEnd={(name) => {
             const parsed = Skill.parseName(name)
             const updated = {
               ...this.props.skill,
-              ...parsed, key: Slug(parsed.name),
+              ...parsed,
+              key: slugify(parsed.name),
             }
 
             this.props.onChange(updated, this.props.skill)
@@ -59,23 +55,23 @@ export default class Skill extends ComponentBase {
           }}
           {...nameProps}
         />
-      {values.map((value, index) =>
-        <Editable key={index} className={`value equals-${value}`}
-          value={value} min={0} max={10}
-          readonly={this.props.readonly}
-          onChange={value => {
-            const values = [...this.props.skill.values]
-            if (value === values[index]) return;
+        {values.map((value, index) =>
+          <Editable key={index} className={`value equals-${value}`}
+            value={value} min={0} max={10}
+            readonly={this.props.readonly}
+            onChange={(value) => {
+              const values = [...this.props.skill.values]
+              if (value === values[index]) return
 
-            values[index] = value
-            this.props.onChange({
-              ...this.props.skill,
-              values,
-            }, this.props.skill)
-          }}
-          onEditEnd={() => this.props.onEditEnd(this.props.skill)}
-        />
-      )}
+              values[index] = value
+              this.props.onChange({
+                ...this.props.skill,
+                values,
+              }, this.props.skill)
+            }}
+            onEditEnd={() => this.props.onEditEnd(this.props.skill)}
+          />
+        )}
       </div>
     )
   }
@@ -83,24 +79,30 @@ export default class Skill extends ComponentBase {
 
 Skill.propTypes = {
   className: React.PropTypes.string,
-  onChange: React.PropTypes.func.isRequired,
-  onEditEnd: React.PropTypes.func.isRequired,
-  forceNameEditing: React.PropTypes.bool.isRequired,
+
   skill: React.PropTypes.shape({
     category: React.PropTypes.string,
-    key: React.PropTypes.string.isRequired,
-    name: React.PropTypes.string,
-    note: React.PropTypes.string,
-    values: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-  })
+    key:      React.PropTypes.string.isRequired,
+    name:     React.PropTypes.string,
+    note:     React.PropTypes.string,
+    values:   React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  }),
+
+  forceNameEditing: React.PropTypes.bool.isRequired,
+
+  onChange:  React.PropTypes.func.isRequired,
+  onEditEnd: React.PropTypes.func.isRequired,
 }
 Skill.defaultProps = {
   className: '',
-  forceNameEditing: false,
-  onChange: () => {},
-  onEditEnd: () => {},
+
   skill: {
-    key: 'new-skill',
+    key:    'new-skill',
     values: [0, 1],
   },
+
+  forceNameEditing: false,
+
+  onChange:  () => {},
+  onEditEnd: () => {},
 }

@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { startCase, toLower } from 'lodash'
-import Slug from '../../utility/Slugs'
+import { slugify } from '../../utility/Slugs'
 
 import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
@@ -9,18 +9,15 @@ import Editable from '../components/Editable'
 const nameParserRegEx = new RegExp(/^(?:([a-z0-9 ]*):)?([a-z0-9 ]*)(?:\(([^(]*)\))?/mi)
 
 export default class Trait extends ComponentBase {
-  static parseName(name) {
-    if (typeof name !== 'string' || !nameParserRegEx.test(name))
+  static parseName(unparsed) {
+    if (typeof unparsed !== 'string' || !nameParserRegEx.test(unparsed)) {
       return { category: '', name: '', note: '' }
+    }
 
-    let split = nameParserRegEx.exec(name).splice(1)
+    const [category, name, note] = nameParserRegEx.exec(unparsed).splice(1)
       .map(item => (item || '').replace(/\s{2,}/g, ' ').trim())
 
-    return {
-      category: split[0],
-      name: split[1],
-      note: split[2],
-    }
+    return { category, name, note }
   }
 
   displayName(props = this.props) {
@@ -34,7 +31,7 @@ export default class Trait extends ComponentBase {
   render() {
     const {
       className,
-      trait: { value }
+      trait: { value },
     } = this.props
 
     const nameProps = this.props.forceNameEditing ? { editing: true } : {}
@@ -44,11 +41,11 @@ export default class Trait extends ComponentBase {
         <Editable className="name" value={this.displayName()}
           placeholder="Category: Name (Notes)"
           readonly={this.props.readonly}
-          onEditEnd={name => {
+          onEditEnd={(name) => {
             const parsed = Trait.parseName(name)
             const updated = {
               ...this.props.trait,
-              ...parsed, key: Slug(parsed.name),
+              ...parsed, key: slugify(parsed.name),
             }
 
             this.props.onChange(updated, this.props.trait)

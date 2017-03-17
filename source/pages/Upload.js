@@ -1,13 +1,9 @@
-import ComponentBase from '../application/ComponentBase'
+import { filter, map, uniqBy } from 'lodash'
 import Dropzone from 'react-dropzone'
+import React from 'react'
 
-import {
-  filter,
-  map,
-  uniqBy
-} from 'lodash'
-
-import Slug from '../../utility/Slugs'
+import ComponentBase from '../application/ComponentBase'
+import slugify from '../../utility/Slugs'
 
 export default class UploadPage extends ComponentBase {
   constructor(props) {
@@ -15,19 +11,22 @@ export default class UploadPage extends ComponentBase {
     this.state = {
       uploading: [],
       uploaded:  [],
-      failed:    []
+      failed:    [],
     }
   }
 
   onDrop(files) {
-    let form = new FormData(),
-        uploading = this.state.uploading
+    const form = new FormData()
+    const uploading = this.state.uploading
 
-    files.forEach(file => {
-      let { name, preview, size, type, lastModifiedDate } = file
+    files.forEach((file) => {
+      const { name, preview, size, type, lastModifiedDate } = file
       uploading.push({
-        name: Slug(name),
-        preview, size, type, lastModifiedDate
+        name: slugify(name),
+        lastModifiedDate,
+        preview,
+        size,
+        type,
       })
       form.append('file', file)
     })
@@ -36,41 +35,42 @@ export default class UploadPage extends ComponentBase {
 
     fetch('/media', {
       credentials: 'include',
-      method: 'POST',
-      body: form
+      method:      'POST',
+      body:        form,
     })
     .then(response => response.json())
-    .then(json => {
-      const
-        files     = map(this.state.uploading, file =>
-          Object.assign({}, json[file.name], file)
-        ),
-        uploading = filter(files, file => !json[file.name]),
-        processed = filter(files, file => json[file.name]),
-        uploaded  = filter(processed, file => file.errors.length == 0),
-        failed    = filter(processed, file => file.errors.length != 0)
+    .then((json) => {
+      const files = map(this.state.uploading, file =>
+        Object.assign({}, json[file.name], file)
+      )
+      const uploading = filter(files, file => !json[file.name])
+      const processed = filter(files, file => json[file.name])
+      const uploaded = filter(processed, file => file.errors.length === 0)
+      const failed = filter(processed, file => file.errors.length !== 0)
 
       this.setState({
         uploading,
         uploaded: uniqBy([...this.state.uploaded, ...uploaded], 'name'),
-        failed:   uniqBy([...this.state.failed,   ...failed],   'name')
+        failed:   uniqBy([...this.state.failed, ...failed], 'name'),
       })
     })
   }
 
   renderFiles(files, actionText, className) {
-    return <div className={`message ${className} files`}>
-      <div className="message-header">{actionText}: {files.length} files</div>
-      <div className="message-body">{map(files, (file, index) =>
-        <div key={index} className="file">
-          <span className="name">{file.name}</span>
-          <span className="link">{file.small ? <a href={file.small}>View</a> : null}</span>
-          {!file.errors ? null : map(file.errors, (error, index) =>
-            <div key={index} className="error icon icon-warning">{error}</div>
-          )}
-        </div>
-      )}</div>
-    </div>
+    return (
+      <div className={`message ${className} files`}>
+        <div className="message-header">{actionText}: {files.length} files</div>
+        <div className="message-body">{map(files, (file, index) =>
+          <div key={index} className="file">
+            <span className="name">{file.name}</span>
+            <span className="link">{file.small ? <a href={file.small}>View</a> : null}</span>
+            {!file.errors ? null : map(file.errors, (error, index) =>
+              <div key={index} className="error icon icon-warning">{error}</div>
+            )}
+          </div>
+        )}</div>
+      </div>
+    )
   }
 
   render() {
@@ -86,9 +86,9 @@ export default class UploadPage extends ComponentBase {
           </span>
         </Dropzone>
         {uploading.length !== 0 && this.renderFiles(uploading, 'Uploading', 'is-info')}
-        {uploaded.length !== 0  && this.renderFiles(uploaded, 'Uploaded', 'is-success')}
-        {failed.length !== 0    && this.renderFiles(failed, 'Failed', 'is-danger')}
+        {uploaded.length !== 0 && this.renderFiles(uploaded, 'Uploaded', 'is-success')}
+        {failed.length !== 0 && this.renderFiles(failed, 'Failed', 'is-danger')}
       </div>
-    );
+    )
   }
 }

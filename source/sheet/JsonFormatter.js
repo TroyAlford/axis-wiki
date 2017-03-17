@@ -5,7 +5,7 @@ import {
 } from 'lodash'
 import { keys as allowedAttributeKeys } from './AttributeManager'
 import { keys as allowedDescriptorKeys } from './DescriptorManager'
-import Slug from '../../utility/Slugs'
+import slugify from '../../utility/Slugs'
 
 export default class JsonFormatter extends React.Component {
   get cleansed() {
@@ -104,12 +104,12 @@ export default class JsonFormatter extends React.Component {
 function cleanKeysAndNames(array) {
   return flow([
     // Ensure that all keys are set & Slugified ...
-    array => map(array, item => ({ ...item, key: Slug(item.key) })),
+    array => map(array, item => ({ ...item, key: slugify(item.key) })),
     // ... then remove an items which have a Falsy key
-    array => filter(array, item => !!Slug(item.key)),
+    array => filter(array, item => !!slugify(item.key)),
     // ... then remove any unnecessary names (Slugified = key)
     array => map(array, item =>
-      (!item.name || Slug(item.name) === item.key)
+      (!item.name || slugify(item.name) === item.key)
         ? omit(item, 'name')
         : item
     ),

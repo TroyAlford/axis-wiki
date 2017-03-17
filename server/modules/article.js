@@ -10,7 +10,7 @@ import path                 from 'path'
 import Article from '../services/Article'
 import * as Storage from '../services/Storage'
 import Links from '../services/Links'
-import Slug from '../../utility/Slugs'
+import { slugify } from '../../utility/Slugs'
 import Tags from '../services/Tags'
 
 export default express()
@@ -18,7 +18,7 @@ export default express()
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
   .use(cookieParser())
 .get('/:slug', (request, response) => {
-  var slug = Links.resolve(Slug(request.params.slug));
+  var slug = Links.resolve(slugify(request.params.slug));
 
   if (request.params.slug != slug) // Redirect to normalized slug link
     return response.redirect(slug);
@@ -36,7 +36,7 @@ export default express()
   else if (intersection(request.session.privileges, ['admin', 'edit']).length == 0)
     return response.status(401).send('You do not have sufficient privileges to edit articles.')
 
-  let slug    = Slug(request.params.slug),
+  let slug    = slugify(request.params.slug),
       posted  = request.body
 
   const { html, title, aliases, data, tags, sheet } = request.body

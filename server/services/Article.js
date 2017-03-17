@@ -1,24 +1,35 @@
-import $ from 'cheerio'
 import { defaultsDeep, difference, flow, orderBy, pick, startCase, uniq } from 'lodash'
-import { Extract, Slug, Url } from '../../utility/Slugs'
+import { extractSlug, slugify } from '../../utility/Slugs'
 
 import cleaners from './cleaners'
 import renderers from './renderers'
 
-export const defaults = {
+export const DEFAULTS = {
   title: undefined,
 
   aliases: [],
-  data: [],
-  tags: [],
+  data:    [],
+  tags:    [],
 
   cleaners,
   renderers,
 }
 
+function uniqueSlugs(slugs) {
+  if (!Array.isArray(slugs)) {
+    return uniqueSlugs([slugs])
+  }
+
+  return flow([
+    slugify, uniq,
+    array => array.filter(item => item),
+    orderBy,
+  ])(slugs)
+}
+
 export default class Article {
   constructor(slug, html = '', settings = {}) {
-    this.settings = defaultsDeep({}, settings, defaults)
+    this.settings = defaultsDeep({}, settings, DEFAULTS)
 
     this.slug = slug
     this.html = html
@@ -67,8 +78,8 @@ export default class Article {
       this._title = title
   }
 
-  get slug() { return Extract(this._slug || '') }
-  set slug(slug) { this._slug = Extract(slug) }
+  get slug() { return extractSlug(this._slug || '') }
+  set slug(slug) { this._slug = extractSlug(slug) }
 
 
   get meta() {
@@ -110,15 +121,4 @@ export default class Article {
   runAll(functions, ...args) {
     return flow(functions).apply(this, args)
   }
-}
-
-function uniqueSlugs(slugs) {
-  if (!Array.isArray(slugs))
-    return uniqueSlugs([slugs])
-
-  return flow([
-    Slug, uniq,
-    array => difference(array, ['']),
-    orderBy,
-  ])(slugs)
 }

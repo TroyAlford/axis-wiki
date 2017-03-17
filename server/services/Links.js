@@ -1,214 +1,217 @@
 // Links File Example:
-//'elf': {
-//  exists: true,
-//  to:   ['human', 'orc', 'dwarf'],      // articles which this article has a link to
-//  from: ['many', 'other', 'articles'],  // articles which link to this article
-//  alias_for: 'elf-race',                // this form is for entries which are redirects
-//  aliases: ['elven', 'elves', 'elvish'] // this form is for articles which have other names
-//}
-// Note: If both alias_for and aliases is included, the redirect chain will work - but the other fields are irrelevant.
+// 'elf': {
+//   exists: true,
+//   to:   ['human', 'orc', 'dwarf'],      // articles which this article has a link to
+//   from: ['many', 'other', 'articles'],  // articles which link to this article
+//   alias_for: 'elf-race',                // this form is for entries which are redirects
+//   aliases: ['elven', 'elves', 'elvish'] // this form is for articles which have other names
+// }
+// Note: If both alias_for and aliases is included, the redirect chain will work
+// - but the other fields are irrelevant.
 
 import { difference, intersection, union } from 'lodash'
 
-import fs         from 'fs'
-import path       from 'path'
-import utils      from 'fs-utils'
+import fs from 'fs'
+import path from 'path'
+import utils from 'fs-utils'
 
-import Article    from './Article'
-import config     from '../../config/server'
-import Slug       from '../../utility/Slugs'
+import config from '../../config/server'
+import { slugify } from '../../utility/Slugs'
 import * as Storage from './Storage'
 
-const THROTTLE = config.cleanup.throttle;
+const THROTTLE = config.cleanup.throttle
 
 class Links {
   constructor() {
-    this.links = {};
+    this.links = {}
 
-    this.get = this.get.bind(this);
-    this.resolve = this.resolve.bind(this);
+    this.get = this.get.bind(this)
+    this.resolve = this.resolve.bind(this)
 
-    this.cleanse = this.cleanse.bind(this);
-    this.rebuild = this.rebuild.bind(this);
-    this.reload = this.reload.bind(this);
+    this.cleanse = this.cleanse.bind(this)
+    this.rebuild = this.rebuild.bind(this)
+    this.reload = this.reload.bind(this)
 
-    this.reindex_html = this.reindex_html.bind(this);
-    this.reindex_json = this.reindex_json.bind(this);
-    this.unindex_html = this.unindex_html.bind(this);
-    this.unindex_json = this.unindex_json.bind(this);
+    this.reindexHTML = this.reindexHTML.bind(this)
+    this.reindexJSON = this.reindexJSON.bind(this)
+    this.unindexHTML = this.unindexHTML.bind(this)
+    this.unindexJSON = this.unindexJSON.bind(this)
 
-    this.folders = config.folders;
-    this.files = { links: path.resolve(this.folders.metadata, 'links.json') };
+    this.folders = config.folders
+    this.files = { links: path.resolve(this.folders.metadata, 'links.json') }
 
-    setTimeout(this.rebuild, 0);
+    setTimeout(this.rebuild, 0)
   }
 
-  static get default_node() {
+  static get DEFAULT_NODE() {
     return {
-      exists: false,
-      to: [],
-      from: [],
-      aliases: []
-    };
+      exists:  false,
+      to:      [],
+      from:    [],
+      aliases: [],
+    }
   }
 
   get(slug) {
-    return this.links[this.resolve(slug)];
+    return this.links[this.resolve(slug)]
   }
   resolve(slug) {
-    let norm = Slug(slug),
-        link = this.links[norm];
+    const norm = slugify(slug)
+    const link = this.links[norm]
 
-    if (link && link.alias_for && link.alias_for == norm) delete link.alias_for;
-    return (link && link.alias_for) ? this.resolve(link.alias_for) : norm;
+    if (link && link.alias_for && link.alias_for === norm) delete link.alias_for
+    return (link && link.alias_for) ? this.resolve(link.alias_for) : norm
   }
 
   cleanse() {
     if (this.last_cleanse && (Date.now() - this.last_cleanse < THROTTLE)) {
-      clearTimeout(this.cleanse_queued); // Clear any already queued cleansing, ...
-      this.cleanse_queued = setTimeout(this.cleanse, THROTTLE); // ... and enqueue again ...
-      return; // ... then stop processing.
+      clearTimeout(this.cleanse_queued) // Clear any already queued cleansing, ...
+      this.cleanse_queued = setTimeout(this.cleanse, THROTTLE) // ... and enqueue again ...
+      return // ... then stop processing.
     }
 
-    this.last_cleanse = Date.now(); // Update the last cleansed time.
-    this.cleanse_queued = null;     // This should be the queued cleanse, so clear the timer.
+    this.last_cleanse = Date.now() // Update the last cleansed time.
+    this.cleanse_queued = null     // This should be the queued cleanse, so clear the timer.
 
-    for (let slug in this.links) {
-      let link = Object.assign(Links.default_node, this.links[slug]);
-      if (link && link.alias_for == slug) delete link.alias_for;
-      if (!link.exists && !link.to.length && !link.from.length && !link.aliases.length && !link.alias_for)
-        delete this.links[slug];
-    }
+    Object.keys(this.links).forEach((slug) => {
+      const link = Object.assign(Links.DEFAULT_NODE, this.links[slug])
+      if (link && link.alias_for === slug) delete link.alias_for
+      if (!link.exists && !link.to.length && !link.from.length && !link.aliases.length && !link.alias_for) {
+        delete this.links[slug]
+      }
+    })
   }
-  reindex_html(slug) {
-    console.log(`${slug} changed: reindexing links.`);
-    this.links[slug] = this.links[slug] || Links.default_node;
+  reindexHTML(slug) {
+    console.log(`${slug} changed: reindexing links.`)
+    this.links[slug] = this.links[slug] || Links.DEFAULT_NODE
 
     const article = Storage.getArticle(slug).clean
 
-    let existing = this.links[slug].to,
-        updated  = article.links_to,
-        in_both  = intersection(existing, updated),
-        to_drop  = difference(existing, in_both),
-        to_add   = difference(updated, in_both);
+    const existing = this.links[slug].to
+    const updated = article.links_to
+    const inBoth = intersection(existing, updated)
+    const toDrop = difference(existing, inBoth)
+    const toAdd = difference(updated, inBoth)
 
-    to_drop.forEach(drop => { this.links[drop].from = difference(this.links[drop].from, [slug]) });
-    to_add.forEach(add => {
-      if (!this.links[add]) this.links[add] = Links.default_node;
+    toDrop.forEach((drop) => { this.links[drop].from = difference(this.links[drop].from, [slug]) })
+    toAdd.forEach((add) => {
+      if (!this.links[add]) this.links[add] = Links.DEFAULT_NODE
       this.links[add].from = union(this.links[add].from, [slug])
-    });
+    })
 
-    this.links[slug].exists = true;
-    this.links[slug].to = updated;
+    this.links[slug].exists = true
+    this.links[slug].to = updated
 
-    setTimeout(this.cleanse, THROTTLE);
+    setTimeout(this.cleanse, THROTTLE)
   }
-  reindex_json(slug) {
-    console.log(`${slug} changed: reindexing aliases.`);
+  reindexJSON(slug) {
+    console.log(`${slug} changed: reindexing aliases.`)
 
     const article = Storage.getArticle(slug).clean
 
     this.links[slug] = {
-      ...Links.default_node,
+      ...Links.DEFAULT_NODE,
       ...this.links[slug],
       title: article.title || slug,
     }
-    let existing = this.links[slug].aliases,
-        updated  = article.aliases,
-        in_both  = intersection(existing, updated),
-        to_drop  = difference(existing, in_both),
-        to_add   = difference(updated, in_both);
+    const existing = this.links[slug].aliases
+    const updated = article.aliases
+    const inBoth = intersection(existing, updated)
+    const toDrop = difference(existing, inBoth)
+    const toAdd = difference(updated, inBoth)
 
-    to_drop.forEach(drop => { delete this.links[drop].alias_for; });
-    to_add.forEach(add => {
+    toDrop.forEach((drop) => { delete this.links[drop].alias_for })
+    toAdd.forEach((add) => {
       this.links[add] = {
-        ...Links.default_node,
-        ...this.links[add]
-      };
-      if (add != slug) this.links[add].alias_for = slug;
-    });
+        ...Links.DEFAULT_NODE,
+        ...this.links[add],
+      }
+      if (add !== slug) this.links[add].alias_for = slug
+    })
 
-    this.links[slug].aliases = updated;
+    this.links[slug].aliases = updated
 
-    setTimeout(this.cleanse, THROTTLE);
+    setTimeout(this.cleanse, THROTTLE)
   }
-  unindex_html(slug) {
-    console.log(`${slug} removed: unindexing links.`);
-    this.links[slug] = this.links[slug] || Links.default_node;
-    let existing = this.links[slug].to;
+  unindexHTML(slug) {
+    console.log(`${slug} removed: unindexing links.`)
+    this.links[slug] = this.links[slug] || Links.DEFAULT_NODE
+    const existing = this.links[slug].to
 
-    this.links[slug].exists = false;
-    this.links[slug].to = [];
+    this.links[slug].exists = false
+    this.links[slug].to = []
     existing.forEach((link) => {
-      this.links[link].from = difference(this.links[link].from, [slug]);
-    });
+      this.links[link].from = difference(this.links[link].from, [slug])
+    })
 
-    setTimeout(this.cleanse, THROTTLE);
+    setTimeout(this.cleanse, THROTTLE)
   }
-  unindex_json(slug) {
-    console.log(`${slug} removed: unindexing aliases.`);
-    let existing = this.links[slug].aliases;
+  unindexJSON(slug) {
+    console.log(`${slug} removed: unindexing aliases.`)
+    let existing = this.links[slug].aliases
 
-    this.links[slug].aliases = [];
-    existing.forEach(link => {
-      if (this.links[link].alias_for == slug)
-        delete this.links[link].alias_for;
-    });
+    this.links[slug].aliases = []
+    existing.forEach((link) => {
+      if (this.links[link].alias_for === slug) {
+        delete this.links[link].alias_for
+      }
+    })
 
-    setTimeout(this.cleanse, THROTTLE);
+    setTimeout(this.cleanse, THROTTLE)
   }
 
   rebuild() {
-    let rebuilt = {};
+    const rebuilt = {}
     if (!utils.isDir(this.folders.articles)) {
       console.error(`${this.folders.articles} is not a valid directory.`)
-      return;
+      return
     }
     fs.readdirSync(this.folders.articles)
-      .filter(name => { return name.endsWith('.html') })
-      .forEach(file => {
+      .filter(name => name.endsWith('.html'))
+      .forEach((file) => {
         const slug = file.replace(/.html/, '')
         const article = Storage.getArticle(slug).rendered
 
         // This article exists, because it was listed above. Create it.
         rebuilt[slug] = {
-          ...Links.default_node,
+          ...Links.DEFAULT_NODE,
           ...rebuilt[slug] || {},
           ...{
             aliases: article.aliases,
-            exists: true,
-            title: article.title,
-            to: article.links_to,
+            exists:  true,
+            title:   article.title,
+            to:      article.links_to,
           },
-        };
+        }
 
         // Now parse all `links_to` and add this slug to each entry.
-        article.links_to.forEach(link => {
+        article.links_to.forEach((link) => {
           rebuilt[link] = {
-            ...Links.default_node,
-            ...rebuilt[link] || {}
+            ...Links.DEFAULT_NODE,
+            ...rebuilt[link] || {},
           }
           rebuilt[link].from = union(rebuilt[link].from, [slug])
         })
 
-        article.aliases.forEach(alias => {
+        article.aliases.forEach((alias) => {
           rebuilt[alias] = {
-            ...Links.default_node,
-            ...rebuilt[alias] || {}
+            ...Links.DEFAULT_NODE,
+            ...rebuilt[alias] || {},
           }
-          if (alias != slug)
-            rebuilt[alias].alias_for = slug;
-        });
-      });
+          if (alias !== slug) {
+            rebuilt[alias].alias_for = slug
+          }
+        })
+      })
 
-    this.links = rebuilt;
+    this.links = rebuilt
 
-    setTimeout(this.cleanse, THROTTLE);
+    setTimeout(this.cleanse, THROTTLE)
   }
   reload() {
-    this.links = utils.exists(this.files.links) ? utils.readJSONSync(this.files.links) : {};
+    this.links = utils.exists(this.files.links) ? utils.readJSONSync(this.files.links) : {}
   }
 }
 
-let Singleton = new Links();
-export default Singleton;
+const Singleton = new Links()
+export default Singleton
