@@ -8,6 +8,7 @@ import { includes, intersection } from 'lodash'
 import config from '../../config/server'
 import { resizeAll } from '../helpers/image_processor'
 import { slugify } from '../../utility/Slugs'
+import Privileges from '../middleware/Privileges'
 
 const { folders, media } = config
 
@@ -45,7 +46,7 @@ export default express()
   res.sendFile(`${folders.media}/${filename}.full${ext}`)
 })
 .get('*', express.static(folders.media))
-.post('/', fileMiddleware, (request, response) => {
+.post('/', Privileges(['write']), fileMiddleware, (request, response) => {
   if (intersection(request.session.privileges, ['admin', 'edit']).length === 0) {
     return response.status(401).send('You do not have sufficient privileges to upload files.')
   }
