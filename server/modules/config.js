@@ -1,13 +1,19 @@
-import bodyParser   from 'body-parser'
-import express      from 'express'
-import path         from 'path'
-import utils        from 'fs-utils'
+import bodyParser from 'body-parser'
+import express from 'express'
+import path from 'path'
+import utils from 'fs-utils'
 
-import config       from '../../config/server'
+import config from '../../config/server'
 
 const files = {
   navigation: path.resolve(config.folders.config, 'navigation.json')
-};
+}
+
+export function getNavigation() {
+  return utils.exists(files.navigation)
+    ? utils.readJSONSync(files.navigation)
+    : []
+}
 
 export default express()
   .use(bodyParser.json()) // Parses application/json
@@ -15,9 +21,3 @@ export default express()
 .get('/navigation', (request, response) =>
   response.status(200).send(getNavigation())
 )
-
-export function getNavigation() {
-  return utils.exists(files.navigation)
-    ? utils.readJSONSync(files.navigation)
-    : []
-}
