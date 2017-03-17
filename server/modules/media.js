@@ -12,6 +12,7 @@ import Privileges from '../middleware/Privileges'
 
 const { folders, media } = config
 
+/* eslint-disable no-param-reassign,no-shadow,no-console */
 const fileFilter = (request, file, cb) => {
   file.extension = path.extname(file.originalname).toLowerCase().replace('.', '')
   file.process = includes(media.extensions, file.extension)
@@ -53,12 +54,13 @@ export default express()
 
   // First, report errors for any files that were rejected
   const allowed = `.${media.extensions.join(', .')}`
-  const rejections = (request.rejected_files || []).reduce((results, file) => {
-    results[file.originalname] = {
+  const rejections = (request.rejected_files || []).reduce((results, file) => ({
+    ...results,
+    [file.originalname]: {
       errors: [`Only files with the extensions ${allowed} are allowed for upload.`],
       paths:  [],
-    }
-  }, {})
+    },
+  }), {})
 
   const processors = (request.files || []).map(file => ({
     filename: file.originalname,
