@@ -1,4 +1,4 @@
-import { difference, includes, kebabCase, toLower } from 'lodash'
+import { kebabCase, toLower } from 'lodash'
 
 function strip(string) {
   return string
@@ -8,10 +8,10 @@ function strip(string) {
 
 export function slugify(input) {
   if (Array.isArray(input)) {
-    return difference(input.map(slugify), [''])
+    return input.map(slugify).filter(slug => slug)
   }
 
-  if (!input || includes(['object', 'function'], typeof input)) {
+  if (!input || typeof input === 'object' || typeof input === 'function') {
     return '' // Return '' for all falsy values, objects and fn's
   }
 
@@ -22,7 +22,7 @@ export function slugify(input) {
 
 export function extractSlug(input) {
   if (Array.isArray(input)) {
-    return difference(input.map(extractSlug), [''])
+    return input.map(extractSlug).filter(slug => slug)
   }
 
   if (typeof input !== 'string') return ''
@@ -34,7 +34,7 @@ export function extractSlug(input) {
 }
 export function slugifyUrl(input) {
   if (Array.isArray(input)) {
-    return difference(input.map(slugifyUrl), [''])
+    return input.map(slugifyUrl).filter(slug => slug)
   }
 
   if (typeof input !== 'string') return ''
