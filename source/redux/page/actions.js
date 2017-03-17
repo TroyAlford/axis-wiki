@@ -1,10 +1,29 @@
-export const PAGE_METADATA = 'page.metadata'
+export const ARTICLE = 'article'
+export const PICTURE = 'picture'
+export const PROFILE = 'profile'
+export const SEARCH = 'search'
 
-export function setMetadata(title, keywords = []) {
+const TYPES = [ARTICLE, PICTURE, PROFILE, SEARCH]
+export const DEFAULTS = TYPES.reduce((defaults, type) => ({
+  ...defaults,
+  [type]: {},
+}), {})
+
+export function setPage(type, data) {
   return {
-    type: PAGE_METADATA,
-    keywords,
-    title,
+    type,
+    [type]: data,
   }
 }
 
+export const METADATA = 'metadata'
+export function setMetadata({ title, keywords = [] }) {
+  return {
+    type: METADATA,
+
+    metadata: {
+      keywords,
+      title,
+    },
+  }
+}

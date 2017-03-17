@@ -1,7 +1,7 @@
 import { startCase } from 'lodash'
 import { addMessage } from '../messages/actions'
 import { setMetadata } from '../page/actions'
-import { Extract } from '../../../utility/Slugs'
+import { extractSlug } from '../../../utility/Slugs'
 
 export const ARTICLE_LOAD = 'article.load'
 export const ARTICLE_LOADED = 'article.loaded'
@@ -29,7 +29,7 @@ export function loadArticle(requestedSlug, flashLoading = true) {
     let slug = requestedSlug
     return fetch(`/api/page/${requestedSlug}`, { credentials: 'include' })
       .then((response) => {
-        slug = Extract(response.url)
+        slug = extractSlug(response.url)
         return response.json()
       })
       .then((json) => {
@@ -39,7 +39,7 @@ export function loadArticle(requestedSlug, flashLoading = true) {
           ...(json.tags || []),
           title,
         ]
-        dispatch(setMetadata(title, keywords))
+        dispatch(setMetadata({ title, keywords }))
         dispatch(loadedArticle(slug, json))
       })
   }
