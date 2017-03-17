@@ -8,6 +8,7 @@ import Article from '../services/Article'
 import * as Storage from '../services/Storage'
 import Links from '../services/Links'
 import { slugify } from '../../utility/Slugs'
+import Privileges from '../middleware/Privileges'
 import Tags from '../services/Tags'
 
 export default express()
@@ -21,20 +22,13 @@ export default express()
     return response.redirect(slug)
   }
 
-  const article = Storage.getArticle(slug).rendered
-  const { html, meta } = article
+  const { html, meta } = Storage.getArticle(slug).rendered
   const children = Tags.for(slug)
   const sheet = Storage.getSheet(slug)
 
   return response.status(200).send({ ...meta, html, children, sheet })
 })
-.post('/:slug', (request, response) => {
-  if (!request.session.id) {
-    return response.status(401).send('You must be logged in to edit articles.')
-  } else if (intersection(request.session.privileges, ['admin', 'edit']).length === 0) {
-    return response.status(401).send('You do not have sufficient privileges to edit articles.')
-  }
-
+.post('/:slug', Privileges(['edit']), (request, response) => {
   const slug = slugify(request.params.slug)
 
   const { html, title, aliases, data, tags, sheet } = request.body
@@ -55,13 +49,7 @@ export default express()
     sheet,
   })
 })
-.delete('/:slug', (request, response) => {
-  if (!request.session.id) {
-    return response.status(401).send('You must be logged in to delete articles.')
-  } else if (intersection(request.session.privileges, ['admin', 'edit']).length === 0) {
-    return response.status(401).send('You do not have sufficient privileges to delete articles.')
-  }
-
+.delete('/:slug', Privileges(['edit']), (request, response) => {
   const slug = request.params.slug // Do NOT normalize. DELETE must be exact.
   if (!Storage.deleteArticle(slug)) {
     return response.status(500).send(`Article ${slug} could not be deleted.`)
