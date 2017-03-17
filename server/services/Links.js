@@ -9,6 +9,8 @@
 // Note: If both alias_for and aliases is included, the redirect chain will work
 // - but the other fields are irrelevant.
 
+/* eslint-disable no-console */
+
 import { difference, intersection, union } from 'lodash'
 
 import fs from 'fs'
@@ -76,6 +78,8 @@ class Links {
     Object.keys(this.links).forEach((slug) => {
       const link = Object.assign(Links.DEFAULT_NODE, this.links[slug])
       if (link && link.alias_for === slug) delete link.alias_for
+
+      // eslint-disable-next-line max-len
       if (!link.exists && !link.to.length && !link.from.length && !link.aliases.length && !link.alias_for) {
         delete this.links[slug]
       }
@@ -148,7 +152,7 @@ class Links {
   }
   unindexJSON(slug) {
     console.log(`${slug} removed: unindexing aliases.`)
-    let existing = this.links[slug].aliases
+    const existing = this.links[slug].aliases
 
     this.links[slug].aliases = []
     existing.forEach((link) => {
