@@ -1,65 +1,64 @@
-import spawn     from 'superchild'
+import spawn from 'superchild'
 
-const default_options = {
+const DEFAULTS = {
   max: 10,
-  ext: null
+  ext: null,
 }
 
-const must_escape = ['&', ';'].map(char => ({
+const MUST_ESCAPE = ['&', ';'].map(char => ({
   char: new RegExp(`[${char}]`, 'g'),
-  repl: `\\${char}`
+  repl: `\\${char}`,
 }))
-const regex_metas = ['?', '+', '{', '|', '(', ')']
+const REGEX_METAS = ['?', '+', '{', '|', '(', ')']
 
-export default ($what, where, set_options = {}) => {
-  let options = { ...default_options, ...set_options }
+export default ($what, where, settings = {}) => {
+  const options = { ...DEFAULTS, ...settings }
 
   let what = `${$what}`
-  regex_metas.forEach(char => what = what.replace(char, `[${char}]`))
-  must_escape.forEach(esc  => what = what.replace(esc.char, esc.repl))
+  REGEX_METAS.forEach((char) => { what = what.replace(char, `[${char}]`) })
+  MUST_ESCAPE.forEach((esc) => { what = what.replace(esc.char, esc.repl) })
 
   what = `\\(${what}\\)` // RegEx-ify the what query
 
   return new Promise((resolve, reject) => {
-    const ext_filter = `\\*.${options.ext || '\\*'}`
-    const command = `grep -Einr ${what} --include ${ext_filter} ${where}`
+    const EXT_FILTER = `\\*.${options.ext || '\\*'}`
+    const command = `grep -Einr ${what} --include ${EXT_FILTER} ${where}`
     const grep = spawn(command)
-    let matches = [], total_matches = 0
+    const matches = []
 
-    let finalize = () => {
-      let list = {}
+    const finalize = () => {
+      const list = {}
 
-      matches.forEach(match => {
-        let parts = match.split(':'),
-            filename = parts[0],
-            details = {
-              line: parts[1],
-              text: parts.slice(2).join(':')
-            }
-        ;
+      matches.forEach((match) => {
+        const parts = match.split(':')
+        const filename = parts[0]
+        const details = {
+          line: parts[1],
+          text: parts.slice(2).join(':'),
+        }
 
-        list[filename] = [...list[filename] || [], details];
+        list[filename] = [...list[filename] || [], details]
       })
 
-      let files = Object.keys(list)
+      const files = Object.keys(list)
       resolve(files.map(file => ({
         file,
-        results: list[file]
+        results: list[file],
       })))
     }
 
-    grep.on('stderr', data => {
-      let error_msg = data.toString('utf8'),
-          message   = `grep for ${what} failed: ${error_msg}`
+    grep.on('stderr', (data) => {
+      const errorMessage = data.toString('utf8')
+      const message = `grep for ${what} failed: ${errorMessage}`
       console.error(message)
       reject(message)
     })
-    grep.on('stdout_line', match => {
+    grep.on('stdout_line', (match) => {
       if (match && match.length) {
         matches.push(match)
       }
     })
     grep.on('close', finalize)
-    grep.on('exit',  finalize)
+    grep.on('exit', finalize)
   })
 }

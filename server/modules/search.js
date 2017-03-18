@@ -1,17 +1,19 @@
-import { includes, keys, sortBy, uniq, values } from 'lodash'
+import { sortBy, values } from 'lodash'
 
 import $ from 'cheerio'
 import express from 'express'
 import path from 'path'
 import utils from 'fs-utils'
 
-import { folders } from '../../config/server'
+import SETTINGS from '../../config/server'
 import grep from '../helpers/grep'
+import unique from '../../utility/unique'
 import Links from '../services/Links'
 
 function getTitleMatches(searchTerm) {
   const pattern = new RegExp(searchTerm, 'gi')
-  return keys(Links.links)
+  return Object.keys(Links.links)
+  .filter(slug => (Links.get(slug) || {}).exists === true)
   .filter((slug) => {
     const title = Links.get(slug).title || ''
     return slug.match(pattern) // Slug directly matches
@@ -22,14 +24,14 @@ function getTitleMatches(searchTerm) {
     return {
       slug,
       alias: matchedSlug,
-      file:  path.join(folders.articles, `${slug}.html`),
+      file:  path.join(SETTINGS.folders.articles, `${slug}.html`),
       type:  'article:title',
     }
   })
 }
 
 async function getContentMatches(searchTerm) {
-  return grep(searchTerm, folders.articles, { ext: 'html' })
+  return grep(searchTerm, SETTINGS.folders.articles, { ext: 'html' })
   .then(list =>
     list.map((hit) => {
       const filename = hit.file.split('/').pop()
@@ -79,16 +81,18 @@ export default express()
     ...await getContentMatches(searchTerm),
   ]
 
-  const indexed = {}
-  resultSets.forEach((result) => {
-    const current = indexed[result.file] || {}
-    indexed[result.file] = {
-      ...current,
-      ...result,
-      aliases: uniq([...(current.aliases || []), result.alias]),
-      type:    uniq([...(current.type || []), result.type]),
+  const indexed = resultSets.reduce((hash, result) => {
+    const current = hash[result.file] || {}
+    return {
+      ...hash,
+      [result.file]: {
+        ...current,
+        ...result,
+        aliases: unique([...(current.aliases || []), result.alias]),
+        type:    unique([...(current.type || []), result.type]),
+      },
     }
-  })
+  }, {})
 
   const results = values(indexed)
   .filter(result => !!result)
@@ -108,10 +112,9 @@ export default express()
 
   const sorted = sortBy(results, (result) => {
     let order = ''
-    if (result.title.toLowerCase() === searchTerm
-      || includes(result.aliases, searchTerm)) {
+    if (result.title.toLowerCase() === searchTerm || result.aliases.indexOf(searchTerm) !== -1) {
       order = 0
-    } else if (includes(result.type, 'article:title')) {
+    } else if (result.type.indexOf('article:title') !== -1) {
       order = 1
     } else {
       order = 2
