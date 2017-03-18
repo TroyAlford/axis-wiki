@@ -1,40 +1,40 @@
-import Article from './Article'
-import config from '../../config/server'
 import fs from 'fs'
 import path from 'path'
 import utils from 'fs-utils'
-import { defaults, values } from 'lodash'
 
-function getUrls(slug, userId = null) {
-  const folderPath = userId !== null
-    ? path.resolve(config.folders.users, userId, slug)
-    : path.resolve(config.folders.articles, slug)
+import Article from './Article'
+import config from '../../config/server'
+
+function getUrls(slug) {
+  const folderPath = path.resolve(config.folders.articles, slug)
 
   return {
-    meta:  `${folderPath}.json`,
-    html:  `${folderPath}.html`,
-    sheet: `${folderPath}.sheet`,
+    html: `${folderPath}.html`,
+    json: `${folderPath}.json`,
   }
 }
 
-export function deleteArticle(slug, userId = null) {
-  const urls = getUrls(slug, userId)
+export function deleteArticle(slug) {
+  const urls = getUrls(slug)
 
-  values(urls).forEach(filename => {
+  Object.keys(urls).forEach((key) => {
+    const filename = urls[key]
     if (utils.exists(filename)) {
       console.warn(`Deleting: ${filename}`)
       fs.unlinkSync(filename, { force: true })
+    } else {
+      console.warn(`Skipping: ${filename} - doesn't exist`)
     }
   })
 
   return true
 }
 
-export function getArticle(slug, userId = null) {
-  const urls = getUrls(slug, userId)
+export function getArticle(slug) {
+  const urls = getUrls(slug)
 
-  const meta = utils.exists(urls.meta)
-    ? utils.readJSONSync(urls.meta) : undefined
+  const meta = utils.exists(urls.json)
+    ? utils.readJSONSync(urls.json) : undefined
 
   const html = utils.exists(urls.html)
     ? utils.readFileSync(urls.html) : ''
@@ -42,41 +42,14 @@ export function getArticle(slug, userId = null) {
   return (new Article(slug, html, meta))
 }
 
-export function saveArticle(slug, article, userId = null) {
+export function saveArticle(slug, article) {
   if (!(article instanceof Article)) return false
 
-  const urls = getUrls(slug, userId)
+  const urls = getUrls(slug)
 
   const clean = article.clean
-  utils.writeFileSync(urls.meta, JSON.stringify(clean.meta))
+  utils.writeFileSync(urls.json, JSON.stringify(clean.meta))
   utils.writeFileSync(urls.html, clean.html)
-
-  return true
-}
-
-
-export function deleteSheet(slug, userId = null) {
-  const filename = getUrls(slug, userId).sheet
-
-  if (utils.exists(filename)) {
-    console.warn(`Deleting: ${filename}`)
-    fs.unlinkSync(filename, { force: true })
-  }
-
-  return true
-}
-
-export function getSheet(slug, userId = null) {
-  const urls = getUrls(slug, userId)
-
-  return utils.exists(urls.sheet)
-    ? utils.readJSONSync(urls.sheet) : undefined
-}
-
-export function saveSheet(slug, sheet, userId = null) {
-  const urls = getUrls(slug, userId)
-
-  utils.writeFileSync(urls.sheet, JSON.stringify(sheet))
 
   return true
 }

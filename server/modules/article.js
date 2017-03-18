@@ -1,4 +1,4 @@
-import { intersection, pick } from 'lodash'
+import { pick } from 'lodash'
 
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
@@ -16,6 +16,18 @@ export default express()
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
   .use(cookieParser())
 .get('/:slug', (request, response) => {
+  /* {
+    slug: 'main-slug',
+    title: 'Article Title',
+    html: '<h1>The HTML of the article!</h1>',
+    aliases: ['alternative-title', 'redirected-from'],
+    tags: ['categories', 'this', 'article', 'falls', 'within']
+    data: {
+      probably: ['a', 'complex', 'data', 'structure', 'here'],
+      with: { a: 'number', of: 'different', layers: ['of', 'complexity'] }
+    },
+  } */
+
   const slug = Links.resolve(slugify(request.params.slug))
 
   if (request.params.slug !== slug) { // Redirect to normalized slug link
@@ -24,30 +36,22 @@ export default express()
 
   const { html, meta } = Storage.getArticle(slug).rendered
   const children = Tags.for(slug)
-  const sheet = Storage.getSheet(slug)
 
-  return response.status(200).send({ ...meta, html, children, sheet })
+  return response.status(200).send({ ...meta, html, children })
 })
 .post('/:slug', Privileges(['edit']), (request, response) => {
   const slug = slugify(request.params.slug)
 
-  const { html, title, aliases, data, tags, sheet } = request.body
+  const { html, title, aliases, data, tags } = request.body
   const article = new Article(slug, html, { title, aliases, data, tags })
 
   if (!Storage.saveArticle(slug, article)) {
     return response.status(500).send('Unable to save article.')
   }
 
-  if (sheet && !Storage.saveSheet(slug, sheet)) {
-    return response.status(500).send('Unable to save sheet.')
-  } else if (sheet === false && !Storage.deleteSheet(slug)) {
-    return response.status(500).send('Unable to remove sheet.')
-  }
-
-  return response.status(200).send({
-    ...pick(article.rendered, ['html', 'title', 'aliases', 'data', 'tags']),
-    sheet,
-  })
+  return response.status(200).send(
+    pick(article.rendered, ['html', 'title', 'aliases', 'data', 'tags'])
+  )
 })
 .delete('/:slug', Privileges(['edit']), (request, response) => {
   const slug = request.params.slug // Do NOT normalize. DELETE must be exact.

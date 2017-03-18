@@ -1,5 +1,6 @@
-import { defaultsDeep, difference, flow, orderBy, pick, startCase, uniq } from 'lodash'
+import { defaultsDeep, flow, pick, startCase } from 'lodash'
 import { extractSlug, slugify } from '../../utility/Slugs'
+import unique from '../../utility/unique'
 
 import cleaners from './cleaners'
 import renderers from './renderers'
@@ -25,14 +26,12 @@ export const DEFAULTS = {
 }
 
 function uniqueSlugs(slugs) {
-  if (!Array.isArray(slugs)) {
-    return uniqueSlugs([slugs])
-  }
+  if (!Array.isArray(slugs)) return uniqueSlugs([slugs])
 
   return flow([
-    slugify, uniq,
+    slugify, unique,
     array => array.filter(item => item),
-    orderBy,
+    Array.sort,
   ])(slugs)
 }
 
@@ -75,7 +74,7 @@ export default class Article {
     }
   }
 
-  get aliases() { return difference(this[ALIASES], [this.slug]) }
+  get aliases() { return this[ALIASES].filter(alias => alias !== this.slug) }
   set aliases(aliases) { this[ALIASES] = uniqueSlugs(aliases) }
 
   get html() { return this[HTML] }
@@ -129,7 +128,7 @@ export default class Article {
     return this.runAll(this.renderers, this.clean)
   }
 
-  get tags() { return difference(this[TAGS], [this.slug]) }
+  get tags() { return this[TAGS].filter(tag => tag !== this.slug) }
   set tags(tags) { this[TAGS] = uniqueSlugs(tags) }
 
   runAll(functions, ...args) {

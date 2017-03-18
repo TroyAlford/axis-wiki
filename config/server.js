@@ -2,7 +2,7 @@ import path from 'path'
 import utils from 'fs-utils'
 import config from './config'
 
-export function setting(key, defaultValue) {
+function setting(key, defaultValue) {
   // eslint-disable-next-line no-mixed-operators
   return process && process.env && process.env[key] || defaultValue
 }
