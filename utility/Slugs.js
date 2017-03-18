@@ -1,4 +1,5 @@
 import { kebabCase, toLower } from 'lodash'
+import unique from './unique'
 
 function strip(string) {
   return string
@@ -8,7 +9,8 @@ function strip(string) {
 
 export function slugify(input) {
   if (Array.isArray(input)) {
-    return input.map(slugify).filter(slug => slug)
+    const list = input.map(slugify).filter(slug => slug)
+    return unique(list).sort()
   }
 
   if (!input || typeof input === 'object' || typeof input === 'function') {

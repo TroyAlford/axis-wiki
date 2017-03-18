@@ -29,10 +29,10 @@ describe('slugify()', () => {
     expect(after).not.toMatch(/-$/)
   })
 
-  it('normalizes arrays', () => {
-    const before = ['$P3(14L---', '-leading  trailing-', '   ', '<<-empty']
+  it('normalizes, uniques, and sorts arrays', () => {
+    const before = ['$P3(14L---', '-leading  trailing-', '   ', 'empty', '<<-empty']
     const after = slugify(before)
-    const expected = ['p-3-14-l', 'leading-trailing', 'empty']
+    const expected = ['empty', 'leading-trailing', 'p-3-14-l']
 
     expect(after.length).toEqual(3) // 3rd should be eliminated entirely
     expect(isEqual(after, expected)).toBeTruthy()
