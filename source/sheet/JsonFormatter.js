@@ -10,21 +10,21 @@ import slugify from '../../utility/Slugs'
 export default class JsonFormatter extends React.Component {
   get cleansed() {
     return {
-      name: this.name,
-      image: this.props.image,
-      rp: this.props.rp || 0,
-      xp: this.props.xp || 0,
+      name:   this.name,
+      image:  this.props.image,
+      rp:     this.props.rp || 0,
+      xp:     this.props.xp || 0,
       wounds: this.props.wounds || {
         light: 0,
-        deep: 0,
+        deep:  0,
       },
 
-      armor: this.armor,
-      attributes: this.attributes,
+      armor:       this.armor,
+      attributes:  this.attributes,
       descriptors: this.descriptors,
-      skills: this.skills,
-      traits: this.traits,
-      weapons: this.weapons,
+      skills:      this.skills,
+      traits:      this.traits,
+      weapons:     this.weapons,
     }
   }
   get json() {
@@ -98,7 +98,7 @@ export default class JsonFormatter extends React.Component {
     ])(this.props.weapons)
   }
 
-  render() { return null; }
+  render() { return null }
 }
 
 function cleanKeysAndNames(array) {
@@ -116,8 +116,9 @@ function cleanKeysAndNames(array) {
   ])(array)
 }
 function ensureValueArray(object, key, length, defaultValue) {
-  if (Array.isArray(object))
+  if (Array.isArray(object)) {
     return object.map(item => ensureValueArray(item, key, length, defaultValue))
+  }
 
   let array = Array.isArray(object[key]) ? object[key] : []
 
@@ -127,16 +128,17 @@ function ensureValueArray(object, key, length, defaultValue) {
     array = [...array, ...toAdd]
   }
 
-  object[key] = array.slice(0, length)
-  return object
+  return {
+    ...object,
+    [key]: array.slice(0, length),
+  }
 }
 function omitIfFalsy(object, keys) {
-  if (Array.isArray(object))
+  if (Array.isArray(object)) {
     return object.map(item => omitIfFalsy(item, keys))
+  }
 
-  return omitBy(object, (value, key) => {
-    return includes(keys, key) && !value
-  })
+  return omitBy(object, (value, key) => includes(keys, key) && !value)
 }
 function orderByKeys(array) {
   return orderBy(array, ['key'])
@@ -147,25 +149,25 @@ function whitelistKeys(array, keys) {
 
 JsonFormatter.propTypes = {
   name: React.PropTypes.string.isRequired,
-  rp: React.PropTypes.number.isRequired,
-  xp: React.PropTypes.number.isRequired,
+  rp:   React.PropTypes.number.isRequired,
+  xp:   React.PropTypes.number.isRequired,
 
-  armor: React.PropTypes.array.isRequired,
-  attributes: React.PropTypes.array.isRequired,
+  armor:       React.PropTypes.array.isRequired,
+  attributes:  React.PropTypes.array.isRequired,
   descriptors: React.PropTypes.array.isRequired,
-  skills: React.PropTypes.array.isRequired,
-  traits: React.PropTypes.array.isRequired,
-  weapons: React.PropTypes.array.isRequired,
+  skills:      React.PropTypes.array.isRequired,
+  traits:      React.PropTypes.array.isRequired,
+  weapons:     React.PropTypes.array.isRequired,
 }
 JsonFormatter.defaultProps = {
   name: 'Unnamed Character',
-  rp: 0,
-  xp: 0,
+  rp:   0,
+  xp:   0,
 
-  armor: [],
-  attributes: [],
+  armor:       [],
+  attributes:  [],
   descriptors: [],
-  skills: [],
-  traits: [],
-  weapons: [],
+  skills:      [],
+  traits:      [],
+  weapons:     [],
 }
