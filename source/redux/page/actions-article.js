@@ -4,19 +4,12 @@ import { addMessage } from '../messages/actions'
 import { setPage, ARTICLE, LOADING } from '../page/actions'
 import { extractSlug } from '../../../utility/Slugs'
 
-export function loadingArticle(slug) {
-  return {
-    type: LOADING,
-    slug,
-  }
-}
-
 export function loadArticle(requestedSlug, flashLoading = true) {
   return (dispatch) => {
-    if (flashLoading) dispatch(loadingArticle(requestedSlug))
+    if (flashLoading) dispatch({ type: LOADING, slug: requestedSlug })
 
     let slug = requestedSlug
-    return fetch(`/api/page/${requestedSlug}`, { credentials: 'include' })
+    fetch(`/api/page/${requestedSlug}`, { credentials: 'include' })
       .then((response) => {
         slug = extractSlug(response.url)
         if (slug !== requestedSlug) browserHistory.replace(`/page/${slug}`)

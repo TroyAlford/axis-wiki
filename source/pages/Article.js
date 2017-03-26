@@ -95,6 +95,8 @@ class Article extends ComponentBase {
   }
 
   render() {
+    if (this.props.loading) return <div className="article page loading" />
+
     const tabs = []
 
     if (this.state.sheet) {
@@ -205,7 +207,7 @@ class Article extends ComponentBase {
           </div>
           <TagBar
             className="aliases-editor tag-bar"
-            tags={this.state.aliases || this.props.aliases}
+            tags={this.state.aliases || this.props.aliases || []}
             inputProps={{
               className:   'alias-tag tag-bar-input',
               placeholder: 'add alias',
@@ -229,7 +231,7 @@ class Article extends ComponentBase {
     })
 
     return (
-      <div className={['article', 'page', this.props.loading ? 'loading' : ''].join(' ')}>
+      <div className="article page">
         <TabSet
           tabs={tabs}
           active={this.state.tab}

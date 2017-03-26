@@ -1,41 +1,44 @@
-import ComponentBase from '../application/ComponentBase'
+import * as React from 'react'
+import { startCase } from 'lodash'
 import Icon from './Icon'
 
-import {
-  sortBy,
-  startCase
-} from 'lodash'
+const range = (start, stop) => Array.from(new Array((stop - start) + 1), (_, i) => i + start)
 
-export default class ArticleChildren extends ComponentBase {
-  render() {
-    let
-      articles   = sortBy(this.props.articles),
-      col_count  = this.props.columns || 4,
-      columns    = [],
-      col_size   = Math.ceil(articles.length / col_count),
-      classes    = `column is-${Math.floor(12 / col_count)}`
-    ;
-    for (let i = 0; i < col_count; i++) {
-      let
-        first = i * col_size,
-        last = (i * col_size) + col_size,
-        list = articles.slice(first, last)
-      ;
-      columns[i] =
-        <div key={i} className={classes}>{
-          list.map((slug, index) =>
-            <div key={index}>
-              <a href={`/page/${slug}`}>{startCase(slug)}</a>
-            </div>
-          )
-        }</div>;
-    }
+const ArticleChildren = ({ articles = [], numberOfColumns = 4 }) => {
+  if (!articles || !Array.isArray(articles) || !articles.length) {
+    return <div className={'tag-browser is-hidden'} />
+  }
+
+  const sorted = articles.sort()
+  const columnSize = Math.ceil(sorted.length / numberOfColumns)
+  const classes = `column is-${Math.floor(12 / numberOfColumns)}`
+
+  const columns = range(0, numberOfColumns).map((index) => {
+    const first = index * columnSize
+    const last = (index * columnSize) + columnSize
+    const list = sorted.slice(first, last)
 
     return (
-      <div className={`tag-browser message is-info ${this.props.articles.length ? '' : 'is-hidden'}`}>
-        <div className="message-header"><Icon name="tag" /> Child Articles:</div>
-        <div className="columns message-body">{columns}</div>
-      </div>
-    );
-  }
+      <div key={index} className={classes}>{ list.map(slug =>
+        <div key={slug}><a href={`/page/${slug}`}>{startCase(slug)}</a></div>
+      )}</div>
+    )
+  })
+
+  return (
+    <div className="tag-browser message is-info">
+      <div className="message-header"><Icon name="tag" /> Child Articles:</div>
+      <div className="columns message-body">{columns}</div>
+    </div>
+  )
 }
+ArticleChildren.defaultProps = {
+  articles:        [],
+  numberOfColumns: 4,
+}
+ArticleChildren.propTypes = {
+  articles:        React.PropTypes.arrayOf(React.PropTypes.string),
+  numberOfColumns: React.PropTypes.number,
+}
+
+export default ArticleChildren

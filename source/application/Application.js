@@ -5,6 +5,7 @@ import { Redirect, Route, Router, browserHistory } from 'react-router'
 
 import store from '../redux/store'
 import { loadArticle } from '../redux/page/actions-article'
+import { searchFor } from '../redux/page/actions-search'
 
 import Layout from '../application/Layout'
 import NotFound from '../pages/NotFound'
@@ -25,7 +26,9 @@ ReactDOM.render(
           onEnter={state => store.dispatch(loadArticle(state.params.slug))}
         />
         <Route path="/info/media/:filename" component={Media} />
-        <Route path="/search/:term" component={Search} />
+        <Route path="/search/:term" component={Search}
+          onEnter={state => store.dispatch(searchFor(state.params.term))}
+        />
         <Route path="/search" component={Search} />
         <Route path="/upload" component={Upload} />
 

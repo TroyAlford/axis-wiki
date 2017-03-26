@@ -1,40 +1,46 @@
-import ComponentBase from '../application/ComponentBase'
+import * as React from 'react'
+import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-
 import { debounce } from 'lodash'
 
-import { searchRequest } from '../redux/search/actions'
+const searchFor = debounce(term => browserHistory.push(`/search/${term}`), 500)
 
-class SearchBox extends ComponentBase {
+class SearchBox extends React.Component {
   constructor(props) {
     super(props)
     this.state = { term: props.term }
-    this.debounced_search = debounce(this.search, 500)
   }
-
   componentWillReceiveProps(props) {
-    this.state = { term: props.term }
-  }
-
-  search() {
-    this.props.dispatch(searchRequest(this.state.term))
+    if (props.term !== this.state.term) this.setState({ term: props.term })
   }
 
   render() {
+    const { className, placeholder } = this.props
     return (
-      <div className={`search-box control has-icon ${this.props.className}`}>
-        <input type="text" placeholder="Search..." value={this.state.term}
-          onChange={event => {
+      <div className={`search-box control has-icon ${className}`}>
+        <input type="text" placeholder={placeholder} value={this.state.term}
+          onChange={(event) => {
             this.setState({ term: event.target.value })
-            this.debounced_search()
+            searchFor(event.target.value)
           }}
         />
-        <i className="icon icon-search fa"></i>
+        <i className="icon icon-search fa" />
       </div>
     )
   }
 }
 
+SearchBox.defaultProps = {
+  className:   '',
+  placeholder: 'Search...',
+  term:        '',
+}
+SearchBox.propTypes = {
+  className:   React.PropTypes.string,
+  placeholder: React.PropTypes.string,
+  term:        React.PropTypes.string,
+}
+
 export default connect(
-  state => state.search
+  state => ({ term: state.page.term })
 )(SearchBox)
