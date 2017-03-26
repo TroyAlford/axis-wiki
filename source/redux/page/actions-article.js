@@ -1,24 +1,13 @@
+import { browserHistory } from 'react-router'
 import { startCase } from 'lodash'
 import { addMessage } from '../messages/actions'
-import { setMetadata } from '../page/actions'
+import { setPage, ARTICLE, LOADING } from '../page/actions'
 import { extractSlug } from '../../../utility/Slugs'
-
-export const ARTICLE_LOAD = 'article.load'
-export const ARTICLE_LOADED = 'article.loaded'
-export const ARTICLE_LOADING = 'article.loading'
 
 export function loadingArticle(slug) {
   return {
-    type: ARTICLE_LOADING,
+    type: LOADING,
     slug,
-  }
-}
-
-export function loadedArticle(slug, article) {
-  return {
-    type: ARTICLE_LOADED,
-    slug,
-    article,
   }
 }
 
@@ -30,17 +19,17 @@ export function loadArticle(requestedSlug, flashLoading = true) {
     return fetch(`/api/page/${requestedSlug}`, { credentials: 'include' })
       .then((response) => {
         slug = extractSlug(response.url)
+        if (slug !== requestedSlug) browserHistory.replace(`/page/${slug}`)
         return response.json()
       })
-      .then((json) => {
-        const title = json.title || startCase(slug)
+      .then((article) => {
+        const title = article.title || startCase(slug)
         const keywords = [
-          ...(json.aliases || []),
-          ...(json.tags || []),
+          ...(article.aliases || []),
+          ...(article.tags || []),
           title,
         ]
-        dispatch(setMetadata({ title, keywords }))
-        dispatch(loadedArticle(slug, json))
+        dispatch(setPage(ARTICLE, { ...article, slug, title, keywords }))
       })
   }
 }

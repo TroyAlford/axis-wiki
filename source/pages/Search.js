@@ -3,10 +3,9 @@ import { connect } from 'react-redux'
 
 import { findIndex, includes } from 'lodash'
 
-import { loadArticle } from '../redux/article/actions'
 import {
   searchRequest,
-  searchReset
+  searchReset,
 } from '../redux/search/actions'
 
 import * as React from 'react'

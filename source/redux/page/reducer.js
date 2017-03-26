@@ -1,8 +1,21 @@
 import {
   ARTICLE, PICTURE, PROFILE, SEARCH,
-  DEFAULTS,
   METADATA,
+  LOADING,
 } from './actions'
+
+const DEFAULTS = {
+  type: ARTICLE,
+  slug: 'home',
+
+  aliases:  [],
+  children: [],
+  data:     [],
+  html:     '',
+  tags:     [],
+
+  missing_links: [],
+}
 
 export default (state = DEFAULTS, action) => {
   switch (action.type) {
@@ -16,16 +29,22 @@ export default (state = DEFAULTS, action) => {
         },
       }
 
+    case LOADING:
+      return {
+        ...state,
+        loading: true,
+        type:    'loading',
+      }
+
     case ARTICLE:
     case PICTURE:
     case PROFILE:
     case SEARCH:
       return {
         ...state,
-        ...DEFAULTS,
-
-        type: action.type,
-        ...action[action.type],
+        ...action.data,
+        loading: false,
+        type:    action.type,
       }
 
     default:

@@ -1,20 +1,20 @@
-import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import {
   deleteMedia,
-  loadMedia
-} from '../redux/media/actions'
+  loadMedia,
+} from '../redux/page/actions-media'
 
 import ComponentBase from '../application/ComponentBase'
 
 class Media extends ComponentBase {
   constructor(props) {
-    super(props);
-    if (this.props.filename !== this.props.params.filename)
+    super(props)
+    if (this.props.filename !== this.props.params.filename) {
       this.props.dispatch(loadMedia(this.props.params.filename))
+    }
   }
 
-  get default_state() {
+  get DEFAULT_STATE() {
     return {
       filename: 'placeholder.png'
     }
@@ -25,17 +25,17 @@ class Media extends ComponentBase {
   }
 
   render() {
-    let filename = this.props.params.filename || this.default_state.filename
+    let filename = this.props.params.filename || this.DEFAULT_STATE.filename
     return (
       <div className={`media page`}>
         <div className={`media-container`}>
           <img src={`/media/full/${filename}`} />
         </div>
       </div>
-    );
+    )
   }
 }
 
 export default connect(
   state => state.media
-)(Media);
+)(Media)

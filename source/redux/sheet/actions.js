@@ -45,7 +45,7 @@ export function loadSheet(requestedSlug, ownerId = undefined) {
           ).map(descriptor => descriptor.value),
           'character', title,
         ]
-        dispatch(setMetadata({ title, keywords }))
+        // dispatch(setMetadata({ title, keywords }))
         dispatch(loadedSheet(slug, json, ownerId))
       })
   }

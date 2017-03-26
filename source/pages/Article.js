@@ -1,9 +1,8 @@
 import JsxParser from 'react-jsx-parser'
 import React from 'react'
 import TinyMCE from 'react-tinymce'
-import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { deleteArticle, loadArticle, saveArticle } from '../redux/article/actions'
+import { deleteArticle, saveArticle } from '../redux/page/actions-article'
 
 import ComponentBase from '../application/ComponentBase'
 import ArticleChildren from '../components/ArticleChildren'
@@ -33,12 +32,7 @@ class Article extends ComponentBase {
     super(props)
     this.state = {
       ...DEFAULT_STATE,
-      sheet: props.sheet,
-      tab:   'read',
-    }
-
-    if (this.props.slug !== this.props.params.slug) {
-      this.props.dispatch(loadArticle(this.props.params.slug))
+      tab: 'read',
     }
 
     this.editorConfig = unboundEditorConfig
@@ -62,26 +56,10 @@ class Article extends ComponentBase {
     } })
   }
 
-  componentWillReceiveProps(nextProps) {
-    const slug = nextProps.slug
-
-    if (this.props.params.slug !== slug) {
-      browserHistory.replace(`/page/${slug}`)
-      // Probably a redirect from one slug to another
-    }
-
-    if (this.props.params.slug !== nextProps.params.slug) {
-      // Switching to a new Article
-      this.setState({ ...DEFAULT_STATE, tab: 'read' })
-      this.props.dispatch(loadArticle(nextProps.params.slug))
-      return
-    }
-
+  componentWillReceiveProps() {
     this.setState({
       ...DEFAULT_STATE,
-      sheet: nextProps.loading
-        ? this.state.sheet
-        : nextProps.sheet,
+      tab: 'read',
     })
   }
 
@@ -274,8 +252,6 @@ Article.propTypes = {
   html:     React.PropTypes.string.isRequired,
   loading:  React.PropTypes.bool.isRequired,
   readonly: React.PropTypes.bool.isRequired,
-  sheet:    React.PropTypes.object, // eslint-disable-line react/forbid-prop-types
-  slug:     React.PropTypes.string.isRequired,
   tags:     React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   title:    React.PropTypes.string,
 }
@@ -285,15 +261,13 @@ Article.defaultProps = {
   html:     '',
   loading:  false,
   readonly: true,
-  sheet:    undefined,
-  slug:     undefined,
   tags:     [],
   title:    null,
 }
 
 export default connect(
   state => ({
-    ...state.article,
+    ...state.page,
     readonly: !state.user.privileges.includes('edit'),
   })
 )(Article)
