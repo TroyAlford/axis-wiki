@@ -155,7 +155,9 @@ class Article extends ComponentBase {
     if (!this.props.readonly && this.dirty) {
       tabs.push(
         <li key="save" className="tab-button save center">
-          <a className="icon icon-save button is-success" onClick={this.handleSave}>Save</a>
+          <button className="icon icon-save button is-success" onClick={this.handleSave}>
+            Save
+          </button>
         </li>
       )
     }

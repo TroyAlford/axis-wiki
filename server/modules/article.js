@@ -50,7 +50,7 @@ export default express()
   }
 
   return response.status(200).send(
-    pick(article.rendered, ['html', 'title', 'aliases', 'data', 'tags'])
+    pick(article.rendered, ['slug', 'html', 'title', 'aliases', 'data', 'tags']),
   )
 })
 .delete('/:slug', Privileges(['edit']), (request, response) => {

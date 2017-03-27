@@ -56,12 +56,18 @@ export function saveArticle(slug, article) {
       Accept:         'application/json',
     }),
   }).then((response) => {
+    /* eslint-disable no-throw-literal */
     if (response.status === 200 /* OK */) {
-      dispatch(loadArticle(slug, false))
+      return response.json()
     } else if (response.status === 401 /* Unauthorized */) {
-      dispatch(addMessage(`Your account does not have permission to update the '${slug}' article.`))
+      throw ({ status: 401, message: `Your account does not have permission to update the '${slug}' article.` })
     } else if (response.status === 500 /* Internal Server Error */) {
-      dispatch(addMessage(`An error occurred while attempting to save the '${slug}' article. Please try again.`))
+      throw ({ status: 500, message: `An error occurred while attempting to save the '${slug}' article. Please try again.` })
     }
-  })
+
+    return {}
+  }).then(updated => dispatch(setPage(ARTICLE, updated)))
+    .catch((error) => {
+      if (error && error.message) dispatch(addMessage(error.message))
+    })
 }
