@@ -19,7 +19,7 @@ const ArticleChildren = ({ articles = [], numberOfColumns = 4 }) => {
     const list = sorted.slice(first, last)
 
     return (
-      <div key={index} className={classes}>{ list.map(slug =>
+      <div key={index} className={classes}>{list.map(slug =>
         <div key={slug}><a href={`/page/${slug}`}>{startCase(slug)}</a></div>
       )}</div>
     )
