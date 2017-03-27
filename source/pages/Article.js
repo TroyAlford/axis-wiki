@@ -69,15 +69,16 @@ class Article extends ComponentBase {
   handleSave() {
     if (!this.dirty) return // Only save if there's something to save.
 
+    let data = this.state.data || this.props.data || undefined
+    if (data) data = { ...data, ...(new JsonSheetFormatter(data)).cleansed }
+
     const article = {
       aliases:  this.state.aliases || this.props.aliases,
       children: this.state.children || this.props.children,
-      data:     this.state.data || this.props.data,
+      data,
       html:     this.draft,
       tags:     this.state.tags || this.props.tags,
       title:    this.state.title || this.props.title,
-      sheet:    !this.state.sheet ? false :
-        new JsonSheetFormatter(this.state.sheet).cleansed,
     }
 
     this.props.dispatch(saveArticle(this.props.params.slug, article))
@@ -99,7 +100,8 @@ class Article extends ComponentBase {
 
     const tabs = []
 
-    if (this.state.sheet) {
+    const data = this.state.data || this.props.data
+    if (data && data.xp !== undefined) {
       tabs.push({
         key:       'sheet',
         className: 'left',
@@ -115,11 +117,15 @@ class Article extends ComponentBase {
         ],
         contents: [
           <Sheet
-            key="sheet" {...this.state.sheet}
+            key="sheet" {...(this.state.data || this.props.data || {})}
             readonly={this.props.readonly}
             name={this.state.title || this.props.title}
             onChange={sheet => this.setState({
-              sheet, title: sheet.name,
+              data: {
+                ...this.state.data || this.props.data || {},
+                ...sheet,
+              },
+              title: sheet.name,
             })}
             ref={(self) => { this.sheet = self }}
           />,

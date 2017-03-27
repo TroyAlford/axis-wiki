@@ -1,24 +1,16 @@
-import { connect } from 'react-redux'
-import { browserHistory } from 'react-router'
 import { filter, find, isEqual, pick, sum } from 'lodash'
 
 import * as React from 'react'
 import ComponentBase from '../application/ComponentBase'
-import Armor from '../sheet/Armor'
 import ArmorManager from '../sheet/ArmorManager'
-import Attribute from '../sheet/Attribute'
 import AttributeManager from '../sheet/AttributeManager'
-import Descriptor from '../sheet/Descriptor'
 import DescriptorManager from '../sheet/DescriptorManager'
 import JsonFormatter from '../sheet/JsonFormatter'
 import Portrait from '../sheet/Portrait'
 import Section from '../sheet/Section'
 import SheetHeader from '../sheet/SheetHeader'
-import Skill from '../sheet/Skill'
 import SkillManager from '../sheet/SkillManager'
-import Trait from '../sheet/Trait'
 import TraitManager from '../sheet/TraitManager'
-import Weapon from '../sheet/Weapon'
 import WeaponManager from '../sheet/WeaponManager'
 import WoundTracker from '../sheet/WoundTracker'
 
@@ -120,7 +112,7 @@ export default class Sheet extends ComponentBase {
           </div>
         </Section>
         <JsonFormatter {...this.state}
-          ref={self => this.formatter = self}
+          ref={(self) => { this.formatter = self }}
         />
       </div>
     )

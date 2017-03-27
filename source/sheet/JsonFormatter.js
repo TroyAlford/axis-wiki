@@ -5,7 +5,7 @@ import {
 } from 'lodash'
 import { keys as allowedAttributeKeys } from './AttributeManager'
 import { keys as allowedDescriptorKeys } from './DescriptorManager'
-import slugify from '../../utility/Slugs'
+import { slugify } from '../../utility/Slugs'
 
 export default class JsonFormatter extends React.Component {
   get cleansed() {
