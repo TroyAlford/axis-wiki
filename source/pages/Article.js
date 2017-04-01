@@ -100,8 +100,7 @@ class Article extends ComponentBase {
 
     const tabs = []
 
-    const data = this.state.data || this.props.data
-    if (data && data.xp !== undefined) {
+    if (this.props.template === 'character') {
       tabs.push({
         key:       'sheet',
         className: 'left',
