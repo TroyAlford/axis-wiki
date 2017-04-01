@@ -62,12 +62,12 @@ TagBar.propTypes = {
   tags:      React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   unique:    React.PropTypes.bool.isRequired,
 
-  input: React.PropTypes.shape({
-    className: React.PropTypes.string,
+  inputSettings: React.PropTypes.shape({
+    className:   React.PropTypes.string,
     placeholder: React.PropTypes.string,
   }),
   tagSettings: React.PropTypes.shape({
-    className: React.PropTypes.string,
+    className:       React.PropTypes.string,
     classNameRemove: React.PropTypes.string,
   }),
 }
