@@ -28,7 +28,7 @@ export default class TagBar extends React.Component {
     return (
       <TagsInput onlyUnique readonly={readonly} value={tags}
         className={className} inputProps={inputSettings} tagProps={tagSettings}
-        renderInput={props => (!readonly
+        renderInput={({ addTag, ...props }) => (!readonly
           ? <input type="text" ref="input" {...props} />
           : <span ref="input" />
         )}
@@ -60,7 +60,6 @@ TagBar.propTypes = {
   onChange:  React.PropTypes.func.isRequired,
   readonly:  React.PropTypes.bool.isRequired,
   tags:      React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  unique:    React.PropTypes.bool.isRequired,
 
   inputSettings: React.PropTypes.shape({
     className:   React.PropTypes.string,
