@@ -22,6 +22,15 @@ const filename = PRODUCTION ? `${library}.min.js` : `${library}.js`
 const PLACEHOLDER = 'PLACEHOLDER'
 
 const uglify = new webpack.optimize.UglifyJsPlugin({ minimize: true })
+const ConfigPlugin = new webpack.DefinePlugin({
+  'process.env': VARIABLES.reduce((o, key) => {
+    o[key] = JSON.stringify(process.env[key] || false)
+    return o
+  }, { NODE_ENV: JSON.stringify('production') })
+})
+const serverSideModules = fs.readdirSync('node_modules')
+  .filter(x => ['.bin'].indexOf(x) === -1)
+  .reduce((mods, mod) => Object.assign(mods, { [mod]: `commonjs ${mod}` }))
 
 const bundle = {
   entry: PLACEHOLDER,
@@ -39,18 +48,8 @@ const bundle = {
     libraryTarget:  'umd',
     umdNamedDefine: true,
   },
+  plugins: PRODUCTION ? [ConfigPlugin, uglify] : [ConfigPlugin],
 }
-
-const serverSideModules = fs.readdirSync('node_modules')
-  .filter(x => ['.bin'].indexOf(x) === -1)
-  .reduce((mods, mod) => Object.assign(mods, { [mod]: `commonjs ${mod}` }))
-
-const ConfigPlugin = new webpack.DefinePlugin({
-  'process.env': VARIABLES.reduce((o, key) => {
-    o[key] = JSON.stringify(process.env[key] || false)
-    return o
-  }, {})
-})
 
 module.exports = [
   Object.assign({}, bundle, {
@@ -67,7 +66,6 @@ module.exports = [
       filename: 'application.js',
       path: `${__dirname}/build/js`,
     }),
-    plugins: PRODUCTION ? [ConfigPlugin, uglify] : [ConfigPlugin],
   }),
 
   Object.assign({}, bundle, {
@@ -77,7 +75,6 @@ module.exports = [
       filename: 'dependencies.js',
       path: `${__dirname}/build/js`,
     }),
-    plugins: PRODUCTION ? [uglify] : [],
   }),
 
   // Object.assign({}, bundle, {
