@@ -94,7 +94,6 @@ export default class Article {
   get slug() { return extractSlug(this[SLUG] || '') }
   set slug(slug) { this[SLUG] = extractSlug(slug) }
 
-
   get meta() {
     return pick(this, ['title', 'aliases', 'data', 'tags'])
   }
