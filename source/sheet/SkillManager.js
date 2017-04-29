@@ -1,9 +1,8 @@
 import * as React from 'react'
-import CollectionManager from './CollectionManager'
-import Icon from '../components/Icon'
-import Section from './Section'
-import Skill from './Skill'
+import PropTypes from 'prop-types'
 import { orderBy } from 'lodash'
+import CollectionManager from './CollectionManager'
+import Skill from './Skill'
 
 export default class SkillManager extends CollectionManager {
   renderItem(skill) {
@@ -20,12 +19,12 @@ export default class SkillManager extends CollectionManager {
 
 SkillManager.propTypes = {
   ...CollectionManager.propTypes,
-  items: React.PropTypes.arrayOf(React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
-    category: React.PropTypes.string,
-    name: React.PropTypes.string,
-    note: React.PropTypes.string,
-    values: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  items: PropTypes.arrayOf(PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    category: PropTypes.string,
+    name: PropTypes.string,
+    note: PropTypes.string,
+    values: PropTypes.arrayOf(PropTypes.number).isRequired,
   })).isRequired,
 }
 SkillManager.defaultProps = {

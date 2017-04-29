@@ -1,5 +1,6 @@
 import * as React from 'react'
 import AceEditor from 'react-ace'
+import PropTypes from 'prop-types'
 
 import 'brace/mode/html'
 import 'brace/theme/chrome'
@@ -63,18 +64,18 @@ export default class HtmlEditor extends React.Component {
 }
 
 HtmlEditor.propTypes = {
-  html:     React.PropTypes.string,
-  onChange: React.PropTypes.func.isRequired,
-  readonly: React.PropTypes.bool.isRequired,
+  html:     PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+  readonly: PropTypes.bool.isRequired,
 
-  options: React.PropTypes.shape({
-    displayIndentGuides:   React.PropTypes.bool,
-    enableMultiselect:     React.PropTypes.bool,
-    highlightActiveLine:   React.PropTypes.bool,
-    highlightSelectedWord: React.PropTypes.bool,
-    showInvisibles:        React.PropTypes.bool,
-    showPrintMargin:       React.PropTypes.bool,
-    wrap:                  React.PropTypes.bool,
+  options: PropTypes.shape({
+    displayIndentGuides:   PropTypes.bool,
+    enableMultiselect:     PropTypes.bool,
+    highlightActiveLine:   PropTypes.bool,
+    highlightSelectedWord: PropTypes.bool,
+    showInvisibles:        PropTypes.bool,
+    showPrintMargin:       PropTypes.bool,
+    wrap:                  PropTypes.bool,
   }),
 }
 HtmlEditor.defaultProps = {

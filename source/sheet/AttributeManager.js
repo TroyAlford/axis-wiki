@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import Attribute from './Attribute'
 import Collection from '../../utility/Collection'
 import CollectionManager from './CollectionManager'
@@ -105,20 +106,20 @@ const computed = [
 
 AttributeManager.propTypes = {
   ...CollectionManager.propTypes,
-  armor: React.PropTypes.number.isRequired,
-  items: React.PropTypes.arrayOf(React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
-    value: React.PropTypes.number.isRequired,
+  armor: PropTypes.number.isRequired,
+  items: PropTypes.arrayOf(PropTypes.shape({
+    key:   PropTypes.string.isRequired,
+    value: PropTypes.number.isRequired,
   })).isRequired,
 }
 AttributeManager.defaultProps = {
   ...CollectionManager.defaultProps,
   allowAdd: false,
-  armor: 0,
-  title: 'Attributes',
+  armor:    0,
+  title:    'Attributes',
   settings: {
     template: {
-      key: 'new-attribute',
+      key:   'new-attribute',
       value: 0,
     },
     orderBy: list => orderBy(list, item => keys.indexOf(item.key))

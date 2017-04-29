@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
 import {
@@ -95,23 +96,23 @@ export default class SheetHeader extends ComponentBase {
 }
 
 SheetHeader.propTypes = {
-  name: React.PropTypes.string.isRequired,
-  attributes: React.PropTypes.arrayOf(React.PropTypes.shape({
-    value: React.PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  attributes: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.number.isRequired,
   })).isRequired,
-  skills: React.PropTypes.arrayOf(React.PropTypes.shape({
-    values: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  skills: PropTypes.arrayOf(PropTypes.shape({
+    values: PropTypes.arrayOf(PropTypes.number).isRequired,
   })).isRequired,
-  traits: React.PropTypes.arrayOf(React.PropTypes.shape({
-    value: React.PropTypes.number.isRequired,
+  traits: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.number.isRequired,
   })).isRequired,
 
-  rp: React.PropTypes.number.isRequired,
-  xp: React.PropTypes.number.isRequired,
+  rp: PropTypes.number.isRequired,
+  xp: PropTypes.number.isRequired,
 
-  readonly: React.PropTypes.bool.isRequired,
+  readonly: PropTypes.bool.isRequired,
 
-  onChange: React.PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
 }
 SheetHeader.defaultProps = {
   name: 'Unnamed Character',

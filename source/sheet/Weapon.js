@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 import { startCase, toLower } from 'lodash'
 import { slugify } from '../../utility/Slugs'
@@ -62,18 +63,18 @@ export default class Weapon extends React.Component {
 }
 
 Weapon.propTypes = {
-  forceNameEditing: React.PropTypes.bool,
+  forceNameEditing: PropTypes.bool,
 
-  readonly: React.PropTypes.bool,
+  readonly: PropTypes.bool,
 
-  weapon: React.PropTypes.shape({
-    key:      React.PropTypes.string.isRequired,
-    equipped: React.PropTypes.bool.isRequired,
-    name:     React.PropTypes.string,
-    values:   React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  weapon: PropTypes.shape({
+    key:      PropTypes.string.isRequired,
+    equipped: PropTypes.bool.isRequired,
+    name:     PropTypes.string,
+    values:   PropTypes.arrayOf(PropTypes.number).isRequired,
   }),
 
-  onChange: React.PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
 }
 Weapon.defaultProps = {
   forceNameEditing: false,

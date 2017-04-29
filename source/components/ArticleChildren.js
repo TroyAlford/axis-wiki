@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import { startCase } from 'lodash'
 import Icon from './Icon'
 
@@ -37,8 +38,8 @@ ArticleChildren.defaultProps = {
   numberOfColumns: 4,
 }
 ArticleChildren.propTypes = {
-  articles:        React.PropTypes.arrayOf(React.PropTypes.string),
-  numberOfColumns: React.PropTypes.number,
+  articles:        PropTypes.arrayOf(PropTypes.string),
+  numberOfColumns: PropTypes.number,
 }
 
 export default ArticleChildren

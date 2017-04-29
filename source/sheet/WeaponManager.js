@@ -1,17 +1,23 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
+import { orderBy } from 'lodash'
 import CollectionManager from './CollectionManager'
 import Icon from '../components/Icon'
 import Weapon from './Weapon'
-import { orderBy } from 'lodash'
 
 export default class WeaponManager extends CollectionManager {
+  constructor(props) {
+    super(props)
+    this.handleChange = super.handleChange.bind(this)
+    this.handleEditEnd = super.handleEditEnd.bind(this)
+  }
   renderItem(weapon) {
     return (
       <Weapon key={weapon.id} weapon={weapon}
         forceNameEditing={!weapon.key}
         readonly={this.props.readonly}
-        onChange={super.handleChange.bind(this)}
-        onEditEnd={super.handleEditEnd.bind(this)}
+        onChange={this.handleChange}
+        onEditEnd={this.handleEditEnd}
       />
     )
   }
@@ -19,11 +25,11 @@ export default class WeaponManager extends CollectionManager {
 
 WeaponManager.propTypes = {
   ...CollectionManager.propTypes,
-  items: React.PropTypes.arrayOf(React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
-    equipped: React.PropTypes.bool.isRequired,
-    name: React.PropTypes.string,
-    values: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  items: PropTypes.arrayOf(PropTypes.shape({
+    key:      PropTypes.string.isRequired,
+    equipped: PropTypes.bool.isRequired,
+    name:     PropTypes.string,
+    values:   PropTypes.arrayOf(PropTypes.number).isRequired,
   })).isRequired,
 }
 WeaponManager.defaultProps = {
@@ -32,13 +38,13 @@ WeaponManager.defaultProps = {
     <Icon key="icon" name="weapon" />,
     'Weapons',
   ],
-  headers: ['Use', 'Name', 'Dmg', 'Rng', 'Hit'],
+  headers:  ['Use', 'Name', 'Dmg', 'Rng', 'Hit'],
   settings: {
     template: {
-      key: '',
+      key:      '',
       equipped: false,
-      values: [0, 0, 0],
+      values:   [0, 0, 0],
     },
-    orderBy: list => orderBy(list, weapon => [!weapon.equipped, weapon.name])
-  }
+    orderBy: list => orderBy(list, weapon => [!weapon.equipped, weapon.name]),
+  },
 }

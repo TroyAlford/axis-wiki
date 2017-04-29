@@ -1,5 +1,6 @@
 import Cookie from 'js-cookie'
 import React from 'react'
+import PropTypes from 'prop-types'
 import ComponentBase from '../application/ComponentBase'
 
 function asyncLoadSDK(language = 'en_US') {
@@ -141,13 +142,13 @@ export default class Facebook extends ComponentBase {
 }
 
 Facebook.propTypes = {
-  fields:  React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  scope:   React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  version: React.PropTypes.string.isRequired,
+  fields:  PropTypes.arrayOf(PropTypes.string).isRequired,
+  scope:   PropTypes.arrayOf(PropTypes.string).isRequired,
+  version: PropTypes.string.isRequired,
 
-  onAuthResponse: React.PropTypes.func.isRequired,
-  onLoggedOff:    React.PropTypes.func.isRequired,
-  onUserLoaded:   React.PropTypes.func.isRequired,
+  onAuthResponse: PropTypes.func.isRequired,
+  onLoggedOff:    PropTypes.func.isRequired,
+  onUserLoaded:   PropTypes.func.isRequired,
 }
 Facebook.defaultProps = {
   fields:  ['id', 'email', 'gender', 'locale', 'name', 'picture'],

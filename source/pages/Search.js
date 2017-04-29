@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import * as React from 'react'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
@@ -98,18 +99,18 @@ class Search extends ComponentBase {
 }
 
 Search.propTypes = {
-  loading: React.PropTypes.bool.isRequired,
-  results: React.PropTypes.arrayOf(React.PropTypes.shape({
-    file:    React.PropTypes.string.isRequired,
-    image:   React.PropTypes.string,
-    results: React.PropTypes.arrayOf(React.PropTypes.shape({
-      line: React.PropTypes.string.isRequired,
-      text: React.PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
+  results: PropTypes.arrayOf(PropTypes.shape({
+    file:    PropTypes.string.isRequired,
+    image:   PropTypes.string,
+    results: PropTypes.arrayOf(PropTypes.shape({
+      line: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
     })),
-    title: React.PropTypes.string.isRequired,
-    type:  React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+    title: PropTypes.string.isRequired,
+    type:  PropTypes.arrayOf(PropTypes.string).isRequired,
   })),
-  term: React.PropTypes.string.isRequired,
+  term: PropTypes.string.isRequired,
 }
 Search.defaultProps = {
   loading: true,

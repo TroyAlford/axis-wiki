@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 import { startCase, sum, toLower } from 'lodash'
 import slugify from '../../utility/Slugs'
@@ -64,16 +65,16 @@ export default class Armor extends React.Component {
 }
 
 Armor.propTypes = {
-  armor: React.PropTypes.shape({
-    equipped: React.PropTypes.bool.isRequired,
-    key:      React.PropTypes.string.isRequired,
-    name:     React.PropTypes.string,
-    values:   React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  armor: PropTypes.shape({
+    equipped: PropTypes.bool.isRequired,
+    key:      PropTypes.string.isRequired,
+    name:     PropTypes.string,
+    values:   PropTypes.arrayOf(PropTypes.number).isRequired,
   }).isRequired,
-  forceNameEditing: React.PropTypes.bool,
+  forceNameEditing: PropTypes.bool,
 
-  onChange: React.PropTypes.func.isRequired,
-  readonly: React.PropTypes.bool,
+  onChange: PropTypes.func.isRequired,
+  readonly: PropTypes.bool,
 }
 Armor.defaultProps = {
   armor: {

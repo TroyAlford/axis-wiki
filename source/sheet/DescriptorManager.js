@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Collection from '../../utility/Collection'
+import PropTypes from 'prop-types'
 import CollectionManager from './CollectionManager'
 import Descriptor from './Descriptor'
 import { filter, includes, isEqual, orderBy } from 'lodash'
@@ -49,24 +49,24 @@ export const keys = [
 
 DescriptorManager.propTypes = {
   ...CollectionManager.propTypes,
-  items: React.PropTypes.arrayOf(React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
-    value: React.PropTypes.oneOfType([
-      React.PropTypes.bool,
-      React.PropTypes.string,
-      React.PropTypes.number,
+  items: PropTypes.arrayOf(PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    value: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.string,
+      PropTypes.number,
     ]).isRequired,
   })).isRequired,
 }
 DescriptorManager.defaultProps = {
   ...CollectionManager.defaultProps,
   allowAdd: false,
-  title: 'Descriptors',
+  title:    'Descriptors',
   settings: {
     template: {
-      key: 'new-descriptor',
+      key:   'new-descriptor',
       value: '',
     },
     orderBy: list => orderBy(list, item => keys.indexOf(item.key))
-  }
+  },
 }

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import Collection from '../../utility/Collection'
 import ComponentBase from '../application/ComponentBase'
 import Icon from '../components/Icon'
@@ -66,24 +67,24 @@ export default class CollectionManager extends ComponentBase {
 }
 
 CollectionManager.propTypes = {
-  allowAdd: React.PropTypes.bool.isRequired,
-  headers: React.PropTypes.arrayOf(React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.element,
+  allowAdd: PropTypes.bool.isRequired,
+  headers: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element,
   ])),
-  items: React.PropTypes.array.isRequired,
-  readonly: React.PropTypes.bool.isRequired,
-  settings: React.PropTypes.object.isRequired,
-  title: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.arrayOf(React.PropTypes.oneOfType([
-      React.PropTypes.element,
-      React.PropTypes.string,
+  items: PropTypes.array.isRequired,
+  readonly: PropTypes.bool.isRequired,
+  settings: PropTypes.object.isRequired,
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.string,
     ])),
   ]),
 
-  onChange: React.PropTypes.func.isRequired,
-  renderItem: React.PropTypes.func,
+  onChange: PropTypes.func.isRequired,
+  renderItem: PropTypes.func,
 }
 CollectionManager.defaultProps = {
   allowAdd: true,

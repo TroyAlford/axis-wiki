@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { debounce } from 'lodash'
@@ -36,9 +37,9 @@ SearchBox.defaultProps = {
   term:        '',
 }
 SearchBox.propTypes = {
-  className:   React.PropTypes.string,
-  placeholder: React.PropTypes.string,
-  term:        React.PropTypes.string,
+  className:   PropTypes.string,
+  placeholder: PropTypes.string,
+  term:        PropTypes.string,
 }
 
 export default connect(

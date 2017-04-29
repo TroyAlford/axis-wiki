@@ -1,17 +1,15 @@
 jest.unmock('./Attribute')
 jest.unmock('../components/Editable')
 
+/* eslint-disable import/first,react/no-find-dom-node */
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import TestUtils from 'react-addons-test-utils'
 import Attribute from './Attribute'
 
 describe('Attribute', () => {
-  let parent    = null,
-      component = null,
-      rendered  = null
-
-  const Simulate  = TestUtils.Simulate
+  let parent = null
+  let component = null
+  let rendered = null
 
   function render(element) { ReactDOM.render(element, parent) }
 

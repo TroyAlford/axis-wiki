@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import {
   defaults, filter, flow, includes,
   map, omit, omitBy, orderBy, pick,
@@ -148,16 +149,16 @@ function whitelistKeys(array, keys) {
 }
 
 JsonFormatter.propTypes = {
-  name: React.PropTypes.string.isRequired,
-  rp:   React.PropTypes.number.isRequired,
-  xp:   React.PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  rp:   PropTypes.number.isRequired,
+  xp:   PropTypes.number.isRequired,
 
-  armor:       React.PropTypes.array.isRequired,
-  attributes:  React.PropTypes.array.isRequired,
-  descriptors: React.PropTypes.array.isRequired,
-  skills:      React.PropTypes.array.isRequired,
-  traits:      React.PropTypes.array.isRequired,
-  weapons:     React.PropTypes.array.isRequired,
+  armor:       PropTypes.array.isRequired,
+  attributes:  PropTypes.array.isRequired,
+  descriptors: PropTypes.array.isRequired,
+  skills:      PropTypes.array.isRequired,
+  traits:      PropTypes.array.isRequired,
+  weapons:     PropTypes.array.isRequired,
 }
 JsonFormatter.defaultProps = {
   name: 'Unnamed Character',

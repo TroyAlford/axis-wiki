@@ -1,8 +1,8 @@
 jest.unmock('./Collection')
 jest.unmock('./Guid')
-import { orderBy } from 'lodash'
 
-import TestUtils from 'react-addons-test-utils'
+/* eslint-disable import/first,no-param-reassign */
+import { orderBy } from 'lodash'
 import Collection from './Collection'
 
 describe('Collection', () => {
@@ -10,7 +10,7 @@ describe('Collection', () => {
     const original = [{}, {}, {}]
     const collection = new Collection(original)
 
-    collection.forEach(item => {
+    collection.forEach((item) => {
       expect(typeof item.id).toEqual('string')
       expect(item.id).toBeTruthy()
 
@@ -23,7 +23,7 @@ describe('Collection', () => {
   it('returns keys', () => {
     const original = [{ key: 'a' }, { key: 'b' }, { key: 'c' }]
     const collection = new Collection(original)
-    expect(collection.keys).toEqual(['a','b','c'])
+    expect(collection.keys).toEqual(['a', 'b', 'c'])
   })
   it('updates correctly per filter type', () => {
     const original = [{ key: 'a' }, { key: 'b' }, { key: 'b' }]
@@ -31,21 +31,21 @@ describe('Collection', () => {
 
     collection.update(
       { key: 'b' },
-      item => item.value = 'byObject'
+      (item) => { item.value = 'byObject' }
     )
     expect(collection.items.map(item => item.value))
       .toEqual([undefined, 'byObject', 'byObject'])
 
     collection.update(
       item => item.value === undefined,
-      item => item.value = 'byFunction'
+      (item) => { item.value = 'byFunction' }
     )
     expect(collection.items.map(item => item.value))
       .toEqual(['byFunction', 'byObject', 'byObject'])
 
     collection.update(
       ['key', 'b', 'value', 'byObject'],
-      item => item.value = 'byArray'
+      (item) => { item.value = 'byArray' }
     )
     expect(collection.items.map(item => item.value))
       .toEqual(['byFunction', 'byArray', 'byArray'])
@@ -58,7 +58,7 @@ describe('Collection', () => {
     expect(collection.keys).toEqual(['A', 'b', 'c'])
     expect(collection.find({ key: 'A' }).value).toEqual(1)
 
-    collection.update({ key: 'A' }, item => { item.key = 'a'; item.value = 2 })
+    collection.update({ key: 'A' }, (item) => { item.key = 'a'; item.value = 2 })
     expect(collection.keys).toEqual(['a', 'b', 'c'])
     expect(collection.find({ key: 'a' }).value).toEqual(2)
   })
@@ -72,8 +72,8 @@ describe('Collection', () => {
     const collection = new Collection(original, {
       orderBy: {
         fieldNames: ['last', 'first'],
-        directions: ['desc', 'asc']
-      }
+        directions: ['desc', 'asc'],
+      },
     })
 
     let names = collection.sort().map(el =>
@@ -83,7 +83,7 @@ describe('Collection', () => {
       'chuck chowderhead',
       'bob boskowitz',
       'aaron appleseed',
-      'alexander appleseed'
+      'alexander appleseed',
     ])
 
     collection.settings.orderBy = list => orderBy(list, el => `${el.first} ${el.last}`)
@@ -92,7 +92,7 @@ describe('Collection', () => {
       'aaron appleseed',
       'alexander appleseed',
       'bob boskowitz',
-      'chuck chowderhead'
+      'chuck chowderhead',
     ])
   })
   it('removes items', () => {
@@ -100,7 +100,7 @@ describe('Collection', () => {
     const collection = new Collection(original)
 
     collection.remove({ key: 'a' })
-    expect(collection.keys).toEqual(['b','c'])
+    expect(collection.keys).toEqual(['b', 'c'])
 
     collection.remove(['key', 'b'])
     expect(collection.keys).toEqual(['c'])

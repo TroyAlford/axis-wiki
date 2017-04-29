@@ -1,8 +1,9 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 import {
   difference,
-  includes
+  includes,
 } from 'lodash'
 
 export default class Editable extends React.Component {
@@ -12,10 +13,10 @@ export default class Editable extends React.Component {
     this.handleChange = this.handleChange.bind(this)
     this.state = {
       editing: props.editing || false,
-      value: undefined
+      value:   undefined,
     }
 
-    this.focusOnEditor = self => {
+    this.focusOnEditor = (self) => {
       if (self && typeof self.focus === 'function')
         self.focus()
 
@@ -29,8 +30,16 @@ export default class Editable extends React.Component {
     this.toggleEditing = this.toggleEditing.bind(this)
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps() {
     this.setState({ value: undefined })
+  }
+
+  setValue(value) {
+    const current = this.current
+    if (this.props.readonly || current === value) return; // Don't send false updates.
+    if (this.props.onChanging(value, current) === false) return;
+    this.setState({ value })
+    this.props.onChange(value, current)
   }
 
   get current() {
@@ -68,13 +77,6 @@ export default class Editable extends React.Component {
     return 'text'
   }
 
-  setValue(value) {
-    let current = this.current
-    if (this.props.readonly || current === value) return; // Don't send false updates.
-    if (this.props.onChanging(value, current) === false) return;
-    this.setState({ value })
-    this.props.onChange(value, current)
-  }
   handleChange(event) {
     let value = event.target.value
     switch (this.editorType) {
@@ -128,19 +130,19 @@ export default class Editable extends React.Component {
   render() {
     this.editor = null
 
-    const currentValue = this.current,
-      readonly = this.readonly,
-      editor = this.editorType,
-      editing = this.editing,
-      classes = difference([
-        'editable',
-        editing ? 'editing' : '',
-        this.props.className || '',
-        readonly ? 'readonly' : '',
-        this.dirty ? 'dirty' : ''
-      ], [''])
+    const currentValue = this.current
+    const readonly = this.readonly
+    const editor = this.editorType
+    const editing = this.editing
+    const classes = difference([
+      'editable',
+      editing ? 'editing' : '',
+      this.props.className || '',
+      readonly ? 'readonly' : '',
+      this.dirty ? 'dirty' : '',
+    ], [''])
 
-    let props = {}
+    const props = {}
     if (!readonly && !editing) {
       props.tabIndex = "0"
       props.onFocus = this.handleContainerFocus
@@ -202,17 +204,24 @@ export default class Editable extends React.Component {
 }
 
 Editable.propTypes = {
-  max: React.PropTypes.number,
-  min: React.PropTypes.number,
-  onChange: React.PropTypes.func.isRequired,
-  onChanging: React.PropTypes.func.isRequired,
-  onEditStart: React.PropTypes.func.isRequired,
-  onEditEnd: React.PropTypes.func.isRequired,
-  placeholder: React.PropTypes.string,
+  className:   PropTypes.string,
+  max:         PropTypes.number,
+  min:         PropTypes.number,
+  onChange:    PropTypes.func.isRequired,
+  onChanging:  PropTypes.func.isRequired,
+  onEditStart: PropTypes.func.isRequired,
+  onEditEnd:   PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  value:       PropTypes.any,
 }
 Editable.defaultProps = {
-  onChange: () => true,
-  onChanging: () => true,
+  className:   '',
+  max:         undefined,
+  min:         undefined,
+  onChange:    () => true,
+  onChanging:  () => true,
   onEditStart: () => true,
-  onEditEnd: () => true,
+  onEditEnd:   () => true,
+  placeholder: '',
+  value:       null,
 }

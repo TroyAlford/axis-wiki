@@ -1,5 +1,6 @@
 import { filter, find, isEqual, pick, sum } from 'lodash'
 
+import PropTypes from 'prop-types'
 import * as React from 'react'
 import ComponentBase from '../application/ComponentBase'
 import ArmorManager from '../sheet/ArmorManager'
@@ -140,26 +141,26 @@ export default class Sheet extends ComponentBase {
 }
 
 Sheet.propTypes = {
-  name: React.PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 
-  rp: React.PropTypes.number.isRequired,
-  xp: React.PropTypes.number.isRequired,
+  rp: PropTypes.number.isRequired,
+  xp: PropTypes.number.isRequired,
 
-  wounds: React.PropTypes.shape({
-    light: React.PropTypes.number.isRequired,
-    deep:  React.PropTypes.number.isRequired,
+  wounds: PropTypes.shape({
+    light: PropTypes.number.isRequired,
+    deep:  PropTypes.number.isRequired,
   }),
 
-  armor:       React.PropTypes.array.isRequired,
-  attributes:  React.PropTypes.array.isRequired,
-  descriptors: React.PropTypes.array.isRequired,
-  skills:      React.PropTypes.array.isRequired,
-  traits:      React.PropTypes.array.isRequired,
-  weapons:     React.PropTypes.array.isRequired,
+  armor:       PropTypes.array.isRequired,
+  attributes:  PropTypes.array.isRequired,
+  descriptors: PropTypes.array.isRequired,
+  skills:      PropTypes.array.isRequired,
+  traits:      PropTypes.array.isRequired,
+  weapons:     PropTypes.array.isRequired,
 
-  readonly: React.PropTypes.bool.isRequired,
+  readonly: PropTypes.bool.isRequired,
 
-  onChange: React.PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
 }
 Sheet.defaultProps = {
   ...defaultState,

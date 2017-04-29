@@ -1,23 +1,22 @@
 jest.unmock('./Skill')
 jest.unmock('../components/Editable')
 
+/* eslint-disable import/first */
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import TestUtils from 'react-addons-test-utils'
 import Skill from './Skill'
 
 describe('Skill', () => {
-  let parent    = null,
-      component = null,
-      rendered  = null
-
-  const Simulate  = TestUtils.Simulate
+  let parent = null
+  let component = null
+  let rendered = null
 
   function render(element) { ReactDOM.render(element, parent) }
 
   beforeEach(() => {
     parent = document.createElement('div')
     component = ReactDOM.render(<Skill />, parent)
+    // eslint-disable-next-line react/no-find-dom-node
     rendered = () => ReactDOM.findDOMNode(component)
   })
 

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
 import Section from './Section'
@@ -34,8 +35,8 @@ export default class Portrait extends ComponentBase {
 }
 
 Portrait.propTypes = {
-  url: React.PropTypes.string.isRequired,
-  onChange: React.PropTypes.func.isRequired,
+  url: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 }
 Portrait.defaultProps = {
   url: '',

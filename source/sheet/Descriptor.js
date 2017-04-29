@@ -1,8 +1,9 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 import {
   startCase,
-  toLower
+  toLower,
 } from 'lodash'
 
 import ComponentBase from '../application/ComponentBase'
@@ -47,20 +48,20 @@ export default class Descriptor extends ComponentBase {
 }
 
 Descriptor.propTypes = {
-  descriptor: React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
-    name: React.PropTypes.string,
-    value: React.PropTypes.oneOfType([
-      React.PropTypes.bool,
-      React.PropTypes.number,
-      React.PropTypes.string,
+  descriptor: PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    value: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.number,
+      PropTypes.string,
     ]).isRequired,
   }).isRequired,
-  className: React.PropTypes.string,
-  readonly: React.PropTypes.bool,
+  className: PropTypes.string,
+  readonly: PropTypes.bool,
 
-  onChange: React.PropTypes.func.isRequired,
-  onEditEnd: React.PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onEditEnd: PropTypes.func.isRequired,
 }
 Descriptor.defaultProps = {
   descriptor: {

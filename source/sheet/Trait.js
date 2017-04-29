@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 import { startCase, toLower } from 'lodash'
 import { slugify } from '../../utility/Slugs'
@@ -71,23 +72,27 @@ export default class Trait extends ComponentBase {
 }
 
 Trait.propTypes = {
-  className: React.PropTypes.string,
-  forceNameEditing: React.PropTypes.bool,
-  onChange: React.PropTypes.func.isRequired,
-  trait: React.PropTypes.shape({
-    category: React.PropTypes.string,
-    key: React.PropTypes.string.isRequired,
-    name: React.PropTypes.string,
-    note: React.PropTypes.string,
-    value: React.PropTypes.number.isRequired,
-  })
+  className:        PropTypes.string,
+  forceNameEditing: PropTypes.bool,
+
+  onChange: PropTypes.func.isRequired,
+
+  trait: PropTypes.shape({
+    category: PropTypes.string,
+    key:      PropTypes.string.isRequired,
+    name:     PropTypes.string,
+    note:     PropTypes.string,
+    value:    PropTypes.number.isRequired,
+  }),
 }
 Trait.defaultProps = {
-  className: '',
+  className:        '',
   forceNameEditing: false,
+
   onChange: () => {},
+
   trait: {
-    key: 'new-trait',
+    key:   'new-trait',
     value: 0,
   },
 }

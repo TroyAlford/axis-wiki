@@ -1,4 +1,5 @@
 import JsxParser from 'react-jsx-parser'
+import PropTypes from 'prop-types'
 import React from 'react'
 import TinyMCE from 'react-tinymce'
 import { connect } from 'react-redux'
@@ -255,13 +256,13 @@ class Article extends ComponentBase {
 }
 
 Article.propTypes = {
-  aliases:  React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  children: React.PropTypes.arrayOf(React.PropTypes.string),
-  html:     React.PropTypes.string.isRequired,
-  loading:  React.PropTypes.bool.isRequired,
-  readonly: React.PropTypes.bool.isRequired,
-  tags:     React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  title:    React.PropTypes.string,
+  aliases:  PropTypes.arrayOf(PropTypes.string).isRequired,
+  children: PropTypes.arrayOf(PropTypes.string),
+  html:     PropTypes.string.isRequired,
+  loading:  PropTypes.bool.isRequired,
+  readonly: PropTypes.bool.isRequired,
+  tags:     PropTypes.arrayOf(PropTypes.string).isRequired,
+  title:    PropTypes.string,
 }
 Article.defaultProps = {
   aliases:  [],

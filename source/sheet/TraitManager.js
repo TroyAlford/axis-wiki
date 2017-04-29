@@ -1,16 +1,22 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
+import { orderBy } from 'lodash'
 import CollectionManager from './CollectionManager'
 import Trait from './Trait'
-import { orderBy } from 'lodash'
 
 export default class TraitManager extends CollectionManager {
+  constructor(props) {
+    super(props)
+    this.handleChange = super.handleChange.bind(this)
+    this.handleEditEnd = super.handleEditEnd.bind(this)
+  }
   renderItem(trait) {
     return (
       <Trait key={trait.id} trait={trait}
         forceNameEditing={!trait.key}
         readonly={this.props.readonly}
-        onChange={super.handleChange.bind(this)}
-        onEditEnd={super.handleEditEnd.bind(this)}
+        onChange={this.handleChange}
+        onEditEnd={this.handleEditEnd}
       />
     )
   }
@@ -18,27 +24,27 @@ export default class TraitManager extends CollectionManager {
 
 TraitManager.propTypes = {
   ...CollectionManager.propTypes,
-  items: React.PropTypes.arrayOf(React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
-    category: React.PropTypes.string,
-    name: React.PropTypes.string,
-    note: React.PropTypes.string,
-    value: React.PropTypes.number.isRequired,
+  items: PropTypes.arrayOf(PropTypes.shape({
+    key:      PropTypes.string.isRequired,
+    category: PropTypes.string,
+    name:     PropTypes.string,
+    note:     PropTypes.string,
+    value:    PropTypes.number.isRequired,
   })).isRequired,
 }
 TraitManager.defaultProps = {
   ...CollectionManager.defaultProps,
-  title: 'Traits',
-  headers: ['Name', 'Cost'],
+  title:    'Traits',
+  headers:  ['Name', 'Cost'],
   settings: {
     template: {
-      key: '',
+      key:   '',
       value: 0,
     },
     orderBy: list => orderBy(list, trait => [
       trait.category || '',
       trait.name || trait.key || '',
-      trait.note || ''
+      trait.note || '',
     ].join('').toLowerCase()),
-  }
+  },
 }

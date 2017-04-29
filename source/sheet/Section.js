@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 export default class Section extends React.Component {
   render() {
@@ -27,22 +28,20 @@ export default class Section extends React.Component {
 }
 
 Section.propTypes = {
-  className: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.arrayOf(React.PropTypes.string),
+  className: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
   ]),
-  headers: React.PropTypes.arrayOf(React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.element,
+  headers: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element,
   ])).isRequired,
-  title: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.array,
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
   ]),
-  onChange: React.PropTypes.func,
 }
 Section.defaultProps = {
   className: '',
   headers: [],
-  onChange: () => {},
 }

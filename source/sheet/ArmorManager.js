@@ -1,8 +1,9 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
+import { orderBy } from 'lodash'
 import CollectionManager from './CollectionManager'
 import Armor from './Armor'
 import Icon from '../components/Icon'
-import { orderBy, sum } from 'lodash'
 
 export default class ArmorManager extends CollectionManager {
   renderItem(armor) {
@@ -19,11 +20,11 @@ export default class ArmorManager extends CollectionManager {
 
 ArmorManager.propTypes = {
   ...CollectionManager.propTypes,
-  items: React.PropTypes.arrayOf(React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
-    equipped: React.PropTypes.bool.isRequired,
-    name: React.PropTypes.string,
-    values: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  items: PropTypes.arrayOf(PropTypes.shape({
+    key:      PropTypes.string.isRequired,
+    equipped: PropTypes.bool.isRequired,
+    name:     PropTypes.string,
+    values:   PropTypes.arrayOf(PropTypes.number).isRequired,
   })).isRequired,
 }
 ArmorManager.defaultProps = {

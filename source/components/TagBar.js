@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import TagsInput from 'react-tagsinput'
 import { isEqual } from 'lodash'
 import { slugify } from '../../utility/Slugs'
@@ -55,19 +56,19 @@ export default class TagBar extends React.Component {
 }
 
 TagBar.propTypes = {
-  banned:    React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  className: React.PropTypes.string,
-  onChange:  React.PropTypes.func.isRequired,
-  readonly:  React.PropTypes.bool.isRequired,
-  tags:      React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  banned:    PropTypes.arrayOf(PropTypes.string).isRequired,
+  className: PropTypes.string,
+  onChange:  PropTypes.func.isRequired,
+  readonly:  PropTypes.bool.isRequired,
+  tags:      PropTypes.arrayOf(PropTypes.string).isRequired,
 
-  inputSettings: React.PropTypes.shape({
-    className:   React.PropTypes.string,
-    placeholder: React.PropTypes.string,
+  inputSettings: PropTypes.shape({
+    className:   PropTypes.string,
+    placeholder: PropTypes.string,
   }),
-  tagSettings: React.PropTypes.shape({
-    className:       React.PropTypes.string,
-    classNameRemove: React.PropTypes.string,
+  tagSettings: PropTypes.shape({
+    className:       PropTypes.string,
+    classNameRemove: PropTypes.string,
   }),
 }
 TagBar.defaultProps = {

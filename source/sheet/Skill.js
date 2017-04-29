@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { startCase, toLower } from 'lodash'
 import { slugify } from '../../utility/Slugs'
@@ -78,20 +79,20 @@ export default class Skill extends ComponentBase {
 }
 
 Skill.propTypes = {
-  className: React.PropTypes.string,
+  className: PropTypes.string,
 
-  skill: React.PropTypes.shape({
-    category: React.PropTypes.string,
-    key:      React.PropTypes.string.isRequired,
-    name:     React.PropTypes.string,
-    note:     React.PropTypes.string,
-    values:   React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  skill: PropTypes.shape({
+    category: PropTypes.string,
+    key:      PropTypes.string.isRequired,
+    name:     PropTypes.string,
+    note:     PropTypes.string,
+    values:   PropTypes.arrayOf(PropTypes.number).isRequired,
   }),
 
-  forceNameEditing: React.PropTypes.bool.isRequired,
+  forceNameEditing: PropTypes.bool.isRequired,
 
-  onChange:  React.PropTypes.func.isRequired,
-  onEditEnd: React.PropTypes.func.isRequired,
+  onChange:  PropTypes.func.isRequired,
+  onEditEnd: PropTypes.func.isRequired,
 }
 Skill.defaultProps = {
   className: '',

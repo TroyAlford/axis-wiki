@@ -1,8 +1,9 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 import {
   startCase,
-  toLower
+  toLower,
 } from 'lodash'
 
 import ComponentBase from '../application/ComponentBase'
@@ -12,7 +13,7 @@ export default class Attribute extends ComponentBase {
   handleValueChange(value) {
     this.props.onChange({
       ...this.props.attribute,
-      value
+      value,
     }, this.props.attribute)
   }
 
@@ -23,7 +24,7 @@ export default class Attribute extends ComponentBase {
       readonly,
     } = this.props
 
-    let display = name ? name : startCase(toLower(key))
+    const display = name || startCase(toLower(key))
 
     return (
       <div className={`attribute ${className}`}>
@@ -37,25 +38,25 @@ export default class Attribute extends ComponentBase {
 }
 
 Attribute.propTypes = {
-  attribute: React.PropTypes.shape({
-    key: React.PropTypes.string.isRequired,
-    name: React.PropTypes.string,
-    value: React.PropTypes.oneOfType([
-      React.PropTypes.bool,
-      React.PropTypes.number,
-      React.PropTypes.string,
+  attribute: PropTypes.shape({
+    key:   PropTypes.string.isRequired,
+    name:  PropTypes.string,
+    value: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.number,
+      PropTypes.string,
     ]).isRequired,
   }).isRequired,
-  className: React.PropTypes.string,
-  onChange: React.PropTypes.func.isRequired,
-  readonly: React.PropTypes.bool,
+  className: PropTypes.string,
+  onChange:  PropTypes.func.isRequired,
+  readonly:  PropTypes.bool,
 }
 Attribute.defaultProps = {
   attribute: {
-    key: 'new-attribute',
+    key:   'new-attribute',
     value: 0,
   },
   className: '',
-  onChange: to => {},
-  readonly: false,
+  onChange:  () => {},
+  readonly:  false,
 }
