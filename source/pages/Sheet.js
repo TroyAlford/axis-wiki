@@ -20,6 +20,25 @@ const propsToExtract = [
   'traits', 'skills', 'weapons', 'wounds',
 ]
 
+const defaultState = {
+  name: 'Unnamed Character',
+
+  rp: 0,
+  xp: 0,
+
+  wounds: {
+    light: 0,
+    deep:  0,
+  },
+
+  armor:       [],
+  attributes:  [],
+  descriptors: [],
+  skills:      [],
+  traits:      [],
+  weapons:     [],
+}
+
 export default class Sheet extends ComponentBase {
   constructor(props) {
     super(props)
@@ -29,8 +48,9 @@ export default class Sheet extends ComponentBase {
 
   componentWillReceiveProps(props) {
     const state = { ...defaultState, ...pick(props, propsToExtract) }
-    if (!isEqual(this.state, state))
+    if (!isEqual(this.state, state)) {
       this.setState(state)
+    }
   }
 
   handleChange(key, value) {
@@ -46,8 +66,8 @@ export default class Sheet extends ComponentBase {
     const armorValue = sum(filter(this.state.armor, { equipped: true }).map(armor =>
       Math.round(sum(armor.values) / armor.values.length, 0)
     ))
-    const resilienceAttr = find(this.state.attributes, { key: 'resilience' }),
-          resilience = resilienceAttr ? resilienceAttr.value : 0
+    const resilienceAttr = find(this.state.attributes, { key: 'resilience' })
+    const resilience = resilienceAttr ? resilienceAttr.value : 0
 
     return (
       <div className="sheet page">
@@ -119,38 +139,23 @@ export default class Sheet extends ComponentBase {
   }
 }
 
-const defaultState = {
-  name: 'Unnamed Character',
-  rp: 0,
-  xp: 0,
-  wounds: {
-    light: 0,
-    deep: 0,
-  },
-
-  armor: [],
-  attributes: [],
-  descriptors: [],
-  skills: [],
-  traits: [],
-  weapons: [],
-}
-
 Sheet.propTypes = {
   name: React.PropTypes.string.isRequired,
+
   rp: React.PropTypes.number.isRequired,
   xp: React.PropTypes.number.isRequired,
+
   wounds: React.PropTypes.shape({
     light: React.PropTypes.number.isRequired,
-    deep: React.PropTypes.number.isRequired,
+    deep:  React.PropTypes.number.isRequired,
   }),
 
-  armor: React.PropTypes.array.isRequired,
-  attributes: React.PropTypes.array.isRequired,
+  armor:       React.PropTypes.array.isRequired,
+  attributes:  React.PropTypes.array.isRequired,
   descriptors: React.PropTypes.array.isRequired,
-  skills: React.PropTypes.array.isRequired,
-  traits: React.PropTypes.array.isRequired,
-  weapons: React.PropTypes.array.isRequired,
+  skills:      React.PropTypes.array.isRequired,
+  traits:      React.PropTypes.array.isRequired,
+  weapons:     React.PropTypes.array.isRequired,
 
   readonly: React.PropTypes.bool.isRequired,
 
