@@ -27,6 +27,13 @@ const DEFAULT_STATE = {
   title:    null,
 }
 
+function interceptEditorLinks(event) {
+  if (event.target.tagName === 'A') {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+}
+
 class Article extends ComponentBase {
   constructor(props) {
     super(props)
@@ -160,6 +167,7 @@ class Article extends ComponentBase {
           />,
           <TinyMCE
             key="editor" config={this.editorConfig}
+            onClick={interceptEditorLinks}
             content={this.state.html || this.props.html}
           />,
         ],
