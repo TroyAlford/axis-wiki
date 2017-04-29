@@ -57,10 +57,7 @@ class Article extends ComponentBase {
   }
 
   componentWillReceiveProps() {
-    this.setState({
-      ...DEFAULT_STATE,
-      tab: 'read',
-    })
+    this.handleReset()
   }
 
   handleDelete() {
@@ -82,6 +79,9 @@ class Article extends ComponentBase {
     }
 
     this.props.dispatch(saveArticle(this.props.params.slug, article))
+  }
+  handleReset() {
+    this.setState({ ...DEFAULT_STATE, tab: 'read' })
   }
 
   handleTabClicked(clicked) {
@@ -130,17 +130,6 @@ class Article extends ComponentBase {
           />,
         ],
       })
-    } else if (!this.props.readonly) {
-      tabs.push(
-        <li key="add-sheet" className="tab-button sheet left">
-          <a className="icon icon-add button is-info"
-            onClick={() => this.setState({
-              sheet: Sheet.defaultProps,
-              tab:   'sheet',
-            })}
-          >Add Sheet</a>
-        </li>
-      )
     }
 
     tabs.push({
@@ -156,16 +145,6 @@ class Article extends ComponentBase {
         <ArticleChildren key="children" articles={this.props.children} />,
       ],
     })
-
-    if (!this.props.readonly && this.dirty) {
-      tabs.push(
-        <li key="save" className="tab-button save center">
-          <button className="icon icon-save button is-success" onClick={this.handleSave}>
-            Save
-          </button>
-        </li>
-      )
-    }
 
     if (!this.props.readonly && window.tinyMCE) {
       tabs.push({
@@ -244,12 +223,24 @@ class Article extends ComponentBase {
           active={this.state.tab}
           onTabClicked={this.handleTabClicked}
         />
-        <TagBar
-          tags={this.state.tags || this.props.tags}
-          readonly={this.props.readonly}
-          onChange={tags => this.setState({ tags })}
-          onlyUnique
-        />
+        <div className="bottom-bar">
+          <TagBar
+            tags={this.state.tags || this.props.tags}
+            readonly={this.props.readonly}
+            onChange={tags => this.setState({ tags })}
+            onlyUnique
+          />
+          {!this.props.readonly && this.dirty &&
+            <div className="buttons">
+              <button className="icon icon-save button is-success" onClick={this.handleSave}>
+                Save
+              </button>
+              <button className="button is-link" onClick={this.handleReset}>
+                Reset
+              </button>
+            </div>
+          }
+        </div>
       </div>
     )
   }

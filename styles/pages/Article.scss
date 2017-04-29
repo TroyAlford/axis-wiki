@@ -72,14 +72,19 @@ $tags-height: 36px;
       }
     }
   }
-  > .tag-bar {
+  > .bottom-bar {
     border-top: 1px solid $color-border-blue;
     bottom: 0; left: $size-left-column-x; right: 0;
+    display: flex;
     position: fixed;
+
+    .tag-bar { flex-grow: 1; }
+    .buttons {
+      display: flex;
+    }
   }
 
   .button {
-    // font-weight: bold;
     height: auto;
     padding: 5px;
     margin: 3px;
