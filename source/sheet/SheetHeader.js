@@ -1,11 +1,18 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
-import ComponentBase from '../application/ComponentBase'
-import Editable from '../components/Editable'
 import {
   filter, flatten, flow, includes,
   map, omit, pick, sum,
 } from 'lodash'
+import ComponentBase from '../application/ComponentBase'
+import Editable from '../components/Editable'
+
+
+const createRange = (start, end) => {
+  const step = (start <= end) ? 1 : -1
+  const length = (Math.abs(end - start) / Math.abs(step)) + 1
+  return Array.apply(null, Array(length)).map((_, i) => start + (i * step))
+}
 
 export default class SheetHeader extends ComponentBase {
   constructor(props) {
@@ -27,47 +34,43 @@ export default class SheetHeader extends ComponentBase {
   calculateAttributes() {
     const attributeKeys = [
       'strength', 'intellect', 'confidence',
-      'agility',  'acuity',    'intuition',
-      'fitness',  'focus',     'devotion',
+      'agility', 'acuity', 'intuition',
+      'fitness', 'focus', 'devotion',
     ]
     return flow([
       array => filter(array, attr => includes(attributeKeys, attr.key)),
-      array => map(array, attr => this.createRange(1, attr.value)),
+      array => map(array, attr => createRange(-1, attr.value)),
       array => flatten(array),
-      array => map(array, value => value === 1 ? 5 : Math.pow(value, 3)),
+      array => map(array, value => (
+        (Math.abs(value + 1) ** 2) * (value >= 0 ? 1 : -1)
+      )),
       array => sum(array),
     ])(this.props.attributes)
   }
   calculateSkills() {
     return flow([
       array => map(array, skill => [
-        ...this.createRange(1, skill.values[1]),
-        ...this.createRange(2, skill.values[0]),
+        ...createRange(1, skill.values[1]),
+        ...createRange(2, skill.values[0]),
       ]),
       array => flatten(array),
-      array => map(array, value =>
-        value === 1 ? 2 : Math.pow(value, 2)
-      ),
+      array => map(array, value => (
+        value === 1 ? 2 : value ** 2
+      )),
       array => sum(array),
     ])(this.props.skills)
   }
   calculateTraits() {
     return flow([
       array => map(array, trait => trait.value),
-      array => sum(array)
+      array => sum(array),
     ])(this.props.traits)
-  }
-
-  createRange(low, high) {
-    return low > high ? [] :
-      Array.apply(null, Array(Math.abs(high - low) + 1))
-           .map((discard, n) => n + low)
   }
 
   handleChange(key, value) {
     this.props.onChange(omit({
       ...this.props,
-      [key]: value
+      [key]: value,
     }, ['onChange']))
   }
 
