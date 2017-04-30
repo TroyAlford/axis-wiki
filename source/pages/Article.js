@@ -207,7 +207,7 @@ class Article extends ComponentBase {
               {[undefined, 'character', 'creature', 'world'].map(tmplName =>
                 <option
                   key={tmplName} value={tmplName}
-                  checked={this.state.data.template === tmplName}
+                  selected={this.state.data.template === tmplName}
                 >{tmplName}</option>
               )}
             </select>
