@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import TinyMCE from 'react-tinymce'
 import { connect } from 'react-redux'
+import { isEqual } from 'lodash'
 import { deleteArticle, saveArticle } from '../redux/page/actions-article'
 
 import ComponentBase from '../application/ComponentBase'
@@ -19,15 +20,6 @@ import unboundEditorConfig from '../config/editor'
 
 const tinyMCE = window.tinyMCE
 
-const DEFAULT_STATE = {
-  aliases:  null,
-  children: null,
-  data:     null,
-  html:     null,
-  tags:     null,
-  title:    null,
-}
-
 function interceptEditorLinks(event) {
   if (event.target.tagName === 'A') {
     event.preventDefault()
@@ -38,22 +30,17 @@ function interceptEditorLinks(event) {
 class Article extends ComponentBase {
   constructor(props) {
     super(props)
-    this.state = {
-      ...DEFAULT_STATE,
-      tab: 'read',
-    }
+    this.state = this.defaultState(props)
 
     this.editorConfig = unboundEditorConfig
 
     Object.defineProperty(this, 'dirty', { get: () => (
       this.state.tab === 'edit' ||
       this.props.html !== this.draft ||
-      this.state.aliases !== null ||
-      this.state.children !== null ||
-      this.state.data !== null ||
-      this.state.tags !== null ||
-      this.state.title !== null ||
-      (!this.props.sheet && this.state.sheet)
+      !isEqual(this.props.aliases, this.state.aliases) ||
+      !isEqual(this.props.data, this.state.data) ||
+      !isEqual(this.props.tags, this.state.tags) ||
+      !isEqual(this.props.title, this.state.title)
     ) })
     Object.defineProperty(this, 'draft', { get: () => {
       if (this.state.tab === 'edit' && tinyMCE && tinyMCE.activeEditor) {
@@ -64,8 +51,20 @@ class Article extends ComponentBase {
     } })
   }
 
-  componentWillReceiveProps() {
-    this.handleReset()
+  componentWillReceiveProps(props) {
+    this.setState(this.defaultState(props))
+  }
+
+  defaultState(props = this.props) {
+    return ({
+      aliases: props.aliases,
+      data:    props.data || {},
+      html:    props.html,
+      tags:    props.tags,
+      title:   props.title,
+
+      tab: 'read',
+    })
   }
 
   handleDelete() {
@@ -89,7 +88,7 @@ class Article extends ComponentBase {
     this.props.dispatch(saveArticle(this.props.params.slug, article))
   }
   handleReset() {
-    this.setState({ ...DEFAULT_STATE, tab: 'read' })
+    this.setState(this.defaultState())
   }
 
   handleTabClicked(clicked) {
@@ -103,12 +102,23 @@ class Article extends ComponentBase {
     return true
   }
 
+  handleTemplateChange(event) {
+    const template = event.target.value
+    this.setState({
+      data: {
+        ...this.state.data,
+        template,
+      },
+    })
+  }
+
   render() {
     if (this.props.loading) return <div className="article page loading" />
 
     const tabs = []
+    const { template } = this.state.data || {}
 
-    if (this.props.template === 'character') {
+    if (template === 'character') {
       tabs.push({
         key:       'sheet',
         className: 'left',
@@ -116,20 +126,15 @@ class Article extends ComponentBase {
         caption: [
           <Icon key="icon" name="sheet" />,
           <span key="text">Sheet</span>,
-          !this.props.readonly &&
-            <i
-              key="btn-remove" className="icon icon-remove"
-              onClick={() => this.setState({ sheet: undefined, tab: 'read' })}
-            />,
         ],
         contents: [
           <Sheet
-            key="sheet" {...(this.state.data || this.props.data || {})}
+            key="sheet" {...this.state.data}
             readonly={this.props.readonly}
             name={this.state.title || this.props.title}
             onChange={sheet => this.setState({
               data: {
-                ...this.state.data || this.props.data || {},
+                ...this.state.data,
                 ...sheet,
               },
               title: sheet.name,
@@ -196,7 +201,18 @@ class Article extends ComponentBase {
       ],
       contents: (
         <div className="settings">
-          <h5>Aliases:</h5>
+          <h5>Template</h5>
+          <span className="select">
+            <select onChange={this.handleTemplateChange}>
+              {[undefined, 'character', 'creature', 'world'].map(tmplName =>
+                <option
+                  key={tmplName} value={tmplName}
+                  checked={this.state.data.template === tmplName}
+                >{tmplName}</option>
+              )}
+            </select>
+          </span>
+          <h5>Aliases</h5>
           <div className="callout-info">
             Each entry below is used as an alternate name / redirect for this page.
           </div>
