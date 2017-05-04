@@ -201,17 +201,6 @@ class Article extends ComponentBase {
       ],
       contents: (
         <div className="settings">
-          <h5>Template</h5>
-          <span className="select">
-            <select onChange={this.handleTemplateChange}>
-              {[undefined, 'character', 'creature', 'world'].map(tmplName =>
-                <option
-                  key={tmplName} value={tmplName}
-                  selected={this.state.data.template === tmplName}
-                >{tmplName}</option>
-              )}
-            </select>
-          </span>
           <h5>Aliases</h5>
           <div className="callout-info">
             Each entry below is used as an alternate name / redirect for this page.
@@ -235,6 +224,17 @@ class Article extends ComponentBase {
             >Delete this Article</button>,
             <span key="warning" className="button-label">
               <i>Warning: This cannot be undone!</i>
+            </span>,
+            <h5>Template</h5>,
+            <span className="select">
+              <select onChange={this.handleTemplateChange}>
+                {[undefined, 'character', 'creature', 'world'].map(tmplName =>
+                  <option
+                    key={tmplName} value={tmplName}
+                    selected={this.state.data.template === tmplName}
+                  >{tmplName}</option>
+                )}
+              </select>
             </span>,
           ]}
         </div>
