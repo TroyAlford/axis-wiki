@@ -41,8 +41,9 @@ export default class SheetHeader extends ComponentBase {
       array => filter(array, attr => includes(attributeKeys, attr.key)),
       array => map(array, attr => createRange(-1, attr.value)),
       array => flatten(array),
+      // eslint-disable-next-line no-restricted-properties
       array => map(array, value => (
-        (Math.abs(value + 1) ** 2) * (value >= 0 ? 1 : -1)
+        Math.pow(Math.abs(value + 1), 2) * (value >= 0 ? 1 : -1)
       )),
       array => sum(array),
     ])(this.props.attributes)
@@ -54,8 +55,9 @@ export default class SheetHeader extends ComponentBase {
         ...(skill.values[0] >= 2 ? createRange(2, skill.values[0]) : []),
       ]),
       array => flatten(array),
+      // eslint-disable-next-line no-restricted-properties
       array => map(array, value => (
-        value === 1 ? 2 : value ** 2
+        value === 1 ? 2 : Math.pow(value, 2)
       )),
       array => sum(array),
     ])(this.props.skills)
