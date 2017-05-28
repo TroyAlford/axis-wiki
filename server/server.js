@@ -38,7 +38,7 @@ var app = express()
   .use('/api/by',      Facebook, api_by)
   .use('/api/config',  Facebook, api_config)
   .use('/api/monitor', Facebook, api_monitor)
-  .use('/api/my',      Facebook, NoAnonymous, api_my)
+  .use('/api/my',      Facebook, api_my)
   .use('/api/search',  Facebook, api_search)
 
   /* Non-Static Content Routes */
