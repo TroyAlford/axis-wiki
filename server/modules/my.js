@@ -23,7 +23,7 @@ export default express()
 
   if (authenticated) {
     if (Profile.save(id, profile))
-      return response.status(200).send(profile)
+      return response.status(200).send(Profile.load(id))
     else
       return response.status(500).send('Unable to save profile.')
   }
@@ -33,7 +33,7 @@ export default express()
     return response.status(401).send('You must be logged in to update your profile.')
 
   if (Profile.save(id, profile)) // Create new profile
-    return response.status(200).send({ ...profile, id })
+    return response.status(200).send(Profile.load(id))
 
   return response.status(500).send('Unable to save profile.')
 })

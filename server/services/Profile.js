@@ -41,7 +41,7 @@ export default class Profile {
     try {
       profile = utils.readJSONSync(file)
     } catch (err) {
-      profile = Object.assign({}, Profile.default)
+      profile = Object.assign({}, Profile.default, { id })
     }
 
     profile.privileges = flow(uniq(), sortBy())(
