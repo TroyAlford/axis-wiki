@@ -3,7 +3,7 @@ import Dropzone from 'react-dropzone'
 import React from 'react'
 
 import ComponentBase from '../application/ComponentBase'
-import slugify from '../../utility/Slugs'
+import { slugify } from '../../utility/Slugs'
 
 export default class UploadPage extends ComponentBase {
   constructor(props) {

@@ -2,7 +2,7 @@ import * as React from 'react'
 import PropTypes from 'prop-types'
 
 import { startCase, sum, toLower } from 'lodash'
-import slugify from '../../utility/Slugs'
+import { slugify } from '../../utility/Slugs'
 
 import Editable from '../components/Editable'
 
