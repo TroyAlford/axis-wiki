@@ -26,6 +26,12 @@ export default class Profile {
     return true
   }
 
+  static exists(id) {
+    if (!id) return false
+    const filepath = path.resolve(config.folders.users, `${id}.json`)
+    return utils.exists(filepath)
+  }
+
   static load(id) {
     if (!id) return Profile.default
 
