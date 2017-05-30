@@ -29,5 +29,5 @@ export default {
     '@[id|class|style],' +
     '-h1,-h2,-h3,-h4,-h5,-h6,' +
     '-table,-tr,br,hr,-blockquote,' +
-    '-div,-p,-ul,-ol,-li,-b/strong,-i/em,-u,-s/strike/del,-center,-sup,-sub'
+    '-div,-span,-p,-ul,-ol,-li,-b/strong,-i/em,-u,-s/strike/del,-center,-sup,-sub'
 }
