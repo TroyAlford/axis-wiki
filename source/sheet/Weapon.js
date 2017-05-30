@@ -8,7 +8,7 @@ import Editable from '../components/Editable'
 
 export default class Weapon extends React.Component {
   render() {
-    /* jslint-disable no-shadow */
+    /* eslint-disable no-shadow */
     const { equipped, key, name, values } = this.props.weapon
     const display = name || startCase(toLower(key))
 
@@ -20,10 +20,8 @@ export default class Weapon extends React.Component {
           readonly={this.props.readonly}
           onChange={(equipped) => {
             if (equipped === this.props.weapon.equipped) return;
-            this.props.onChange({
-              ...this.props.weapon,
-              equipped,
-            }, this.props.weapon)
+            const updated = { ...this.props.weapon, equipped }
+            this.props.onChange(updated, this.props.weapon)
           }}
         />
         <Editable className="name" value={display}
@@ -50,10 +48,8 @@ export default class Weapon extends React.Component {
             const values = [...this.props.weapon.values]
             values[index] = value
 
-            this.props.onChange({
-              ...this.props.weapon,
-              values,
-            }, this.props.weapon)
+            const updated = { ...this.props.weapon, values }
+            this.props.onChange(updated, this.props.weapon)
           }}
         />
       )}

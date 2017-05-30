@@ -20,10 +20,8 @@ export default class Armor extends React.Component {
           readonly={this.props.readonly}
           onChange={(equipped) => {
             if (equipped === this.props.armor.equipped) return;
-            this.props.onChange({
-              ...this.props.armor,
-              equipped,
-            }, this.props.armor)
+            const updated = { ...this.props.armor, equipped }
+            this.props.onChange(updated, this.props.armor)
           }}
         />
         <Editable className="name" value={display}
@@ -49,10 +47,8 @@ export default class Armor extends React.Component {
             const values = [...this.props.armor.values]
             values[index] = value
 
-            this.props.onChange({
-              ...this.props.armor,
-              values,
-            }, this.props.armor)
+            const updated = { ...this.props.armor, values }
+            this.props.onChange(updated, this.props.armor)
           }}
         />
       )}
