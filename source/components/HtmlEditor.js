@@ -51,6 +51,7 @@ export default class HtmlEditor extends React.Component {
         name="html"
         onChange={this.props.onChange}
         readOnly={this.props.readonly}
+        scrollMargin={[5, 0, 5, 0]}
         setOptions={this.options}
         showGutter
         tabSize={2}
@@ -88,7 +89,7 @@ HtmlEditor.defaultProps = {
     enableMultiselect:     true,
     highlightActiveLine:   true,
     highlightSelectedWord: true,
-    showInvisibles:        true,
+    showInvisibles:        false,
     showPrintMargin:       false,
     wrap:                  true,
   },
