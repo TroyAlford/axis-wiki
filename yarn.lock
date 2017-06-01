@@ -4560,6 +4560,12 @@ react-helmet@^4.0.0:
     object-assign "^4.0.1"
     react-side-effect "^1.1.0"
 
+react-jsx-parser@^0.0.13:
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/react-jsx-parser/-/react-jsx-parser-0.0.13.tgz#851250b9628c9e9d775ca2af50f9e30ed73c5d78"
+  dependencies:
+    react "^15.4.2"
+
 react-redux@^5.0.2:
   version "5.0.5"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.0.5.tgz#f8e8c7b239422576e52d6b7db06439469be9846a"
@@ -4601,7 +4607,7 @@ react-tinymce@^0.5.1:
   dependencies:
     lodash "^3.9.3"
 
-react@^15.5.4:
+react@^15.4.2, react@^15.5.4:
   version "15.5.4"
   resolved "https://registry.yarnpkg.com/react/-/react-15.5.4.tgz#fa83eb01506ab237cdc1c8c3b1cea8de012bf047"
   dependencies:
