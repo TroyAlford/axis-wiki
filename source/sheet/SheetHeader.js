@@ -6,13 +6,7 @@ import {
 } from 'lodash'
 import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
-
-
-const createRange = (start, end) => {
-  const step = (start <= end) ? 1 : -1
-  const length = (Math.abs(end - start) / Math.abs(step)) + 1
-  return Array.apply(null, Array(length)).map((_, i) => start + (i * step))
-}
+import createRange from '../../utility/createRange'
 
 export default class SheetHeader extends ComponentBase {
   constructor(props) {
