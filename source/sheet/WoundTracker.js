@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'

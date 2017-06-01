@@ -1,7 +1,7 @@
 import { filter, find, isEqual, pick, sum } from 'lodash'
 
 import PropTypes from 'prop-types'
-import * as React from 'react'
+import React from 'react'
 import ComponentBase from '../application/ComponentBase'
 import ArmorManager from '../sheet/ArmorManager'
 import AttributeManager from '../sheet/AttributeManager'

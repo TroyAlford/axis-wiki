@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import * as React from 'react'
+import React from 'react'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { findIndex, includes } from 'lodash'

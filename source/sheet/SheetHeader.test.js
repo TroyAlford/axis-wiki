@@ -1,8 +1,8 @@
 jest.unmock('./SheetHeader')
 
 /* eslint-disable import/first */
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import React from 'react'
+import ReactDOM from 'react-dom'
 import SheetHeader from './SheetHeader'
 
 describe('SheetHeader', () => {

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { find } from 'lodash'
 
 export default ({ key = '', tabs = [], onTabClicked = (() => {}), active = null }) => {

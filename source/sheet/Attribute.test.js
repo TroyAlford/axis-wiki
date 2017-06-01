@@ -2,8 +2,8 @@ jest.unmock('./Attribute')
 jest.unmock('../components/Editable')
 
 /* eslint-disable import/first,react/no-find-dom-node */
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import React from 'react'
+import ReactDOM from 'react-dom'
 import Attribute from './Attribute'
 
 describe('Attribute', () => {

@@ -2,8 +2,8 @@ jest.unmock('./Skill')
 jest.unmock('../components/Editable')
 
 /* eslint-disable import/first */
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import React from 'react'
+import ReactDOM from 'react-dom'
 import Skill from './Skill'
 
 describe('Skill', () => {
