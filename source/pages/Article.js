@@ -67,19 +67,26 @@ class Article extends ComponentBase {
     })
   }
 
+  handleKeyDown(event) {
+    if (event.metaKey || event.ctrlKey) {
+      switch (event.key.toLowerCase()) {
+        case 's':
+          event.preventDefault()
+          this.handleSave()
+      }
+    }
+  }
+
   handleDelete() {
     this.props.dispatch(deleteArticle(this.props.params.slug))
   }
   handleSave() {
     if (!this.dirty) return // Only save if there's something to save.
 
-    let data = this.state.data || this.props.data || undefined
-    if (data) data = { ...data, ...(new JsonSheetFormatter(data)).cleansed }
-
     const article = {
       aliases:  this.state.aliases || this.props.aliases,
       children: this.state.children || this.props.children,
-      data,
+      data:     this.state.data || this.props.data || undefined,
       html:     this.draft,
       tags:     this.state.tags || this.props.tags,
       title:    this.state.title || this.props.title,
@@ -244,7 +251,7 @@ class Article extends ComponentBase {
     })
 
     return (
-      <div className="article page">
+      <div className="article page" onKeyDown={this.handleKeyDown}>
         <TabSet
           tabs={tabs}
           active={this.state.tab}
