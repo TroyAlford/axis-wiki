@@ -67,16 +67,6 @@ class Article extends ComponentBase {
     })
   }
 
-  handleKeyDown(event) {
-    if (event.metaKey || event.ctrlKey) {
-      switch (event.key.toLowerCase()) {
-        case 's':
-          event.preventDefault()
-          this.handleSave()
-      }
-    }
-  }
-
   handleDelete() {
     this.props.dispatch(deleteArticle(this.props.params.slug))
   }
@@ -251,7 +241,7 @@ class Article extends ComponentBase {
     })
 
     return (
-      <div className="article page" onKeyDown={this.handleKeyDown}>
+      <div className="article page">
         <TabSet
           tabs={tabs}
           active={this.state.tab}
