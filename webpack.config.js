@@ -26,7 +26,7 @@ const ConfigPlugin = new webpack.DefinePlugin({
   'process.env': VARIABLES.reduce((o, key) => {
     o[key] = JSON.stringify(process.env[key] || false)
     return o
-  }, { NODE_ENV: JSON.stringify('production') })
+  }, { NODE_ENV: JSON.stringify(ENVIRONMENT) })
 })
 const serverSideModules = fs.readdirSync('node_modules')
   .filter(x => ['.bin'].indexOf(x) === -1)
@@ -59,6 +59,7 @@ module.exports = [
     externals: {
       'React': 'React',
       'react': 'React',
+      'ReactDOM': 'ReactDOM',
       'react-dom': 'ReactDOM',
       'react-router': 'ReactRouter',
     },
