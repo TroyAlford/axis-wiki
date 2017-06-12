@@ -11,17 +11,9 @@ import ArticleChildren from '../components/ArticleChildren'
 import Editable from '../components/Editable'
 import Icon from '../components/Icon'
 import HtmlEditor from '../components/HtmlEditor'
-import JsonSheetFormatter from '../sheet/JsonFormatter'
 import Sheet from './Sheet'
 import TabSet from '../components/TabSet'
 import TagBar from '../components/TagBar'
-
-function interceptEditorLinks(event) {
-  if (event.target.tagName === 'A') {
-    event.preventDefault()
-    event.stopPropagation()
-  }
-}
 
 class Article extends ComponentBase {
   constructor(props) {
@@ -37,7 +29,7 @@ class Article extends ComponentBase {
       !isEqual(this.props.title, this.state.title)
     ) })
     Object.defineProperty(this, 'draft', {
-      get: () => this.state.html || this.props.html
+      get: () => this.state.html || this.props.html,
     })
   }
 
