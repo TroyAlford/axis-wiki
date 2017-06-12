@@ -2,6 +2,9 @@ import {
   ARTICLE, PICTURE, PROFILE, SEARCH,
   METADATA,
   LOADING,
+
+  getLayout,
+  LAYOUT, SMALL, MEDIUM, LARGE,
 } from './actions'
 
 const DEFAULTS = {
@@ -15,6 +18,8 @@ const DEFAULTS = {
   tags:     [],
 
   missing_links: [],
+
+  layout: getLayout(),
 }
 
 export default (state = DEFAULTS, action) => {
@@ -43,9 +48,13 @@ export default (state = DEFAULTS, action) => {
       return {
         // ...state,
         ...action.data,
+        layout:  state.layout,
         loading: false,
         type:    action.type,
       }
+
+    case LAYOUT:
+      return { ...state, layout: action.layout }
 
     default:
       return state
