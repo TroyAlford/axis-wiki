@@ -1,4 +1,14 @@
 // @import "**/*.scss";
+@import "node_modules/wiki-editor/src/wiki-editor";
+[class^="icon-"]:before, [class*=" icon-"]:before {
+  font-family: 'axis-wiki';
+}
+.wiki-editor {
+  [class^="icon-"]:before, [class*=" icon-"]:before {
+    font-family: 'wiki-editor';
+  }
+}
+
 @import "palette";
 @import "_/*.scss";
 @import "atoms/*.scss";
