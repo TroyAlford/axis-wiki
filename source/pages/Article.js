@@ -1,7 +1,7 @@
 import JsxParser from 'react-jsx-parser'
 import PropTypes from 'prop-types'
 import React from 'react'
-import TinyMCE from 'react-tinymce'
+import WikiEditor from 'wiki-editor'
 import { connect } from 'react-redux'
 import { isEqual } from 'lodash'
 import { deleteArticle, saveArticle } from '../redux/page/actions-article'
@@ -16,10 +16,6 @@ import Sheet from './Sheet'
 import TabSet from '../components/TabSet'
 import TagBar from '../components/TagBar'
 
-import unboundEditorConfig from '../config/editor'
-
-const tinyMCE = window.tinyMCE
-
 function interceptEditorLinks(event) {
   if (event.target.tagName === 'A') {
     event.preventDefault()
@@ -32,8 +28,6 @@ class Article extends ComponentBase {
     super(props)
     this.state = this.defaultState(props)
 
-    this.editorConfig = unboundEditorConfig
-
     Object.defineProperty(this, 'dirty', { get: () => (
       this.state.tab === 'edit' ||
       this.props.html !== this.draft ||
@@ -42,13 +36,9 @@ class Article extends ComponentBase {
       !isEqual(this.props.tags, this.state.tags) ||
       !isEqual(this.props.title, this.state.title)
     ) })
-    Object.defineProperty(this, 'draft', { get: () => {
-      if (this.state.tab === 'edit' && tinyMCE && tinyMCE.activeEditor) {
-        return tinyMCE.activeEditor.getContent()
-      }
-
-      return this.state.html || this.props.html
-    } })
+    Object.defineProperty(this, 'draft', {
+      get: () => this.state.html || this.props.html
+    })
   }
 
   componentWillReceiveProps(props) {
@@ -156,7 +146,7 @@ class Article extends ComponentBase {
       ],
     })
 
-    if (!this.props.readonly && window.tinyMCE) {
+    if (!this.props.readonly) {
       tabs.push({
         key:       'edit',
         className: 'right',
@@ -168,10 +158,10 @@ class Article extends ComponentBase {
             placeholder="Page Title"
             value={this.state.title || this.props.title}
           />,
-          <TinyMCE
-            key="editor" config={this.editorConfig}
-            onClick={interceptEditorLinks}
-            content={this.state.html || this.props.html}
+          <WikiEditor
+            key="editor"
+            defaultHtml={this.draft}
+            onHtmlChange={html => this.setState({ html })}
           />,
         ],
       })
@@ -183,7 +173,7 @@ class Article extends ComponentBase {
         className: 'right',
         caption:   <Icon key="icon" name="html" />,
         contents:  <HtmlEditor
-          html={this.state.html || this.props.html}
+          html={this.draft}
           onChange={html => this.setState({ html })}
           readonly={this.props.readonly}
         />,
