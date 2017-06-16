@@ -5,6 +5,7 @@ import express from 'express'
 import path from 'path'
 import utils from 'fs-utils'
 
+import Database from './db/db'
 import Facebook from './middleware/Facebook'
 import Profile from './services/Profile'
 import Watcher from './services/Watcher'
@@ -64,5 +65,10 @@ express()
   })
 
   .listen(config.port, () => {
-    console.log(`Express server running on port ${config.port}`) // eslint-disable-line no-console
+    // eslint-disable-next-line no-console
+    console.log(`STARTUP: Express server running on port ${config.port}`)
   })
+
+Database.startup()
+process.on('exit', Database.shutdown)
+process.on('SIGTERM', Database.shutdown)
