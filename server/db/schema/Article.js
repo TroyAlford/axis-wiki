@@ -4,6 +4,8 @@ import utils from 'fs-utils'
 import { Document } from 'camo'
 import config from '../../../config/server'
 
+import cleaners from '../../services/cleaners'
+
 function getFilePaths(slug) {
   const folderPath = path.resolve(config.folders.articles, slug)
 
@@ -14,19 +16,36 @@ function getFilePaths(slug) {
 }
 
 export default class Article extends Document {
+  /* eslint-disable no-underscore-dangle */
   constructor() {
     super()
+    this._preventHooks = false
+
     this.schema({
       slug:    String,
-      title:   String,
       html:    String,
       aliases: [String],
       data:    Object,
       tags:    [String],
+      title:   String,
     })
   }
 
   static collectionName = () => 'articles';
+
+  postSave() {
+    if (!this._preventHooks) {
+      const paths = getFilePaths(this.slug)
+      const clean = cleaners.reduce((a, cleaner) => cleaner(a), this)
+      fs.writeFileSync(paths.html(clean.html))
+      fs.writeJSONSync(paths.json({
+        aliases: clean.aliases,
+        data:    clean.data,
+        tags:    clean.tags,
+        title:   clean.title,
+      }))
+    }
+  }
 
   static reloadAll = () => {
     /* eslint-disable no-console */
@@ -46,7 +65,10 @@ export default class Article extends Document {
             const json = utils.readJSONSync(paths.json)
             const { aliases, data, tags, title } = json
 
-            return Article.create({ _id: slug, slug, html, aliases, data, tags, title }).save()
+            const article = Article.create({ _id: slug, slug, html, aliases, data, tags, title })
+            article._preventHooks = true
+
+            return article.save()
           })
       ),
       () => Article.count().then((count) => {
