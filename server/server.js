@@ -1,54 +1,49 @@
-import compression  from 'compression'
+import compression from 'compression'
 import cookieParser from 'cookie-parser'
-import cors         from 'cors'
-import express      from 'express'
-import http         from 'http'
-import mkdirp       from 'mkdirp'
-import path         from 'path'
-import url          from 'url'
-import utils        from 'fs-utils'
+import cors from 'cors'
+import express from 'express'
+import path from 'path'
+import utils from 'fs-utils'
 
-import Facebook     from './middleware/Facebook'
-import Profile      from './services/Profile'
-import NoAnonymous  from './middleware/NoAnonymous'
-import Watcher      from './services/Watcher'
+import Facebook from './middleware/Facebook'
+import Profile from './services/Profile'
+import Watcher from './services/Watcher'
 
-import api_article  from './modules/article'
-import api_by       from './modules/by'
-import { default as api_config, getNavigation } from './modules/config'
-import api_monitor  from './modules/monitor'
-import api_my       from './modules/my'
-import api_search   from './modules/search'
+import articleModule from './modules/article'
+import byModule from './modules/by'
+import configModule, { getNavigation } from './modules/config'
+import mediaModule from './modules/media'
+import monitorModule from './modules/monitor'
+import myModule from './modules/my'
+import searchModule from './modules/search'
 
-import config       from '../config/server'
-
-import module_media from './modules/media'
+import config from '../config/server'
 
 Watcher.watch()
 const bindStatic = folder => express.static(path.join(__dirname, folder))
 
-var app = express()
+express()
   .use(compression())
   .use(cookieParser())
   .use(cors())
   .options('*', cors())
 
   /* Non-Static Routes */
-  .use('/api/page',    Facebook, api_article)
-  .use('/api/by',      Facebook, api_by)
-  .use('/api/config',  Facebook, api_config)
-  .use('/api/monitor', Facebook, api_monitor)
-  .use('/api/my',      Facebook, api_my)
-  .use('/api/search',  Facebook, api_search)
+  .use('/api/page', Facebook, articleModule)
+  .use('/api/by', Facebook, byModule)
+  .use('/api/config', Facebook, configModule)
+  .use('/api/monitor', Facebook, monitorModule)
+  .use('/api/my', Facebook, myModule)
+  .use('/api/search', Facebook, searchModule)
 
   /* Non-Static Content Routes */
-  .use('/media',      Facebook, module_media)
+  .use('/media', Facebook, mediaModule)
 
   /* Static Content Routes */
   .use('/favicon.png', bindStatic('../source/favicon.png'))
-  .use('/css',    bindStatic('../build/css'))
-  .use('/js',     bindStatic('../build/js'))
-  .use('/font',   bindStatic('../fontello/font'))
+  .use('/css', bindStatic('../build/css'))
+  .use('/js', bindStatic('../build/js'))
+  .use('/font', bindStatic('../fontello/font'))
   .use('/images', bindStatic('../images'))
 
   .get('*', Facebook, (request, response) => {
@@ -58,17 +53,16 @@ var app = express()
 
     const initialState = {
       navigation: getNavigation(),
-      user: profile,
+      user:       profile,
     }
 
     const indexFile = path.join(__dirname, '../source/index.html')
-    let html = utils.readFileSync(indexFile)
+    const html = utils.readFileSync(indexFile)
                     .replace('#INITIAL_STATE#', JSON.stringify(initialState))
 
     response.status(200).send(html)
   })
 
   .listen(config.port, () => {
-    console.log(`Express server running on port ${config.port}`)
+    console.log(`Express server running on port ${config.port}`) // eslint-disable-line no-console
   })
-;
