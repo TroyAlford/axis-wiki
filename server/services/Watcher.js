@@ -36,6 +36,8 @@ export default class Watcher {
         Links[`${action}${ext.toUpperCase()}`](target)
         if (ext === 'json') Tags[action](target)
       })
-      .on('error', error => console.log(`Watcher error: ${error}`))
+      .on('error', error =>
+        console.log(`Watcher error: ${error}`) // eslint-disable-line no-console
+      )
   }
 }
