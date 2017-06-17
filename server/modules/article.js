@@ -11,6 +11,8 @@ import { slugify } from '../../utility/Slugs'
 import Privileges from '../middleware/Privileges'
 import Tags from '../services/Tags'
 
+import dbArticle from '../db/schema/Article'
+
 export default express()
   .use(bodyParser.json()) // Parses application/json
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
@@ -28,16 +30,33 @@ export default express()
     },
   } */
 
-  const slug = Links.resolve(slugify(request.params.slug))
+  const slug = slugify(request.params.slug)
+  dbArticle.findOne({ $or: [{ slug }, { aliases: slug }] }, { populate: true })
+           .then(article => Promise.all([
+             Promise.resolve(article),
+             dbArticle.findMissingLinks(article.links),
+             dbArticle.transclude(article.html),
+             dbArticle.find({ tags: article.slug }).then(all =>
+               all.map(({ slug: s, title }) => ({ slug: s, title }))
+             ),
+           ]))
+           .then(([article, missingLinks, transcluded, children]) => ({
+             aliases: article.aliases,
+             data:    article.data,
+             slug:    article.slug,
+             tags:    article.tags,
+             title:   article.title,
 
-  if (request.params.slug !== slug) { // Redirect to normalized slug link
-    return response.redirect(slug)
-  }
-
-  const { html, meta } = Storage.getArticle(slug).rendered
-  const children = Tags.for(slug)
-
-  return response.status(200).send({ ...meta, html, children })
+             html:    transcluded.html,
+             links:   [...article.links, ...transcluded.links],
+             missing: [...missingLinks, ...transcluded.missing],
+             children,
+           }))
+           .then(article => response.status(200).send(article.html))
+           .catch((error) => {
+             console.error(error) // eslint-disable-line no-console
+             response.status(500).send()
+           })
 })
 .post('/:slug', Privileges(['edit']), (request, response) => {
   const slug = slugify(request.params.slug)
