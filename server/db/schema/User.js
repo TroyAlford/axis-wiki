@@ -18,6 +18,7 @@ export default class User extends Document {
       name:  String,
       email: String,
 
+      favorites:  [String],
       privileges: [String],
       articles:   [String],
       tags:       [String],
@@ -38,6 +39,7 @@ export default class User extends Document {
       name:  this.name,
       email: this.email,
 
+      favorites:  this.favorites,
       privileges: this.privileges,
       articles:   this.articles,
       tags:       this.tags,
@@ -60,6 +62,7 @@ export default class User extends Document {
               name:  json.name,
               email: json.email,
 
+              favorites:  json.favorites || [],
               privileges: json.privileges || [],
               articles:   json.articles || [],
               tags:       json.tags || [],
