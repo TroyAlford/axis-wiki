@@ -85,7 +85,7 @@ export default class Article extends Document {
   }
 
   static findMissingLinks(links) {
-    return Article.find({ slug: { $in: links } }, { populate: ['slug'] })
+    return Article.find({ slug: { $in: links } })
                   .then(articles => articles.map(({ slug }) => slug))
                   .then(slugs => unique(links).filter(link => slugs.indexOf(link) === -1))
   }
@@ -171,14 +171,18 @@ export default class Article extends Document {
   static render = slug => (
     Article
     .findOne({ $or: [{ slug }, { aliases: slug }] })
-    .then(article => Promise.all([
-      Promise.resolve(article),
-      Article.findMissingLinks(article.links),
-      Article.transclude(article.html),
-      Article.find({ tags: article.slug }).then(all =>
-        all.map(({ slug: s, title }) => ({ slug: s, title }))
-      ),
-    ]))
+    .then((article) => {
+      // eslint-disable-next-line no-param-reassign
+      if (!article) article = Article.create({ _id: slug, slug })
+      return Promise.all([
+        Promise.resolve(article),
+        Article.findMissingLinks(article.links || []),
+        Article.transclude(article.html || ''),
+        Article.find({ tags: article.slug }).then(all =>
+          all.map(({ slug: s, title }) => ({ slug: s, title }))
+        ),
+      ])
+    })
     .then(([article, missingLinks, transcluded, children]) => ({
       aliases: article.aliases,
       data:    article.data,
@@ -190,5 +194,9 @@ export default class Article extends Document {
       missing: [...missingLinks, ...transcluded.missing],
       children,
     }))
+    .catch((error) => {
+      console.log(` ~> ERROR: Article.render(${slug}) failed:`, error)
+      return Promise.reject()
+    })
   )
 }
