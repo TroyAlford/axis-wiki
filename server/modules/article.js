@@ -1,15 +1,14 @@
-import { pick } from 'lodash'
+import { intersection, pick } from 'lodash'
 
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import express from 'express'
-
-import Article from '../services/Article'
-import * as Storage from '../services/Storage'
+import NoAnonymous from '../middleware/NoAnonymous'
 import { slugify } from '../../utility/Slugs'
-import Privileges from '../middleware/Privileges'
+import unique from '../../utility/unique'
 
-import dbArticle from '../db/schema/Article'
+import Article from '../db/schema/Article'
+import User from '../db/schema/User'
 
 /* {
   slug: 'main-slug',
@@ -23,54 +22,52 @@ import dbArticle from '../db/schema/Article'
   },
 } */
 
+function articleForUser(id, slug) {
+  return Promise.all([
+    User.findOne({ _id: id }),
+    Article.findOne({ $or: [{ slug }, { aliases: slug }] }),
+  ])
+  .then(([user, article]) => {
+    const canEdit = (!article || user) && Boolean(
+      intersection(user.privileges, ['admin', 'edit']).length ||
+      intersection(user.articles, [article.slug, ...article.aliases]).length ||
+      intersection(user.tags, article.tags).length
+    )
+    const privileges = unique([...user.privileges, canEdit ? 'edit' : ''].filter(Boolean))
+    const isFavorite = intersection(user.favorites, [article.slug, ...article.aliases]).length
+    return [article, privileges, Boolean(isFavorite)]
+  })
+}
+function renderForUser([article, privileges, isFavorite]) {
+  return Article.render(article.slug).then(rendered =>
+    Object.assign(rendered, { privileges, isFavorite })
+  )
+}
+
 export default express()
   .use(bodyParser.json()) // Parses application/json
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
   .use(cookieParser())
 .get('/:slug', (request, response) => {
-  const slug = slugify(request.params.slug)
-  dbArticle.findOne({ $or: [{ slug }, { aliases: slug }] })
-           .then(article => Promise.all([
-             Promise.resolve(article),
-             dbArticle.findMissingLinks(article.links),
-             dbArticle.transclude(article.html),
-             dbArticle.find({ tags: article.slug }).then(all =>
-               all.map(({ slug: s, title }) => ({ slug: s, title }))
-             ),
-           ]))
-           .then(([article, missingLinks, transcluded, children]) => ({
-             aliases: article.aliases,
-             data:    article.data,
-             slug:    article.slug,
-             tags:    article.tags,
-             title:   article.title,
-
-             html:    transcluded.html,
-             links:   [...article.links, ...transcluded.links],
-             missing: [...missingLinks, ...transcluded.missing],
-             children,
-           }))
-           .then(article => response.status(200).send(article))
-           .catch((error) => {
-             console.error(error) // eslint-disable-line no-console
-             response.status(500).send()
-           })
+  articleForUser(request.session.id, slugify(request.params.slug))
+    .then(renderForUser)
+    .then(article => response.status(200).send(article))
+    .catch(error => response.status(500).send(error))
 })
-.post('/:slug', Privileges(['edit']), (request, response) => {
-  const slug = slugify(request.params.slug)
+.post('/:slug', NoAnonymous, (request, response) => {
+  articleForUser(request.session.id, slugify(request.params.slug))
+  .then(([article, privileges, isFavorite]) => {
+    const { aliases, data, html, tags, title } = request.body
+    Object.assign(article, { aliases, data, html, tags, title })
 
-  const { html, title, aliases, data, tags } = request.body
-  const article = new Article(slug, html, { title, aliases, data, tags })
-
-  if (!Storage.saveArticle(slug, article)) {
-    return response.status(500).send('Unable to save article.')
-  }
-
-  return response.status(200).send(
-    pick(article.rendered, ['slug', 'html', 'title', 'aliases', 'data', 'tags']),
-  )
+    article.save()
+      .then(updated => renderForUser([updated, privileges, isFavorite]))
+      .then(updated => response.status(200).send(updated))
+      .catch(() => response.status(500).send('Unable to save and reload article.'))
+  })
 })
-.delete('/:slug', Privileges(['edit']), (request, response) => {
+.delete('/:slug', NoAnonymous, (request, response) => {
+  // Privileges(['edit'])
   const slug = request.params.slug // Do NOT normalize. DELETE must be exact.
   if (!Storage.deleteArticle(slug)) {
     return response.status(500).send(`Article ${slug} could not be deleted.`)
