@@ -272,7 +272,12 @@ class Article extends ComponentBase {
 
 Article.propTypes = {
   aliases:  PropTypes.arrayOf(PropTypes.string).isRequired,
-  children: PropTypes.arrayOf(PropTypes.string),
+  children: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.shape({
+      slug:  PropTypes.string,
+      title: PropTypes.string,
+    }),
+  ])),
   html:     PropTypes.string.isRequired,
   loading:  PropTypes.bool.isRequired,
   readonly: PropTypes.bool.isRequired,
