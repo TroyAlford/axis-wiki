@@ -70,6 +70,9 @@ export default class Article extends Document {
   persistToDisk() {
     if (this._initialLoad) return
 
+    // eslint-disable-next-line no-console
+    console.log(` 💾: Article ${this._id} updated`)
+
     const paths = getFilePaths(this.slug)
     const clean = cleaners.reduce((a, cleaner) => cleaner(a), this)
     fs.writeFileSync(paths.html(clean.html))
@@ -131,12 +134,7 @@ export default class Article extends Document {
 
   static reloadAll = () => {
     /* eslint-disable no-console */
-    console.log(' ~> DB:RELOADING: Articles')
-
     const steps = [
-      () => Article.deleteMany().then((count) => {
-        console.log(` ~~> DB:DUMPING: Articles (${count})`)
-      }),
       () => Promise.all(
         fs.readdirSync(config.folders.articles)
           .filter(name => name.endsWith('.html'))
@@ -163,7 +161,7 @@ export default class Article extends Document {
           })
       ),
       () => Article.count().then((count) => {
-        console.log(` ~~> DB:LOADED: ${count} articles.`)
+        console.log(` ~> DB:LOADED: ${count} articles.`)
       }),
     ]
 

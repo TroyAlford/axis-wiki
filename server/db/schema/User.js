@@ -15,13 +15,12 @@ export default class User extends Document {
     this._initialLoad = false
 
     this.schema({
-      id:    String,
       name:  String,
       email: String,
 
-      isAdmin:  Boolean,
-      articles: [String],
-      tags:     [String],
+      privileges: [String],
+      articles:   [String],
+      tags:       [String],
     })
   }
 
@@ -32,38 +31,45 @@ export default class User extends Document {
   persistToDisk() {
     if (this._initialLoad) return
 
-    fs.writeJSONSync(getFilePath(this.id), ({
-      id:    this.id,
+    // eslint-disable-next-line no-console
+    console.log(` 💾: User ${this._id} updated`)
+
+    fs.writeJSONSync(getFilePath(this._id), ({
       name:  this.name,
       email: this.email,
 
-      isAdmin:  this.isAdmin,
-      articles: this.articles,
-      tags:     this.tags,
+      privileges: this.privileges,
+      articles:   this.articles,
+      tags:       this.tags,
     }))
   }
 
   static reloadAll = () => {
     /* eslint-disable no-console */
-    console.log(' ~> DB:RELOADING: Users')
-
     const steps = [
-      () => User.deleteMany().then((count) => {
-        console.log(` ~~> DB:DUMPING: Users (${count})`)
-      }),
       () => Promise.all(
         fs.readdirSync(config.folders.users)
           .filter(name => name.endsWith('.json'))
           .map((filename) => {
-            const id = filename.replace(/\.json$/, '')
-            const json = utils.readJSONSync(getFilePath(id))
-            const user = User.create({ ...json, id, _initialLoad: true })
+            const _id = filename.replace(/\.json$/, '')
+            const json = utils.readJSONSync(getFilePath(_id))
+            const user = User.create({
+              _initialLoad: true,
+              _id,
+
+              name:  json.name,
+              email: json.email,
+
+              privileges: json.privileges || [],
+              articles:   json.articles || [],
+              tags:       json.tags || [],
+            })
 
             return user.save()
           })
       ),
       () => User.count().then((count) => {
-        console.log(` ~~> DB:LOADED: ${count} users.`)
+        console.log(` ~> DB:LOADED: ${count} users`)
       }),
     ]
 
