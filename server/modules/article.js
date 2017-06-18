@@ -67,11 +67,19 @@ export default express()
   })
 })
 .delete('/:slug', NoAnonymous, (request, response) => {
-  // Privileges(['edit'])
-  const slug = request.params.slug // Do NOT normalize. DELETE must be exact.
-  if (!Storage.deleteArticle(slug)) {
-    return response.status(500).send(`Article ${slug} could not be deleted.`)
-  }
+  const slug = request.params.slug
+  articleForUser(request.session.id, slug)
+  .then(([article, privileges]) => {
+    if (article.slug !== slug) {
+      return response.status(401).send(`${slug} redirects to ${article.slug}.`)
+    }
 
-  return response.status(410).send(`Article ${slug} has been removed.`)
+    if (intersection(privileges, ['admin', 'edit']).length === 0) {
+      return response.status(401).send(`You do not have permission to edit ${slug}`)
+    }
+
+    Article.deleteOne({ slug }).then(() =>
+      response.status(410).send(`Article ${slug} has been deleted.`)
+    )
+  })
 })
