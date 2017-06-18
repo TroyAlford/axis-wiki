@@ -10,5 +10,5 @@ export default express()
 .get('/:id/profile', (request, response) => {
   const { id } = request.params
   User.findOne({ id })
-      .then(user => response.status(200).send(user))
+      .then(user => response.status(200).send(User.render(user)))
 })
