@@ -8,7 +8,6 @@ import utils from 'fs-utils'
 import Database from './db/db'
 import Facebook from './middleware/Facebook'
 import Profile from './services/Profile'
-import Watcher from './services/Watcher'
 
 import articleModule from './modules/article'
 import byModule from './modules/by'
@@ -20,7 +19,6 @@ import searchModule from './modules/search'
 
 import config from '../config/server'
 
-Watcher.watch()
 const bindStatic = folder => express.static(path.join(__dirname, folder))
 
 express()
