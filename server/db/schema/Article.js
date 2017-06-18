@@ -20,7 +20,7 @@ function getFilePaths(slug) {
 }
 
 export default class Article extends Document {
-  /* eslint-disable no-underscore-dangle */
+  /* eslint-disable no-underscore-dangle, no-console */
   constructor() {
     super()
     this._initialLoad = false
@@ -37,13 +37,6 @@ export default class Article extends Document {
       links:   [String],
       missing: [String],
     })
-  }
-
-  preSave() {
-    this.parseLinks()
-  }
-  postSave() {
-    this.persistToDisk()
   }
 
   parseLinks() {
@@ -65,23 +58,6 @@ export default class Article extends Document {
     })
 
     this.links = unique(links)
-  }
-
-  persistToDisk() {
-    if (this._initialLoad) return
-
-    // eslint-disable-next-line no-console
-    console.log(` 💾: Article ${this._id} updated`)
-
-    const paths = getFilePaths(this.slug)
-    const clean = cleaners.reduce((a, cleaner) => cleaner(a), this)
-    fs.writeFileSync(paths.html(clean.html))
-    fs.writeJSONSync(paths.json({
-      aliases: clean.aliases,
-      data:    clean.data,
-      tags:    clean.tags,
-      title:   clean.title,
-    }))
   }
 
   static findMissingLinks(links) {
@@ -132,8 +108,39 @@ export default class Article extends Document {
     .then(() => ({ html: $parser.html(), links, missing }))
   }
 
+  static render = slug => (
+    Article
+    .findOne({ $or: [{ slug }, { aliases: slug }] })
+    .then((article) => {
+      // eslint-disable-next-line no-param-reassign
+      if (!article) article = Article.create({ _id: slug, slug })
+      return Promise.all([
+        Promise.resolve(article),
+        Article.findMissingLinks(article.links || []),
+        Article.transclude(article.html || ''),
+        Article.find({ tags: article.slug }).then(all =>
+          all.map(({ slug: s, title }) => ({ slug: s, title }))
+        ),
+      ])
+    })
+    .then(([article, missingLinks, transcluded, children]) => ({
+      aliases: article.aliases,
+      data:    article.data,
+      slug:    article.slug,
+      tags:    article.tags,
+      title:   article.title,
+      html:    transcluded.html,
+      links:   [...article.links, ...transcluded.links],
+      missing: [...missingLinks, ...transcluded.missing],
+      children,
+    }))
+    .catch((error) => {
+      console.log(` ~> ERROR: Article.render(${slug}) failed:`, error)
+      return Promise.reject()
+    })
+  )
+
   static reloadAll = () => {
-    /* eslint-disable no-console */
     const steps = [
       () => Promise.all(
         fs.readdirSync(config.folders.articles)
@@ -168,35 +175,33 @@ export default class Article extends Document {
     steps.reduce((promise, fn) => promise.then(fn), Promise.resolve())
   }
 
-  static render = slug => (
-    Article
-    .findOne({ $or: [{ slug }, { aliases: slug }] })
-    .then((article) => {
-      // eslint-disable-next-line no-param-reassign
-      if (!article) article = Article.create({ _id: slug, slug })
-      return Promise.all([
-        Promise.resolve(article),
-        Article.findMissingLinks(article.links || []),
-        Article.transclude(article.html || ''),
-        Article.find({ tags: article.slug }).then(all =>
-          all.map(({ slug: s, title }) => ({ slug: s, title }))
-        ),
-      ])
+  postDelete() { this.deleteFromDisk() }
+  deleteFromDisk() {
+    const paths = getFilePaths(this.slug)
+    Promise.all([fs.unlink(paths.html), fs.unlink(paths.json)])
+           .catch((error) => {
+             if (error.code === 'ENOENT') return undefined
+             console.log(` ✖  Article ${this._id} deletion threw error:`, error)
+           })
+           .then(console.log(` ✖  Article ${this._id} deleted`))
+  }
+
+  preSave() { this.parseLinks() }
+  postSave() { this.saveToDisk() }
+
+  saveToDisk() {
+    if (this._initialLoad) return
+
+    console.log(` 💾: Article ${this._id} updated`)
+
+    const paths = getFilePaths(this.slug)
+    const clean = cleaners.reduce((a, cleaner) => cleaner(a), this)
+    fs.writeFileSync(paths.html, clean.html)
+    fs.writeJSONSync(paths.json, {
+      aliases: clean.aliases,
+      data:    clean.data,
+      tags:    clean.tags,
+      title:   clean.title,
     })
-    .then(([article, missingLinks, transcluded, children]) => ({
-      aliases: article.aliases,
-      data:    article.data,
-      slug:    article.slug,
-      tags:    article.tags,
-      title:   article.title,
-      html:    transcluded.html,
-      links:   [...article.links, ...transcluded.links],
-      missing: [...missingLinks, ...transcluded.missing],
-      children,
-    }))
-    .catch((error) => {
-      console.log(` ~> ERROR: Article.render(${slug}) failed:`, error)
-      return Promise.reject()
-    })
-  )
+  }
 }
