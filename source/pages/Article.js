@@ -297,5 +297,6 @@ Article.defaultProps = {
 export default connect(
   state => ({
     ...state.page,
+    readonly: !(state.page.privileges || []).includes('edit'),
   })
 )(Article)
