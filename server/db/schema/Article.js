@@ -181,7 +181,7 @@ export default class Article extends Document {
     Promise.all([fs.unlink(paths.html), fs.unlink(paths.json)])
            .catch((error) => {
              if (error.code === 'ENOENT') return undefined
-             console.log(` ✖  Article ${this._id} deletion threw error:`, error)
+             return console.log(` ✖  Article ${this._id} deletion threw error:`, error)
            })
            .then(console.log(` ✖  Article ${this._id} deleted`))
   }
