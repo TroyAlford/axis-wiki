@@ -23,6 +23,11 @@ const ArticleChildren = ({ articles = [], numberOfColumns = 4 }) => {
     return <div className={'tag-browser is-hidden'} />
   }
 
+  const childStyle = {
+    ...STYLE.CHILD,
+    maxWidth: `${100 / numberOfColumns}%`,
+  }
+
   const links = articles
     .map((item) => {
       if (!item) return null
@@ -34,7 +39,7 @@ const ArticleChildren = ({ articles = [], numberOfColumns = 4 }) => {
     .filter(Boolean)
     .sort((a, b) => a.title.localeCompare(b.title))
     .map(({ slug, title }) =>
-      <div key={slug} style={STYLE.CHILD}><a href={`/page/${slug}`}>{title}</a></div>
+      <div key={slug} style={childStyle}><a href={`/page/${slug}`}>{title}</a></div>
     )
 
   const rows = Math.ceil(links.length / numberOfColumns)
