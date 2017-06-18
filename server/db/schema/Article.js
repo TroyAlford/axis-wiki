@@ -8,7 +8,7 @@ import config from '../../../config/server'
 import unique from '../../../utility/unique'
 import { extractSlug } from '../../../utility/Slugs'
 
-import cleaners from '../../services/cleaners'
+import cleaners from './cleaners'
 
 function getFilePaths(slug) {
   const folderPath = path.resolve(config.folders.articles, slug)
@@ -51,12 +51,18 @@ export default class Article extends Document {
       const isInternal = !parsedUrl.hostname
       if (isInternal) {
         const slug = extractSlug(href)
+        if (slug.match(/\.(gif|jpg|png)$/)) {
+          $link.attr('href', `/media/${slug}`)
+        } else {
+          $link.attr('href', `/page/${slug}`)
+        }
         links.push(slug)
       } else {
         $link.attr('target', '_new').addClass('external')
       }
     })
 
+    this.html = $parser.html()
     this.links = unique(links)
   }
 
