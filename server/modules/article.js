@@ -86,7 +86,7 @@ export default express()
       return response.status(401).send(`You do not have permission to edit ${slug}`)
     }
 
-    Article.deleteOne({ slug }).then(() =>
+    article.delete().then(() =>
       response.status(410).send(`Article ${slug} has been deleted.`)
     )
   })
