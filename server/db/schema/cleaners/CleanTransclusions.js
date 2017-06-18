@@ -1,5 +1,5 @@
 import $ from 'cheerio'
-import { slugify } from '../../../utility/Slugs'
+import { slugify } from '../../../../utility/Slugs'
 
 export default function (article = { html: '' }) {
   if (!article || !article.html) return article
