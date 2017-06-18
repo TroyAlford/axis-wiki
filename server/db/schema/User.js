@@ -78,4 +78,14 @@ export default class User extends Document {
 
     steps.reduce((promise, fn) => promise.then(fn), Promise.resolve())
   }
+
+  static render = user => ({
+    id:         user._id,
+    articles:   user.articles,
+    email:      user.email,
+    favorites:  user.favorites,
+    name:       user.name,
+    privileges: user.privileges,
+    tags:       user.tags,
+  })
 }
