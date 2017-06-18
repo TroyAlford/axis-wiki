@@ -7,7 +7,6 @@ import utils from 'fs-utils'
 
 import Database from './db/db'
 import Facebook from './middleware/Facebook'
-import Profile from './services/Profile'
 
 import articleModule from './modules/article'
 import byModule from './modules/by'
@@ -46,14 +45,8 @@ express()
   .use('/images', bindStatic('../images'))
 
   .get('*', Facebook, (request, response) => {
-    const profile = request.session.id
-      ? Profile.load(request.session.id)
-      : { ...Profile.default, anonymous: true }
-
-    const initialState = {
-      navigation: getNavigation(),
-      user:       profile,
-    }
+    const user = request.session
+    const initialState = { navigation: getNavigation(), user }
 
     const indexFile = path.join(__dirname, '../source/index.html')
     const html = utils.readFileSync(indexFile)
