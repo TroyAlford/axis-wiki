@@ -28,6 +28,14 @@ function articleForUser(id, slug) {
     Article.findOne({ $or: [{ slug }, { aliases: slug }] }),
   ])
   .then(([user, article]) => {
+    if (!article) {
+      return [
+        Article.create({ _id: slug, slug }),
+        unique([...user.privileges, 'edit']).filter(Boolean),
+        false,
+      ]
+    }
+
     const canEdit = (!article || user) && Boolean(
       intersection(user.privileges, ['admin', 'edit']).length ||
       intersection(user.articles, [article.slug, ...article.aliases]).length ||
