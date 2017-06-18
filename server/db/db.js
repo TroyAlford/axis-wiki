@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { connect } from 'camo'
 import Article from './schema/Article'
+import User from './schema/User'
 
 const ORM = Symbol('ORM')
 
@@ -11,6 +12,7 @@ class Database {
       this[ORM] = orm
 
       Article.reloadAll()
+      User.reloadAll()
     })
   }
   shutdown(code = '✓') {
