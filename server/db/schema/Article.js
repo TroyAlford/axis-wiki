@@ -165,11 +165,6 @@ export default class Article extends Document {
       () => Article.count().then((count) => {
         console.log(` ~~> DB:LOADED: ${count} articles.`)
       }),
-      () => Article.find().then(all => all.forEach((article) => {
-        article.parseTransclusions()
-        article._initialLoad = true // eslint-disable-line no-param-reassign
-        article.save()
-      })),
     ]
 
     steps.reduce((promise, fn) => promise.then(fn), Promise.resolve())
