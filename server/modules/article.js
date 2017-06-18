@@ -29,7 +29,7 @@ export default express()
   .use(cookieParser())
 .get('/:slug', (request, response) => {
   const slug = slugify(request.params.slug)
-  dbArticle.findOne({ $or: [{ slug }, { aliases: slug }] }, { populate: true })
+  dbArticle.findOne({ $or: [{ slug }, { aliases: slug }] })
            .then(article => Promise.all([
              Promise.resolve(article),
              dbArticle.findMissingLinks(article.links),
