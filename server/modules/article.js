@@ -6,30 +6,28 @@ import express from 'express'
 
 import Article from '../services/Article'
 import * as Storage from '../services/Storage'
-import Links from '../services/Links'
 import { slugify } from '../../utility/Slugs'
 import Privileges from '../middleware/Privileges'
-import Tags from '../services/Tags'
 
 import dbArticle from '../db/schema/Article'
+
+/* {
+  slug: 'main-slug',
+  title: 'Article Title',
+  html: '<h1>The HTML of the article!</h1>',
+  aliases: ['alternative-title', 'redirected-from'],
+  tags: ['categories', 'this', 'article', 'falls', 'within']
+  data: {
+    probably: ['a', 'complex', 'data', 'structure', 'here'],
+    with: { a: 'number', of: 'different', layers: ['of', 'complexity'] }
+  },
+} */
 
 export default express()
   .use(bodyParser.json()) // Parses application/json
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
   .use(cookieParser())
 .get('/:slug', (request, response) => {
-  /* {
-    slug: 'main-slug',
-    title: 'Article Title',
-    html: '<h1>The HTML of the article!</h1>',
-    aliases: ['alternative-title', 'redirected-from'],
-    tags: ['categories', 'this', 'article', 'falls', 'within']
-    data: {
-      probably: ['a', 'complex', 'data', 'structure', 'here'],
-      with: { a: 'number', of: 'different', layers: ['of', 'complexity'] }
-    },
-  } */
-
   const slug = slugify(request.params.slug)
   dbArticle.findOne({ $or: [{ slug }, { aliases: slug }] }, { populate: true })
            .then(article => Promise.all([
@@ -52,7 +50,7 @@ export default express()
              missing: [...missingLinks, ...transcluded.missing],
              children,
            }))
-           .then(article => response.status(200).send(article.html))
+           .then(article => response.status(200).send(article))
            .catch((error) => {
              console.error(error) // eslint-disable-line no-console
              response.status(500).send()
