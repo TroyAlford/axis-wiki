@@ -3,33 +3,50 @@ import PropTypes from 'prop-types'
 import { startCase } from 'lodash'
 import Icon from './Icon'
 
-const range = (start, stop) => Array.from(new Array((stop - start) + 1), (_, i) => i + start)
+const STYLE = {
+  CONTAINER: {
+    display:       'flex',
+    flexDirection: 'column',
+    flexWrap:      'wrap',
+    padding:       '.25rem',
+  },
+  CHILD: {
+    height:     '1.5rem',
+    fontSize:   '1rem',
+    lineHeight: '1rem',
+    padding:    '.25rem 0',
+  },
+}
 
 const ArticleChildren = ({ articles = [], numberOfColumns = 4 }) => {
   if (!articles || !Array.isArray(articles) || !articles.length) {
     return <div className={'tag-browser is-hidden'} />
   }
 
-  const sorted = articles.sort()
-  const columnSize = Math.ceil(sorted.length / numberOfColumns)
-  const classes = `column is-${Math.floor(12 / numberOfColumns)}`
-
-  const columns = range(0, numberOfColumns).map((index) => {
-    const first = index * columnSize
-    const last = (index * columnSize) + columnSize
-    const list = sorted.slice(first, last)
-
-    return (
-      <div key={index} className={classes}>{list.map(slug =>
-        <div key={slug}><a href={`/page/${slug}`}>{startCase(slug)}</a></div>
-      )}</div>
+  const links = articles
+    .map((item) => {
+      if (!item) return null
+      if (typeof item === 'string') return { slug: item, title: startCase(item) }
+      if (!item.slug) return null
+      if (!item.title) return { slug: item.slug, title: startCase(item.slug) }
+      return item
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.title.localeCompare(b.title))
+    .map(({ slug, title }) =>
+      <div key={slug} style={STYLE.CHILD}><a href={`/page/${slug}`}>{title}</a></div>
     )
-  })
+
+  const rows = Math.ceil(links.length / numberOfColumns)
+  const containerStyle = {
+    ...STYLE.CONTAINER,
+    height: `${(rows * 1.5) + 1}rem`,
+  }
 
   return (
     <div className="tag-browser message is-info">
       <div className="message-header"><Icon name="tag" /> Child Articles:</div>
-      <div className="columns message-body">{columns}</div>
+      <div className="columns message-body" style={containerStyle}>{links}</div>
     </div>
   )
 }
@@ -38,7 +55,13 @@ ArticleChildren.defaultProps = {
   numberOfColumns: 4,
 }
 ArticleChildren.propTypes = {
-  articles:        PropTypes.arrayOf(PropTypes.string),
+  articles: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.shape({
+      slug:  PropTypes.string,
+      title: PropTypes.string,
+    }),
+    PropTypes.string,
+  ])),
   numberOfColumns: PropTypes.number,
 }
 
