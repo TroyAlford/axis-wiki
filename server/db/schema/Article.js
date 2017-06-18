@@ -73,33 +73,37 @@ export default class Article extends Document {
   }
 
   static transclude(html) {
-    const $parser = $.load(html)
+    const $parser = $.load(html, { xmlMode: true })
     const links = []
     const missing = []
 
     return Promise.all($parser('include').map((index, includeEl) => {
       const $include = $parser(includeEl)
-      $include.attr('class', ($include.attr('class') || '').concat('noedit'))
+      $include.attr('class', [
+        $include.attr('class') || '',
+        'noedit',
+      ].filter(Boolean).join(' '))
 
       const lines = []
       const from = $include.attr('from')
-      if (links.indexOf(from) === -1) links.push(from)
+      links.push(from)
 
       return Article.findOne({ slug: from }).then((article) => {
         if (!article) {
-          $include.html(`\n<!-- Article '${from}' does not exist -->`)
-          if (missing.indexOf(from) === -1) missing.push(from)
-          return
+          $include.html(`\n<!-- Article '${from}' does not exist -->\n`)
+          links.push(from)
+          missing.push(from)
+          return Promise.resolve()
         }
 
         const $article = $.load(article.html)
         lines.push(`<!-- Transcluded from '${from}'. To edit, change the original article. -->`)
 
-        const sections = $include.attr('sections') || ''
-        if (sections === '*') {
+        const sections = $include.attr('sections')
+        if (sections === '*' || !sections) {
           lines.push($article.html())
         } else {
-          sections.split(',').map(s => s.trim()).filter(s => s)
+          sections.split(',').map(s => s.trim()).filter(Boolean)
             .forEach((section) => {
               $article(`#${section}`).each((ix, sectionEl) => {
                 lines.push($.html(sectionEl))
@@ -107,11 +111,20 @@ export default class Article extends Document {
             })
         }
 
-        const joined = ['', ...lines.map(line => `  ${line}`), ''].join('\n')
-        $include.html(joined)
+        const rendered = ['', ...lines.map(line => `  ${line}`), ''].join('\n')
+        return Article.transclude(rendered).then(transcluded => {
+          $include.html(transcluded.html)
+          links.push(...transcluded.links)
+          missing.push(...transcluded.missing)
+          return Promise.resolve()
+        })
       })
     }).get())
-    .then(() => ({ html: $parser.html(), links, missing }))
+    .then(() => ({
+      html:    $parser.html(),
+      links:   unique(links),
+      missing: unique(missing),
+    }))
   }
 
   static render = slug => (
