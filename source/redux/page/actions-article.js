@@ -12,7 +12,11 @@ export function loadArticle(requestedSlug, flashLoading = true) {
     fetch(`/api/page/${requestedSlug}`, { credentials: 'include' })
       .then((response) => {
         slug = extractSlug(response.url)
-        if (slug !== requestedSlug) browserHistory.replace(`/page/${slug}`)
+        if (slug !== requestedSlug) {
+          browserHistory.replace(`/page/${slug}`)
+        } else {
+          browserHistory.replace(`/page/${requestedSlug}`)
+        }
         return response.json()
       })
       .then((article) => {
