@@ -8,7 +8,7 @@ const STYLE = {
     display:       'flex',
     flexDirection: 'column',
     flexWrap:      'wrap',
-    padding:       '.25rem',
+    padding:       '.25rem .5rem',
   },
   CHILD: {
     height:     '1.5rem',
