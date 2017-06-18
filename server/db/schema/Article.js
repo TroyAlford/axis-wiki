@@ -167,4 +167,28 @@ export default class Article extends Document {
 
     steps.reduce((promise, fn) => promise.then(fn), Promise.resolve())
   }
+
+  static render = slug => (
+    Article
+    .findOne({ $or: [{ slug }, { aliases: slug }] })
+    .then(article => Promise.all([
+      Promise.resolve(article),
+      Article.findMissingLinks(article.links),
+      Article.transclude(article.html),
+      Article.find({ tags: article.slug }).then(all =>
+        all.map(({ slug: s, title }) => ({ slug: s, title }))
+      ),
+    ]))
+    .then(([article, missingLinks, transcluded, children]) => ({
+      aliases: article.aliases,
+      data:    article.data,
+      slug:    article.slug,
+      tags:    article.tags,
+      title:   article.title,
+      html:    transcluded.html,
+      links:   [...article.links, ...transcluded.links],
+      missing: [...missingLinks, ...transcluded.missing],
+      children,
+    }))
+  )
 }
