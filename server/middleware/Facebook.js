@@ -1,6 +1,5 @@
 import crypto from 'crypto'
 import config from '../../config/server'
-import Profile from '../services/Profile'
 
 const PREFIX = 'fbsr_'
 
@@ -15,7 +14,7 @@ export default (req, res, next) => {
   const headerName = `X-${PREFIX}${appSecret}`
   const cookie = req.header(headerName) || req.cookies[cookieName]
 
-  req.session = {} // eslint-disable-line no-param-reassign
+  req.session = { anonymous: true } // eslint-disable-line no-param-reassign
 
   let hmac = null
   try {
@@ -38,7 +37,7 @@ export default (req, res, next) => {
 
     if (expectedSignature === hexSignature) {
       // eslint-disable-next-line no-param-reassign
-      req.session = Object.assign({ token }, Profile.load(token.user_id))
+      req.session = { token, id: token.user_id, anonymous: false }
     }
   }
 
