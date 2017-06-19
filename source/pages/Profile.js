@@ -36,6 +36,7 @@ class Profile extends Component {
         <ArticleChildren
           articles={favorites}
           caption="Favorites"
+          iconName="favorite-on"
         />
       </div>
     )
