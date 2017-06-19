@@ -9,9 +9,9 @@ import { deleteArticle, saveArticle } from '../redux/page/actions-article'
 import ComponentBase from '../application/ComponentBase'
 import ArticleChildren from '../components/ArticleChildren'
 import Editable from '../components/Editable'
+import Favorite from '../components/Favorite'
 import Icon from '../components/Icon'
 import HtmlEditor from '../components/HtmlEditor'
-import JsonSheetFormatter from '../sheet/JsonFormatter'
 import Sheet from './Sheet'
 import TabSet from '../components/TabSet'
 import TagBar from '../components/TagBar'
@@ -150,7 +150,10 @@ class Article extends ComponentBase {
         <span key="text">Article</span>,
       ],
       contents: [
-        <h1 key="title">{this.props.title}</h1>,
+        <h1 key="title">
+          <Favorite size="small" />
+          {this.props.title}
+        </h1>,
         <JsxParser key="viewer" jsx={this.props.html || ''} />,
         <ArticleChildren key="children" articles={this.props.children} />,
       ],
