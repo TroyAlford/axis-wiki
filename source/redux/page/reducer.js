@@ -53,7 +53,6 @@ export default (state = DEFAULTS, action) => {
     case PROFILE:
     case SEARCH:
       return {
-        // ...state,
         ...action.data,
         layout:  state.layout,
         loading: false,
