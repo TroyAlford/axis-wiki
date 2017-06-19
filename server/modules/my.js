@@ -45,3 +45,37 @@ export default express()
     return response.status(500).send('Unable to save profile.')
   })
 })
+.post('/favorites', NoAnonymous, (request, response) => {
+  let favorites
+  let slug
+  let value
+
+  if (Array.isArray(request.body)) {
+    favorites = request.body
+  } else {
+    slug = request.body.slug
+    value = request.body.value
+  }
+
+  return User.findOne({ _id: request.session.id }).then((user) => {
+    if (!user) return response.status(401).send('Your profile is inaccessible at the moment.')
+
+    if (favorites) {
+      user.favorites = favorites
+    } else if (slug && typeof value === 'boolean') {
+      console.log(slug, value)
+      if (value && !user.favorites.includes(slug)) user.favorites.push(slug)
+      if (!value) user.favorites = user.favorites.filter(f => f !== slug)
+    } else {
+      return response.status(400).send('Please send either an array of slugs or a { slug, value } pair')
+    }
+
+    return user.save().then((updated) => {
+      if (favorites) return response.status(200).send(updated.favorites)
+
+      return response.status(200).send({
+        slug, value: updated.favorites.includes(slug),
+      })
+    })
+  })
+})
