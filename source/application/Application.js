@@ -5,12 +5,14 @@ import { Redirect, Route, Router, browserHistory } from 'react-router'
 
 import store from '../redux/store'
 import { loadArticle } from '../redux/page/actions-article'
+import { loadProfile } from '../redux/page/actions-profile'
 import { searchFor } from '../redux/page/actions-search'
 
 import Layout from '../application/Layout'
 import NotFound from '../pages/NotFound'
 import Article from '../pages/Article'
 import Media from '../pages/Media'
+import Profile from '../pages/Profile'
 import Search from '../pages/Search'
 import Upload from '../pages/Upload'
 
@@ -24,6 +26,9 @@ ReactDOM.render(
       <Route path="/" component={Layout}>
         <Route path="/page/:slug" component={Article}
           onEnter={state => store.dispatch(loadArticle(state.params.slug))}
+        />
+        <Route path="/:id/profile" component={Profile}
+          onEnter={state => store.dispatch(loadProfile(state.params.id))}
         />
         <Route path="/info/media/:filename" component={Media} />
         <Route path="/search/:term" component={Search}

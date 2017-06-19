@@ -1,6 +1,7 @@
 import Cookie from 'js-cookie'
 import React from 'react'
 import PropTypes from 'prop-types'
+import { browserHistory } from 'react-router'
 import ComponentBase from '../application/ComponentBase'
 import Icon from './Icon'
 
@@ -79,6 +80,9 @@ export default class Facebook extends ComponentBase {
       this.updateCookie()
     })
   }
+  goToProfile() {
+    browserHistory.push('/me/profile')
+  }
 
   logOn() {
     window.FB.getLoginStatus((response) => {
@@ -131,7 +135,7 @@ export default class Facebook extends ComponentBase {
         { anonymous ? (
           <button onClick={this.logOn} className="login button icon icon-facebook">Log In</button>
         ) : [
-          <button key="profile" className="profile button">
+          <button key="profile" className="profile button" onClick={this.goToProfile}>
             <img key="picture" alt="" src={imageSrc} />
             {user.name}
           </button>,
@@ -154,7 +158,7 @@ Facebook.propTypes = {
 Facebook.defaultProps = {
   fields:  ['id', 'email', 'gender', 'locale', 'name', 'picture'],
   scope:   ['public_profile', 'email'],
-  version: 'v2.8',
+  version: 'v2.9',
 
   onAuthResponse: (authResponse) => {}, // eslint-disable-line no-unused-vars
   onLoggedOff:    () => {},
