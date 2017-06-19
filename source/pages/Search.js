@@ -20,15 +20,8 @@ class Search extends ComponentBase {
           return { html: hit.text, line: hit.line }
         }
 
-        const start = index - 4 > 0 ? index - 4 : 0
-
         return {
-          html: [
-            index ? '&hellip;' : '',
-            ...words.slice(start, index),
-            `<span class="highlight">${words[index]}</span>`,
-            ...words.slice(index + 1),
-          ].join(' '),
+          html: hit.text,
           line: hit.line,
         }
       })
