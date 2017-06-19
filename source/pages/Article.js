@@ -202,12 +202,12 @@ class Article extends ComponentBase {
       contents: (
         <div className="settings">
           {this.props.readonly ? [] : [
-            <h5>Template</h5>,
-            <span className="select">
+            <h5 key="header">Template</h5>,
+            <span key="dropdown" className="select">
               <select onChange={this.handleTemplateChange}>
                 {[undefined, 'character', 'creature', 'world'].map(tmplName =>
                   <option
-                    key={tmplName} value={tmplName}
+                    key={tmplName || 'undefined'} value={tmplName}
                     selected={this.state.data.template === tmplName}
                   >{tmplName}</option>
                 )}
