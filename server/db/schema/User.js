@@ -72,7 +72,7 @@ export default class User extends Document {
           })
       ),
       () => User.count().then((count) => {
-        console.log(` ~> DB:LOADED: ${count} users`)
+        console.log(` ~> DB:LOADED: ${count} user(s)`)
       }),
     ]
 
