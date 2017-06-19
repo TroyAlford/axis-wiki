@@ -273,6 +273,12 @@
       "css": "favorite-on",
       "code": 59421,
       "src": "typicons"
+    },
+    {
+      "uid": "74b2f1d1ee541715b3f389f7cdf63d1c",
+      "css": "logout",
+      "code": 59422,
+      "src": "websymbols"
     }
   ]
 }
