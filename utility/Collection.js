@@ -1,8 +1,8 @@
-import Guid from './Guid'
 import {
   cloneDeep, filter, includes,
   isEqual, merge, orderBy, reject,
 } from 'lodash'
+import Guid from './Guid'
 
 const defaults = {
   orderBy: {
@@ -10,9 +10,9 @@ const defaults = {
     directions: ['asc'],
   },
   template: {
-    id: Guid,
+    id:  Guid,
     key: self => self.id,
-  }
+  },
 }
 
 export default class Collection {
@@ -24,8 +24,7 @@ export default class Collection {
   }
 
   emitChanged() {
-    if (typeof this.onChange === 'function')
-      this.onChange(this)
+    if (typeof this.onChange === 'function') { this.onChange(this) }
   }
 
   get ids() {
@@ -37,21 +36,19 @@ export default class Collection {
   }
 
   add(sent = {}) {
-    if (sent.id && this.find(sent.id))
-      return this.update(sent.id, sent)
+    if (sent.id && this.find(sent.id)) { this.update(sent.id, sent); return }
 
     const item = this.applyTemplate(sent)
     this.items = this.sort([
       ...this.items,
-      item
+      item,
     ])
 
     this.emitChanged()
   }
 
   addAll(sent = []) {
-    if (!Array.isArray(sent))
-      return this.add(sent)
+    if (!Array.isArray(sent)) { this.add(sent); return }
 
     const before = cloneDeep(this.items)
     const newItems = sent.map(this.applyTemplate.bind(this))
@@ -59,20 +56,17 @@ export default class Collection {
 
     this.items = this.sort([
       ...this.filter(item => !includes(newIds, item.id)),
-      ...newItems
+      ...newItems,
     ])
 
-    if (!isEqual(before, this.items))
-      this.emitChanged()
+    if (!isEqual(before, this.items)) { this.emitChanged() }
   }
 
   applyTemplate(initial = {}) {
     const item = merge({}, this.settings.template, initial)
 
-    if (typeof item.id === 'function')
-      item.id = item.id(item)
-    if (typeof item.key === 'function')
-      item.key = item.key(item)
+    if (typeof item.id === 'function') { item.id = item.id(item) }
+    if (typeof item.key === 'function') { item.key = item.key(item) }
 
     return item
   }
@@ -81,24 +75,19 @@ export default class Collection {
     const before = this.items.length
     this.items = []
 
-    if (before !== 0)
-      this.emitChanged()
+    if (before !== 0) { this.emitChanged() }
   }
 
   filter(itemFilter = () => true) {
-    if (includes(['object', 'function'], typeof itemFilter))
-      return filter(this.items, itemFilter)
-    else if (includes(['number', 'string'], typeof itemFilter))
-      return filter(this.items, { id: itemFilter })
-    else
-      return this.items
+    if (includes(['object', 'function'], typeof itemFilter)) { return filter(this.items, itemFilter) } else if (includes(['number', 'string'], typeof itemFilter)) { return filter(this.items, { id: itemFilter }) }
+    return this.items
   }
 
   find(itemFilter) {
     return this.filter(itemFilter).shift()
   }
 
-  forEach(fn = item => { return }) {
+  forEach(fn = () => { }) {
     this.items.forEach(fn)
   }
 
@@ -109,21 +98,15 @@ export default class Collection {
   remove(itemFilter) {
     const count = this.items.length
 
-    if (includes(['object', 'function'], typeof itemFilter))
-      this.items = reject(this.items, itemFilter)
-    else if (inclues(['number', 'string'], typeof itemFilter))
-      this.items = reject(this.items, { id: itemFilter })
+    if (includes(['object', 'function'], typeof itemFilter)) { this.items = reject(this.items, itemFilter) } else if (includes(['number', 'string'], typeof itemFilter)) { this.items = reject(this.items, { id: itemFilter }) }
 
-    if (this.items.length !== count)
-      this.emitChanged()
+    if (this.items.length !== count) { this.emitChanged() }
   }
 
   sort(items) {
-    if (items === undefined)
-      return this.sort(this.items)
+    if (items === undefined) { return this.sort(this.items) }
 
-    if (typeof this.settings.orderBy === 'function')
-      return this.settings.orderBy(items)
+    if (typeof this.settings.orderBy === 'function') { return this.settings.orderBy(items) }
 
     const { orderBy: { fieldNames, directions } } = this.settings
     return orderBy(items, fieldNames, directions)
@@ -133,17 +116,18 @@ export default class Collection {
     const before = cloneDeep(this.items)
     const items = this.filter(itemFilter)
 
-    if (typeof updater === 'function')
+    if (typeof updater === 'function') {
       items.forEach(updater)
-    else if (typeof updater === 'object')
+    } else if (typeof updater === 'object') {
       items.forEach(item => merge(item, updater))
-    else
-      return console.error(`Collection.update(itemFilter, updater) requires a function or object updater. Found ${typeof updater}`)
+    } else {
+      // eslint-disable-next-line no-console
+      console.error(`Collection.update(itemFilter, updater) requires a function or object updater. Found ${typeof updater}`)
+      return
+    }
 
     this.items = this.sort(this.items)
 
-    if (!isEqual(before, this.items))
-      this.emitChanged()
+    if (!isEqual(before, this.items)) { this.emitChanged() }
   }
-
 }
