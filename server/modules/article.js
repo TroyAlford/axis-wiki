@@ -24,7 +24,7 @@ import User from '../db/schema/User'
 
 function articleForUser(id, slug) {
   return Promise.all([
-    User.findOne({ _id: id }),
+    User.findOne({ _id: id }).then(user => user || User.create()),
     Article.findOne({ $or: [{ slug }, { aliases: slug }] }),
   ])
   .then(([user, article]) => {
