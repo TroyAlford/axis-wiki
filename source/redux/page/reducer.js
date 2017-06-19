@@ -1,5 +1,6 @@
 import {
   ARTICLE, PICTURE, PROFILE, SEARCH,
+  FAVORITE,
   METADATA,
   LOADING,
 
@@ -40,6 +41,12 @@ export default (state = DEFAULTS, action) => {
         loading: true,
         type:    'loading',
       }
+
+    case FAVORITE:
+      if (action.slug === state.slug) {
+        return { ...state, isFavorite: action.value }
+      }
+      return state
 
     case ARTICLE:
     case PICTURE:
