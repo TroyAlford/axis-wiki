@@ -3,6 +3,7 @@ export const PICTURE = 'picture'
 export const PROFILE = 'profile'
 export const SEARCH = 'search'
 
+export const FAVORITE = 'favorite'
 export const LOADING = 'loading'
 
 export const TYPES = [ARTICLE, PICTURE, PROFILE, SEARCH]
