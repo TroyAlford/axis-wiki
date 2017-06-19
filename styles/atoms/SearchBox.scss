@@ -1,12 +1,18 @@
 .search-box {
   position: relative;
+  flex-grow: 1;
+
+  &.control {
+    margin: auto;
+  }
 
   input[type="text"] {
     border: none;
     border-radius: 5px;
+    flex-grow: 1;
     padding: 5px 5px 5px 25px;
   }
   > .icon {
-    margin: 9px;
+    margin: .2rem .4rem;
   }
 }
