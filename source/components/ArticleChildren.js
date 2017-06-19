@@ -18,7 +18,7 @@ const STYLE = {
   },
 }
 
-const ArticleChildren = ({ articles = [], numberOfColumns = 4 }) => {
+const ArticleChildren = ({ articles, caption, iconName, numberOfColumns }) => {
   if (!articles || !Array.isArray(articles) || !articles.length) {
     return <div className={'tag-browser is-hidden'} />
   }
@@ -50,13 +50,15 @@ const ArticleChildren = ({ articles = [], numberOfColumns = 4 }) => {
 
   return (
     <div className="tag-browser message is-info">
-      <div className="message-header"><Icon name="tag" /> Child Articles:</div>
+      <div className="message-header"><Icon name={iconName} /> {caption}</div>
       <div className="columns message-body" style={containerStyle}>{links}</div>
     </div>
   )
 }
 ArticleChildren.defaultProps = {
   articles:        [],
+  caption:         'Child Articles',
+  iconName:        'tag',
   numberOfColumns: 4,
 }
 ArticleChildren.propTypes = {
@@ -67,6 +69,9 @@ ArticleChildren.propTypes = {
     }),
     PropTypes.string,
   ])),
+
+  caption:         PropTypes.string,
+  iconName:        PropTypes.string,
   numberOfColumns: PropTypes.number,
 }
 
