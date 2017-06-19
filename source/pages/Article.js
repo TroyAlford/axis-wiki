@@ -204,12 +204,9 @@ class Article extends ComponentBase {
           {this.props.readonly ? [] : [
             <h5 key="header">Template</h5>,
             <span key="dropdown" className="select">
-              <select onChange={this.handleTemplateChange}>
+              <select onChange={this.handleTemplateChange} value={this.state.data.template}>
                 {[undefined, 'character', 'creature', 'world'].map(tmplName =>
-                  <option
-                    key={tmplName || 'undefined'} value={tmplName}
-                    selected={this.state.data.template === tmplName}
-                  >{tmplName}</option>
+                  <option key={tmplName || 'undefined'} value={tmplName}>{tmplName}</option>
                 )}
               </select>
             </span>,
