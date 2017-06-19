@@ -2,14 +2,14 @@
   margin: 0 !important;
 
   img {
-    border: 1px solid #999;
     border-radius: 5px;
-    margin-right: 5px;
+    margin: 2px 5px 2px 2px;
+    height: 19px;
+    width: 19px;
   }
 
   .button {
     border-radius: 5px;
-    padding: 5px;
 
     border: 1px solid #2b4170;
     box-sizing: border-box;
@@ -26,10 +26,13 @@
       background: -webkit-linear-gradient(top, #3b5998, #2b4170);
       background: linear-gradient(top, #3b5998, #2b4170);
     }
-    &.logout {
-      background-color: lighten(grayscale(#2b4170), 50%);
-      border-color: #999;
-      color: #999;
+    &.profile {
+      background: -moz-linear-gradient(top, #3b5998, #2b4170);
+      background: -ms-linear-gradient(top, #3b5998, #2b4170);
+      background: -webkit-linear-gradient(top, #3b5998, #2b4170);
+      background: linear-gradient(top, #3b5998, #2b4170);
+      padding: 0 5px 0 0;
+      margin-right: 10px;
     }
 
     &:hover { color: #fff; }
