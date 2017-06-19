@@ -12,7 +12,7 @@ export default express()
 
 .get('/profile', NoAnonymous, (request, response) => {
   const { session: { id } } = request
-  User.findOne({ id }).then(user =>
+  User.findOne({ _id: id }).then(user =>
     response.status(200).send(User.render(user))
   )
 })
