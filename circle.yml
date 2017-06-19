@@ -11,10 +11,16 @@ dependencies:
 machine:
   environment:
     PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
+  node:
+    version: v7.10.0
   timezone:
     America/Los_Angeles
 
 test:
+  pre:
+    - mkdir -p $CIRCLE_TEST_REPORTS/jest
+    - mkdir -p $CIRCLE_TEST_REPORTS/eslint
   override:
-    - yarn test
+    - yarn test -- --coverage --json --outputFile=$CIRCLE_TEST_REPORTS/jest/jest.json
+    - yarn eslint -- ./source ./server ./utility --format junit --output-file $CIRCLE_TEST_REPORTS/eslint/eslint.xml
     - yarn build
