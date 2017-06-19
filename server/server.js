@@ -14,6 +14,7 @@ import configModule, { getNavigation } from './modules/config'
 import mediaModule from './modules/media'
 import monitorModule from './modules/monitor'
 import myModule from './modules/my'
+import profileModule from './modules/profile'
 import searchModule from './modules/search'
 
 import config from '../config/server'
@@ -32,6 +33,7 @@ express()
   .use('/api/config', Facebook, configModule)
   .use('/api/monitor', Facebook, monitorModule)
   .use('/api/my', Facebook, myModule)
+  .use('/api/profile', Facebook, profileModule)
   .use('/api/search', Facebook, searchModule)
 
   /* Non-Static Content Routes */
