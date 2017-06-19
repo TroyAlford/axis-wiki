@@ -37,18 +37,22 @@ export default (req, res, next) => {
     const expectedSignature = hmac.digest('hex')
 
     if (expectedSignature === hexSignature) {
-      req.session = { token, anonymous: true }
       User.findOne({ _id: token.user_id }).then((user) => {
-        if (!user) {
-          req.session = { anonymous: true, ...User.render(User.create()) }
+        if (user) {
+          req.session = { token, ...User.render(user), anonymous: false }
         } else {
-          req.session = { token, ...User.render(user) }
+          req.session = { token, ...User.render(User.create()), anonymous: true }
         }
-        next()
       })
-      return
+      .catch(error =>
+        // eslint-disable-next-line no-console
+        console.log(`Facebook middleware error: ${JSON.stringify(error)}`)
+      )
+      .then(() => { next() })
+    } else {
+      next()
     }
-
+  } else {
     next()
   }
 }
