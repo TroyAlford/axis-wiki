@@ -187,7 +187,7 @@ export default class Article extends Document {
           })
       ),
       () => Article.count().then((count) => {
-        console.log(` ~> DB:LOADED: ${count} articles.`)
+        console.log(` ~> DB:LOADED: ${count} article(s)`)
       }),
     ]
 
