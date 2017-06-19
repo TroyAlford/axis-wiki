@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import config from '../../config/server'
+import User from '../db/schema/User'
 
 const PREFIX = 'fbsr_'
 
@@ -36,10 +37,14 @@ export default (req, res, next) => {
     const expectedSignature = hmac.digest('hex')
 
     if (expectedSignature === hexSignature) {
-      // eslint-disable-next-line no-param-reassign
-      req.session = { token, id: token.user_id, anonymous: false }
+      User.findOne({ _id: token.user_id }).then((user) => {
+        if (!user) {
+          req.session = { anonymous: true }
+        } else {
+          req.session = { token, ...User.render(user) }
+        }
+        next()
+      })
     }
   }
-
-  next()
 }
