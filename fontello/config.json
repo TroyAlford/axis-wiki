@@ -261,6 +261,18 @@
       "search": [
         "axis"
       ]
+    },
+    {
+      "uid": "bcdc294bb787b15203b82f2be8096548",
+      "css": "favorite-off",
+      "code": 59420,
+      "src": "typicons"
+    },
+    {
+      "uid": "vyuzsm6wijlfwtjo4ifkoblfmsepk6g8",
+      "css": "favorite-on",
+      "code": 59421,
+      "src": "typicons"
     }
   ]
 }
