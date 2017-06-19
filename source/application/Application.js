@@ -27,15 +27,19 @@ ReactDOM.render(
         <Route path="/page/:slug" component={Article}
           onEnter={state => store.dispatch(loadArticle(state.params.slug))}
         />
-        <Route path="/:id/profile" component={Profile}
-          onEnter={state => store.dispatch(loadProfile(state.params.id))}
-        />
         <Route path="/info/media/:filename" component={Media} />
         <Route path="/search/:term" component={Search}
           onEnter={state => store.dispatch(searchFor(state.params.term))}
         />
         <Route path="/search" component={Search} />
         <Route path="/upload" component={Upload} />
+
+        <Route path="/profile" component={Profile}
+          onEnter={() => store.dispatch(loadProfile())}
+        />
+        <Route path="/profile/:id" component={Profile}
+          onEnter={state => store.dispatch(loadProfile(state.params.id))}
+        />
 
         <Route path="*" component={NotFound} />
       </Route>
