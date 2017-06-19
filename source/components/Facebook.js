@@ -81,7 +81,7 @@ export default class Facebook extends ComponentBase {
     })
   }
   goToProfile() {
-    browserHistory.push('/me/profile')
+    browserHistory.push('/profile')
   }
 
   logOn() {
@@ -139,7 +139,7 @@ export default class Facebook extends ComponentBase {
             <img key="picture" alt="" src={imageSrc} />
             {user.name}
           </button>,
-          <Icon name="logout" onClick={this.logOff} />,
+          <Icon key="icon" name="logout" onClick={this.logOff} />,
         ]}
       </div>
     )
