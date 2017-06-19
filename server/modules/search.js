@@ -73,7 +73,6 @@ export default express()
           match.byText,
           !match.byTag,
         ]
-        console.log(article.slug, sortKey)
 
         resolve({ article, match, sortKey })
       })
