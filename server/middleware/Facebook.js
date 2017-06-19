@@ -37,14 +37,18 @@ export default (req, res, next) => {
     const expectedSignature = hmac.digest('hex')
 
     if (expectedSignature === hexSignature) {
+      req.session = { token, anonymous: true }
       User.findOne({ _id: token.user_id }).then((user) => {
         if (!user) {
-          req.session = { anonymous: true }
+          req.session = { anonymous: true, ...User.render(User.create()) }
         } else {
           req.session = { token, ...User.render(user) }
         }
         next()
       })
+      return
     }
+
+    next()
   }
 }
