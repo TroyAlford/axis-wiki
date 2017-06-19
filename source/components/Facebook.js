@@ -2,6 +2,7 @@ import Cookie from 'js-cookie'
 import React from 'react'
 import PropTypes from 'prop-types'
 import ComponentBase from '../application/ComponentBase'
+import Icon from './Icon'
 
 function asyncLoadSDK(language = 'en_US') {
   ((d, s, id) => {
@@ -130,11 +131,11 @@ export default class Facebook extends ComponentBase {
         { anonymous ? (
           <button onClick={this.logOn} className="login button icon icon-facebook">Log In</button>
         ) : [
-          <img key="picture" alt="" src={imageSrc} />,
-          <button
-            key="btn" onClick={this.logOff}
-            className="logout button icon icon-facebook"
-          >Log Out</button>,
+          <button key="profile" className="profile button">
+            <img key="picture" alt="" src={imageSrc} />
+            {user.name}
+          </button>,
+          <Icon name="logout" onClick={this.logOff} />,
         ]}
       </div>
     )
