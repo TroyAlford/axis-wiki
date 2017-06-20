@@ -1,7 +1,7 @@
 import { browserHistory } from 'react-router'
 import { startCase } from 'lodash'
 import { addMessage } from '../messages/actions'
-import { setPage, ARTICLE, LOADING } from '../page/actions'
+import { setPage, ARTICLE, FAVORITE, LOADING } from '../page/actions'
 import { extractSlug } from '../../../utility/Slugs'
 
 export function loadArticle(requestedSlug, flashLoading = true) {
@@ -12,7 +12,11 @@ export function loadArticle(requestedSlug, flashLoading = true) {
     fetch(`/api/page/${requestedSlug}`, { credentials: 'include' })
       .then((response) => {
         slug = extractSlug(response.url)
-        if (slug !== requestedSlug) browserHistory.replace(`/page/${slug}`)
+        if (slug !== requestedSlug) {
+          browserHistory.replace(`/page/${slug}`)
+        } else {
+          browserHistory.replace(`/page/${requestedSlug}`)
+        }
         return response.json()
       })
       .then((article) => {
@@ -70,4 +74,32 @@ export function saveArticle(slug, article) {
     .catch((error) => {
       if (error && error.message) dispatch(addMessage(error.message))
     })
+}
+
+export function setFavorite({ slug, value }) {
+  return dispatch => fetch('/api/my/favorites', {
+    body: JSON.stringify({ slug, value }),
+
+    credentials: 'include',
+    method:      'POST',
+    mode:        'cors',
+
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Accept:         'application/json',
+    }),
+  }).then((response) => {
+    if (response.status === 200 /* OK */) {
+      return response.json()
+    }
+
+    throw ({ status: response.status })
+  }).then(updated =>
+    dispatch({
+      type:  FAVORITE,
+      slug:  updated.slug,
+      value: updated.value,
+    })
+    .catch(() => dispatch(addMessage(`Unable to ${value ? 'add' : 'remove'} Favorite for ${slug}`)))
+  )
 }

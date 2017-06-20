@@ -1,9 +1,6 @@
-jest.unmock('./createRange')
-
-/* eslint-disable import/first */
-import React from 'react'
-import ReactDOM from 'react-dom'
 import createRange from './createRange'
+
+jest.unmock('./createRange')
 
 describe('createRange()', () => {
   it('returns 1 value when low === high', () => {

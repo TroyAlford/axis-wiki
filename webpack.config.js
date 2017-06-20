@@ -28,6 +28,7 @@ const ConfigPlugin = new webpack.DefinePlugin({
     return o
   }, { NODE_ENV: JSON.stringify(ENVIRONMENT) })
 })
+const HoistPlugin = new webpack.optimize.ModuleConcatenationPlugin()
 const serverSideModules = fs.readdirSync('node_modules')
   .filter(x => ['.bin'].indexOf(x) === -1)
   .reduce((mods, mod) => Object.assign(mods, { [mod]: `commonjs ${mod}` }))
@@ -40,6 +41,21 @@ const bundle = {
       loader:  'babel-loader',
       exclude: /node_modules/,
     }],
+    rules: [{
+      use: [{
+        loader: 'babel-loader',
+        options: {
+          plugins: [
+            'lodash',
+            'syntax-async-functions',
+            'transform-class-properties',
+            'transform-object-rest-spread',
+            'transform-regenerator',
+          ],
+          presets: ['es2015', 'react'],
+        },
+      }],
+    }],
   },
   output: {
     filename: PLACEHOLDER,
@@ -48,7 +64,9 @@ const bundle = {
     libraryTarget:  'umd',
     umdNamedDefine: true,
   },
-  plugins: PRODUCTION ? [ConfigPlugin, uglify] : [ConfigPlugin],
+  plugins: PRODUCTION
+    ? [ConfigPlugin, HoistPlugin, uglify]
+    : [ConfigPlugin, HoistPlugin],
 }
 
 module.exports = [

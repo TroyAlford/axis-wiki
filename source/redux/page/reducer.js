@@ -1,7 +1,11 @@
 import {
   ARTICLE, PICTURE, PROFILE, SEARCH,
+  FAVORITE,
   METADATA,
   LOADING,
+
+  getLayout,
+  LAYOUT, SMALL, MEDIUM, LARGE,
 } from './actions'
 
 const DEFAULTS = {
@@ -15,6 +19,8 @@ const DEFAULTS = {
   tags:     [],
 
   missing_links: [],
+
+  layout: getLayout(),
 }
 
 export default (state = DEFAULTS, action) => {
@@ -36,16 +42,25 @@ export default (state = DEFAULTS, action) => {
         type:    'loading',
       }
 
+    case FAVORITE:
+      if (action.slug === state.slug) {
+        return { ...state, isFavorite: action.value }
+      }
+      return state
+
     case ARTICLE:
     case PICTURE:
     case PROFILE:
     case SEARCH:
       return {
-        // ...state,
         ...action.data,
+        layout:  state.layout,
         loading: false,
         type:    action.type,
       }
+
+    case LAYOUT:
+      return { ...state, layout: action.layout }
 
     default:
       return state

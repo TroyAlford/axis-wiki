@@ -1,0 +1,16 @@
+.favorite.icon {
+  cursor: pointer;
+  font-size: .5em;
+  padding: .5em;
+
+  &.is-small, &.is-medium, &.is-large {
+    height: auto;
+    width: auto;
+  }
+
+  .icon-favorite-off { color: rgba(0, 0, 0, .2) }
+  .icon-favorite-on {
+    color: $palette-gold;
+    -webkit-text-stroke: 1px darken($palette-gold, 20%);
+  }
+}

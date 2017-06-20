@@ -1,21 +1,32 @@
 import JsxParser from 'react-jsx-parser'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { Component } from 'react'
 import WikiEditor from 'wiki-editor'
 import { connect } from 'react-redux'
 import { isEqual } from 'lodash'
 import { deleteArticle, saveArticle } from '../redux/page/actions-article'
 
-import ComponentBase from '../application/ComponentBase'
 import ArticleChildren from '../components/ArticleChildren'
 import Editable from '../components/Editable'
+import Favorite from '../components/Favorite'
 import Icon from '../components/Icon'
 import HtmlEditor from '../components/HtmlEditor'
 import Sheet from './Sheet'
 import TabSet from '../components/TabSet'
 import TagBar from '../components/TagBar'
 
-class Article extends ComponentBase {
+import unboundEditorConfig from '../config/editor'
+
+const tinyMCE = window.tinyMCE
+
+function interceptEditorLinks(event) {
+  if (event.target.tagName === 'A') {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+}
+
+class Article extends Component {
   constructor(props) {
     super(props)
     this.state = this.defaultState(props)
@@ -49,10 +60,10 @@ class Article extends ComponentBase {
     })
   }
 
-  handleDelete() {
+  handleDelete = () => {
     this.props.dispatch(deleteArticle(this.props.params.slug))
   }
-  handleSave() {
+  handleSave = () => {
     if (!this.dirty) return // Only save if there's something to save.
 
     const article = {
@@ -66,11 +77,9 @@ class Article extends ComponentBase {
 
     this.props.dispatch(saveArticle(this.props.params.slug, article))
   }
-  handleReset() {
-    this.setState(this.defaultState())
-  }
+  handleReset = () => { this.setState(this.defaultState()) }
 
-  handleTabClicked(clicked) {
+  handleTabClicked = (clicked) => {
     if (this.state.tab === clicked.key) return true
 
     this.setState({
@@ -81,7 +90,7 @@ class Article extends ComponentBase {
     return true
   }
 
-  handleTemplateChange(event) {
+  handleTemplateChange = (event) => {
     const template = event.target.value
     this.setState({
       data: {
@@ -132,7 +141,10 @@ class Article extends ComponentBase {
         <span key="text">Article</span>,
       ],
       contents: [
-        <h1 key="title">{this.props.title}</h1>,
+        <h1 key="title">
+          <Favorite size="small" />
+          {this.props.title}
+        </h1>,
         <JsxParser key="viewer" jsx={this.props.html || ''} />,
         <ArticleChildren key="children" articles={this.props.children} />,
       ],
@@ -181,14 +193,11 @@ class Article extends ComponentBase {
       contents: (
         <div className="settings">
           {this.props.readonly ? [] : [
-            <h5>Template</h5>,
-            <span className="select">
-              <select onChange={this.handleTemplateChange}>
+            <h5 key="header">Template</h5>,
+            <span key="dropdown" className="select">
+              <select onChange={this.handleTemplateChange} value={this.state.data.template}>
                 {[undefined, 'character', 'creature', 'world'].map(tmplName =>
-                  <option
-                    key={tmplName} value={tmplName}
-                    selected={this.state.data.template === tmplName}
-                  >{tmplName}</option>
+                  <option key={tmplName || 'undefined'} value={tmplName}>{tmplName}</option>
                 )}
               </select>
             </span>,
@@ -254,7 +263,12 @@ class Article extends ComponentBase {
 
 Article.propTypes = {
   aliases:  PropTypes.arrayOf(PropTypes.string).isRequired,
-  children: PropTypes.arrayOf(PropTypes.string),
+  children: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.shape({
+      slug:  PropTypes.string,
+      title: PropTypes.string,
+    }),
+  ])),
   html:     PropTypes.string.isRequired,
   loading:  PropTypes.bool.isRequired,
   readonly: PropTypes.bool.isRequired,
@@ -274,6 +288,6 @@ Article.defaultProps = {
 export default connect(
   state => ({
     ...state.page,
-    readonly: !state.user.privileges.includes('edit'),
+    readonly: !(state.page.privileges || []).includes('edit'),
   })
 )(Article)

@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import config from '../../config/server'
-import Profile from '../services/Profile'
+import User from '../db/schema/User'
 
 const PREFIX = 'fbsr_'
 
@@ -15,7 +15,7 @@ export default (req, res, next) => {
   const headerName = `X-${PREFIX}${appSecret}`
   const cookie = req.header(headerName) || req.cookies[cookieName]
 
-  req.session = {} // eslint-disable-line no-param-reassign
+  req.session = { anonymous: true } // eslint-disable-line no-param-reassign
 
   let hmac = null
   try {
@@ -37,10 +37,22 @@ export default (req, res, next) => {
     const expectedSignature = hmac.digest('hex')
 
     if (expectedSignature === hexSignature) {
-      // eslint-disable-next-line no-param-reassign
-      req.session = Object.assign({ token }, Profile.load(token.user_id))
+      User.findOne({ _id: token.user_id }).then((user) => {
+        if (user) {
+          req.session = { token, ...User.render(user), anonymous: false }
+        } else {
+          req.session = { token, ...User.render(User.create()), anonymous: true }
+        }
+      })
+      .catch(error =>
+        // eslint-disable-next-line no-console
+        console.log(`Facebook middleware error: ${JSON.stringify(error)}`)
+      )
+      .then(() => { next() })
+    } else {
+      next()
     }
+  } else {
+    next()
   }
-
-  next()
 }

@@ -1,13 +1,11 @@
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import React from 'react'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { findIndex, includes } from 'lodash'
 
-import ComponentBase from '../application/ComponentBase'
-
-class Search extends ComponentBase {
-  getDisplayData() {
+class Search extends Component {
+  getDisplayData = () => {
     return this.props.results.map((article) => {
       const previews = (article.results || []).map((hit) => {
         const words = hit.text.split(' ')
@@ -20,15 +18,8 @@ class Search extends ComponentBase {
           return { html: hit.text, line: hit.line }
         }
 
-        const start = index - 4 > 0 ? index - 4 : 0
-
         return {
-          html: [
-            index ? '&hellip;' : '',
-            ...words.slice(start, index),
-            `<span class="highlight">${words[index]}</span>`,
-            ...words.slice(index + 1),
-          ].join(' '),
+          html: hit.text,
           line: hit.line,
         }
       })

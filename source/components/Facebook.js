@@ -1,7 +1,8 @@
 import Cookie from 'js-cookie'
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ComponentBase from '../application/ComponentBase'
+import { browserHistory } from 'react-router'
+import Icon from './Icon'
 
 function asyncLoadSDK(language = 'en_US') {
   ((d, s, id) => {
@@ -15,16 +16,16 @@ function asyncLoadSDK(language = 'en_US') {
   })(document, 'script', 'facebook-jssdk')
 }
 
-export default class Facebook extends ComponentBase {
+function goToProfile() {
+  browserHistory.push('/profile')
+}
+
+export default class Facebook extends Component {
   constructor(props) {
     super(props)
 
     const { config: { appId } } = props
     this.state = { cookieName: `fbsr_${appId}` }
-  }
-  componentWillReceiveProps(props) {
-    const { config: { appId } } = props
-    this.setState({ cookieName: `fbsr_${appId}` })
   }
 
   componentDidMount() {
@@ -36,7 +37,12 @@ export default class Facebook extends ComponentBase {
     return asyncLoadSDK()
   }
 
-  initializeFacebook() {
+  componentWillReceiveProps(props) {
+    const { config: { appId } } = props
+    this.setState({ cookieName: `fbsr_${appId}` })
+  }
+
+  initializeFacebook = () => {
     const { version, config: { appId } } = this.props
     window.FB.init({
       appId,
@@ -47,7 +53,7 @@ export default class Facebook extends ComponentBase {
     window.FB.getLoginStatus(this.handleStatus)
   }
 
-  handleStatus(response) {
+  handleStatus = (response) => {
     const cookie = Cookie.get(this.state.cookieName)
     if (cookie && response.status === 'connected') {
       // Logged in, authorized
@@ -72,14 +78,14 @@ export default class Facebook extends ComponentBase {
     }
   }
 
-  loadProfile() {
+  loadProfile = () => {
     window.FB.api('/me', { fields: this.props.fields }, (me) => {
       this.props.onUserLoaded(me)
       this.updateCookie()
     })
   }
 
-  logOn() {
+  logOn = () => {
     window.FB.getLoginStatus((response) => {
       if (response.status === 'connected') {
         this.loadProfile()
@@ -91,12 +97,12 @@ export default class Facebook extends ComponentBase {
     })
   }
 
-  logOff() {
+  logOff = () => {
     this.removeCookie()
     this.props.onLoggedOff()
   }
 
-  removeCookie() {
+  removeCookie = () => {
     const cookieName = `fbsr_${this.props.config.appId}`
     if (this.props.user.id && Cookie.get(cookieName)) {
       Cookie.remove(cookieName, {
@@ -106,7 +112,7 @@ export default class Facebook extends ComponentBase {
     }
   }
 
-  updateCookie() {
+  updateCookie = () => {
     const fbAuthResponse = window.FB.getAuthResponse()
     const cookieName = `fbsr_${this.props.config.appId}`
     Cookie.set(cookieName, fbAuthResponse.signedRequest, {
@@ -130,11 +136,11 @@ export default class Facebook extends ComponentBase {
         { anonymous ? (
           <button onClick={this.logOn} className="login button icon icon-facebook">Log In</button>
         ) : [
-          <img key="picture" alt="" src={imageSrc} />,
-          <button
-            key="btn" onClick={this.logOff}
-            className="logout button icon icon-facebook"
-          >Log Out</button>,
+          <button key="profile" className="profile button" onClick={goToProfile}>
+            <img key="picture" alt="" src={imageSrc} />
+            {user.name}
+          </button>,
+          <Icon key="icon" name="logout" onClick={this.logOff} />,
         ]}
       </div>
     )
@@ -153,7 +159,7 @@ Facebook.propTypes = {
 Facebook.defaultProps = {
   fields:  ['id', 'email', 'gender', 'locale', 'name', 'picture'],
   scope:   ['public_profile', 'email'],
-  version: 'v2.8',
+  version: 'v2.9',
 
   onAuthResponse: (authResponse) => {}, // eslint-disable-line no-unused-vars
   onLoggedOff:    () => {},

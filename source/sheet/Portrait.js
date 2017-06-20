@@ -1,15 +1,14 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
 import Section from './Section'
 
-export default class Portrait extends ComponentBase {
+export default class Portrait extends Component {
   constructor(props) {
     super(props)
     this.state = { editing: false }
   }
-  toggleEditing() {
+  toggleEditing = () => {
     this.setState({ editing: !this.state.editing })
   }
 

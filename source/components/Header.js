@@ -7,13 +7,13 @@ const Header = () => (
     <div className="hero-head">
       <nav className="nav">
         <div className="nav-left">
-          <span className="title is-4 icon icon-axis"> </span>
+          <span className="title is-4 icon icon-axis">{' '}</span>
           <span className="title is-3">Axis</span>
           <span className="subtitle is-3">RPG</span>
         </div>
         <div className="nav-right">
-          <FacebookWrapper className="nav-item" />
           <SearchBox className="nav-item" />
+          <FacebookWrapper className="nav-item" />
         </div>
       </nav>
     </div>

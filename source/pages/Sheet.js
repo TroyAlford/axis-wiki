@@ -1,8 +1,7 @@
 import { filter, find, isEqual, pick, sum } from 'lodash'
 
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import React from 'react'
-import ComponentBase from '../application/ComponentBase'
 import ArmorManager from '../sheet/ArmorManager'
 import AttributeManager from '../sheet/AttributeManager'
 import DescriptorManager from '../sheet/DescriptorManager'
@@ -40,7 +39,7 @@ const defaultState = {
   weapons:     [],
 }
 
-export default class Sheet extends ComponentBase {
+export default class Sheet extends Component {
   constructor(props) {
     super(props)
     this.state = { ...defaultState, ...pick(props, propsToExtract) }
@@ -54,7 +53,7 @@ export default class Sheet extends ComponentBase {
     }
   }
 
-  handleChange(key, value) {
+  handleChange = (key, value) => {
     if (!isEqual(this.state[key], value)) {
       this.props.onChange({
         ...this.state,

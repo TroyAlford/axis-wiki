@@ -1,11 +1,10 @@
+import React, { Component } from 'react'
 import { filter, map, uniqBy } from 'lodash'
 import Dropzone from 'react-dropzone'
-import React from 'react'
 
-import ComponentBase from '../application/ComponentBase'
 import { slugify } from '../../utility/Slugs'
 
-export default class UploadPage extends ComponentBase {
+export default class UploadPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -15,7 +14,7 @@ export default class UploadPage extends ComponentBase {
     }
   }
 
-  onDrop(files) {
+  onDrop = (files) => {
     const form = new FormData()
     const uploading = this.state.uploading
 
@@ -56,7 +55,7 @@ export default class UploadPage extends ComponentBase {
     })
   }
 
-  renderFiles(files, actionText, className) {
+  renderFiles = (files, actionText, className) => {
     return (
       <div className={`message ${className} files`}>
         <div className="message-header">{actionText}: {files.length} files</div>

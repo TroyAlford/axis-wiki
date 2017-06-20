@@ -3,42 +3,65 @@ import PropTypes from 'prop-types'
 import { startCase } from 'lodash'
 import Icon from './Icon'
 
-const range = (start, stop) => Array.from(new Array((stop - start) + 1), (_, i) => i + start)
-
-const ArticleChildren = ({ articles = [], numberOfColumns = 4 }) => {
+const ArticleChildren = ({ articles, caption, iconName, numberOfColumns }) => {
   if (!articles || !Array.isArray(articles) || !articles.length) {
     return <div className={'tag-browser is-hidden'} />
   }
 
-  const sorted = articles.sort()
-  const columnSize = Math.ceil(sorted.length / numberOfColumns)
-  const classes = `column is-${Math.floor(12 / numberOfColumns)}`
+  const childWidth = `${100 / numberOfColumns}%`
+  const childStyle = {
+    maxWidth: childWidth,
+    minWidth: childWidth,
+    width:    childWidth,
+  }
 
-  const columns = range(0, numberOfColumns).map((index) => {
-    const first = index * columnSize
-    const last = (index * columnSize) + columnSize
-    const list = sorted.slice(first, last)
-
-    return (
-      <div key={index} className={classes}>{list.map(slug =>
-        <div key={slug}><a href={`/page/${slug}`}>{startCase(slug)}</a></div>
-      )}</div>
+  const links = articles
+    .map((item) => {
+      if (!item) return null
+      if (typeof item === 'string') return { slug: item, title: startCase(item) }
+      if (!item.slug) return null
+      if (!item.title) return { slug: item.slug, title: startCase(item.slug) }
+      return item
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.title.localeCompare(b.title))
+    .map(({ slug, title }) =>
+      <div key={slug} className="article-link" style={childStyle}><a href={`/page/${slug}`}>{title}</a></div>
     )
-  })
+
+  const rows = Math.ceil(links.length / numberOfColumns)
+  const containerStyle = {
+    height: `${(rows * 1.5) + 1}rem`,
+  }
 
   return (
-    <div className="tag-browser message is-info">
-      <div className="message-header"><Icon name="tag" /> Child Articles:</div>
-      <div className="columns message-body">{columns}</div>
+    <div className="article-children message is-info">
+      <div className="message-header header">
+        <Icon name={iconName} /> {caption}
+      </div>
+      <div className="container message-body" style={containerStyle}>
+        {links}
+      </div>
     </div>
   )
 }
 ArticleChildren.defaultProps = {
   articles:        [],
+  caption:         'Child Articles',
+  iconName:        'tag',
   numberOfColumns: 4,
 }
 ArticleChildren.propTypes = {
-  articles:        PropTypes.arrayOf(PropTypes.string),
+  articles: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.shape({
+      slug:  PropTypes.string,
+      title: PropTypes.string,
+    }),
+    PropTypes.string,
+  ])),
+
+  caption:         PropTypes.string,
+  iconName:        PropTypes.string,
   numberOfColumns: PropTypes.number,
 }
 

@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'axis-wiki';
-  src: url('../font/axis-wiki.eot?47252113');
-  src: url('../font/axis-wiki.eot?47252113#iefix') format('embedded-opentype'),
-       url('../font/axis-wiki.woff2?47252113') format('woff2'),
-       url('../font/axis-wiki.woff?47252113') format('woff'),
-       url('../font/axis-wiki.ttf?47252113') format('truetype'),
-       url('../font/axis-wiki.svg?47252113#axis-wiki') format('svg');
+  src: url('../font/axis-wiki.eot?15475384');
+  src: url('../font/axis-wiki.eot?15475384#iefix') format('embedded-opentype'),
+       url('../font/axis-wiki.woff2?15475384') format('woff2'),
+       url('../font/axis-wiki.woff?15475384') format('woff'),
+       url('../font/axis-wiki.ttf?15475384') format('truetype'),
+       url('../font/axis-wiki.svg?15475384#axis-wiki') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'axis-wiki';
-    src: url('../font/axis-wiki.svg?47252113#axis-wiki') format('svg');
+    src: url('../font/axis-wiki.svg?15475384#axis-wiki') format('svg');
   }
 }
 */
@@ -83,3 +83,6 @@
 .icon-weapon:before { content: '\e819'; } /* '' */
 .icon-hand:before { content: '\e81a'; } /* '' */
 .icon-axis:before { content: '\e81b'; } /* '' */
+.icon-favorite-off:before { content: '\e81c'; } /* '' */
+.icon-favorite-on:before { content: '\e81d'; } /* '' */
+.icon-logout:before { content: '\e81e'; } /* '' */

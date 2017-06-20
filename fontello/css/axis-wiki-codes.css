@@ -27,3 +27,6 @@
 .icon-weapon:before { content: '\e819'; } /* '' */
 .icon-hand:before { content: '\e81a'; } /* '' */
 .icon-axis:before { content: '\e81b'; } /* '' */
+.icon-favorite-off:before { content: '\e81c'; } /* '' */
+.icon-favorite-on:before { content: '\e81d'; } /* '' */
+.icon-logout:before { content: '\e81e'; } /* '' */
