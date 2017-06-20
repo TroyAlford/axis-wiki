@@ -22,5 +22,5 @@ test:
     - mkdir -p $CIRCLE_TEST_REPORTS/eslint
   override:
     - yarn test -- --coverage --json --outputFile=$CIRCLE_TEST_REPORTS/jest/jest.json
-    - yarn eslint -- ./source ./server ./utility --format junit --output-file $CIRCLE_TEST_REPORTS/eslint/eslint.xml
+#    - yarn eslint -- ./source ./server ./utility --format junit --output-file $CIRCLE_TEST_REPORTS/eslint/eslint.xml
     - yarn build
