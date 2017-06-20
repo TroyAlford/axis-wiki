@@ -15,10 +15,6 @@ import Sheet from './Sheet'
 import TabSet from '../components/TabSet'
 import TagBar from '../components/TagBar'
 
-import unboundEditorConfig from '../config/editor'
-
-const tinyMCE = window.tinyMCE
-
 function interceptEditorLinks(event) {
   if (event.target.tagName === 'A') {
     event.preventDefault()
