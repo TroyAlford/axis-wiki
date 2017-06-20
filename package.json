@@ -110,6 +110,7 @@
     ],
     "presets": [
       "camo",
+      "es2015",
       "react",
       "jest"
     ],
