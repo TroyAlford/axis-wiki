@@ -40,6 +40,21 @@ const bundle = {
       loader:  'babel-loader',
       exclude: /node_modules/,
     }],
+    rules: [{
+      use: [{
+        loader: 'babel-loader',
+        options: {
+          plugins: [
+            'lodash',
+            'syntax-async-functions',
+            'transform-class-properties',
+            'transform-object-rest-spread',
+            'transform-regenerator',
+          ],
+          presets: ['es2015', 'react'],
+        },
+      }],
+    }],
   },
   output: {
     filename: PLACEHOLDER,
