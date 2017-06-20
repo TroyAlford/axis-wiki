@@ -1,10 +1,9 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import { debounce } from 'lodash'
 
-import ComponentBase from '../application/ComponentBase'
 import Header from '../components/Header'
 import HtmlMetadata from '../components/HtmlMetadata'
 import Navigation from '../components/Navigation'
@@ -25,7 +24,7 @@ const interceptClicks = (event) => {
   browserHistory.push(parser.pathname)
 }
 
-class Layout extends ComponentBase {
+class Layout extends Component {
   constructor(props) {
     super(props)
     this.onWindowResize = this.onWindowResize.bind(this)

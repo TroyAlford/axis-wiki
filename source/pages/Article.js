@@ -1,12 +1,11 @@
 import JsxParser from 'react-jsx-parser'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { Component } from 'react'
 import TinyMCE from 'react-tinymce'
 import { connect } from 'react-redux'
 import { isEqual } from 'lodash'
 import { deleteArticle, saveArticle } from '../redux/page/actions-article'
 
-import ComponentBase from '../application/ComponentBase'
 import ArticleChildren from '../components/ArticleChildren'
 import Editable from '../components/Editable'
 import Favorite from '../components/Favorite'
@@ -27,7 +26,7 @@ function interceptEditorLinks(event) {
   }
 }
 
-class Article extends ComponentBase {
+class Article extends Component {
   constructor(props) {
     super(props)
     this.state = this.defaultState(props)
@@ -67,10 +66,10 @@ class Article extends ComponentBase {
     })
   }
 
-  handleDelete() {
+  handleDelete = () => {
     this.props.dispatch(deleteArticle(this.props.params.slug))
   }
-  handleSave() {
+  handleSave = () => {
     if (!this.dirty) return // Only save if there's something to save.
 
     const article = {
@@ -84,11 +83,9 @@ class Article extends ComponentBase {
 
     this.props.dispatch(saveArticle(this.props.params.slug, article))
   }
-  handleReset() {
-    this.setState(this.defaultState())
-  }
+  handleReset = () => { this.setState(this.defaultState()) }
 
-  handleTabClicked(clicked) {
+  handleTabClicked = (clicked) => {
     if (this.state.tab === clicked.key) return true
 
     this.setState({
@@ -99,7 +96,7 @@ class Article extends ComponentBase {
     return true
   }
 
-  handleTemplateChange(event) {
+  handleTemplateChange = (event) => {
     const template = event.target.value
     this.setState({
       data: {

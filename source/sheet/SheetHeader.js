@@ -1,14 +1,13 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
   filter, flatten, flow, includes,
   map, omit, pick, sum,
 } from 'lodash'
-import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
 import createRange from '../../utility/createRange'
 
-export default class SheetHeader extends ComponentBase {
+export default class SheetHeader extends Component {
   constructor(props) {
     super(props)
     this.state = pick(props, ['name', 'xp', 'rp'])
@@ -18,14 +17,14 @@ export default class SheetHeader extends ComponentBase {
     this.setState(state)
   }
 
-  calculatePower() {
+  calculatePower = () => {
     return (
       this.calculateAttributes()
       + this.calculateSkills()
       + this.calculateTraits()
     )
   }
-  calculateAttributes() {
+  calculateAttributes = () => {
     const attributeKeys = [
       'strength', 'intellect', 'confidence',
       'agility', 'acuity', 'intuition',
@@ -42,7 +41,7 @@ export default class SheetHeader extends ComponentBase {
       array => sum(array),
     ])(this.props.attributes)
   }
-  calculateSkills() {
+  calculateSkills = () => {
     return flow([
       array => map(array, skill => [
         ...(skill.values[1] >= 1 ? createRange(1, skill.values[1]) : []),
@@ -56,14 +55,14 @@ export default class SheetHeader extends ComponentBase {
       array => sum(array),
     ])(this.props.skills)
   }
-  calculateTraits() {
+  calculateTraits = () => {
     return flow([
       array => map(array, trait => trait.value),
       array => sum(array),
     ])(this.props.traits)
   }
 
-  handleChange(key, value) {
+  handleChange = (key, value) => {
     this.props.onChange(omit({
       ...this.props,
       [key]: value,

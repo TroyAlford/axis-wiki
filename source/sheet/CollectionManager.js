@@ -1,12 +1,11 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Collection from '../../utility/Collection'
-import ComponentBase from '../application/ComponentBase'
 import Icon from '../components/Icon'
 import Section from './Section'
 import { isEqual } from 'lodash'
 
-export default class CollectionManager extends ComponentBase {
+export default class CollectionManager extends Component {
   constructor(props) {
     super(props)
     this.settings = props.settings
@@ -21,22 +20,22 @@ export default class CollectionManager extends ComponentBase {
       this.handleCollectionChange()
   }
 
-  addItem() {
+  addItem = () => {
     this.collection.add(this.collection.applyTemplate({}))
   }
 
-  handleCollectionChange() {
+  handleCollectionChange = () => {
     this.props.onChange(this.collection)
   }
 
-  handleChange(updated, previous) {
+  handleChange = (updated, previous) => {
     this.collection.update(previous.id, updated)
   }
-  handleEditEnd(item) {
+  handleEditEnd = (item) => {
     item.key === '' && this.collection.remove({ id: item.id })
   }
 
-  renderItem(item) {
+  renderItem = (item) => {
     return this.props.renderItem(item)
   }
 

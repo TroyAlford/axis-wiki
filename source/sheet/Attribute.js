@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import {
@@ -6,11 +6,10 @@ import {
   toLower,
 } from 'lodash'
 
-import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
 
-export default class Attribute extends ComponentBase {
-  handleValueChange(value) {
+export default class Attribute extends Component {
+  handleValueChange = (value) => {
     this.props.onChange({
       ...this.props.attribute,
       value,
