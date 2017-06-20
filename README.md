@@ -1,4 +1,7 @@
-![](https://circleci.com/gh/TroyAlford/axis-wiki.svg?style=shield&circle-token=aacb39e59ecff89f1fc9ee7a301b4c23f4bfab65)
+| **Master** | **Develop** |
+|   :---:    |    :---:    |
+| <a href="https://circleci.com/gh/TroyAlford/axis-wiki/tree/master"><img src="https://circleci.com/gh/TroyAlford/axis-wiki/tree/master.svg?style=shield&circle-token=aacb39e59ecff89f1fc9ee7a301b4c23f4bfab65" /></a> | <a href="https://circleci.com/gh/TroyAlford/axis-wiki/tree/develop"><img src="https://circleci.com/gh/TroyAlford/axis-wiki/tree/develop.svg?style=shield&circle-token=aacb39e59ecff89f1fc9ee7a301b4c23f4bfab65" /></a> |
+
 # Axis Wiki
 ### A wiki project built on TinyMCE and React
 
