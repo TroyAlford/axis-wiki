@@ -1,12 +1,13 @@
-import ComponentBase from '../application/ComponentBase'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 
-class Navigation extends ComponentBase {
+class Navigation extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      current: window.location.pathname
+      current: window.location.pathname,
     }
   }
 
@@ -14,25 +15,25 @@ class Navigation extends ComponentBase {
     browserHistory.listen(this.routeChanged)
   }
 
-  routeChanged(route) {
+  routeChanged = (route) => {
     this.setState({ current: route.pathname })
   }
 
-  renderLink(link, index) {
+  renderLink = (link, index) => {
     const active = this.state.current === link.url
 
     return (
       <li key={index} className={active ? 'is-current' : ''}>
-      {!link.url || active
-        ? <b>{link.text}</b>
-        : <a href={link.url}>{link.text}</a>
-      }
+        {!link.url || active
+          ? <b>{link.text}</b>
+          : <a href={link.url}>{link.text}</a>
+        }
         {this.renderChildren(link.children)}
       </li>
     )
   }
 
-  renderChildren(children) {
+  renderChildren = (children) => {
     if (!children || !children.length) return ''
     return (
       <ul>{children.map(this.renderLink)}</ul>
@@ -44,12 +45,15 @@ class Navigation extends ComponentBase {
       <section className="navigation">
         {this.renderChildren(this.props.links)}
       </section>
-    );
+    )
   }
 }
 
 Navigation.defaultProps = {
-  links: []
+  links: [],
+}
+Navigation.propTypes = {
+  links: PropTypes.arrayOf(PropTypes.shape({})),
 }
 
 export default connect(

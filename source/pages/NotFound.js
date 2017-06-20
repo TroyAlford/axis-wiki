@@ -1,8 +1,7 @@
-import React from 'react'
-import ComponentBase from '../application/ComponentBase'
+import React, { Component } from 'react'
 import Message from '../components/Message'
 
-export default class NotFound extends ComponentBase {
+export default class NotFound extends Component {
   render() {
     const parts = window.location.pathname.split('/')
     const slug = parts[parts.length - 1]

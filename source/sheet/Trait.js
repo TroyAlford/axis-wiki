@@ -1,15 +1,14 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import { startCase, toLower } from 'lodash'
 import { slugify } from '../../utility/Slugs'
 
-import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
 
 const nameParserRegEx = new RegExp(/^(?:([a-z0-9 ]*):)?([a-z0-9 ]*)(?:\(([^(]*)\))?/mi)
 
-export default class Trait extends ComponentBase {
+export default class Trait extends Component {
   static parseName(unparsed) {
     if (typeof unparsed !== 'string' || !nameParserRegEx.test(unparsed)) {
       return { category: '', name: '', note: '' }
@@ -21,7 +20,7 @@ export default class Trait extends ComponentBase {
     return { category, name, note }
   }
 
-  displayName(props = this.props) {
+  displayName = (props = this.props) => {
     const { trait: { category, key, name, note } } = props
     let display = startCase(toLower(name || key))
     if (category) display = `${category}: ${display}`

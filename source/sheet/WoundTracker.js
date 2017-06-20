@@ -1,17 +1,16 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ComponentBase from '../application/ComponentBase'
 import Editable from '../components/Editable'
 import Section from './Section'
 
-export default class WoundTracker extends ComponentBase {
-  handleDeep(deep) {
+export default class WoundTracker extends Component {
+  handleDeep = (deep) => {
     this.handleChange({ deep })
   }
-  handleLight(light) {
+  handleLight = (light) => {
     this.handleChange({ light })
   }
-  handleChange(updated) {
+  handleChange = (updated) => {
     this.props.onChange({ ...this.props.wounds, ...updated })
   }
 
