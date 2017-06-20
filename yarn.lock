@@ -863,7 +863,7 @@ babel-plugin-transform-function-bind@^6.22.0:
     babel-plugin-syntax-function-bind "^6.8.0"
     babel-runtime "^6.22.0"
 
-babel-plugin-transform-object-rest-spread@^6.22.0:
+babel-plugin-transform-object-rest-spread@^6.22.0, babel-plugin-transform-object-rest-spread@^6.23.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-object-rest-spread/-/babel-plugin-transform-object-rest-spread-6.23.0.tgz#875d6bc9be761c58a2ae3feee5dc4895d8c7f921"
   dependencies:
@@ -4502,7 +4502,7 @@ node-sass-glob-importer@^3.0.2:
     glob "^7.1.1"
     unique-concat "^0.2.2"
 
-node-sass@^4.5.0:
+node-sass@^4.5.2:
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/node-sass/-/node-sass-4.5.3.tgz#d09c9d1179641239d1b97ffc6231fdcec53e1568"
   dependencies:
@@ -5078,7 +5078,7 @@ react-ace@^4.2.1:
     opencollective "^1.0.3"
     prop-types "^15.5.8"
 
-react-addons-test-utils@^15.4.2:
+react-addons-test-utils@^15.6.0:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/react-addons-test-utils/-/react-addons-test-utils-15.6.0.tgz#062d36117fe8d18f3ba5e06eb33383b0b85ea5b9"
 
