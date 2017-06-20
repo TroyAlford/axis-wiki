@@ -28,6 +28,7 @@ const ConfigPlugin = new webpack.DefinePlugin({
     return o
   }, { NODE_ENV: JSON.stringify(ENVIRONMENT) })
 })
+const HoistPlugin = new webpack.optimize.ModuleConcatenationPlugin()
 const serverSideModules = fs.readdirSync('node_modules')
   .filter(x => ['.bin'].indexOf(x) === -1)
   .reduce((mods, mod) => Object.assign(mods, { [mod]: `commonjs ${mod}` }))
@@ -63,7 +64,9 @@ const bundle = {
     libraryTarget:  'umd',
     umdNamedDefine: true,
   },
-  plugins: PRODUCTION ? [ConfigPlugin, uglify] : [ConfigPlugin],
+  plugins: PRODUCTION
+    ? [ConfigPlugin, HoistPlugin, uglify]
+    : [ConfigPlugin, HoistPlugin],
 }
 
 module.exports = [

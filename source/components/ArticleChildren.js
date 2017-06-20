@@ -3,29 +3,16 @@ import PropTypes from 'prop-types'
 import { startCase } from 'lodash'
 import Icon from './Icon'
 
-const STYLE = {
-  CONTAINER: {
-    display:       'flex',
-    flexDirection: 'column',
-    flexWrap:      'wrap',
-    padding:       '.25rem .5rem',
-  },
-  CHILD: {
-    height:     '1.5rem',
-    fontSize:   '1rem',
-    lineHeight: '1rem',
-    padding:    '.25rem 0',
-  },
-}
-
 const ArticleChildren = ({ articles, caption, iconName, numberOfColumns }) => {
   if (!articles || !Array.isArray(articles) || !articles.length) {
     return <div className={'tag-browser is-hidden'} />
   }
 
+  const childWidth = `${100 / numberOfColumns}%`
   const childStyle = {
-    ...STYLE.CHILD,
-    maxWidth: `${100 / numberOfColumns}%`,
+    maxWidth: childWidth,
+    minWidth: childWidth,
+    width:    childWidth,
   }
 
   const links = articles
@@ -39,19 +26,22 @@ const ArticleChildren = ({ articles, caption, iconName, numberOfColumns }) => {
     .filter(Boolean)
     .sort((a, b) => a.title.localeCompare(b.title))
     .map(({ slug, title }) =>
-      <div key={slug} style={childStyle}><a href={`/page/${slug}`}>{title}</a></div>
+      <div key={slug} className="article-link" style={childStyle}><a href={`/page/${slug}`}>{title}</a></div>
     )
 
   const rows = Math.ceil(links.length / numberOfColumns)
   const containerStyle = {
-    ...STYLE.CONTAINER,
     height: `${(rows * 1.5) + 1}rem`,
   }
 
   return (
-    <div className="tag-browser message is-info">
-      <div className="message-header"><Icon name={iconName} /> {caption}</div>
-      <div className="columns message-body" style={containerStyle}>{links}</div>
+    <div className="article-children message is-info">
+      <div className="message-header header">
+        <Icon name={iconName} /> {caption}
+      </div>
+      <div className="container message-body" style={containerStyle}>
+        {links}
+      </div>
     </div>
   )
 }
