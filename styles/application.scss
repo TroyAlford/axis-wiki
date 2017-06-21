@@ -1,5 +1,5 @@
 // @import "**/*.scss";
-@import "node_modules/wiki-editor/src/wiki-editor";
+@import "node_modules/wiki-editor/source/wiki-editor";
 [class^="icon-"]:before, [class*=" icon-"]:before {
   font-family: 'axis-wiki';
 }
@@ -14,5 +14,6 @@
 @import "atoms/*.scss";
 @import "molecules/*.scss";
 @import "organisms/*.scss";
+@import "components/*.scss";
 @import "pages/*.scss";
 @import "sheet/*.scss";
