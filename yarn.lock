@@ -6380,9 +6380,9 @@ wide-align@^1.1.0:
   dependencies:
     string-width "^1.0.2"
 
-wiki-editor@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/wiki-editor/-/wiki-editor-0.0.3.tgz#34bbe1bd5518be83178903dd529ef7a148537532"
+wiki-editor@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/wiki-editor/-/wiki-editor-0.0.4.tgz#dd0ef8fe0c15b123e1d4af086914a1b12e14c56a"
   dependencies:
     cheerio "^1.0.0-rc.1"
     immutable "^3.8.1"

@@ -51,7 +51,7 @@
     "slate": "^0.20.3",
     "superchild": "^0.1.10",
     "whatwg-fetch": "^2.0.2",
-    "wiki-editor": "^0.0.3"
+    "wiki-editor": "^0.0.4"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
