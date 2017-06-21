@@ -1,0 +1,42 @@
+.wiki-editor {
+  display: flex;
+  flex-direction: column;
+  left: 0; right: 0; bottom: 0;
+  position: absolute;
+  top: 52px;
+
+  .menu.toolbar-menu {
+    background: $palette-white;
+    border-color: $color-border-blue;
+    border-style: solid;
+    border-width: 1px 0;
+
+    .toolbar-button-group {
+      border-right: 2px groove;
+      margin-right: .5rem;
+      padding-right: .5rem;
+
+      + .toolbar-button-group {
+        border-left:  0;
+        margin-left:  0;
+        padding-left: 0;
+      }
+      &:last-child {
+        border-right:  0;
+        margin-right:  0;
+        padding-right: 0;
+      }
+    }
+
+    .menu.dropdown {
+      &:hover {
+        border: 1px solid $color-border-blue;
+      }
+    }
+  }
+  .wiki-editor div[contenteditable=true] {
+    flex-grow: 1;
+    position: absolute;
+    left: 0; right: 0; bottom: 0; top: 30px;
+  }
+}
