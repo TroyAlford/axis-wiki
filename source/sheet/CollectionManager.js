@@ -11,6 +11,12 @@ export default class CollectionManager extends Component {
     this.settings = props.settings
     this.collection = new Collection(props.items, this.settings)
     this.collection.onChange = this.handleCollectionChange.bind(this)
+
+    this.addItem = this.addItem.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleCollectionChange = this.handleCollectionChange.bind(this)
+    this.handleEditEnd = this.handleEditEnd.bind(this)
+    this.renderItem = this.renderItem.bind(this)
   }
   componentWillReceiveProps(newProps) {
     this.collection = new Collection(newProps.items, this.settings)
@@ -20,22 +26,22 @@ export default class CollectionManager extends Component {
       this.handleCollectionChange()
   }
 
-  addItem = () => {
+  addItem() {
     this.collection.add(this.collection.applyTemplate({}))
   }
 
-  handleCollectionChange = () => {
+  handleCollectionChange() {
     this.props.onChange(this.collection)
   }
 
-  handleChange = (updated, previous) => {
+  handleChange(updated, previous) {
     this.collection.update(previous.id, updated)
   }
-  handleEditEnd = (item) => {
+  handleEditEnd(item) {
     item.key === '' && this.collection.remove({ id: item.id })
   }
 
-  renderItem = (item) => {
+  renderItem(item) {
     return this.props.renderItem(item)
   }
 
