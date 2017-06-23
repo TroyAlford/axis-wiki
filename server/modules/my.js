@@ -33,7 +33,7 @@ export default express()
       return user.save().then(updated => response.status(200).send(User.render(updated)))
     } else if (!user) {
       // User is not logged in, and there's no profile. Allow new user creation.
-      const created = new User({
+      const created = User.create({
         _id,
         name:  request.body.name,
         email: request.body.email,
@@ -63,7 +63,6 @@ export default express()
     if (favorites) {
       user.favorites = favorites
     } else if (slug && typeof value === 'boolean') {
-      console.log(slug, value)
       if (value && !user.favorites.includes(slug)) user.favorites.push(slug)
       if (!value) user.favorites = user.favorites.filter(f => f !== slug)
     } else {
