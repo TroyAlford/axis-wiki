@@ -96,11 +96,12 @@
     "build-css": "(yarn build-css-app & yarn build-css-dep)",
     "build-css-app": "node-sass styles/application.scss --output-style compressed --source-map true --source-map-embed --importer node_modules/node-sass-glob-importer/dist/cli.js -o build/css",
     "build-css-dep": "node-sass vendor/dependencies.scss --output-style compressed --source-map true --source-map-embed -o build/css ",
+    "sourcemap": "source-map-explorer ./build/js/application.js",
     "prebuild": "rimraf build/css/* && rimraf build/js/*",
     "serve": "babel-node server/server.js",
     "serve-prod": "NODE_ENV=production yarn serve",
     "serve-watched": "nodemon --watch ./server --watch ./config -e .js --exec 'yarn serve'",
-    "watch": "SOURCEMAP=true yarn prebuild && (yarn watch-css & yarn webpack -- --watch)",
+    "watch": "yarn prebuild && (yarn watch-css & SOURCEMAP=true yarn webpack -- --watch)",
     "watch-css": "yarn watch-css-app & yarn watch-css-dep",
     "watch-css-app": "nodemon --watch ./styles -e scss --exec 'yarn build-css-app'",
     "watch-css-dep": "nodemon --watch ./vendor -e scss --exec 'yarn build-css-dep'"
