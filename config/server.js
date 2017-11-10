@@ -1,6 +1,10 @@
+import dotenv from 'dotenv'
 import path from 'path'
+import fs from 'fs'
 import utils from 'fs-utils'
 import config from './config'
+
+dotenv.config()
 
 function setting(key, defaultValue) {
   // eslint-disable-next-line no-mixed-operators
@@ -12,7 +16,7 @@ contentPath = !path.isAbsolute(contentPath)
   ? path.join(__dirname, contentPath)
   : contentPath
 
-const folders = ['articles', 'config', 'media', 'metadata', 'users']
+const folders = ['articles', 'config', 'media', 'users']
   .reduce((hash, name) => ({
     ...hash,
     [name]: path.join(contentPath, `./${name}`),
@@ -20,7 +24,8 @@ const folders = ['articles', 'config', 'media', 'metadata', 'users']
 
 Object.keys(folders).forEach((folder) => {
   if (!utils.isDir(folders[folder])) {
-    console.error(`Folder missing: ${folders[folder]}`) // eslint-disable-line no-console
+    fs.mkdirSync(folders[folder])
+    console.error(`Folder missing: ${folders[folder]} => created it`) // eslint-disable-line no-console
   }
 })
 

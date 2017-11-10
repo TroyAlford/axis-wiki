@@ -1,7 +1,10 @@
 /* eslint-disable */
+const dotenv = require('dotenv')
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
+
+dotenv.config()
 
 const VARIABLES = [
   'APPLICATION_NAME',
