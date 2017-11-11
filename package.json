@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "body-parser": "^1.16.1",
-    "brace": "^0.10.0",
     "bulma": "^0.4.2",
     "camo": "^0.12.3",
     "cheerio": "^0.22.0",

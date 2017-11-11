@@ -2,10 +2,6 @@ import React from 'react'
 import AceEditor from 'react-ace'
 import PropTypes from 'prop-types'
 
-import 'brace/mode/html'
-import 'brace/theme/chrome'
-import 'brace/ext/searchbox'
-
 export default class HtmlEditor extends React.Component {
   constructor(props) {
     super(props)
