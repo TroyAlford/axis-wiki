@@ -55,7 +55,7 @@ const bundle = {
             'transform-object-rest-spread',
             'transform-regenerator',
           ],
-          presets: ['es2015', 'react'],
+          presets: ['env', 'react'],
         },
       }],
     }],
