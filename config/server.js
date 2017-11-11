@@ -37,6 +37,7 @@ export default {
   },
   facebook: {
     ...config.facebook,
+    appId:     setting('FB_APP_ID', undefined),
     appSecret: setting('FB_APP_SECRET', undefined),
   },
   folders,
