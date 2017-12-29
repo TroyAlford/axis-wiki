@@ -3,6 +3,7 @@
 /content
 /node_modules
 /npm-debug.log
+/source/config.json
 .DS_Store
 .env
 yarn-error.log
