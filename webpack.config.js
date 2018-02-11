@@ -21,10 +21,10 @@ const SOURCEMAP = process.env.SOURCEMAP
 
 const uglify = new webpack.optimize.UglifyJsPlugin({ minimize: true })
 const ConfigPlugin = new webpack.DefinePlugin({
-  'process.env': VARIABLES.reduce((o, key) => {
-    o[key] = JSON.stringify(process.env[key] || false)
-    return o
-  }, { NODE_ENV: JSON.stringify(ENVIRONMENT) })
+  'process.env': VARIABLES.reduce((replacementMap, key) => ({
+    ...replacementMap,
+    [key]: JSON.stringify(process.env[key] || false)
+  }), { NODE_ENV: JSON.stringify(ENVIRONMENT) })
 })
 const HoistPlugin = new webpack.optimize.ModuleConcatenationPlugin()
 
@@ -49,7 +49,15 @@ const bundle = {
   },
   plugins: [ConfigPlugin, HoistPlugin, PRODUCTION && uglify].filter(Boolean),
   resolve: {
-    extensions: ['.css', '.js', '.scss']
+    extensions: ['.css', '.js', '.scss'],
+    alias: {
+      '@components': path.resolve(__dirname, 'source', 'components'),
+      '@config': path.resolve(__dirname, 'config', 'config'),
+      '@models': path.resolve(__dirname, 'models'),
+      '@source': path.resolve(__dirname, 'source'),
+      '@styles': path.resolve(__dirname, 'styles'),
+      '@utils': path.resolve(__dirname, 'utility'),
+    }
   }
 }
 
