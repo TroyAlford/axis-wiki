@@ -1,6 +1,8 @@
 import Cookie from 'js-cookie'
 import React, { Component, Fragment } from 'react'
-import { browserHistory } from 'react-router'
+import { observer } from 'mobx-react'
+import CONFIG from '@config'
+import { ANONYMOUS } from '@models/User'
 import Icon from './Icon'
 
 function asyncLoadSDK(language = 'en_US') {
@@ -15,27 +17,13 @@ function asyncLoadSDK(language = 'en_US') {
   })(document, 'script', 'facebook-jssdk')
 }
 
-function goToProfile() {
-  browserHistory.push('/profile')
-}
+const COOKIE = `fbsr_${CONFIG.facebook.appId}`
+function goToProfile() { window.routerHistory.push('/profile') }
 
-export default class Facebook extends Component {
+@observer export default class Facebook extends Component {
   static defaultProps = {
     className: '',
-    fields: ['id', 'email', 'gender', 'locale', 'name', 'picture'],
-    scope: ['public_profile', 'email'],
-    version: 'v2.9',
-
-    onAuthResponse: (authResponse) => { }, // eslint-disable-line no-unused-vars
-    onLoggedOff: () => { },
-    onUserLoaded: (user) => { }, // eslint-disable-line no-unused-vars
-  }
-
-  constructor(props) {
-    super(props)
-
-    const { config: { appId } } = props
-    this.state = { cookieName: `fbsr_${appId}` }
+    user: {},
   }
 
   componentDidMount() {
@@ -47,33 +35,29 @@ export default class Facebook extends Component {
     return asyncLoadSDK()
   }
 
-  componentWillReceiveProps(props) {
-    const { config: { appId } } = props
-    this.setState({ cookieName: `fbsr_${appId}` })
-  }
-
   initializeFacebook = () => {
-    const { version, config: { appId } } = this.props
+    const { appId, version } = CONFIG.facebook
     window.FB.init({
       appId,
       cookie: false, // disable - control this explicitly
-      xfbml: true, // parse social plugins on page
       version, // use props-specified graph api version
+      xfbml: true, // parse social plugins on page
     })
     window.FB.getLoginStatus(this.handleStatus)
   }
 
   handleStatus = (response) => {
-    const cookie = Cookie.get(this.state.cookieName)
+    const { scope } = CONFIG.facebook
+    const cookie = Cookie.get(COOKIE)
     if (cookie && response.status === 'connected') {
       // Logged in, authorized
       window.FB.api('/me/permissions', {}, ({ data }) => {
         const granted = data.filter(({ status }) => status === 'granted').map(({ permission }) => permission)
 
-        const denied = this.props.scope.filter(scope => granted.indexOf(scope) === -1)
+        const denied = scope.filter(s => granted.indexOf(s) === -1)
         if (denied.length) {
           window.FB.login(this.loadProfile, {
-            scope: this.props.scope.join(','),
+            scope: scope.join(','),
             auth_type: 'rerequest',
           })
         } else {
@@ -87,8 +71,10 @@ export default class Facebook extends Component {
   }
 
   loadProfile = () => {
-    window.FB.api('/me', { fields: this.props.fields }, (me) => {
-      this.props.onUserLoaded(me)
+    const { user } = this.props
+
+    window.FB.api('/me', { fields: CONFIG.facebook.fields }, (me) => {
+      user.become(me)
       this.updateCookie()
     })
   }
@@ -98,22 +84,20 @@ export default class Facebook extends Component {
       if (response.status === 'connected') {
         this.loadProfile()
       } else {
-        window.FB.login(this.loadProfile, {
-          scope: this.props.scope.join(','),
-        })
+        window.FB.login(this.loadProfile, { scope: CONFIG.facebook.scope.join(',') })
       }
     })
   }
 
   logOff = () => {
+    this.props.user.become(ANONYMOUS)
     this.removeCookie()
-    this.props.onLoggedOff()
   }
 
   removeCookie = () => {
-    const cookieName = `fbsr_${this.props.config.appId}`
-    if (this.props.user.id && Cookie.get(cookieName)) {
-      Cookie.remove(cookieName, {
+    const { user } = this.props
+    if (user.id && Cookie.get(COOKIE)) {
+      Cookie.remove(COOKIE, {
         domain: window.location.hostname,
         path: '/',
       })
@@ -122,8 +106,7 @@ export default class Facebook extends Component {
 
   updateCookie = () => {
     const fbAuthResponse = window.FB.getAuthResponse()
-    const cookieName = `fbsr_${this.props.config.appId}`
-    Cookie.set(cookieName, fbAuthResponse.signedRequest, {
+    Cookie.set(COOKIE, fbAuthResponse.signedRequest, {
       domain: window.location.hostname,
       expires: fbAuthResponse.expiresIn,
       path: '/',
@@ -134,8 +117,8 @@ export default class Facebook extends Component {
     <button onClick={this.logOn} className="login button icon icon-facebook">Log In</button>
   )
   renderLoggedIn = () => {
-    const { user, version } = this.props
-    const imageSrc = `//graph.facebook.com/${version}/${user.id}/picture?height=24&width=24`
+    const { user } = this.props
+    const imageSrc = `//graph.facebook.com/${CONFIG.facebook.version}/${user.id}/picture?height=24&width=24`
 
     return (
       <Fragment>

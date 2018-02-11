@@ -1,12 +1,10 @@
 import { types } from 'mobx-state-tree'
-import Article from './Article'
-import Config from './Config'
 import MenuItem from './MenuItem'
+import Page from './Page'
 import User from './User'
 
 export default types.model('ApplicationState', {
-  config: types.optional(Config, Config.create()),
   navigation: types.optional(types.array(MenuItem), []),
-  page: types.optional(Article, Article.create()),
+  page: types.optional(Page, Page.create({ type: 'article' })),
   user: types.optional(User, User.create()),
 })
