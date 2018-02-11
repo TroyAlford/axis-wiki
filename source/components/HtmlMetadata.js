@@ -1,17 +1,14 @@
+import React from 'react'
 import Helmet from 'react-helmet'
-import { connect } from 'react-redux'
+import { observer } from 'mobx-react'
 
-export default connect(
-  (state) => {
-    return {
-      defaultTitle:  'Welcome',
-      titleTemplate: `%s - ${state.config.application.name}`,
-      title:         state.page.title,
+const HtmlMetadata = ({ config, page }) => (
+  <Helmet
+    meta={[{ name: 'keywords', content: page.keywords }]}
+    title={page.title || 'Welcome'}
+    titleTemplate={`%s - ${config.application.name}`}
+  />
+)
 
-      meta: [{
-        name:    'keywords',
-        content: state.page.keywords,
-      }],
-    }
-  }
-)(Helmet)
+HtmlMetadata.displayName = 'HtmlMetadata'
+export default observer(HtmlMetadata)
