@@ -2,11 +2,11 @@ import React from 'react'
 import Facebook from '../components/Facebook'
 import SearchBox from '../components/SearchBox'
 
-const SiteHeader = () => (
+const SiteHeader = ({ user }) => (
   <header className="site-header">
     <div className="logo icon-axis"><b>Axis</b>RPG</div>
     <SearchBox />
-    <Facebook />
+    <Facebook user={user} />
   </header>
 )
 
