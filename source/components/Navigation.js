@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 
 class Navigation extends Component {
+  static defaultProps = {
+    links: [],
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -12,7 +14,7 @@ class Navigation extends Component {
   }
 
   componentDidMount() {
-    browserHistory.listen(this.routeChanged)
+    window.routerHistory.listen(this.routeChanged)
   }
 
   routeChanged = (route) => {
@@ -49,13 +51,4 @@ class Navigation extends Component {
   }
 }
 
-Navigation.defaultProps = {
-  links: [],
-}
-Navigation.propTypes = {
-  links: PropTypes.arrayOf(PropTypes.shape({})),
-}
-
-export default connect(
-  state => ({ links: state.navigation })
-)(Navigation)
+export default connect(state => ({ links: state.navigation }))(Navigation)
