@@ -1,38 +1,37 @@
 .fb {
-  margin: 0 !important;
-
-  img {
-    border-radius: 5px;
-    margin: 2px 5px 2px 2px;
-    height: 19px;
-    width: 19px;
-  }
+  align-items: center;
+  display: inline-grid;
+  grid-auto-flow: column;
+  padding: 5px 0;
 
   .button {
+    align-items: center;
+    background-color: #2b4170;
+    background: -moz-linear-gradient(top, #3b5998, #2b4170);
+    background: -ms-linear-gradient(top, #3b5998, #2b4170);
+    background: -webkit-linear-gradient(top, #3b5998, #2b4170);
+    background: linear-gradient(top, #3b5998, #2b4170);
     border-radius: 5px;
-
     border: 1px solid #2b4170;
     box-sizing: border-box;
     color: #eee;
     cursor: pointer;
-    height: 25px;
+    display: flex;
+    height: 100%;
     margin: 0;
-    text-shadow: 0 -1px -1px #1f2f52;
+    padding: 3px;
+    // text-shadow: 0 -1px -1px #1f2f52;
 
-    &.login {
-      background-color: #2b4170;
-      background: -moz-linear-gradient(top, #3b5998, #2b4170);
-      background: -ms-linear-gradient(top, #3b5998, #2b4170);
-      background: -webkit-linear-gradient(top, #3b5998, #2b4170);
-      background: linear-gradient(top, #3b5998, #2b4170);
+    img {
+      border-radius: 5px;
+      margin-right: 5px;
+      height: 20px;
     }
-    &.profile {
-      background: -moz-linear-gradient(top, #3b5998, #2b4170);
-      background: -ms-linear-gradient(top, #3b5998, #2b4170);
-      background: -webkit-linear-gradient(top, #3b5998, #2b4170);
-      background: linear-gradient(top, #3b5998, #2b4170);
-      padding: 0 5px 0 0;
-      margin-right: 10px;
+
+    .name {
+      display: inline-block;
+      text-align: center;
+      width: 100%;
     }
 
     &:hover { color: #fff; }

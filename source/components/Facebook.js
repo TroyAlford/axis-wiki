@@ -1,6 +1,5 @@
 import Cookie from 'js-cookie'
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component, Fragment } from 'react'
 import { browserHistory } from 'react-router'
 import Icon from './Icon'
 
@@ -21,6 +20,17 @@ function goToProfile() {
 }
 
 export default class Facebook extends Component {
+  static defaultProps = {
+    className: '',
+    fields: ['id', 'email', 'gender', 'locale', 'name', 'picture'],
+    scope: ['public_profile', 'email'],
+    version: 'v2.9',
+
+    onAuthResponse: (authResponse) => { }, // eslint-disable-line no-unused-vars
+    onLoggedOff: () => { },
+    onUserLoaded: (user) => { }, // eslint-disable-line no-unused-vars
+  }
+
   constructor(props) {
     super(props)
 
@@ -47,7 +57,7 @@ export default class Facebook extends Component {
     window.FB.init({
       appId,
       cookie: false, // disable - control this explicitly
-      xfbml:  true, // parse social plugins on page
+      xfbml: true, // parse social plugins on page
       version, // use props-specified graph api version
     })
     window.FB.getLoginStatus(this.handleStatus)
@@ -58,14 +68,12 @@ export default class Facebook extends Component {
     if (cookie && response.status === 'connected') {
       // Logged in, authorized
       window.FB.api('/me/permissions', {}, ({ data }) => {
-        const granted = data.filter(
-          ({ status }) => status === 'granted'
-        ).map(({ permission }) => permission)
+        const granted = data.filter(({ status }) => status === 'granted').map(({ permission }) => permission)
 
         const denied = this.props.scope.filter(scope => granted.indexOf(scope) === -1)
         if (denied.length) {
           window.FB.login(this.loadProfile, {
-            scope:     this.props.scope.join(','),
+            scope: this.props.scope.join(','),
             auth_type: 'rerequest',
           })
         } else {
@@ -107,7 +115,7 @@ export default class Facebook extends Component {
     if (this.props.user.id && Cookie.get(cookieName)) {
       Cookie.remove(cookieName, {
         domain: window.location.hostname,
-        path:   '/',
+        path: '/',
       })
     }
   }
@@ -116,52 +124,37 @@ export default class Facebook extends Component {
     const fbAuthResponse = window.FB.getAuthResponse()
     const cookieName = `fbsr_${this.props.config.appId}`
     Cookie.set(cookieName, fbAuthResponse.signedRequest, {
-      domain:  window.location.hostname,
+      domain: window.location.hostname,
       expires: fbAuthResponse.expiresIn,
-      path:    '/',
+      path: '/',
     })
   }
 
-  render() {
-    const { className, user, version } = this.props
-    const anonymous = !(user.id)
-    const imageSrc = [
-      '//graph.facebook.com',
-      version, user.id,
-      'picture?height=24&width=24',
-    ].join('/')
+  renderAnonymous = () => (
+    <button onClick={this.logOn} className="login button icon icon-facebook">Log In</button>
+  )
+  renderLoggedIn = () => {
+    const { user, version } = this.props
+    const imageSrc = `//graph.facebook.com/${version}/${user.id}/picture?height=24&width=24`
 
     return (
-      <div className={`fb ${className}`}>
-        { anonymous ? (
-          <button onClick={this.logOn} className="login button icon icon-facebook">Log In</button>
-        ) : [
-          <button key="profile" className="profile button" onClick={goToProfile}>
-            <img key="picture" alt="" src={imageSrc} />
-            {user.name}
-          </button>,
-          <Icon key="icon" name="logout" onClick={this.logOff} />,
-        ]}
+      <Fragment>
+        <button className="profile button" onClick={goToProfile}>
+          <img alt="" src={imageSrc} />
+          <span className="name">{user.name}</span>
+        </button>
+        <Icon name="logout" onClick={this.logOff} />
+      </Fragment>
+    )
+  }
+
+  render = () => {
+    const { className, user } = this.props
+
+    return (
+      <div className={`fb ${className}`.trim()}>
+        {user.id ? this.renderLoggedIn() : this.renderAnonymous()}
       </div>
     )
   }
-}
-
-Facebook.propTypes = {
-  fields:  PropTypes.arrayOf(PropTypes.string).isRequired,
-  scope:   PropTypes.arrayOf(PropTypes.string).isRequired,
-  version: PropTypes.string.isRequired,
-
-  onAuthResponse: PropTypes.func.isRequired,
-  onLoggedOff:    PropTypes.func.isRequired,
-  onUserLoaded:   PropTypes.func.isRequired,
-}
-Facebook.defaultProps = {
-  fields:  ['id', 'email', 'gender', 'locale', 'name', 'picture'],
-  scope:   ['public_profile', 'email'],
-  version: 'v2.9',
-
-  onAuthResponse: (authResponse) => {}, // eslint-disable-line no-unused-vars
-  onLoggedOff:    () => {},
-  onUserLoaded:   (user) => {}, // eslint-disable-line no-unused-vars
 }
