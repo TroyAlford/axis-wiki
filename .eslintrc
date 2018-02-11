@@ -13,17 +13,34 @@
     }
   },
   "rules": {
-    "comma-dangle": [1, "always-multiline"],
+    "comma-dangle": [
+      1,
+      "always-multiline"
+    ],
     "import/no-unresolved": "off",
-    "key-spacing": ["error", { "align": "value" }],
-    "semi": ["error", "never"],
-
+    "semi": [
+      "error",
+      "never"
+    ],
+    "jsx-a11y/click-events-have-key-events": 0,
     "jsx-a11y/no-static-element-interactions": 0,
-
     "react/forbid-prop-types": 0,
-    "react/jsx-filename-extension": [1, { "extensions": [".js"] }],
+    "react/prop-types": 0,
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js"
+        ]
+      }
+    ],
     "react/jsx-first-prop-new-line": 0,
     "react/no-array-index-key": 0,
-    "react/no-unused-prop-types": [1, { "skipShapeProps": true }]
+    "react/no-unused-prop-types": [
+      1,
+      {
+        "skipShapeProps": true
+      }
+    ]
   }
 }
