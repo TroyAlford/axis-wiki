@@ -1,37 +1,44 @@
 import React from 'react'
 import { find } from 'lodash'
+import noop from '@utils/noop'
 
-export default ({ key = '', tabs = [], onTabClicked = (() => {}), active = null }) => {
-  if (tabs.length === 0)
-    tabs.push({ key: 'blank', innerHTML: '' })
+const renderTab = ({ key, innerHTML, contents }) => {
+  const props = {}
+  if (innerHTML !== undefined) props.dangerouslySetInnerHTML = { __html: innerHTML }
 
-  if (!active) active = tabs[0].key
+  return (
+    <div className={`tab ${key || ''}`.trim()} {...props}>
+      {innerHTML === undefined && (contents || '')}
+    </div>
+  )
+}
 
-  const activeTab = find(tabs, { key: active }) || tabs[0]
+export default ({ key = '', tabs = [], onTabClicked = noop, active = null }) => {
+  if (tabs.length === 0) { tabs.push({ key: 'blank', innerHTML: '' }) }
 
-  const renderedTab = activeTab.innerHTML !== undefined
-    ? <div className={`tab ${activeTab.key || ''}`}
-        dangerouslySetInnerHTML={{ __html: activeTab.innerHTML }}
-      />
-    : <div className={`tab ${activeTab.key || ''}`}>
-        {activeTab.contents || ''}
-      </div>
+  const activeKey = active || tabs[0].key
+  const activeTab = find(tabs, { key: activeKey }) || tabs[0]
+  const renderedTab = renderTab(activeTab)
 
   return (
     <div className={`tab-set ${key}`}>
       <ul className="tabs">
-      {tabs.map((tab, index) => {
-        if (React.isValidElement(tab))
-          return tab
+        {tabs.map((tab) => {
+          if (!tab.onClick) {
+            // eslint-disable-next-line no-param-reassign
+            tab.onClick = () => onTabClicked(tab)
+          }
+          if (React.isValidElement(tab)) { return tab }
 
-        const classes = ['tab', tab.key, tab.className || '']
-        if (activeTab.key == tab.key) classes.push('is-active')
+          const className = [
+            'tab',
+            tab.key,
+            tab.className || '',
+            activeTab.key === tab.key ? 'is-active' : '',
+          ].join(' ').trim()
 
-        return (
-          <li key={index} className={classes.filter(c => c).join(' ')}
-              onClick={onTabClicked.bind(null, tab)}>{tab.caption}</li>
-        )
-      })}
+          return <li key={key} className={className} onClick={tab.onClick}>{tab.caption}</li>
+        })}
       </ul>
       {renderedTab}
     </div>
