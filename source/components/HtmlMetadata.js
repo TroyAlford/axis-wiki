@@ -1,12 +1,13 @@
 import React from 'react'
 import Helmet from 'react-helmet'
 import { observer } from 'mobx-react'
+import CONFIG from '../../config/config'
 
-const HtmlMetadata = ({ config, page }) => (
+const HtmlMetadata = ({ page }) => (
   <Helmet
     meta={[{ name: 'keywords', content: page.keywords }]}
     title={page.title || 'Welcome'}
-    titleTemplate={`%s - ${config.application.name}`}
+    titleTemplate={`%s - ${CONFIG.applicationName}`}
   />
 )
 
