@@ -24,6 +24,9 @@ ReactDOM.render(
   <Router history={window.routerHistory}>
     <Layout appState={appState}>
       <Switch>
+        <Route exact path="/">
+          <Redirect to={{ pathname: '/page/home' }} />
+        </Route>
         <BoundRoute exact path="/profile" component={Profile} />
         <BoundRoute exact path="/search" component={Search} />
         <BoundRoute exact path="/upload" component={Upload} />
@@ -38,5 +41,4 @@ ReactDOM.render(
   , applicationElement
 )
 
-// <Route path="/"><Redirect to={{ pathname: '/page/home' }} /></Route >
 // <Route path="/media/:filename"><Redirect to={{ pathname: '/info/media/:filename' }} /></Route>

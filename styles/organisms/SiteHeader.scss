@@ -15,5 +15,10 @@ header.site-header {
     display: inline-flex;
     font-size: 2em;
     white-space: nowrap;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
   }
 }
