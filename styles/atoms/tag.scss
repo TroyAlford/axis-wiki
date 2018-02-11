@@ -1,0 +1,17 @@
+.tag {
+  background-color: $palette-offwhite;
+  border-radius: 3px;
+  border: 1px solid $palette-royal-blue;
+  display: inline-grid;
+  font-size: .9em;
+  margin: 0 3px 0 0;
+  padding: 5px;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+
+  a { text-decoration: none; }
+}
