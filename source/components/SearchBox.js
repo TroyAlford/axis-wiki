@@ -1,11 +1,16 @@
 import React from 'react'
 import { browserHistory } from 'react-router'
-import { connect } from 'react-redux'
 import { debounce } from 'lodash'
 
 const searchFor = debounce(term => browserHistory.push(`/search/${term}`), 500)
 
-class SearchBox extends React.Component {
+export default class SearchBox extends React.Component {
+  static defaultProps = {
+    className: '',
+    placeholder: 'Search...',
+    term: '',
+  }
+
   constructor(props) {
     super(props)
     this.state = { term: props.term }
@@ -31,11 +36,3 @@ class SearchBox extends React.Component {
     )
   }
 }
-
-SearchBox.defaultProps = {
-  className:   '',
-  placeholder: 'Search...',
-  term:        '',
-}
-
-export default connect(state => ({ term: state.page.term }))(SearchBox)

@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import Icon from './Icon'
 
 import { setFavorite } from '../redux/page/actions-article'
 
-class Favorite extends Component {
+export default class Favorite extends Component {
   static defaultProps = {
     className: undefined,
     value: false,
@@ -20,15 +19,9 @@ class Favorite extends Component {
       <Icon
         className={['favorite', className].filter(Boolean).join(' ')}
         name={value ? 'favorite-on' : 'favorite-off'}
-        onClick={this.handleClick} {...props}
+        onClick={this.handleClick}
+        {...props}
       />
     )
   }
 }
-
-export default connect(
-  ({ page }) => ({
-    slug: page.slug,
-    value: page.isFavorite,
-  })
-)(Favorite)

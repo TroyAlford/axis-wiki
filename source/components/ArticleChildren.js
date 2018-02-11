@@ -1,18 +1,17 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { startCase } from 'lodash'
 import Icon from './Icon'
 
-const ArticleChildren = ({ articles, caption, iconName, numberOfColumns }) => {
+const ArticleChildren = ({ articles = [], caption = 'Child Articles', iconName = 'tag', numberOfColumns = 4 }) => {
   if (!articles || !Array.isArray(articles) || !articles.length) {
-    return <div className={'tag-browser is-hidden'} />
+    return <div className="tag-browser is-hidden" />
   }
 
   const childWidth = `${100 / numberOfColumns}%`
   const childStyle = {
     maxWidth: childWidth,
     minWidth: childWidth,
-    width:    childWidth,
+    width: childWidth,
   }
 
   const links = articles
@@ -45,24 +44,6 @@ const ArticleChildren = ({ articles, caption, iconName, numberOfColumns }) => {
     </div>
   )
 }
-ArticleChildren.defaultProps = {
-  articles:        [],
-  caption:         'Child Articles',
-  iconName:        'tag',
-  numberOfColumns: 4,
-}
-ArticleChildren.propTypes = {
-  articles: PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.shape({
-      slug:  PropTypes.string,
-      title: PropTypes.string,
-    }),
-    PropTypes.string,
-  ])),
 
-  caption:         PropTypes.string,
-  iconName:        PropTypes.string,
-  numberOfColumns: PropTypes.number,
-}
-
+ArticleChildren.displayName = 'ArticleChildren'
 export default ArticleChildren

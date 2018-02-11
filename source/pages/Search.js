@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { browserHistory } from 'react-router'
-import { connect } from 'react-redux'
 import { findIndex, includes } from 'lodash'
 
-class Search extends Component {
+export default class Search extends Component {
+  static defaultProps = {
+    loading: true,
+    results: [],
+    term: '',
+  }
+
   getDisplayData = () => {
     return this.props.results.map((article) => {
       const previews = (article.results || []).map((hit) => {
@@ -23,14 +26,14 @@ class Search extends Component {
           line: hit.line,
         }
       })
-      .filter(preview => preview !== null)
+        .filter(preview => preview !== null)
 
       return {
-        key:      article.file,
-        hits:     previews.length + article.aliases.length,
-        image:    article.image,
-        slug:     article.file,
-        title:    article.title,
+        key: article.file,
+        hits: previews.length + article.aliases.length,
+        image: article.image,
+        slug: article.file,
+        title: article.title,
         subtitle: article.aliases.join(', '),
         previews,
       }
@@ -51,10 +54,8 @@ class Search extends Component {
     )
 
     return (
-      <div className="search page">{ results.map(result =>
-        <div key={result.key} className="card result"
-          onClick={() => browserHistory.push(`/page/${result.slug}`)}
-        >
+      <div className="search page">{results.map(result => (
+        <div key={result.key} className="card result" onClick={() => browserHistory.push(`/page/${result.slug}`)}>
           <div className="card-content">
             <div className="media">
               {result.image &&
@@ -84,31 +85,8 @@ class Search extends Component {
             </div>
           </div>
         </div>
-      )}</div>
+      ))}
+      </div>
     )
   }
 }
-
-Search.propTypes = {
-  loading: PropTypes.bool.isRequired,
-  results: PropTypes.arrayOf(PropTypes.shape({
-    file:    PropTypes.string.isRequired,
-    image:   PropTypes.string,
-    results: PropTypes.arrayOf(PropTypes.shape({
-      line: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-    })),
-    title: PropTypes.string.isRequired,
-    type:  PropTypes.arrayOf(PropTypes.string).isRequired,
-  })),
-  term: PropTypes.string.isRequired,
-}
-Search.defaultProps = {
-  loading: true,
-  results: [],
-  term:    '',
-}
-
-export default connect(
-  state => state.page
-)(Search)
