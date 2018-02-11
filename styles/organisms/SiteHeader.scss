@@ -1,0 +1,19 @@
+header.site-header {
+  align-content: center;
+  background-color: $palette-blue;
+  display: grid;
+  grid-template-areas:
+    "logo search facebook"
+  ;
+  grid-template-columns: 150px auto 150px;
+  padding: 5px;
+  height: 50px;
+
+  .logo {
+    align-items: center;
+    color: $palette-offwhite;
+    display: inline-flex;
+    font-size: 2em;
+    white-space: nowrap;
+  }
+}
