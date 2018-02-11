@@ -3,6 +3,7 @@
 /content
 /node_modules
 /npm-debug.log
+/server/camo
 /source/config.json
 .DS_Store
 .env
