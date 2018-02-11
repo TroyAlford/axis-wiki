@@ -6,7 +6,7 @@ const ChildArticle = types.model('ChildArticle', {
   title: '',
 })
 
-export default types.model('Article', {
+export default types.model('ArticlePage', {
   aliases: optionalArrayOfStrings,
   children: types.optional(types.array(ChildArticle), []),
   html: '',
