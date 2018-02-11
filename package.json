@@ -70,6 +70,7 @@
     "jest-cli": "^22.2.2",
     "node-sass": "^4.7.2",
     "node-sass-glob-importer": "^5.1.0",
+    "nodemon": "^1.14.12",
     "react-addons-test-utils": "^15.6.2",
     "rimraf": "^2.6.2",
     "sass-loader": "^6.0.6",
@@ -94,10 +95,9 @@
     "serve-prod": "NODE_ENV=production yarn serve",
     "serve-watched": "babel-watch server/server.js",
     "watch": "yarn prebuild && (yarn watch-css & SOURCEMAP=true yarn webpack --watch)",
-    "prewatch-css": "yarn build-css",
     "watch-css": "yarn watch-css-app & yarn watch-css-dep",
-    "watch-css-app": "yarn build-css-app --watch",
-    "watch-css-dep": "yarn build-css-dep --watch"
+    "watch-css-app": "nodemon --watch ./styles -e scss --exec 'yarn build-css-app'",
+    "watch-css-dep": "nodemon --watch ./vendor -e scss --exec 'yarn build-css-dep'"
   },
   "babel": {
     "plugins": [
