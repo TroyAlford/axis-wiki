@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import { debounce } from 'lodash'
 
-import Header from '../components/Header'
 import HtmlMetadata from '../components/HtmlMetadata'
 import Navigation from '../components/Navigation'
+import SiteHeader from '../components/SiteHeader'
 import { updateLayout, SMALL, MEDIUM, LARGE } from '../redux/page/actions'
 
 const parser = document.createElement('a')
@@ -22,7 +21,7 @@ const interceptClicks = (event) => {
   window.routerHistory.push(parser.pathname)
 }
 
-class Layout extends Component {
+export default class Layout extends Component {
   static defaultProps = {
     layout: LARGE,
   }
@@ -38,10 +37,11 @@ class Layout extends Component {
   onWindowResize() { this.props.dispatch(updateLayout()) }
 
   render() {
+    const { page, user } = this.props.appState
     return (
       <div className="layout" onClick={interceptClicks}>
-        <HtmlMetadata />
-        <Header />
+        <HtmlMetadata page={page} />
+        <SiteHeader user={user} />
         <Navigation />
         <div className="page-container">
           {this.props.children}
@@ -50,5 +50,3 @@ class Layout extends Component {
     )
   }
 }
-
-export default connect(state => ({ layout: state.page.layout }))(Layout)
