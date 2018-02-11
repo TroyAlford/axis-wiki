@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { browserHistory } from 'react-router'
 import { debounce } from 'lodash'
 
 import Header from '../components/Header'
@@ -21,23 +19,27 @@ const interceptClicks = (event) => {
   event.preventDefault()
   event.stopPropagation()
 
-  browserHistory.push(parser.pathname)
+  window.routerHistory.push(parser.pathname)
 }
 
 class Layout extends Component {
+  static defaultProps = {
+    layout: LARGE,
+  }
+
   constructor(props) {
     super(props)
     this.onWindowResize = this.onWindowResize.bind(this)
     this.onWindowResize = debounce(this.onWindowResize, 150, { leading: false, trailing: true })
   }
 
-  onWindowResize() { this.props.dispatch(updateLayout()) }
   componentDidMount() { window.addEventListener('resize', this.onWindowResize) }
   componentWillUnmount() { window.removeEventListener('resize', this.onWindowResize) }
+  onWindowResize() { this.props.dispatch(updateLayout()) }
 
   render() {
     return (
-      <div className='layout' onClick={interceptClicks}>
+      <div className="layout" onClick={interceptClicks}>
         <HtmlMetadata />
         <Header />
         <Navigation />
@@ -49,13 +51,4 @@ class Layout extends Component {
   }
 }
 
-Layout.propTypes = {
-  layout: PropTypes.oneOf([SMALL, MEDIUM, LARGE]),
-}
-Layout.defaultProps = {
-  layout: LARGE,
-}
-
-export default connect(
-  (state) => ({ layout: state.page.layout })
-)(Layout)
+export default connect(state => ({ layout: state.page.layout }))(Layout)
