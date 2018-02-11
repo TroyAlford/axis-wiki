@@ -17,6 +17,7 @@
       1,
       "always-multiline"
     ],
+    "func-names": 0,
     "function-paren-newline": 0,
     "import/no-unresolved": 0,
     "semi": [
