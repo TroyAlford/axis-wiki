@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import Icon from './Icon'
 
 import { setFavorite } from '../redux/page/actions-article'
 
 class Favorite extends Component {
+  static defaultProps = {
+    className: undefined,
+    value: false,
+  }
+
   handleClick = () => {
     const { slug, value } = this.props
     this.props.dispatch(setFavorite({ slug, value: !value }))
@@ -22,20 +26,9 @@ class Favorite extends Component {
   }
 }
 
-Favorite.defaultProps = {
-  className: undefined,
-  value:     false,
-}
-Favorite.propTypes = {
-  className: PropTypes.string,
-  dispatch:  PropTypes.func.isRequired,
-  slug:      PropTypes.string.isRequired,
-  value:     PropTypes.bool,
-}
-
 export default connect(
-  state => ({
-    slug:  state.page.slug,
-    value: state.page.isFavorite,
+  ({ page }) => ({
+    slug: page.slug,
+    value: page.isFavorite,
   })
 )(Favorite)
