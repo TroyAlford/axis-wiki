@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import url from 'url'
 import utils from 'fs-utils'
-import { Document } from 'camo'
+import Document from '../../camo/document'
 import config from '../../../config/server'
 import unique from '../../../utility/unique'
 import { extractSlug } from '../../../utility/Slugs'
@@ -26,15 +26,15 @@ export default class Article extends Document {
     this._initialLoad = false
 
     this.schema({
-      slug:    String,
-      html:    String,
+      slug: String,
+      html: String,
       aliases: [String],
-      data:    Object,
-      tags:    [String],
-      title:   String,
+      data: Object,
+      tags: [String],
+      title: String,
 
       // Auto-Calculated Properties
-      links:   [String],
+      links: [String],
       missing: [String],
     })
   }
@@ -68,8 +68,8 @@ export default class Article extends Document {
 
   static findMissingLinks(links) {
     return Article.find({ slug: { $in: links } })
-                  .then(articles => articles.map(({ slug }) => slug))
-                  .then(slugs => unique(links).filter(link => slugs.indexOf(link) === -1))
+      .then(articles => articles.map(({ slug }) => slug))
+      .then(slugs => unique(links).filter(link => slugs.indexOf(link) === -1))
   }
 
   static transclude(html) {
@@ -112,7 +112,7 @@ export default class Article extends Document {
         }
 
         const rendered = ['', ...lines.map(line => `  ${line}`), ''].join('\n')
-        return Article.transclude(rendered).then(transcluded => {
+        return Article.transclude(rendered).then((transcluded) => {
           $include.html(transcluded.html)
           links.push(...transcluded.links)
           missing.push(...transcluded.missing)
@@ -120,43 +120,43 @@ export default class Article extends Document {
         })
       })
     }).get())
-    .then(() => ({
-      html:    $parser.html(),
-      links:   unique(links),
-      missing: unique(missing),
-    }))
+      .then(() => ({
+        html: $parser.html(),
+        links: unique(links),
+        missing: unique(missing),
+      }))
   }
 
   static render = slug => (
     Article
-    .findOne({ $or: [{ slug }, { aliases: slug }] })
-    .then((article) => {
-      // eslint-disable-next-line no-param-reassign
-      if (!article) article = Article.create({ _id: slug, slug })
-      return Promise.all([
-        Promise.resolve(article),
-        Article.findMissingLinks(article.links || []),
-        Article.transclude(article.html || ''),
-        Article.find({ tags: article.slug }).then(all =>
-          all.map(({ slug: s, title }) => ({ slug: s, title }))
-        ),
-      ])
-    })
-    .then(([article, missingLinks, transcluded, children]) => ({
-      aliases: article.aliases,
-      data:    article.data,
-      slug:    article.slug,
-      tags:    article.tags,
-      title:   article.title,
-      html:    transcluded.html,
-      links:   [...article.links, ...transcluded.links],
-      missing: [...missingLinks, ...transcluded.missing],
-      children,
-    }))
-    .catch((error) => {
-      console.log(` ~> ERROR: Article.render(${slug}) failed:`, error)
-      return Promise.reject()
-    })
+      .findOne({ $or: [{ slug }, { aliases: slug }] })
+      .then((article) => {
+        // eslint-disable-next-line no-param-reassign
+        if (!article) article = Article.create({ _id: slug, slug })
+        return Promise.all([
+          Promise.resolve(article),
+          Article.findMissingLinks(article.links || []),
+          Article.transclude(article.html || ''),
+          Article.find({ tags: article.slug }).then(all => (
+            all.map(({ slug: s, title }) => ({ slug: s, title }))
+          )),
+        ])
+      })
+      .then(([article, missingLinks, transcluded, children]) => ({
+        aliases: article.aliases,
+        data: article.data,
+        slug: article.slug,
+        tags: article.tags,
+        title: article.title,
+        html: transcluded.html,
+        links: [...article.links, ...transcluded.links],
+        missing: [...missingLinks, ...transcluded.missing],
+        children,
+      }))
+      .catch((error) => {
+        console.log(` ~> ERROR: Article.render(${slug}) failed:`, error)
+        return Promise.reject()
+      })
   )
 
   static reloadAll = () => {
@@ -198,11 +198,11 @@ export default class Article extends Document {
   deleteFromDisk() {
     const paths = getFilePaths(this.slug)
     Promise.all([fs.unlink(paths.html), fs.unlink(paths.json)])
-           .catch((error) => {
-             if (error.code === 'ENOENT') return undefined
-             return console.log(` ✖  Article ${this._id} deletion threw error:`, error)
-           })
-           .then(console.log(` ✖  Article ${this._id} deleted`))
+      .catch((error) => {
+        if (error.code === 'ENOENT') return undefined
+        return console.log(` ✖  Article ${this._id} deletion threw error:`, error)
+      })
+      .then(console.log(` ✖  Article ${this._id} deleted`))
   }
 
   preSave() { this.parseLinks() }
@@ -218,9 +218,9 @@ export default class Article extends Document {
     fs.writeFileSync(paths.html, clean.html)
     fs.writeJSONSync(paths.json, {
       aliases: clean.aliases,
-      data:    clean.data,
-      tags:    clean.tags,
-      title:   clean.title,
+      data: clean.data,
+      tags: clean.tags,
+      title: clean.title,
     })
   }
 }

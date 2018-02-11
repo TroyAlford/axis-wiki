@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 import utils from 'fs-utils'
-import { Document } from 'camo'
+import Document from '../../camo/document'
 import config from '../../../config/server'
 
 function getFilePath(id) {
@@ -15,13 +15,13 @@ export default class User extends Document {
     this._initialLoad = false
 
     this.schema({
-      name:  String,
+      name: String,
       email: String,
 
-      favorites:  [String],
+      favorites: [String],
       privileges: [String],
-      articles:   [String],
-      tags:       [String],
+      articles: [String],
+      tags: [String],
     })
   }
 
@@ -36,13 +36,13 @@ export default class User extends Document {
     console.log(` 💾: User ${this._id} updated`)
 
     fs.writeJSONSync(getFilePath(this._id), ({
-      name:  this.name,
+      name: this.name,
       email: this.email,
 
-      favorites:  this.favorites,
+      favorites: this.favorites,
       privileges: this.privileges,
-      articles:   this.articles,
-      tags:       this.tags,
+      articles: this.articles,
+      tags: this.tags,
     }))
   }
 
@@ -59,13 +59,13 @@ export default class User extends Document {
               _initialLoad: true,
               _id,
 
-              name:  json.name,
+              name: json.name,
               email: json.email,
 
-              favorites:  json.favorites || [],
+              favorites: json.favorites || [],
               privileges: json.privileges || [],
-              articles:   json.articles || [],
-              tags:       json.tags || [],
+              articles: json.articles || [],
+              tags: json.tags || [],
             })
 
             return user.save()
@@ -80,12 +80,12 @@ export default class User extends Document {
   }
 
   static render = user => ({
-    id:         user._id,
-    articles:   user.articles,
-    email:      user.email,
-    favorites:  user.favorites,
-    name:       user.name,
+    id: user._id,
+    articles: user.articles,
+    email: user.email,
+    favorites: user.favorites,
+    name: user.name,
     privileges: user.privileges,
-    tags:       user.tags,
+    tags: user.tags,
   })
 }
