@@ -1,13 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import { Redirect, Route, Router, browserHistory } from 'react-router'
+import createBrowserHistory from 'history/createBrowserHistory'
+import { Router, Redirect, Route, Switch } from 'react-router-dom'
 
-import store from '../redux/store'
-import { loadArticle } from '../redux/page/actions-article'
-import { loadProfile } from '../redux/page/actions-profile'
-import { searchFor } from '../redux/page/actions-search'
-
+import ApplicationState from '../../models/ApplicationState'
 import Layout from '../application/Layout'
 import NotFound from '../pages/NotFound'
 import Article from '../pages/Article'
@@ -16,33 +12,31 @@ import Profile from '../pages/Profile'
 import Search from '../pages/Search'
 import Upload from '../pages/Upload'
 
+const appState = ApplicationState.create()
 const applicationElement = document.getElementById('application')
+window.routerHistory = createBrowserHistory()
+
+const BoundRoute = ({ component: Component, ...props }) => (
+  <Route {...props} render={() => <Component appState={appState} />} />
+)
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Router history={browserHistory}>
-      <Redirect from="/" to="/page/home" />
-      <Redirect from="/media/:filename" to="/info/media/:filename" />
-      <Route path="/" component={Layout}>
-        <Route path="/page/:slug" component={Article}
-          onEnter={state => store.dispatch(loadArticle(state.params.slug))}
-        />
-        <Route path="/info/media/:filename" component={Media} />
-        <Route path="/search/:term" component={Search}
-          onEnter={state => store.dispatch(searchFor(state.params.term))}
-        />
-        <Route path="/search" component={Search} />
-        <Route path="/upload" component={Upload} />
+  <Router history={window.routerHistory}>
+    <Layout appState={appState}>
+      <Switch>
+        <BoundRoute exact path="/profile" component={Profile} />
+        <BoundRoute exact path="/search" component={Search} />
+        <BoundRoute exact path="/upload" component={Upload} />
+        <BoundRoute path="/info/media/:filename" component={Media} />
+        <BoundRoute path="/page/:slug" component={Article} />
+        <BoundRoute path="/profile/:id" component={Profile} />
+        <BoundRoute path="/search/:term" component={Search} />
+        <BoundRoute component={NotFound} />
+      </Switch>
+    </Layout>
+  </Router>
+  , applicationElement
+)
 
-        <Route path="/profile" component={Profile}
-          onEnter={() => store.dispatch(loadProfile())}
-        />
-        <Route path="/profile/:id" component={Profile}
-          onEnter={state => store.dispatch(loadProfile(state.params.id))}
-        />
-
-        <Route path="*" component={NotFound} />
-      </Route>
-    </Router>
-  </Provider>
-, applicationElement)
+// <Route path="/"><Redirect to={{ pathname: '/page/home' }} /></Route >
+// <Route path="/media/:filename"><Redirect to={{ pathname: '/info/media/:filename' }} /></Route>
