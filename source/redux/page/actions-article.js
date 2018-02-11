@@ -1,4 +1,3 @@
-import { browserHistory } from 'react-router'
 import { startCase } from 'lodash'
 import { addMessage } from '../messages/actions'
 import { setPage, ARTICLE, FAVORITE, LOADING } from '../page/actions'
@@ -13,9 +12,9 @@ export function loadArticle(requestedSlug, flashLoading = true) {
       .then((response) => {
         slug = extractSlug(response.url)
         if (slug !== requestedSlug) {
-          browserHistory.replace(`/page/${slug}`)
+          window.routerHistory.replace(`/page/${slug}`)
         } else {
-          browserHistory.replace(`/page/${requestedSlug}`)
+          window.routerHistory.replace(`/page/${requestedSlug}`)
         }
         return response.json()
       })
@@ -26,7 +25,9 @@ export function loadArticle(requestedSlug, flashLoading = true) {
           ...(article.tags || []),
           title,
         ]
-        dispatch(setPage(ARTICLE, { ...article, slug, title, keywords }))
+        dispatch(setPage(ARTICLE, {
+          ...article, slug, title, keywords,
+        }))
       })
   }
 }
@@ -34,7 +35,7 @@ export function loadArticle(requestedSlug, flashLoading = true) {
 export function deleteArticle(slug) {
   return dispatch => fetch(`/api/page/${slug}`, {
     credentials: 'include',
-    method:      'DELETE',
+    method: 'DELETE',
   }).then((response) => {
     if (response.status === 410 /* Deleted */) {
       dispatch(loadArticle('home'))
@@ -52,12 +53,12 @@ export function saveArticle(slug, article) {
     body: JSON.stringify(article),
 
     credentials: 'include',
-    method:      'POST',
-    mode:        'cors',
+    method: 'POST',
+    mode: 'cors',
 
     headers: new Headers({
       'Content-Type': 'application/json',
-      Accept:         'application/json',
+      Accept: 'application/json',
     }),
   }).then((response) => {
     /* eslint-disable no-throw-literal */
@@ -81,12 +82,12 @@ export function setFavorite({ slug, value }) {
     body: JSON.stringify({ slug, value }),
 
     credentials: 'include',
-    method:      'POST',
-    mode:        'cors',
+    method: 'POST',
+    mode: 'cors',
 
     headers: new Headers({
       'Content-Type': 'application/json',
-      Accept:         'application/json',
+      Accept: 'application/json',
     }),
   }).then((response) => {
     if (response.status === 200 /* OK */) {
@@ -96,10 +97,9 @@ export function setFavorite({ slug, value }) {
     throw ({ status: response.status })
   }).then(updated =>
     dispatch({
-      type:  FAVORITE,
-      slug:  updated.slug,
+      type: FAVORITE,
+      slug: updated.slug,
       value: updated.value,
     })
-    .catch(() => dispatch(addMessage(`Unable to ${value ? 'add' : 'remove'} Favorite for ${slug}`)))
-  )
+      .catch(() => dispatch(addMessage(`Unable to ${value ? 'add' : 'remove'} Favorite for ${slug}`))))
 }

@@ -1,8 +1,6 @@
 import JsxParser from 'react-jsx-parser'
-import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import TinyMCE from 'react-tinymce'
-import { connect } from 'react-redux'
 import { isEqual } from 'lodash'
 import { deleteArticle, saveArticle } from '../redux/page/actions-article'
 
@@ -11,13 +9,12 @@ import Editable from '../components/Editable'
 import Favorite from '../components/Favorite'
 import Icon from '../components/Icon'
 import HtmlEditor from '../components/HtmlEditor'
-import Sheet from './Sheet'
 import TabSet from '../components/TabSet'
 import TagBar from '../components/TagBar'
 
 import unboundEditorConfig from '../config/editor'
 
-const tinyMCE = window.tinyMCE
+const { tinyMCE } = window
 
 function interceptEditorLinks(event) {
   if (event.target.tagName === 'A') {
@@ -26,7 +23,7 @@ function interceptEditorLinks(event) {
   }
 }
 
-class Article extends Component {
+export default class Article extends Component {
   static defaultProps = {
     aliases: [],
     children: [],
@@ -45,27 +42,31 @@ class Article extends Component {
 
     Object.defineProperty(this, 'dirty', {
       get: () => (
-      this.state.tab === 'edit' ||
-      this.props.html !== this.draft ||
-      !isEqual(this.props.aliases, this.state.aliases) ||
-      !isEqual(this.props.data, this.state.data) ||
-      !isEqual(this.props.tags, this.state.tags) ||
-      !isEqual(this.props.title, this.state.title)
+        this.state.tab === 'edit' ||
+        this.props.html !== this.draft ||
+        !isEqual(this.props.aliases, this.state.aliases) ||
+        !isEqual(this.props.data, this.state.data) ||
+        !isEqual(this.props.tags, this.state.tags) ||
+        !isEqual(this.props.title, this.state.title)
       ),
     })
     Object.defineProperty(this, 'draft', {
       get: () => {
-      if (this.state.tab === 'edit' && tinyMCE && tinyMCE.activeEditor) {
-        return tinyMCE.activeEditor.getContent()
-      }
+        if (this.state.tab === 'edit' && tinyMCE && tinyMCE.activeEditor) {
+          return tinyMCE.activeEditor.getContent()
+        }
 
-      return this.state.html || this.props.html
+        return this.state.html || this.props.html
       },
     })
+
+    window.routerHistory.listen(this.handleRouteChange)
   }
 
   componentWillReceiveProps(props) {
-    this.setState(this.defaultState(props))
+    if (props.slug !== this.props.slug) {
+      this.setState(this.defaultState(props))
+    }
   }
 
   defaultState(props = this.props) {
@@ -98,6 +99,9 @@ class Article extends Component {
     this.props.dispatch(saveArticle(this.props.params.slug, article))
   }
   handleReset = () => { this.setState(this.defaultState()) }
+  handleRouteChange = () => {
+
+  }
 
   handleTabClicked = (clicked) => {
     if (this.state.tab === clicked.key) return true
@@ -124,35 +128,35 @@ class Article extends Component {
     if (this.props.loading) return <div className="article page loading" />
 
     const tabs = []
-    const { template } = this.state.data || {}
+    // const { template } = this.state.data || {}
 
-    if (template === 'character') {
-      tabs.push({
-        key: 'sheet',
-        className: 'left',
+    // if (template === 'character') {
+    //   tabs.push({
+    //     key: 'sheet',
+    //     className: 'left',
 
-        caption: [
-          <Icon key="icon" name="sheet" />,
-          <span key="text">Sheet</span>,
-        ],
-        contents: [
-          <Sheet
-            key="sheet"
-            {...this.state.data}
-            readonly={this.props.readonly}
-            name={this.state.title || this.props.title}
-            onChange={sheet => this.setState({
-              data: {
-                ...this.state.data,
-                ...sheet,
-              },
-              title: sheet.name,
-            })}
-            ref={(self) => { this.sheet = self }}
-          />,
-        ],
-      })
-    }
+    //     caption: [
+    //       <Icon key="icon" name="sheet" />,
+    //       <span key="text">Sheet</span>,
+    //     ],
+    //     contents: [
+    //       <Sheet
+    //         key="sheet"
+    //         {...this.state.data}
+    //         readonly={this.props.readonly}
+    //         name={this.state.title || this.props.title}
+    //         onChange={sheet => this.setState({
+    //           data: {
+    //             ...this.state.data,
+    //             ...sheet,
+    //           },
+    //           title: sheet.name,
+    //         })}
+    //         ref={(self) => { this.sheet = self }}
+    //       />,
+    //     ],
+    //   })
+    // }
 
     tabs.push({
       key: 'read',
@@ -284,34 +288,3 @@ class Article extends Component {
     )
   }
 }
-
-Article.propTypes = {
-  aliases:  PropTypes.arrayOf(PropTypes.string).isRequired,
-  children: PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.shape({
-      slug:  PropTypes.string,
-      title: PropTypes.string,
-    }),
-  ])),
-  html:     PropTypes.string.isRequired,
-  loading:  PropTypes.bool.isRequired,
-  readonly: PropTypes.bool.isRequired,
-  tags:     PropTypes.arrayOf(PropTypes.string).isRequired,
-  title:    PropTypes.string,
-}
-Article.defaultProps = {
-  aliases:  [],
-  children: [],
-  html:     '',
-  loading:  false,
-  readonly: true,
-  tags:     [],
-  title:    null,
-}
-
-export default connect(
-  state => ({
-    ...state.page,
-    readonly: !(state.page.privileges || []).includes('edit'),
-  })
-)(Article)

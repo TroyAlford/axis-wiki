@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import ArticleChildren from '../components/ArticleChildren'
 
 const horizontalText = (label, value, onChange, readOnly = false) => (
@@ -23,7 +21,13 @@ const horizontalText = (label, value, onChange, readOnly = false) => (
   </div>
 )
 
-class Profile extends Component {
+export default class Profile extends Component {
+  static defaultProps = {
+    editable: false,
+    favorites: [],
+    name: '',
+  }
+
   createChangeHandler = field => ev =>
     this.setState({ [field]: ev.target.value })
 
@@ -42,25 +46,3 @@ class Profile extends Component {
     )
   }
 }
-
-Profile.defaultProps = {
-  editable:  false,
-  favorites: [],
-  name:      '',
-}
-Profile.propTypes = {
-  editable:  PropTypes.bool,
-  name:      PropTypes.string,
-  favorites: PropTypes.arrayOf(PropTypes.string),
-}
-
-export default connect(
-  state => ({
-    ...state.page,
-    editable: false,
-    // editable: (
-    //   state.user.privileges.includes('admin') ||
-    //   state.user.id === state.page.id
-    // ),
-  })
-)(Profile)
