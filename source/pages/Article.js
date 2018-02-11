@@ -27,27 +27,41 @@ function interceptEditorLinks(event) {
 }
 
 class Article extends Component {
+  static defaultProps = {
+    aliases: [],
+    children: [],
+    html: '',
+    loading: false,
+    readonly: true,
+    tags: [],
+    title: null,
+  }
+
   constructor(props) {
     super(props)
     this.state = this.defaultState(props)
 
     this.editorConfig = unboundEditorConfig
 
-    Object.defineProperty(this, 'dirty', { get: () => (
+    Object.defineProperty(this, 'dirty', {
+      get: () => (
       this.state.tab === 'edit' ||
       this.props.html !== this.draft ||
       !isEqual(this.props.aliases, this.state.aliases) ||
       !isEqual(this.props.data, this.state.data) ||
       !isEqual(this.props.tags, this.state.tags) ||
       !isEqual(this.props.title, this.state.title)
-    ) })
-    Object.defineProperty(this, 'draft', { get: () => {
+      ),
+    })
+    Object.defineProperty(this, 'draft', {
+      get: () => {
       if (this.state.tab === 'edit' && tinyMCE && tinyMCE.activeEditor) {
         return tinyMCE.activeEditor.getContent()
       }
 
       return this.state.html || this.props.html
-    } })
+      },
+    })
   }
 
   componentWillReceiveProps(props) {
@@ -57,10 +71,10 @@ class Article extends Component {
   defaultState(props = this.props) {
     return ({
       aliases: props.aliases,
-      data:    props.data || {},
-      html:    props.html,
-      tags:    props.tags,
-      title:   props.title,
+      data: props.data || {},
+      html: props.html,
+      tags: props.tags,
+      title: props.title,
 
       tab: 'read',
     })
@@ -73,12 +87,12 @@ class Article extends Component {
     if (!this.dirty) return // Only save if there's something to save.
 
     const article = {
-      aliases:  this.state.aliases || this.props.aliases,
+      aliases: this.state.aliases || this.props.aliases,
       children: this.state.children || this.props.children,
-      data:     this.state.data || this.props.data || undefined,
-      html:     this.draft,
-      tags:     this.state.tags || this.props.tags,
-      title:    this.state.title || this.props.title,
+      data: this.state.data || this.props.data || undefined,
+      html: this.draft,
+      tags: this.state.tags || this.props.tags,
+      title: this.state.title || this.props.title,
     }
 
     this.props.dispatch(saveArticle(this.props.params.slug, article))
@@ -90,7 +104,7 @@ class Article extends Component {
 
     this.setState({
       html: this.dirty ? this.draft : null,
-      tab:  clicked.key,
+      tab: clicked.key,
     })
 
     return true
@@ -114,7 +128,7 @@ class Article extends Component {
 
     if (template === 'character') {
       tabs.push({
-        key:       'sheet',
+        key: 'sheet',
         className: 'left',
 
         caption: [
@@ -123,7 +137,8 @@ class Article extends Component {
         ],
         contents: [
           <Sheet
-            key="sheet" {...this.state.data}
+            key="sheet"
+            {...this.state.data}
             readonly={this.props.readonly}
             name={this.state.title || this.props.title}
             onChange={sheet => this.setState({
@@ -140,9 +155,9 @@ class Article extends Component {
     }
 
     tabs.push({
-      key:       'read',
+      key: 'read',
       className: 'left',
-      caption:   [
+      caption: [
         <Icon key="icon" name="read" />,
         <span key="text">Article</span>,
       ],
@@ -158,18 +173,20 @@ class Article extends Component {
 
     if (!this.props.readonly && window.tinyMCE) {
       tabs.push({
-        key:       'edit',
+        key: 'edit',
         className: 'right',
-        caption:   <Icon key="icon" name="edit" />,
-        contents:  [
+        caption: <Icon key="icon" name="edit" />,
+        contents: [
           <Editable
-            key="title" className="title-editor"
+            key="title"
+            className="title-editor"
             onChange={title => this.setState({ title })}
             placeholder="Page Title"
             value={this.state.title || this.props.title}
           />,
           <TinyMCE
-            key="editor" config={this.editorConfig}
+            key="editor"
+            config={this.editorConfig}
             onClick={interceptEditorLinks}
             content={this.state.html || this.props.html}
           />,
@@ -179,10 +196,10 @@ class Article extends Component {
 
     if (!this.props.readonly) {
       tabs.push({
-        key:       'html',
+        key: 'html',
         className: 'right',
-        caption:   <Icon key="icon" name="html" />,
-        contents:  <HtmlEditor
+        caption: <Icon key="icon" name="html" />,
+        contents: <HtmlEditor
           html={this.state.html || this.props.html}
           onChange={html => this.setState({ html })}
           readonly={this.props.readonly}
@@ -191,9 +208,9 @@ class Article extends Component {
     }
 
     tabs.push({
-      key:       'settings',
+      key: 'settings',
       className: 'right',
-      caption:   [
+      caption: [
         <Icon key="icon" name="settings" />,
       ],
       contents: (
@@ -203,8 +220,7 @@ class Article extends Component {
             <span key="dropdown" className="select">
               <select onChange={this.handleTemplateChange} value={this.state.data.template}>
                 {[undefined, 'character', 'creature', 'world'].map(tmplName =>
-                  <option key={tmplName || 'undefined'} value={tmplName}>{tmplName}</option>
-                )}
+                  <option key={tmplName || 'undefined'} value={tmplName}>{tmplName}</option>)}
               </select>
             </span>,
           ]}
@@ -216,7 +232,7 @@ class Article extends Component {
             className="aliases-editor tag-bar"
             tags={this.state.aliases || this.props.aliases || []}
             inputProps={{
-              className:   'alias-tag tag-bar-input',
+              className: 'alias-tag tag-bar-input',
               placeholder: 'add alias',
             }}
             readonly={this.props.readonly}
@@ -226,9 +242,11 @@ class Article extends Component {
           {this.props.readonly ? [] : [
             <h5 key="label">Danger</h5>,
             <button
-              key="button" className="button is-danger"
+              key="button"
+              className="button is-danger"
               onClick={this.handleDelete}
-            >Delete this Article</button>,
+            >Delete this Article
+            </button>,
             <span key="warning" className="button-label">
               <i>Warning: This cannot be undone!</i>
             </span>,
