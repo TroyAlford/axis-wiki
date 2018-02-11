@@ -1,18 +1,23 @@
 .search-box {
+  display: grid;
   position: relative;
-  flex-grow: 1;
 
   &.control {
     margin: auto;
   }
 
   input[type="text"] {
-    border: none;
     border-radius: 5px;
-    flex-grow: 1;
+    border: none;
+    display: block;
+    margin: 5px;
     padding: 5px 5px 5px 25px;
   }
   > .icon {
-    margin: .2rem .4rem;
+    color: $palette-medium-gray;
+    font-size: 16px;
+    position: absolute;
+    left: 8px;
+    top: 50%; margin-top: -8px;
   }
 }

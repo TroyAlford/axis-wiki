@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { debounce } from 'lodash'
@@ -18,8 +17,10 @@ class SearchBox extends React.Component {
   render() {
     const { className, placeholder } = this.props
     return (
-      <div className={`search-box control has-icon ${className}`}>
-        <input type="text" placeholder={placeholder} value={this.state.term}
+      <div className={`search-box ${className}`}>
+        <input type="text"
+          placeholder={placeholder}
+          value={this.state.term}
           onChange={(event) => {
             this.setState({ term: event.target.value })
             searchFor(event.target.value)
@@ -36,12 +37,5 @@ SearchBox.defaultProps = {
   placeholder: 'Search...',
   term:        '',
 }
-SearchBox.propTypes = {
-  className:   PropTypes.string,
-  placeholder: PropTypes.string,
-  term:        PropTypes.string,
-}
 
-export default connect(
-  state => ({ term: state.page.term })
-)(SearchBox)
+export default connect(state => ({ term: state.page.term }))(SearchBox)
