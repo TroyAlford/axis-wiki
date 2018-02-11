@@ -1,4 +1,9 @@
-// @import "**/*.scss";
+html, body {
+  box-sizing: border-box;
+  font-family: Ubuntu;
+  font-size: 11pt;
+}
+
 @import "palette";
 @import "_/*.scss";
 @import "atoms/*.scss";
