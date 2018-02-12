@@ -1,5 +1,6 @@
 import Cookie from 'js-cookie'
 import React, { Component, Fragment } from 'react'
+import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import CONFIG from '@config'
 import { ANONYMOUS } from '@models/User'
@@ -7,7 +8,7 @@ import Icon from './Icon'
 
 function asyncLoadSDK(language = 'en_US') {
   ((d, s, id) => {
-    const element = d.getElementsByTagName(s)[0]
+    const element = d.querySelector(s)
     const fjs = element
     let js = element
     if (d.getElementById(id)) { return }
@@ -18,7 +19,6 @@ function asyncLoadSDK(language = 'en_US') {
 }
 
 const COOKIE = `fbsr_${CONFIG.facebook.appId}`
-function goToProfile() { window.routerHistory.push('/profile') }
 
 @observer export default class Facebook extends Component {
   static defaultProps = {
@@ -118,14 +118,15 @@ function goToProfile() { window.routerHistory.push('/profile') }
   )
   renderLoggedIn = () => {
     const { user } = this.props
-    const imageSrc = `//graph.facebook.com/${CONFIG.facebook.version}/${user.id}/picture?height=24&width=24`
+    const { version } = CONFIG.facebook
+    const imageSrc = `//graph.facebook.com/${version}/${user.id}/picture?height=24&width=24`
 
     return (
       <Fragment>
-        <button className="profile button" onClick={goToProfile}>
+        <Link className="profile button" to="/profile">
           <img alt="" src={imageSrc} />
           <span className="name">{user.name}</span>
-        </button>
+        </Link>
         <Icon name="logout" onClick={this.logOff} />
       </Fragment>
     )
