@@ -24,4 +24,7 @@ $sections:
   .navigation {
     border-right: 1px solid $palette-blue;
   }
+  .page-container {
+    overflow-y: auto;
+  }
 }
