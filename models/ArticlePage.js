@@ -16,9 +16,7 @@ const DEFAULTS = {
   html: '',
   isFavorite: false,
   keywords: [],
-  layout: 'medium',
   links: [],
-  loading: false,
   missing: [],
   privileges: [],
   slug: '',
@@ -37,15 +35,20 @@ const ArticlePage = types.model('ArticlePage', {
   privileges: optionalArrayOfStrings,
   tags: optionalArrayOfStrings,
   type: types.optional(types.literal('article'), DEFAULTS.type),
-}).views(self => ({
+}).volatile(() => ({
+  loading: false,
+})).views(self => ({
   get displayName() { return self.title || titleCase(self.slug) },
 })).actions(self => ({
+  /* eslint-disable no-param-reassign */
   load: flow(function* (slug) {
+    self.loading = true
     const response = yield GET(`/api/page/${slug}`)
     switch (response.status) {
       case 200:
-        self.update(yield response.json()); break
+        self.update(yield response.json())
       default:
+        self.loading = false
     }
   }),
   update(values) { Object.assign(self, { ...DEFAULTS, ...values }) },
@@ -59,6 +62,8 @@ const ArticlePage = types.model('ArticlePage', {
       default:
     }
   }),
+  toggleFavorite() { self.isFavorite = !self.isFavorite },
+  /* eslint-enable no-param-reassign */
 }))
 
 export default ArticlePage
