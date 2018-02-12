@@ -65,7 +65,7 @@ module.exports = [{
   ...bundle,
   /* Main JS Bundle */
   devtool: SOURCEMAP ? 'inline-source-map' : 'none',
-  entry: `${__dirname}/source/application/Application.js`,
+  entry: `${__dirname}/source/Application.js`,
   externals: {
     'React': 'React',
     'react': 'React',
