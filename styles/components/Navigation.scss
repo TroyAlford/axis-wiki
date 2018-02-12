@@ -6,11 +6,12 @@
 ul.navigation {
   @include ul;
   padding: 5px;
+  padding-left: 1em;
   overflow-y: auto;
 
   ul {
     @include ul;
-    padding: 0;
+    padding: 5px 0;
   }
 
   li {
@@ -19,25 +20,35 @@ ul.navigation {
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
-  }
-  li > ul {
-    margin: 0 0 5px 10px;
+
+    > ul {
+      margin: 0 0 5px 10px;
+    }
   }
 
   li.is-current {
-    list-style: none;
+    align-items: center;
+    display: inline-grid;
+    margin-right: 10px;
     position: relative;
     overflow: visible;
+    width: calc(100% - 10px);
 
+    &:before, &:after {
+      color: $color-border;
+      font-size: .8em;
+      font-weight: bold;
+      position: absolute;
+      text-align: center;
+      width: 10px;
+    }
     &:before {
       content: '»';
-      left: -.75em;
-      position: absolute;
+      left: -10px;
     }
     &:after {
       content: '«';
-      right: 0;
-      position: absolute;
+      right: -10px;
     }
   }
 }
