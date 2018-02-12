@@ -1,5 +1,6 @@
-import { types } from 'mobx-state-tree'
+import { flow, types } from 'mobx-state-tree'
 import { optionalArrayOfStrings } from './commonModels'
+import { GET } from './fetch'
 
 const ChildArticle = types.model('ChildArticle', {
   slug: '',
@@ -21,4 +22,16 @@ export default types.model('ArticlePage', {
   tags: optionalArrayOfStrings,
   title: '',
   type: types.optional(types.literal('article'), 'article'),
-})
+}).actions(self => ({
+  update(values) { Object.assign(self, values) },
+  save: flow(function* () {
+    const response = yield GET(`/api/page/${self.slug}`, self.toJSON())
+    switch (response.status) {
+      case 200:
+        self.update(yield response.json()); break
+      case 401:
+      case 500:
+      default:
+    }
+  }),
+}))

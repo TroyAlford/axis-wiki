@@ -1,5 +1,6 @@
 import { flow, types } from 'mobx-state-tree'
 import { optionalArrayOfStrings } from './commonModels'
+import { GET, POST } from './fetch'
 
 const AuthToken = types.model('AuthToken', {
   algorithm: '',
@@ -33,25 +34,16 @@ export default types.model('User', {
 }).actions(self => ({
   become(user) { Object.assign(self, user) },
   fetchProfile: flow(function* () {
-    const response = yield fetch('/api/my/profile', { credentials: 'include' })
-    if (response.status === 200) {
-      const profile = yield response.json()
-      self.become(profile)
-    } else {
-      self.become(ANONYMOUS)
-    }
+    const response = yield GET('/api/my/profile')
+
+    let profile = ANONYMOUS
+    if (response.status === 200) profile = yield response.json()
+
+    self.become(profile)
   }),
   saveProfile: flow(function* () {
-    const response = yield fetch('/api/my/profile', {
-      credentials: 'include',
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify(self.toJSON()),
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      }),
-    })
+    const response = yield POST('/api/my/profile', self.toJSON())
+
     if (response.status === 200) {
       const profile = yield response.json()
       self.become(profile)
