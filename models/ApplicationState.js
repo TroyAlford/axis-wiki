@@ -11,6 +11,10 @@ export default types.model('ApplicationState', {
   user: types.optional(User, User.create()),
 }).actions(self => ({
   /* eslint-disable no-param-reassign */
+  setPage(type, routeParams) {
+    self.page = type.create()
+    self.page.load(routeParams)
+  },
   setRoute(route) { self.route = Route.create(route) },
   /* eslint-enable no-param-reassign */
 }))

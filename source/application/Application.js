@@ -4,17 +4,20 @@ import { Observer } from 'mobx-react'
 import { Router, Redirect, Route, Switch } from 'react-router-dom'
 import createBrowserHistory from 'history/createBrowserHistory'
 
-import HtmlMetadata from '../components/HtmlMetadata'
-import Navigation from '../components/Navigation'
-import SiteHeader from '../components/SiteHeader'
-
-import ApplicationState from '../../models/ApplicationState'
-import NotFound from '../pages/NotFound'
-import Article from '../pages/Article'
-import Media from '../pages/Media'
-import Profile from '../pages/Profile'
-import Search from '../pages/Search'
-import Upload from '../pages/Upload'
+import ApplicationState from '@models/ApplicationState'
+import Article from '@source/pages/Article'
+import ArticlePage from '@models/ArticlePage'
+// import HtmlMetadata from '@components/HtmlMetadata'
+import Media from '@source/pages/Media'
+import MediaPage from '@models/MediaPage'
+import Navigation from '@components/Navigation'
+import NotFound from '@source/pages/NotFound'
+import Profile from '@source/pages/Profile'
+import ProfilePage from '@models/ProfilePage'
+import Search from '@source/pages/Search'
+import SearchPage from '@models/SearchPage'
+import SiteHeader from '@components/SiteHeader'
+import Upload from '@source/pages/Upload'
 
 const appState = ApplicationState.create(window.InitialState || {})
 window.appState = appState
@@ -23,14 +26,15 @@ window.routerHistory = createBrowserHistory()
 appState.setRoute(window.routerHistory.location)
 window.routerHistory.listen(route => appState.setRoute(route))
 
-const PageRoute = ({ component: Component, ...props }) => (
-  <Route {...props} render={() => <Component {...appState} />} />
-)
+const PageRoute = ({ component: Component, computedMatch, model, ...props }) => {
+  if (model) appState.setPage(model, computedMatch.params)
+  return <Route {...props} render={() => <Component match={computedMatch} {...appState} />} />
+}
 PageRoute.displayName = 'PageRoute'
 
 const renderLayoutHeader = () => (
   <Fragment>
-    <HtmlMetadata page={appState.page} />
+    {/* <HtmlMetadata page={appState.page} /> */}
     <SiteHeader user={appState.user} />
     <Navigation menuItems={appState.navigation} current={appState.route} />
   </Fragment>
@@ -50,17 +54,15 @@ ReactDOM.render(
               - https://github.com/ReactTraining/react-router/issues/5753#issuecomment-346876235
           */}
           <Route path="/media/:filename"
-            render={({ match }) =>
-              <Redirect to={`/info/media/${match.params.filename}`} />
-            }
+            render={({ match }) => <Redirect to={`/info/media/${match.params.filename}`} />}
           />
-          <PageRoute exact path="/profile" component={Profile} />
-          <PageRoute exact path="/search" component={Search} />
+          <PageRoute exact path="/profile" component={Profile} model={ProfilePage} />
+          <PageRoute exact path="/search" component={Search} model={SearchPage} />
           <PageRoute exact path="/upload" component={Upload} />
-          <PageRoute path="/info/media/:filename" component={Media} />
-          <PageRoute path="/page/:slug" component={Article} />
-          <PageRoute path="/profile/:id" component={Profile} />
-          <PageRoute path="/search/:term" component={Search} />
+          <PageRoute path="/info/media/:filename" component={Media} model={MediaPage} />
+          <PageRoute path="/page/:slug" component={Article} model={ArticlePage} />
+          <PageRoute path="/profile/:id" component={Profile} model={ProfilePage} />
+          <PageRoute path="/search/:term" component={Search} model={SearchPage} />
           <PageRoute component={NotFound} />
         </Switch>
       </div>
