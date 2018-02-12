@@ -1,0 +1,31 @@
+$sections:
+  article-children,
+  fields,
+  header,
+  picture
+;
+
+.profile.page {
+  display: grid;
+  padding: 10px;
+  grid-template-areas:
+    "header picture"
+    "fields picture"
+    "article-children article-children"
+  ;
+  grid-template-columns: auto 210px;
+
+  @each $section in $sections {
+    .#{$section} { grid-area: $section; }
+  }
+
+  .picture {
+    border: 5px solid $palette-gray-light;
+    border-radius: 5px;
+    height: 210px;
+    overflow: hidden;
+  }
+
+  .article-children .icon-favorite-on {
+  }
+}

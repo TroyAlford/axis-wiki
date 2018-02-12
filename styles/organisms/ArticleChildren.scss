@@ -1,7 +1,7 @@
 .article-children {
   border: 1px solid $palette-blue;
   border-radius: 5px;
-  box-shadow: 0px 2px 5px $palette-light-gray;
+  box-shadow: 0px 2px 5px $palette-gray-light;
   display: grid;
   grid-template-areas:
     "header"
@@ -11,9 +11,9 @@
   overflow: hidden;
 
   header {
-    background-color: $palette-light-gray;
+    background-color: $palette-gray-light;
     border: none;
-    color: $palette-dark-gray;
+    color: $palette-gray-dark;
     padding: 5px;
 
     .icon {
@@ -21,7 +21,7 @@
     }
   }
   .link-list {
-    background-color: lighten($palette-light-gray, 10%);
+    background-color: lighten($palette-gray-light, 10%);
     display: grid;
     grid-auto-flow: row;
     grid-gap: 5px;

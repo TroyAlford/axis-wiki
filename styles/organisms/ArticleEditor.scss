@@ -1,7 +1,7 @@
 .mce-content-body {
   include {
     background-color: #fafafa;
-    border: 1px dotted $palette-light-gray;
+    border: 1px dotted $palette-gray-light;
     border-radius: 3px;
     color: rgba(0,0,0,.25);
     display: block;
@@ -20,7 +20,7 @@
 
     &:after {
       background-color: lighten($palette-beige, 5%);
-      border-top: 1px solid $palette-light-gray;
+      border-top: 1px solid $palette-gray-light;
       color: rgba(0, 0, 0, .5);
       content: 'included from: ' attr(from) ', sections: ' attr(sections);
       display: block;

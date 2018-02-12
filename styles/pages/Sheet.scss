@@ -9,6 +9,6 @@
   .rows { display: flex; flex-direction: column; }
 
   .Traits.section .trait:nth-child(odd) {
-    background-color: $palette-light-blue;
+    background-color: $palette-blue-light;
   }
 }

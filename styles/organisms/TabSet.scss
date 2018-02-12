@@ -13,10 +13,10 @@
       display: flex;
       padding: 7px 5px 0 5px;
       background-color: $palette-offwhite;
-      border: 1px solid $palette-light-gray;
+      border: 1px solid $palette-gray-light;
       border-bottom: 1px solid $color-border-blue;
       border-radius: 5px 5px 0 0;
-      color: lighten($palette-dark-gray, 40%);
+      color: lighten($palette-gray-dark, 40%);
       cursor: pointer;
       display: inline-flex;
       padding: 7px;
