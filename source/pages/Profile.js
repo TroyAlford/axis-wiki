@@ -1,44 +1,21 @@
 import React, { Component } from 'react'
+import { observer } from 'mobx-react'
+import ChildArticle from '@models/ChildArticle'
 import ArticleChildren from '../components/ArticleChildren'
 
-const horizontalText = (label, value, onChange, readOnly = false) => (
-  /* eslint-disable jsx-a11y/label-has-for */
-  <div className="field is-horizontal">
-    <div className="field-label is-normal">
-      <label>{label}</label>
-    </div>
-    <div className="field-body">
-      <div className="field is-grouped">
-        <p className="control is-expanded">
-          <input
-            type="text" value={value} placeholder={label}
-            onChange={onChange} readOnly={readOnly} disabled={readOnly}
-            className="input"
-          />
-        </p>
-      </div>
-    </div>
-  </div>
-)
-
-export default class Profile extends Component {
-  static defaultProps = {
-    editable: false,
-    favorites: [],
-    name: '',
-  }
-
-  createChangeHandler = field => ev =>
-    this.setState({ [field]: ev.target.value })
-
-  render() {
-    const { name, favorites, editable } = this.props
+@observer export default class Profile extends Component {
+  render = () => {
+    const { favorites = [], id, name } = this.props.page
 
     return (
       <div className="profile page">
-        {horizontalText('Name', name, this.createChangeHandler('name'), !editable)}
+        <h1 className="name">{name}</h1>
+        <div className="picture">
+          <img alt="Profile Portrait" src={`//graph.facebook.com/${id}/picture?type=square&height=200`} />
+        </div>
+
         <ArticleChildren
-          articles={favorites}
+          articles={favorites.map(slug => ChildArticle.create({ slug }))}
           caption="Favorites"
           iconName="favorite-on"
         />
