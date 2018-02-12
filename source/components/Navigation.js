@@ -20,8 +20,8 @@ import { observer } from 'mobx-react'
   }
 
   render = () => (
-    <section className="navigation">
+    <ul className="navigation">
       {this.props.menuItems.map(this.renderMenuItem)}
-    </section>
+    </ul>
   )
 }
