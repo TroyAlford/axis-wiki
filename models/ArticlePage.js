@@ -1,14 +1,8 @@
 import { flow, types } from 'mobx-state-tree'
+import ChildArticle from '@models/ChildArticle'
 import titleCase from '@utils/titleCase'
 import { optionalArrayOfStrings } from './commonModels'
 import { GET, POST } from './fetch'
-
-const ChildArticle = types.model('ChildArticle', {
-  slug: '',
-  title: '',
-}).views(self => ({
-  get displayName() { return self.title || titleCase(self.slug) },
-}))
 
 const DEFAULTS = {
   aliases: [],
