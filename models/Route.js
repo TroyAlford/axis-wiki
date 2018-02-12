@@ -5,4 +5,6 @@ export default types.model('Route', {
   key: '',
   pathname: '',
   search: '',
-})
+}).views(self => ({
+  get slug() { return self.pathname.split('/').pop() },
+}))
