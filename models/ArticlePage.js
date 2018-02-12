@@ -37,7 +37,9 @@ const ArticlePage = types.model('ArticlePage', {
   privileges: optionalArrayOfStrings,
   tags: optionalArrayOfStrings,
   type: types.optional(types.literal('article'), DEFAULTS.type),
-}).actions(self => ({
+}).views(self => ({
+  get displayName() { return self.title || titleCase(self.slug) },
+})).actions(self => ({
   load: flow(function* (slug) {
     const response = yield GET(`/api/page/${slug}`)
     switch (response.status) {
