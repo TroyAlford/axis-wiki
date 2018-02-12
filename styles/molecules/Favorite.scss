@@ -7,10 +7,16 @@
     height: auto;
     width: auto;
   }
+}
 
-  .icon-favorite-off { color: rgba(0, 0, 0, .2) }
-  .icon-favorite-on {
-    color: $palette-gold;
-    -webkit-text-stroke: 1px darken($palette-gold, 20%);
-  }
+.icon-favorite-off { color: rgba(0, 0, 0, .2) }
+.icon-favorite-on {
+  color: $palette-gold;
+  text-shadow:
+    1px 1px $palette-gold-dark,
+    -1px 1px $palette-gold-dark,
+    1px -1px $palette-gold-dark,
+    -1px -1px $palette-gold-dark
+  ;
+  -webkit-text-stroke: .5px $palette-gold-dark;
 }

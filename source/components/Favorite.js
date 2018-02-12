@@ -6,7 +6,7 @@ const Favorite = ({ onToggle = noop, value = false }) => (
   <Icon
     className="favorite"
     name={`favorite-${value ? 'on' : 'off'}`}
-    onToggle={onToggle}
+    onClick={onToggle}
   />
 )
 
