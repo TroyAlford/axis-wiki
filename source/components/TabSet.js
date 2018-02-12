@@ -23,7 +23,7 @@ export default ({ key = '', tabs = [], onTabClicked = noop, active = null }) => 
   return (
     <div className={`tab-set ${key}`}>
       <ul className="tabs">
-        {tabs.map((tab) => {
+        {tabs.map((tab, ix) => {
           if (!tab.onClick) {
             // eslint-disable-next-line no-param-reassign
             tab.onClick = () => onTabClicked(tab)
@@ -37,7 +37,7 @@ export default ({ key = '', tabs = [], onTabClicked = noop, active = null }) => 
             activeTab.key === tab.key ? 'is-active' : '',
           ].join(' ').trim()
 
-          return <li key={key} className={className} onClick={tab.onClick}>{tab.caption}</li>
+          return <li key={ix} className={className} onClick={tab.onClick}>{tab.caption}</li>
         })}
       </ul>
       {renderedTab}

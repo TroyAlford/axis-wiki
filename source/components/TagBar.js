@@ -24,23 +24,20 @@ export default class TagBar extends Component {
     },
   }
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      tags: clean(props.tags, props.banned || []),
-    }
-  }
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      tags: clean(nextProps.tags, nextProps.banned || []),
-    })
-  }
+  componentDidMount = () => this.cleanTags(this.props)
+  componentWillReceiveProps = this.cleanTags
 
   setInput = (self) => { this.input = self }
+
+  cleanTags = ({ tags, banned }) => {
+    this.setState({ tags: clean(tags.toJSON(), banned) || [] })
+  }
+
   handleInputChange = (updated) => {
     const cleaned = clean(updated, this.props.banned)
     if (!isEqual(cleaned, this.state.tags)) this.props.onChange(cleaned)
   }
+
   renderInput = ({ addTag, ...props }) => (
     this.props.readonly
       ? <input type="text" ref={this.setInput} {...props} />
