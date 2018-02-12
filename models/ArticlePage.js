@@ -35,7 +35,7 @@ const ArticlePage = types.model('ArticlePage', {
   get displayName() { return self.title || titleCase(self.slug) },
 })).actions(self => ({
   /* eslint-disable no-param-reassign */
-  load: flow(function* (slug) {
+  load: flow(function* ({ slug }) {
     self.loading = true
     const response = yield GET(`/api/page/${slug}`)
     switch (response.status) {
@@ -56,7 +56,13 @@ const ArticlePage = types.model('ArticlePage', {
       default:
     }
   }),
-  toggleFavorite() { self.isFavorite = !self.isFavorite },
+  toggleFavorite: flow(function* () {
+    const { slug, isFavorite } = self
+    const response = yield POST('/api/my/favorites', { slug, value: !isFavorite })
+    if (response.status === 200) {
+      self.isFavorite = !isFavorite
+    }
+  }),
   /* eslint-enable no-param-reassign */
 }))
 
