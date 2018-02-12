@@ -1,27 +1,14 @@
-import React, { Component } from 'react'
+import React from 'react'
+import noop from '@utils/noop'
 import Icon from './Icon'
 
-import { setFavorite } from '../redux/page/actions-article'
+const Favorite = ({ onToggle = noop, value = false }) => (
+  <Icon
+    className="favorite"
+    name={`favorite-${value ? 'on' : 'off'}`}
+    onToggle={onToggle}
+  />
+)
 
-export default class Favorite extends Component {
-  static defaultProps = {
-    className: undefined,
-    value: false,
-  }
-
-  handleClick = () => {
-    const { slug, value } = this.props
-    this.props.dispatch(setFavorite({ slug, value: !value }))
-  }
-  render() {
-    const { className, value, ...props } = this.props
-    return (
-      <Icon
-        className={['favorite', className].filter(Boolean).join(' ')}
-        name={value ? 'favorite-on' : 'favorite-off'}
-        onClick={this.handleClick}
-        {...props}
-      />
-    )
-  }
-}
+Favorite.displayName = 'Favorite'
+export default Favorite
