@@ -2,9 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '@components/Icon'
 
-const ArticleChildren = ({ articles = [], caption = 'Child Articles', iconName = 'tag', numberOfColumns = 4 }) => {
-  const children = articles.toJSON()
-  if (!children.length) return <div className="tag-browser is-hidden" />
+const ArticleChildren = ({ articles = [], caption = 'Child Articles', iconName = 'tag' }) => {
+  if (!articles.length) return <div className="tag-browser is-hidden" />
 
   const links = articles
     .sort((a, b) => a.displayName.localeCompare(b.displayName))
