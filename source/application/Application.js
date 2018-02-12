@@ -43,12 +43,18 @@ ReactDOM.render(
       <Observer render={renderLayoutHeader} />
       <div className="page-container">
         <Switch>
-          <Route exact path="/">
-            <Redirect to={{ pathname: '/page/home' }} />
-          </Route>
-          <Route path="/media/:filename">
-            <Redirect to={{ pathname: '/info/media/:filename' }} />
-          </Route>
+          <Redirect exact from="/" to="/page/home" />
+          {/*
+            <Redirect from="/media/:filename" to="/info/media/:filename" />
+            TODO: Replace the render() version with the above
+              - react-router 3.2.0 does not contain the fix for param mapping, but next version does
+              - https://github.com/ReactTraining/react-router/issues/5753#issuecomment-346876235
+          */}
+          <Route path="/media/:filename"
+            render={({ match }) =>
+              <Redirect to={`/info/media/${match.params.filename}`} />
+            }
+          />
           <PageRoute exact path="/profile" component={Profile} />
           <PageRoute exact path="/search" component={Search} />
           <PageRoute exact path="/upload" component={Upload} />
