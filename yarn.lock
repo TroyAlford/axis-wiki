@@ -6251,9 +6251,9 @@ react-helmet@^5.2.0:
     prop-types "^15.5.4"
     react-side-effect "^1.1.0"
 
-react-jsx-parser@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/react-jsx-parser/-/react-jsx-parser-1.2.1.tgz#8c079764ad0d569149d3b461f863fb2ec312257d"
+react-jsx-parser@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/react-jsx-parser/-/react-jsx-parser-1.2.2.tgz#2f845f717ecd5ef8e08ea35c91b2fc3be265010f"
   dependencies:
     acorn-jsx "^4.1.0"
     react "^16.2.0"
