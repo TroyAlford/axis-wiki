@@ -10,7 +10,7 @@ export default class NotFound extends Component {
     return (
       <div className="not-found page">
         <Message title="404">
-          <p className="is-centered">
+          <p className="center">
             Whoops, how did you get here? Are you looking for <a href={url}>{url}</a>?
           </p>
         </Message>

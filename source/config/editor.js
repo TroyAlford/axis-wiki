@@ -10,9 +10,9 @@ export default {
   formats: {
     aligncenter: {
       selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img',
-      classes: 'is-text-centered'
+      classes: 'center',
     },
-    underline: { inline: 'u', exact: true }
+    underline: { inline: 'u', exact: true },
   },
   noneditable_noneditable_class: 'noedit',
   menubar: false,
@@ -29,5 +29,5 @@ export default {
     '@[id|class|style],' +
     '-h1,-h2,-h3,-h4,-h5,-h6,' +
     '-table,-tr,br,hr,-blockquote,' +
-    '-div,-span,-p,-ul,-ol,-li,-b/strong,-i/em,-u,-s/strike/del,-center,-sup,-sub'
+    '-div,-span,-p,-ul,-ol,-li,-b/strong,-i/em,-u,-s/strike/del,-center,-sup,-sub',
 }
