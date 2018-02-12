@@ -1,0 +1,14 @@
+$size-header-y: 50px;
+$size-left-column-x: 160px;
+
+$font-family: Ubuntu, Calibri, sans-serif;
+
+// Special Icons for Content Types
+$image-system: url(/images/dice.gif);
+$image-book: url(/images/book.png);
+$image-info: url(/images/info.png);
+$image-transparent: url(/images/transparent-bg.png);
+
+$screen-tablet:     769px !default;
+$screen-desktop:    980px !default;
+$screen-widescreen: 1180px !default;

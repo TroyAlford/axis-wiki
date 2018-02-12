@@ -1,13 +1,8 @@
-html, body {
-  box-sizing: border-box;
-  font-family: Ubuntu;
-  font-size: 11pt;
-  margin: 0;
-  padding: 0;
-}
-
 @import "palette";
-@import "_/*.scss";
+@import "variables";
+
+@import "reset";
+@import "classes/*.scss";
 @import "tags/*.scss";
 @import "components/*.scss";
 @import "pages/*.scss";

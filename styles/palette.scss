@@ -1,3 +1,4 @@
+// Colors by name
 $palette-beige:       #fdf5e6;
 $palette-blue-light:  #e2fbfb;
 $palette-blue-royal:  #08f;
@@ -12,3 +13,16 @@ $palette-offwhite:    #f6f6f6;
 $palette-orange:      #e8720c;
 $palette-red:         #c44;
 $palette-white:       #fff;
+
+// Colors by purpose
+$color-text:          $palette-gray-dark;
+$color-bg-page:       $palette-white;
+$color-bg-light:      $palette-offwhite;
+$color-border-blue:   $palette-blue;
+$color-table-bg-even: $palette-white;
+$color-table-bg-odds: $palette-offwhite;
+$color-success:       $palette-green;
+$color-danger:        $palette-red;
+$color-system:        $palette-beige;
+$color-book:          $palette-blue-light;
+$color-info:          $palette-blue-light;

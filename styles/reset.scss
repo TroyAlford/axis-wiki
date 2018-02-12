@@ -2,9 +2,18 @@
 html, body {
   background: $color-bg-page;
   color: $color-text;
+  font-family: $font-family;
 }
 
 body .mce-tab {
   height: 31px;
   &.mce-active { height: 32px; }
+}
+
+html, body {
+  box-sizing: border-box;
+  font-family: Ubuntu;
+  font-size: 11pt;
+  margin: 0;
+  padding: 0;
 }
