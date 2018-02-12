@@ -1,6 +1,6 @@
 header.site-header {
   align-content: center;
-  background-color: $palette-blue;
+  background-color: $color-bg-inverse;
   display: grid;
   grid-template-areas:
     "logo search facebook"
@@ -11,7 +11,7 @@ header.site-header {
 
   .logo {
     align-items: center;
-    color: $palette-offwhite;
+    color: $color-text-inverse;
     display: inline-flex;
     font-size: 2em;
     white-space: nowrap;
