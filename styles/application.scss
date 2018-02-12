@@ -8,8 +8,6 @@ html, body {
 
 @import "palette";
 @import "_/*.scss";
-@import "atoms/*.scss";
-@import "molecules/*.scss";
-@import "organisms/*.scss";
+@import "tags/*.scss";
+@import "components/*.scss";
 @import "pages/*.scss";
-@import "sheet/*.scss";
