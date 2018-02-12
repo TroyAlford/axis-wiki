@@ -26,10 +26,17 @@ ul.navigation {
 
   li.is-current {
     list-style: none;
+    position: relative;
+    overflow: visible;
 
     &:before {
       content: '»';
-      margin-left: -.75em;
+      left: -.75em;
+      position: absolute;
+    }
+    &:after {
+      content: '«';
+      right: 0;
       position: absolute;
     }
   }
