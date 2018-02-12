@@ -24,7 +24,8 @@
     text-shadow: 1px 1px #1f2f52;
 
     img {
-      border-radius: 5px;
+      border-radius: 5px 0 0 5px;
+      border-right: 1px groove;
       margin: -4px 0 -4px -4px;
     }
 
