@@ -1,0 +1,11 @@
+.info-box {
+  @include dropshadow();
+
+  border: 5px solid $palette-gray-light;
+  float: right;
+  font-size: .9rem;
+  margin: 0 0 1em 1em;
+  width: 275px;
+
+  th, td { padding: 5px; }
+}
