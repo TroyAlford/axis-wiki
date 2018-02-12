@@ -1,7 +1,7 @@
 .article-children {
   @include dropshadow();
 
-  border: 1px solid $palette-blue;
+  border: 2px solid $color-border;
   border-radius: 5px;
   display: grid;
   grid-template-areas:

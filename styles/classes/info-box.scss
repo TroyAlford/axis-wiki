@@ -1,7 +1,7 @@
 .info-box {
   @include dropshadow();
 
-  border: 5px solid $palette-gray-light;
+  border: 2px solid $color-border;
   float: right;
   font-size: .9rem;
   margin: 0 0 1em 1em;
