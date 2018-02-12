@@ -1,51 +1,27 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import { observer } from 'mobx-react'
 
-export default class Navigation extends Component {
+@observer export default class Navigation extends Component {
   static defaultProps = {
-    links: [],
+    menuItems: [],
+    current: {},
   }
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      current: window.location.pathname,
-    }
-  }
-
-  componentDidMount() {
-    window.routerHistory.listen(this.routeChanged)
-  }
-
-  routeChanged = (route) => {
-    this.setState({ current: route.pathname })
-  }
-
-  renderLink = (link, index) => {
-    const active = this.state.current === link.url
+  renderMenuItem = ({ children, text, url }) => {
+    const active = this.props.current.pathname === url
 
     return (
-      <li key={index} className={active ? 'is-current' : ''}>
-        {!link.url || active
-          ? <b>{link.text}</b>
-          : <a href={link.url}>{link.text}</a>
-        }
-        {this.renderChildren(link.children)}
+      <li key={text} className={active ? 'is-current' : ''}>
+        {!url || active ? <b>{text}</b> : <Link to={url}>{text}</Link>}
+        {children.length ? <ul>{children.map(this.renderMenuItem)}</ul> : ''}
       </li>
     )
   }
 
-  renderChildren = (children) => {
-    if (!children || !children.length) return ''
-    return (
-      <ul>{children.map(this.renderLink)}</ul>
-    )
-  }
-
-  render() {
-    return (
-      <section className="navigation">
-        {this.renderChildren(this.props.links)}
-      </section>
-    )
-  }
+  render = () => (
+    <section className="navigation">
+      {this.props.menuItems.map(this.renderMenuItem)}
+    </section>
+  )
 }
