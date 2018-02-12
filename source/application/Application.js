@@ -23,10 +23,9 @@ window.routerHistory = createBrowserHistory()
 appState.setRoute(window.routerHistory.location)
 window.routerHistory.listen(route => appState.setRoute(route))
 
-const PageRoute = ({ component: Component, ...props }) => {
-  const { page, ...rest } = appState
-  return <Route {...props} render={() => <Component {...page} {...rest} />} />
-}
+const PageRoute = ({ component: Component, ...props }) => (
+  <Route {...props} render={() => <Component {...appState} />} />
+)
 PageRoute.displayName = 'PageRoute'
 
 const renderLayoutHeader = () => (
