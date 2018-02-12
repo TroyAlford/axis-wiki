@@ -1,24 +1,27 @@
 html, body { overflow: hidden; }
 
+$sections:
+  site-header
+  navigation
+  page-container
+;
+
 .layout {
-  > .header {
-    position: fixed;
-    left: 0; right: 0; top: 0; height: $size-header-y;
+  display: grid;
+  grid-template-areas:
+    "site-header site-header"
+    "navigation page-container"
+  ;
+  grid-template-columns: $size-left-column-x auto;
+  grid-template-rows: $size-header-y auto;
+  height: 100vh;
+  width: 100vw;
+
+  @each $section in $sections {
+    .#{$section} { grid-area: $section; }
   }
-  > .navigation {
-    position: fixed;
-    left: 0; bottom: 0; top: $size-header-y; width: $size-left-column-x;
-    padding: 10px;
-    border: 0 solid $color-border-blue;
-    border-right-width: 1px;
-    overflow-x: auto;
-    overflow-y: auto;
-  }
-  > .page-container {
-    position: fixed;
-    right: 0; bottom: 0; top: $size-header-y; left: $size-left-column-x;
-    padding: 10px;
-    overflow-x: auto;
-    overflow-y: auto;
+
+  .navigation {
+    border-right: 1px solid $palette-blue;
   }
 }
