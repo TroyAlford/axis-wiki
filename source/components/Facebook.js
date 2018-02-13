@@ -119,7 +119,7 @@ const COOKIE = `fbsr_${CONFIG.facebook.appId}`
   renderLoggedIn = () => {
     const { user } = this.props
     const { version } = CONFIG.facebook
-    const imageSrc = `//graph.facebook.com/${version}/${user.id}/picture?height=24&width=24`
+    const imageSrc = `//graph.facebook.com/${version}/${user.id}/picture?height=36&width=36`
 
     return (
       <Fragment>
