@@ -9,6 +9,21 @@ $image-book: url(/images/book.png);
 $image-info: url(/images/info.png);
 $image-transparent: url(/images/transparent-bg.png);
 
-$screen-tablet:     769px !default;
-$screen-desktop:    980px !default;
-$screen-widescreen: 1180px !default;
+$screen-small-width: 550 !default;
+$screen-large-width: 980 !default;
+
+@mixin breakpoint($size) {
+  $mediaRule: "(min-width: #{$screen-large-width})";
+
+  @if ($size == small) {
+    $mediaRule: "(max-width: #{$screen-small-width}px)";
+  } @else if ($size == medium) {
+    $minWidth: $screen-small-width + 1;
+    $maxWidth: $screen-large-width - 1;
+    $mediaRule: "(min-width: #{$minWidth}px) and (max-width: #{$maxWidth}px)";
+  }
+
+  @media only screen and #{$mediaRule} {
+    @content;
+  }
+}

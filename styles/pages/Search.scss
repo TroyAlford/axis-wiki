@@ -34,16 +34,3 @@
     margin: auto;
   }
 }
-
-@media (max-width: $screen-tablet) {
-  .search-result { width: 95%; }
-}
-@media (min-width: $screen-tablet) {
-  .search-result { width: 49%; }
-}
-@media (min-width: $screen-desktop) {
-  .search-result { width: 32%; }
-}
-@media (min-width: $screen-widescreen) {
-  .search-result { width: 24%; }
-}

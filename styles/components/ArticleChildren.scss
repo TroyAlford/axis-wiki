@@ -30,3 +30,21 @@
     padding: 10px;
   }
 }
+
+@include breakpoint(medium) {
+  .article-children {
+    .link-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+@include breakpoint(small) {
+  .article-children {
+    .link-list {
+      grid-template-columns: repeat(2, 1fr);
+
+      a { @include ellipsis; }
+    }
+  }
+}

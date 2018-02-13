@@ -21,10 +21,18 @@ $sections:
     .#{$section} { grid-area: $section; }
   }
 
-  .navigation {
-    border-right: 1px solid $palette-blue;
-  }
   .page-container {
     overflow-y: auto;
+  }
+}
+
+@include breakpoint(small) {
+  .layout {
+    grid-template-areas:
+      "menu-toggle site-header"
+      "page-container page-container"
+    ;
+    grid-template-columns: 50px 1fr;
+    grid-template-rows: $size-header-y calc(100vh - $size-header-y);
   }
 }

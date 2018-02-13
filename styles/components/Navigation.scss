@@ -3,8 +3,12 @@
   margin: 0;
 }
 
+label[for="navigation-menu"] { display: none; }
+.menu-toggle { display: none; }
+
 ul.navigation {
   @include ul;
+  border-right: 1px solid $palette-blue;
   padding: 5px;
   padding-left: 1em;
   overflow-y: auto;
@@ -49,6 +53,35 @@ ul.navigation {
     &:after {
       content: '«';
       right: -10px;
+    }
+  }
+}
+
+@include breakpoint(small) {
+  label[for="navigation-menu"] {
+    align-content: center;
+    background: $color-bg-inverse;
+    color: $color-text-inverse;
+    display: grid;
+    font-size: 2em;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
+  }
+  ul.navigation { display: none; }
+
+
+  .menu-toggle:checked {
+    ~ label[for="navigation-menu"] {
+      color: $color-text;
+      background: $color-bg;
+    }
+    ~ ul.navigation {
+      background: $color-bg;
+      display: inline-block;
+      position: absolute;
+      bottom: 0; left: 0; top: $size-header-y;
+      width: $size-left-column-x;
     }
   }
 }

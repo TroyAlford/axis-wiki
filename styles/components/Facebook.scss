@@ -27,6 +27,7 @@
       border-radius: 5px 0 0 5px;
       border-right: 1px groove;
       margin: -4px 0 -4px -4px;
+      height: 24px;
     }
 
     .name {
@@ -37,5 +38,30 @@
 
     &:hover { color: #fff; }
     > * { color: inherit; }
+  }
+}
+
+@include breakpoint(small) {
+  .fb {
+    grid-template-areas: "button button";
+    grid-template-columns: 36px auto;
+
+    .login.button {
+      grid-area: button;
+      height: 38px;
+      margin-right: 5px;
+    }
+    .profile.button {
+      padding: 0;
+      width: 36px;
+
+      img {
+        border-radius: 5px;
+        border-right: none;
+        height: 36px;
+        margin: 0;
+      }
+      .name { display: none; }
+    }
   }
 }
