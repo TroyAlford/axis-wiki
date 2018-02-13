@@ -18,7 +18,10 @@ export default types.model('ProfilePage', {
   privileges: optionalArrayOfStrings,
   tags: optionalArrayOfStrings,
   type: types.optional(types.literal('profile'), 'profile'),
-}).actions(self => ({
+}).views(self => ({
+  get title() { return self.name },
+  get keywords() { return [self.name, self.type] },
+})).actions(self => ({
   /* eslint-disable no-param-reassign */
   load: flow(function* ({ id }) {
     const response = yield GET(id ? `/api/profile/${id}` : '/api/my/profile')

@@ -13,10 +13,10 @@ const SearchResult = types.model('SearchResult', {
 })
 
 export default types.model('SearchPage', {
-  loading: false,
   term: '',
   results: types.array(SearchResult),
   type: types.optional(types.literal('search'), 'search'),
 }).views(self => ({
   get title() { return `Search: ${self.term}` },
+  get keywords() { return [self.term, self.type] },
 }))

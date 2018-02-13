@@ -7,7 +7,7 @@ import createBrowserHistory from 'history/createBrowserHistory'
 import ApplicationState from '@models/ApplicationState'
 import Article from '@source/pages/Article'
 import ArticlePage from '@models/ArticlePage'
-// import HtmlMetadata from '@components/HtmlMetadata'
+import HtmlMetadata from '@components/HtmlMetadata'
 import Media from '@source/pages/Media'
 import MediaPage from '@models/MediaPage'
 import Navigation from '@components/Navigation'
@@ -32,13 +32,16 @@ const PageRoute = ({ component: Component, computedMatch, model, ...props }) => 
 }
 PageRoute.displayName = 'PageRoute'
 
-const renderLayoutHeader = () => (
-  <Fragment>
-    {/* <HtmlMetadata page={appState.page} /> */}
-    <SiteHeader user={appState.user} />
-    <Navigation menuItems={appState.navigation} current={appState.route} />
-  </Fragment>
-)
+const renderLayoutHeader = () => {
+  const { author, description, displayName, keywords, title } = appState.page
+  return (
+    <Fragment>
+      <HtmlMetadata {...{ author, description, keywords, title: title || displayName }} />
+      <SiteHeader user={appState.user} />
+      <Navigation menuItems={appState.navigation} current={appState.route} />
+    </Fragment>
+  )
+}
 
 ReactDOM.render(
   <Router history={window.routerHistory}>

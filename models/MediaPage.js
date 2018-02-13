@@ -5,4 +5,5 @@ export default types.model('MediaPage', {
   type: types.optional(types.literal('media'), 'media'),
 }).views(self => ({
   get title() { return self.filename },
+  get keywords() { return [self.filename, self.type] },
 }))

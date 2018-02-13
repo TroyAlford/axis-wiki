@@ -9,7 +9,6 @@ const DEFAULTS = {
   children: [],
   html: '',
   isFavorite: false,
-  keywords: [],
   links: [],
   missing: [],
   privileges: [],
@@ -23,7 +22,6 @@ const ArticlePage = types.model('ArticlePage', {
   ...DEFAULTS,
   aliases: optionalArrayOfStrings,
   children: types.optional(types.array(ChildArticle), DEFAULTS.children),
-  keywords: optionalArrayOfStrings,
   links: optionalArrayOfStrings,
   missing: optionalArrayOfStrings,
   privileges: optionalArrayOfStrings,
@@ -33,6 +31,16 @@ const ArticlePage = types.model('ArticlePage', {
   loading: false,
 })).views(self => ({
   get displayName() { return self.title || titleCase(self.slug) },
+  get keywords() {
+    return [
+      ...self.aliases,
+      ...self.children.map(c => c.displayName),
+      ...self.tags.map(t => t.toLowerCase()),
+      self.displayName,
+      self.slug,
+      self.type,
+    ]
+  },
 })).actions(self => ({
   /* eslint-disable no-param-reassign */
   load: flow(function* ({ slug }) {
