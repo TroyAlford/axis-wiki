@@ -5,9 +5,9 @@ import SearchBox from '../components/SearchBox'
 
 const SiteHeader = ({ user }) => (
   <header className="site-header">
-    <div className="logo icon-axis">
-      <Link to="/"><b>Axis</b>RPG</Link>
-    </div>
+    <Link className="logo icon-axis" to="/">
+      <span className="name"><b>Axis</b>RPG</span>
+    </Link>
     <SearchBox />
     <Facebook user={user} />
   </header>
