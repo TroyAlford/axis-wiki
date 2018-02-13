@@ -1,15 +1,6 @@
 Font license info
 
 
-## Font Awesome
-
-   Copyright (C) 2016 by Dave Gandy
-
-   Author:    Dave Gandy
-   License:   SIL ()
-   Homepage:  http://fortawesome.github.com/Font-Awesome/
-
-
 ## Entypo
 
    Copyright (C) 2012 by Daniel Bruce
@@ -19,13 +10,13 @@ Font license info
    Homepage:  http://www.entypo.com
 
 
-## Typicons
+## Font Awesome
 
-   (c) Stephen Hutchings 2012
+   Copyright (C) 2016 by Dave Gandy
 
-   Author:    Stephen Hutchings
-   License:   SIL (http://scripts.sil.org/OFL)
-   Homepage:  http://typicons.com/
+   Author:    Dave Gandy
+   License:   SIL ()
+   Homepage:  http://fortawesome.github.com/Font-Awesome/
 
 
 ## Iconic
@@ -35,6 +26,15 @@ Font license info
    Author:    P.J. Onori
    License:   SIL (http://scripts.sil.org/OFL)
    Homepage:  http://somerandomdude.com/work/iconic/
+
+
+## Typicons
+
+   (c) Stephen Hutchings 2012
+
+   Author:    Stephen Hutchings
+   License:   SIL (http://scripts.sil.org/OFL)
+   Homepage:  http://typicons.com/
 
 
 ## Elusive

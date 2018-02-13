@@ -2,19 +2,20 @@ import JsxParser from 'react-jsx-parser'
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
-import TinyMCE from 'react-tinymce'
+import Sheet from 'sheetforge'
+// import TinyMCE from 'react-tinymce'
 
 import ArticleChildren from '../components/ArticleChildren'
-import Editable from '../components/Editable'
+// import Editable from '../components/Editable'
 import Favorite from '../components/Favorite'
-import Icon from '../components/Icon'
-import HtmlEditor from '../components/HtmlEditor'
-import TabSet from '../components/TabSet'
+// import Icon from '../components/Icon'
+// import HtmlEditor from '../components/HtmlEditor'
+// import TabSet from '../components/TabSet'
 import TagBar from '../components/TagBar'
 
-import unboundEditorConfig from '../config/editor'
+// import unboundEditorConfig from '../config/editor'
 
-const { tinyMCE } = window
+// const { tinyMCE } = window
 const JsxLink = ({ href, ...props }) => <Link to={href} {...props} />
 JsxLink.displayName = 'JsxLink'
 
@@ -43,10 +44,11 @@ JsxLink.displayName = 'JsxLink'
           <Favorite value={page.isFavorite} onToggle={page.toggleFavorite} />
         </header>
         <div className="contents">
-          <JsxParser
+          <Sheet />
+          {/* <JsxParser
             components={{ a: JsxLink }}
             jsx={page.html || ''}
-          />
+          /> */}
           <ArticleChildren articles={page.children} />
         </div>
         <TagBar readonly tags={page.tags} />
