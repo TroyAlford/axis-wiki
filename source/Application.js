@@ -34,8 +34,18 @@ PageRoute.displayName = 'PageRoute'
 
 const renderLayoutHeader = () => {
   const { author, description, displayName, keywords, title } = appState.page
+  const { showMenu } = appState.viewport
+
   return (
     <Fragment>
+      <input
+        id="navigation-menu"
+        className="icon icon-menu menu-toggle"
+        onClick={appState.viewport.toggleMenu}
+        type="checkbox"
+        checked={showMenu}
+      />
+      <label className="icon icon-menu" htmlFor="navigation-menu" />
       <HtmlMetadata {...{ author, description, keywords, title: title || displayName }} />
       <SiteHeader user={appState.user} />
       <Navigation menuItems={appState.navigation} current={appState.route} />
@@ -57,7 +67,7 @@ ReactDOM.render(
               - https://github.com/ReactTraining/react-router/issues/5753#issuecomment-346876235
           */}
           <Route path="/media/:filename"
-            render={({ match }) => <Redirect to={`/info/media/${match.params.filename}`} />}
+            render={({ match }) => <Redirect to={`/ info / media / ${match.params.filename}`} />}
           />
           <PageRoute exact path="/profile" component={Profile} model={ProfilePage} />
           <PageRoute exact path="/search" component={Search} model={SearchPage} />
