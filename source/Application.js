@@ -55,7 +55,7 @@ const renderLayoutHeader = () => {
 
 ReactDOM.render(
   <Router history={window.routerHistory}>
-    <div className="layout">
+    <div className="axis wiki layout">
       <Observer render={renderLayoutHeader} />
       <div className="page-container">
         <Switch>

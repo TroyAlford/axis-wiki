@@ -1,6 +1,13 @@
 @import '../fontello/css/axis-wiki';
 @import '../fontello/css/animation';
 
+.axis.wiki {
+  [class^="icon-"]:before,
+  [class*=" icon-"]:before {
+    font-family: "axis-wiki", "axis-sheet";
+  }
+}
+
 @import "../styles/palette";
 
 $blue: $palette-blue;
