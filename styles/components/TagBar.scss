@@ -4,6 +4,10 @@
   min-height: 35px;
   padding: 5px;
 
+  &.readonly {
+    background: transparent;
+  }
+
   .tag-bar-input {
     border: none;
     margin: 0 5px;

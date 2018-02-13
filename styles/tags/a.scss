@@ -1,6 +1,5 @@
 a {
-  color: $palette-blue-royal;
-
+  color: $color-link;
 
   &.external {
     &:after {
@@ -14,5 +13,5 @@ a {
     }
   }
 
-  &.missing { color: $palette-red; }
+  &.missing { color: $color-link-missing; }
 }

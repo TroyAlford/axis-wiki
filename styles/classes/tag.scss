@@ -1,11 +1,16 @@
 .tag {
+  align-content: center;
   background-color: $palette-offwhite;
   border-radius: 3px;
   border: 1px solid $palette-blue-royal;
   display: inline-grid;
   font-size: .9em;
+  grid-template-columns: 1.2em auto 1em;
+  grid-template-rows: 1fr;
+  height: 2em;
+  justify-content: center;
   margin: 0 3px 0 0;
-  padding: 5px;
+  padding: 0;
 
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -13,5 +18,27 @@
   -o-user-select: none;
   user-select: none;
 
-  a { text-decoration: none; }
+  &:before {
+    color: $color-link;
+    font-size: .7rem;
+  }
+  &:before, > * {
+    align-content: center;
+    display: inline-grid;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+  a {
+    text-decoration: none;
+  }
+  .remove { cursor: pointer; }
+}
+
+[readonly], .readonly {
+  .tag {
+    grid-template-columns: 1.5em auto 5px;
+    .remove { display: none; }
+  }
 }

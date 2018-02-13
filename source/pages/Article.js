@@ -3,8 +3,6 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import TinyMCE from 'react-tinymce'
-import { isEqual } from 'lodash'
-import { deleteArticle, saveArticle } from '../redux/page/actions-article'
 
 import ArticleChildren from '../components/ArticleChildren'
 import Editable from '../components/Editable'
@@ -44,11 +42,14 @@ JsxLink.displayName = 'JsxLink'
           {page.displayName}
           <Favorite value={page.isFavorite} onToggle={page.toggleFavorite} />
         </header>
-        <JsxParser
-          components={{ a: JsxLink }}
-          jsx={page.html || ''}
-        />
-        <ArticleChildren articles={page.children} />
+        <div className="contents">
+          <JsxParser
+            components={{ a: JsxLink }}
+            jsx={page.html || ''}
+          />
+          <ArticleChildren articles={page.children} />
+        </div>
+        <TagBar readonly tags={page.tags} />
       </div>
     )
 

@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import TagsInput from 'react-tagsinput'
+import { Link } from 'react-router-dom'
 import { isEqual } from 'lodash'
 import { slugify } from '../../utility/Slugs'
 
@@ -38,30 +39,39 @@ export default class TagBar extends Component {
     if (!isEqual(cleaned, this.state.tags)) this.props.onChange(cleaned)
   }
 
-  renderInput = ({ addTag, ...props }) => (
-    this.props.readonly
-      ? <input type="text" ref={this.setInput} {...props} />
-      : <span ref={this.setInput} />
+
+  handleRemoveClick = (event) => {
+    event.stopPropagation()
+    event.preventDefault()
+    return this.props.onRemove()
+  }
+
+  renderTagEditable = tag => (
+    <Fragment>
+      <span>{tag}</span>
+      <span className="remove" onClick={this.handleRemoveClick} />
+    </Fragment>
   )
-  renderTag = props => (
-    <span key={props.key} className={props.className}>
-      <a className="icon icon-tag" href={`/page/${props.tag}`}>{props.tag}</a>
-      {!this.props.readonly &&
-        <button className={this.props.tagSettings.classNameRemove}
-          onClick={(event) => {
-            event.stopPropagation()
-            event.preventDefault()
-            return props.onRemove(props.key)
-          }}
-        />}
+  renderTagReadonly = tag => (
+    <Link to={`/page/${tag}`}>{tag}</Link>
+  )
+  renderTag = ({ className, key, tag }) => (
+    <span key={key} className={`${className} icon-tag`.trim()}>
+      {this.props.readonly ? this.renderTagReadonly(tag) : this.renderTagEditable(tag)}
     </span>
   )
+  renderInput = ({ addTag, ...props }) => (
+    this.props.readonly
+      ? <span ref={this.setInput} />
+      : <input type="text" ref={this.setInput} {...props} />
+  )
+
   render() {
     const { className, tags, readonly, inputSettings, tagSettings } = this.props
 
     return (
       <TagsInput
-        className={className}
+        className={`${className} ${readonly && 'readonly'}`.trim()}
         inputProps={inputSettings}
         onChange={this.handleInputChange}
         onlyUnique
