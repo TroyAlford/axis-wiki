@@ -53,7 +53,7 @@ const ArticlePage = types.model('ArticlePage', {
         self.loading = false
     }
   }),
-  update(values) { Object.assign(self, { ...DEFAULTS, ...values }) },
+  removeTag(tag) { self.tags.remove(tag) },
   save: flow(function* () {
     const response = yield POST(`/api/page/${self.slug}`, self.toJSON())
     switch (response.status) {
@@ -71,6 +71,7 @@ const ArticlePage = types.model('ArticlePage', {
       self.isFavorite = !isFavorite
     }
   }),
+  update(values) { Object.assign(self, { ...DEFAULTS, ...values }) },
   /* eslint-enable no-param-reassign */
 }))
 
