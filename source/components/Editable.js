@@ -1,6 +1,5 @@
 import React from 'react'
 import bound from '../../utility/bound'
-import './Editable.scss'
 
 const noop = () => { }
 
