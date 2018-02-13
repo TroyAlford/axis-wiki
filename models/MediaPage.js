@@ -6,4 +6,6 @@ export default types.model('MediaPage', {
 }).views(self => ({
   get title() { return self.filename },
   get keywords() { return [self.filename, self.type] },
+})).actions(self => ({
+  load() { },
 }))
