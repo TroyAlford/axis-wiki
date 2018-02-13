@@ -1,7 +1,8 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import TagsInput from 'react-tagsinput'
-import { Link } from 'react-router-dom'
+import Tag from '@components/Tag'
 import { isEqual } from 'lodash'
+import noop from '@utils/noop'
 import { slugify } from '../../utility/Slugs'
 
 const exclude = (list, exclusions) => list.filter(entry => exclusions.indexOf(entry) === -1)
@@ -11,8 +12,9 @@ export default class TagBar extends Component {
   static defaultProps = {
     banned: [],
     className: 'tag-bar',
-    onChange: () => { },
+    onChange: noop,
     readonly: false,
+    onRemove: noop,
     tags: [],
 
     inputSettings: {
@@ -40,26 +42,22 @@ export default class TagBar extends Component {
   }
 
 
-  handleRemoveClick = (event) => {
-    event.stopPropagation()
-    event.preventDefault()
-    return this.props.onRemove()
+  handleRemoveClick = ({ target }) => {
+    const tag = target.parentElement.textContent
+    this.props.onRemove(tag)
   }
 
-  renderTagEditable = tag => (
-    <Fragment>
-      <span>{tag}</span>
-      <span className="remove" onClick={this.handleRemoveClick} />
-    </Fragment>
-  )
-  renderTagReadonly = tag => (
-    <Link to={`/page/${tag}`}>{tag}</Link>
-  )
   renderTag = ({ className, key, tag }) => (
-    <span key={key} className={`${className} icon-tag`.trim()}>
-      {this.props.readonly ? this.renderTagReadonly(tag) : this.renderTagEditable(tag)}
-    </span>
+    <Tag
+      className={`icon-tag ${className}`.trim()}
+      key={key}
+      linkTo={`/page/${tag}`}
+      onClickRemove={this.handleRemoveClick}
+      removable={!this.props.readonly}
+      tag={tag}
+    />
   )
+
   renderInput = ({ addTag, ...props }) => (
     this.props.readonly
       ? <span ref={this.setInput} />

@@ -2,7 +2,7 @@
   background: $palette-white;
   display: block;
   min-height: 35px;
-  padding: 5px;
+  padding: 2px;
 
   &.readonly {
     background: transparent;
@@ -11,14 +11,5 @@
   .tag-bar-input {
     border: none;
     margin: 0 5px;
-  }
-
-  .tag > a:before {
-    font-size: .8em;
-  }
-  .tag .remove:after {
-    content: ' ×';
-    font-weight: bold;
-    padding-left: .25em;
   }
 }

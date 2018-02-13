@@ -2,7 +2,12 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '@components/Icon'
 
-const ArticleChildren = ({ articles = [], caption = 'Child Articles', iconName = 'tag' }) => {
+const ArticleChildren = ({
+  articles = [],
+  caption = 'Child Articles',
+  className = '',
+  iconName = 'tag',
+}) => {
   if (!articles.length) return <div className="tag-browser is-hidden" />
 
   const links = articles
@@ -12,7 +17,7 @@ const ArticleChildren = ({ articles = [], caption = 'Child Articles', iconName =
     ))
 
   return (
-    <div className="article-children">
+    <div className={`article-children ${className}`.trim()}>
       <header><Icon name={iconName} /> {caption}</header>
       <div className="link-list">{links}</div>
     </div>
