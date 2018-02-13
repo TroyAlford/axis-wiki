@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'axis-wiki';
-  src: url('../font/axis-wiki.eot?15475384');
-  src: url('../font/axis-wiki.eot?15475384#iefix') format('embedded-opentype'),
-       url('../font/axis-wiki.woff2?15475384') format('woff2'),
-       url('../font/axis-wiki.woff?15475384') format('woff'),
-       url('../font/axis-wiki.ttf?15475384') format('truetype'),
-       url('../font/axis-wiki.svg?15475384#axis-wiki') format('svg');
+  src: url('../font/axis-wiki.eot?6389940');
+  src: url('../font/axis-wiki.eot?6389940#iefix') format('embedded-opentype'),
+       url('../font/axis-wiki.woff2?6389940') format('woff2'),
+       url('../font/axis-wiki.woff?6389940') format('woff'),
+       url('../font/axis-wiki.ttf?6389940') format('truetype'),
+       url('../font/axis-wiki.svg?6389940#axis-wiki') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'axis-wiki';
-    src: url('../font/axis-wiki.svg?15475384#axis-wiki') format('svg');
+    src: url('../font/axis-wiki.svg?6389940#axis-wiki') format('svg');
   }
 }
 */
@@ -73,16 +73,11 @@
 .icon-add:before { content: '\e80f'; } /* '' */
 .icon-remove:before { content: '\e810'; } /* '' */
 .icon-picture:before { content: '\e811'; } /* '' */
-.icon-torso:before { content: '\e812'; } /* '' */
 .icon-backpack:before { content: '\e813'; } /* '' */
 .icon-currency:before { content: '\e814'; } /* '' */
-.icon-arm:before { content: '\e815'; } /* '' */
-.icon-leg:before { content: '\e816'; } /* '' */
-.icon-feet:before { content: '\e817'; } /* '' */
-.icon-head:before { content: '\e818'; } /* '' */
 .icon-weapon:before { content: '\e819'; } /* '' */
-.icon-hand:before { content: '\e81a'; } /* '' */
 .icon-axis:before { content: '\e81b'; } /* '' */
 .icon-favorite-off:before { content: '\e81c'; } /* '' */
 .icon-favorite-on:before { content: '\e81d'; } /* '' */
 .icon-logout:before { content: '\e81e'; } /* '' */
+.icon-menu:before { content: '\f0c9'; } /* '' */
