@@ -1,31 +1,61 @@
 $sections:
-  article-children,
+  favorites,
   fields,
   header,
-  picture
+  profile
 ;
 
 .profile.page {
+  align-items: flex-start;
   display: grid;
   padding: 10px;
+  grid-gap: 15px;
   grid-template-areas:
-    "header picture"
-    "fields picture"
-    "article-children article-children"
+    "user-name profile"
+    "favorites profile"
   ;
-  grid-template-columns: auto 210px;
+  grid-template-columns: 1fr 210px;
+  grid-template-rows: 50px auto;
 
   @each $section in $sections {
     .#{$section} { grid-area: $section; }
   }
 
-  .picture {
-    border: 5px solid $palette-gray-light;
+  .favorites {
+    margin: 0;
+  }
+  .profile {
+    @include dropshadow;
+    border: 2px solid $color-border;
     border-radius: 5px;
+    display: grid;
+    grid-auto-rows: auto;
+    grid-gap: 5px;
+    grid-template-rows: auto;
+    overflow: hidden;
+    padding: 5px;
+  }
+  .user-picture {
+    border: 5px solid $palette-gray-light;
     height: 210px;
     overflow: hidden;
-  }
 
-  .article-children .icon-favorite-on {
+    > img { height: 100%; }
+  }
+}
+
+@include breakpoint(small) {
+  .profile.page {
+    grid-template-areas:
+      "user-name"
+      "profile"
+      "favorites"
+    ;
+    grid-template-columns: 1fr;
+
+    .user-picture {
+      margin: 0 auto;
+      > img { height: 210px; }
+    }
   }
 }
