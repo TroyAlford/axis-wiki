@@ -1,13 +1,33 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import Icon from '@components/Icon'
 import noop from '@utils/noop'
 
-const Tag = ({ className = 'icon-tag', linkTo, onClickRemove = noop, removable = false, tag = '' }) => (
-  <span className={`tag ${className} ${removable || ''}`.replace(/[ ]{2}/g, ' ').trim()}>
-    {linkTo ? <Link to={linkTo}>{tag}</Link> : <span>{tag}</span>}
-    {removable && <span className="remove" onClick={onClickRemove} />}
-  </span>
-)
+export default class Tag extends Component {
+  static defaultProps = {
+    className: 'icon-tag',
+    linkTo: undefined,
+    onClickRemove: noop,
+    removable: false,
+    tag: '',
+  }
 
-Tag.displayName = 'Tag'
-export default Tag
+  handleClickRemove = () => this.props.onClickRemove(this.props.tag)
+
+  render = () => {
+    const { className, removable, linkTo, tag } = this.props
+
+    const classNames = [
+      'tag',
+      className,
+      removable ? 'removable' : '',
+    ].filter(Boolean)
+
+    return (
+      <span className={classNames.join(' ')}>
+        {linkTo ? <Link to={linkTo}>{tag}</Link> : <span>{tag}</span>}
+        {removable && <Icon name="remove" onClick={this.handleClickRemove} />}
+      </span>
+    )
+  }
+}

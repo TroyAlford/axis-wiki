@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import TagsInput from 'react-tagsinput'
+import { observer, Observer } from 'mobx-react'
 import isEqual from 'lodash/isEqual'
 import Tag from '@components/Tag'
 import noop from '@utils/noop'
@@ -8,7 +9,7 @@ import { slugify } from '../../utility/Slugs'
 const exclude = (list, exclusions) => list.filter(entry => exclusions.indexOf(entry) === -1)
 const clean = (list, bans) => slugify(exclude(slugify(list), slugify(bans)))
 
-export default class TagBar extends Component {
+@observer export default class TagBar extends Component {
   static defaultProps = {
     banned: [],
     className: 'tag-bar',
@@ -41,10 +42,9 @@ export default class TagBar extends Component {
     if (!isEqual(cleaned, this.state.tags)) this.props.onChange(cleaned)
   }
 
-
-  handleRemoveClick = ({ target }) => {
-    const tag = target.parentElement.textContent
-    this.props.onRemove(tag)
+  handleTagClickRemove = (which) => {
+    this.props.onRemove(which)
+    this.forceUpdate() // workaround for TagsInput not being observable
   }
 
   renderTag = ({ className, key, tag }) => (
@@ -52,7 +52,7 @@ export default class TagBar extends Component {
       className={`icon-tag ${className}`.trim()}
       key={key}
       linkTo={`/page/${tag}`}
-      onClickRemove={this.handleRemoveClick}
+      onClickRemove={this.handleTagClickRemove}
       removable={!this.props.readonly}
       tag={tag}
     />
@@ -65,7 +65,7 @@ export default class TagBar extends Component {
   )
 
   render() {
-    const { className, tags, readonly, inputSettings, tagSettings } = this.props
+    const { className, inputSettings, readonly, tags, tagSettings } = this.props
 
     return (
       <TagsInput
