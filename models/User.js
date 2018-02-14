@@ -10,7 +10,6 @@ const AuthToken = types.model('AuthToken', {
 })
 
 export const ANONYMOUS = {
-  anonymous: true,
   articles: [],
   email: '',
   favorites: [],
@@ -22,7 +21,6 @@ export const ANONYMOUS = {
 }
 
 export default types.model('User', {
-  anonymous: true,
   articles: optionalArrayOfStrings,
   email: '',
   favorites: optionalArrayOfStrings,
@@ -31,7 +29,9 @@ export default types.model('User', {
   privileges: optionalArrayOfStrings,
   tags: optionalArrayOfStrings,
   token: types.optional(AuthToken, {}),
-}).actions(self => ({
+}).views(self => ({
+  get anonymous() { return !self.id },
+})).actions(self => ({
   become(user) { Object.assign(self, user) },
   fetchProfile: flow(function* () {
     const response = yield GET('/api/my/profile')
