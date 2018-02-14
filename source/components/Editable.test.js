@@ -1,16 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import TestUtils from 'react-dom/test-utils'
+import { Simulate } from 'react-dom/test-utils'
 import Editable from './Editable'
-
-jest.unmock('./Editable')
 
 describe('Editable', () => {
   let parent = null
   let component = null
   let rendered = null
-
-  const Simulate = TestUtils.Simulate
 
   function render(element) { ReactDOM.render(element, parent) }
 
@@ -31,30 +27,21 @@ describe('Editable', () => {
   })
 
   it('raises change events properly', () => {
-    const changing = jest.genMockFunction()
-    const change = jest.genMockFunction()
+    const onChange = jest.genMockFunction()
 
-    render(<Editable value="first" editing onChanging={changing} onChange={change} />)
-    Simulate.change(rendered().children[0], { target: { value: 'second' } })
-    expect(changing).toBeCalledWith('second', 'first')
-    expect(change).toBeCalledWith('second', 'first')
+    render(<Editable value="first" onChange={onChange} />)
+    component.handleToggleEditing()
 
-    Simulate.change(rendered().children[0], { target: { value: 'third' } })
-    expect(changing).toBeCalledWith('third', 'second')
-    expect(change).toBeCalledWith('third', 'second')
-  })
-
-  it('handles cancellation of changes properly', () => {
-    const cancel = jest.genMockFunction().mockReturnValue(false)
-    const none = jest.genMockFunction()
-
-    render(<Editable value="first" editing onChanging={cancel} onChange={none} />)
-    Simulate.change(rendered().children[0], { target: { value: 'second' } })
-    expect(cancel).toBeCalledWith('second', 'first')
-    expect(none).not.toBeCalled()
+    const editor = rendered().children[0]
+    expect(editor.value).toEqual('first')
+    Simulate.change(editor, { target: { value: 'second' } })
+    Simulate.blur(editor)
+    expect(onChange).toBeCalledWith('second', 'first')
   })
 
   it('renders checkboxes properly', () => {
+    const onChange = jest.fn()
+
     function validateCheckbox() {
       expect(rendered().children.length).toEqual(1)
       const checkbox = rendered().children[0]
@@ -64,17 +51,15 @@ describe('Editable', () => {
     }
 
     // eslint-disable-next-line react/jsx-boolean-value
-    render(<Editable value={true} editing />)
-    expect(component.editorType).toEqual('boolean')
+    render(<Editable value={true} onChange={onChange} />)
+    expect(component.getEditorType()).toEqual('boolean')
     validateCheckbox()
 
-    render(<Editable value="test" type="boolean" editing />)
-    expect(component.editorType).toEqual('boolean')
+    render(<Editable value="test" type="boolean" onChange={onChange} />)
+    expect(component.getEditorType()).toEqual('boolean')
     const checkbox = validateCheckbox()
 
     Simulate.change(checkbox, { target: { value: false } })
-    expect(component.dirty).toEqual(true)
-    expect(rendered().classList.contains('dirty')).toEqual(true)
-    expect(component.state.value).toEqual(false)
+    expect(onChange).toBeCalledWith(false, 'test')
   })
 })
