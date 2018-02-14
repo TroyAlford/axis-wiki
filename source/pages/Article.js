@@ -1,17 +1,19 @@
 import JsxParser from 'react-jsx-parser'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
-import Sheet from 'sheetforge'
+import { Sheet } from 'sheetforge'
+// import Sheet from 'sheetforge/source/components/Sheet'
 // import TinyMCE from 'react-tinymce'
 
-import ArticleChildren from '../components/ArticleChildren'
+import ArticleChildren from '@components/ArticleChildren'
 // import Editable from '../components/Editable'
-import Favorite from '../components/Favorite'
-// import Icon from '../components/Icon'
+import Favorite from '@components/Favorite'
+// import Icon from '@components/Icon'
 // import HtmlEditor from '../components/HtmlEditor'
-// import TabSet from '../components/TabSet'
-import TagBar from '../components/TagBar'
+import Tab from '@components/Tab'
+import TabSet from '@components/TabSet'
+import TagBar from '@components/TagBar'
 
 // import unboundEditorConfig from '../config/editor'
 
@@ -20,16 +22,15 @@ const JsxLink = ({ href, ...props }) => <Link to={href} {...props} />
 JsxLink.displayName = 'JsxLink'
 
 @observer export default class Article extends Component {
-  static defaultProps = {
-    page: {
-      aliases: [],
-      children: [],
-      html: '',
-      loading: false,
-      readonly: true,
-      tags: [],
-      title: null,
-    },
+  state = { activeTabId: 'read' };
+
+  handleAddSheet = () => {
+    this.props.page.data.createCharacterData()
+    this.setState({ activeTabId: 'sheet' })
+  }
+  handleTabClicked = (activeTabId) => {
+    if (activeTabId === 'add-sheet') return
+    this.setState({ activeTabId })
   }
 
   render() {
@@ -44,14 +45,50 @@ JsxLink.displayName = 'JsxLink'
           <Favorite value={page.isFavorite} onToggle={page.toggleFavorite} />
         </header>
         <div className="contents">
-          <Sheet />
-          {/* <JsxParser
-            components={{ a: JsxLink }}
-            jsx={page.html || ''}
-          /> */}
-          <ArticleChildren articles={page.children} />
+          <TabSet
+            activeTabId={this.state.activeTabId}
+            onTabClicked={this.handleTabClicked}
+            showTabs={Boolean(
+              page.privileges.includes('edit') ||
+              page.data.characterData
+            )}
+            tabs={[{
+              id: 'reader',
+              tab: <Tab caption="Article" icon="read" />,
+              contents: (
+                <Fragment>
+                  <JsxParser components={{ a: JsxLink }} jsx={page.html} />
+                  <ArticleChildren articles={page.children} />
+                </Fragment>
+              ),
+            },
+            !page.data.characterData && {
+              id: 'add-sheet',
+              tab: <Tab icon="add" onClick={this.handleAddSheet} />,
+            },
+            page.data.characterData && {
+              id: 'sheet',
+              tab: <Tab
+                caption="Sheet"
+                icon="sheet"
+                onRemoveClick={page.data.removeCharacterData}
+                removable
+              />,
+              contents: (
+                <Sheet
+                  character={page.data.characterData.toJSON()}
+                  onChange={page.data.setCharacterData}
+                />
+              ),
+            }].filter(Boolean)}
+          />
         </div>
-        <TagBar readonly tags={page.tags} />
+        <TagBar
+          readonly={page.privileges.includes('edit')}
+          tags={page.tags}
+          onChange={page.setTags}
+          onRemove={page.removeTag}
+        />
       </div>
     )
 

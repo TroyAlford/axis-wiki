@@ -1,7 +1,8 @@
 import { flow, types } from 'mobx-state-tree'
-import ChildArticle from '@models/ChildArticle'
 import titleCase from '@utils/titleCase'
-import { optionalArrayOfStrings } from './commonModels'
+import ChildArticle from '@models/ChildArticle'
+import PageData from '@models/PageData'
+import { optionalArrayOfStrings } from '@models/commonModels'
 import { GET, POST } from './fetch'
 
 const DEFAULTS = {
@@ -22,6 +23,7 @@ const ArticlePage = types.model('ArticlePage', {
   ...DEFAULTS,
   aliases: optionalArrayOfStrings,
   children: types.optional(types.array(ChildArticle), DEFAULTS.children),
+  data: types.optional(PageData, {}),
   links: optionalArrayOfStrings,
   missing: optionalArrayOfStrings,
   privileges: optionalArrayOfStrings,
@@ -64,6 +66,7 @@ const ArticlePage = types.model('ArticlePage', {
       default:
     }
   }),
+  setTags(tags) { self.tags = tags },
   toggleFavorite: flow(function* () {
     const { slug, isFavorite } = self
     const response = yield POST('/api/my/favorites', { slug, value: !isFavorite })

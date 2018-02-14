@@ -1,45 +1,44 @@
 import React from 'react'
 import noop from '@utils/noop'
 
-const renderTab = ({ key, innerHTML, contents }) => {
-  const props = {}
-  if (innerHTML !== undefined) props.dangerouslySetInnerHTML = { __html: innerHTML }
-
-  return (
-    <div className={`tab ${key || ''}`.trim()} {...props}>
-      {innerHTML === undefined && (contents || '')}
-    </div>
-  )
+const DEFAULT_TAB = {
+  id: 'blank',
+  onClick: noop,
+  renderTab: () => <div />,
+  renderContents: () => <div />,
 }
 
-export default ({ key = '', tabs = [], onTabClicked = noop, active = null }) => {
-  if (tabs.length === 0) { tabs.push({ key: 'blank', innerHTML: '' }) }
+export default ({ activeTabId, onTabClicked = noop, showTabs = true, tabs = [] }) => {
+  if (tabs.length === 0) tabs.push(DEFAULT_TAB)
 
-  const activeKey = active || tabs[0].key
-  const activeTab = tabs.find(tab => tab.key === activeKey) || tabs[0]
-  const renderedTab = renderTab(activeTab)
+  const activeId = activeTabId || tabs[0].id
+  const activeTab = tabs.find(tab => tab.id === activeId) || tabs[0]
+  const className = [
+    'tab-set',
+    showTabs && 'no-tabs',
+  ].filter(Boolean).join(' ')
 
   return (
-    <div className={`tab-set ${key}`}>
-      <ul className="tabs">
-        {tabs.map((tab, ix) => {
-          if (!tab.onClick) {
+    <div className={className}>
+      {showTabs &&
+        <ul className="tabs">
+          {tabs.map((tab) => {
             // eslint-disable-next-line no-param-reassign
-            tab.onClick = () => onTabClicked(tab)
-          }
-          if (React.isValidElement(tab)) { return tab }
+            if (!tab.onClick) tab.onClick = () => onTabClicked(tab.id)
 
-          const className = [
-            'tab',
-            tab.key,
-            tab.className || '',
-            activeTab.key === tab.key ? 'is-active' : '',
-          ].join(' ').trim()
+            const liClassName = [
+              'tab',
+              tab.className,
+              activeTab.id === tab.id && 'is-active',
+            ].filter(Boolean).join(' ')
 
-          return <li key={ix} className={className} onClick={tab.onClick}>{tab.caption}</li>
-        })}
-      </ul>
-      {renderedTab}
+            return <li key={tab.id} className={liClassName} onClick={tab.onClick}>{tab.tab}</li>
+          })}
+        </ul>
+      }
+      <div className="tab-contents">
+        {activeTab.contents}
+      </div>
     </div>
   )
 }
