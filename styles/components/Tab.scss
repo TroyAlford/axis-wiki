@@ -1,0 +1,7 @@
+.tab {
+  display: grid;
+  grid-template-areas: "icon caption remove";
+  .icon-sheet { grid-area: icon; }
+  .caption { grid-area: caption; }
+  .icon-remove { grid-area: remove; }
+}

@@ -1,8 +1,17 @@
 .tab-set {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 37px 1fr;
   margin: 0;
   padding: 0;
+  max-width: 100vw;
+
+  &.no-tabs {
+    grid-template-rows: 1fr;
+  }
 
   ul.tabs {
+    background-color: darken($color-bg, 5%);
     border-bottom: 1px solid $color-border;
     line-height: 1em;
     margin: 0;
@@ -30,7 +39,7 @@
       }
 
       &.is-active {
-        background: $palette-white;
+        background: $color-bg;
         border-color: $color-border;
         border-bottom: 1px solid transparent;
         color: $color-text;
@@ -40,7 +49,9 @@
     }
   }
 
-  > .tab {
+  > .tab-contents {
+    background-color: $color-bg;
     padding: 10px;
+    max-width: 100vw;
   }
 }
