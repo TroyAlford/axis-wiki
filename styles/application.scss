@@ -1,6 +1,8 @@
 @import "palette";
 @import "variables";
 
+@import "node_modules/sheetforge/build/sheetforge";
+
 @import "reset";
 @import "classes/*.scss";
 @import "tags/*.scss";
