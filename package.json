@@ -42,7 +42,7 @@
     "react-router-dom": "^4.2.2",
     "react-tagsinput": "^3.19.0",
     "react-tinymce": "^0.7.0",
-    "sheetforge": "^0.1.3",
+    "sheetforge": "^0.1.5",
     "superchild": "^0.1.10"
   },
   "devDependencies": {

@@ -6860,9 +6860,9 @@ shebang-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-1.0.0.tgz#da42f49740c0b42db2ca9728571cb190c98efea3"
 
-sheetforge@^0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/sheetforge/-/sheetforge-0.1.3.tgz#e9485642be745c2ebeda0b9724057bbdc31cf709"
+sheetforge@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/sheetforge/-/sheetforge-0.1.5.tgz#9b605de2248296af78016d85f6cac97f0d84806b"
 
 shellwords@^0.1.1:
   version "0.1.1"
