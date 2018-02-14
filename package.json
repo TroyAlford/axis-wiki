@@ -89,7 +89,7 @@
     "build-css": "(yarn build-css-app & yarn build-css-dep)",
     "build-css-app": "node-sass styles/application.scss --output-style compressed --source-map true --source-map-embed --importer node_modules/node-sass-glob-importer/dist/cli.js -o build/css",
     "build-css-dep": "node-sass vendor/dependencies.scss --output-style compressed --source-map true --source-map-embed -o build/css",
-    "sourcemap": "source-map-explorer ./build/js/application.js",
+    "sourcemap": "SOURCEMAP=true yarn webpack && source-map-explorer ./build/js/application.js",
     "prebuild": "rimraf build/css/* && rimraf build/js/*",
     "preserve": "babel node_modules/camo/lib --out-dir server/camo",
     "serve": "npx babel-node server/server.js",

@@ -19,7 +19,6 @@ const ENVIRONMENT = process.env.NODE_ENV
 const PRODUCTION = ENVIRONMENT === 'production'
 const SOURCEMAP = process.env.SOURCEMAP
 
-const uglify = new webpack.optimize.UglifyJsPlugin({ minimize: true })
 const ConfigPlugin = new webpack.DefinePlugin({
   'process.env': VARIABLES.reduce((replacementMap, key) => ({
     ...replacementMap,
@@ -27,6 +26,7 @@ const ConfigPlugin = new webpack.DefinePlugin({
   }), { NODE_ENV: JSON.stringify(ENVIRONMENT) })
 })
 const HoistPlugin = new webpack.optimize.ModuleConcatenationPlugin()
+const UglifyPlugin = new webpack.optimize.UglifyJsPlugin({ minimize: true, sourceMap: SOURCEMAP })
 
 const bundle = {
   module: {
@@ -47,7 +47,7 @@ const bundle = {
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },
-  plugins: [ConfigPlugin, HoistPlugin, PRODUCTION && uglify].filter(Boolean),
+  plugins: [ConfigPlugin, HoistPlugin, PRODUCTION && UglifyPlugin].filter(Boolean),
   resolve: {
     extensions: ['.css', '.js', '.scss'],
     alias: {
@@ -64,14 +64,17 @@ const bundle = {
 module.exports = [{
   ...bundle,
   /* Main JS Bundle */
-  devtool: SOURCEMAP ? 'inline-source-map' : 'none',
+  devtool: SOURCEMAP ? 'source-map' : 'none',
   entry: `${__dirname}/source/Application.js`,
   externals: {
+    'mobx-react': 'MobXReact',
+    'mobx-state-tree': 'MST',
+    'mobx': 'MobX',
+    'react-dom': 'ReactDOM',
+    'react-router-dom': 'ReactRouter',
     'React': 'React',
     'react': 'React',
     'ReactDOM': 'ReactDOM',
-    'react-dom': 'ReactDOM',
-    'react-router': 'ReactRouter',
   },
   output: {
     ...bundle.output,
