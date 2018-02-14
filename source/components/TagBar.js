@@ -12,7 +12,7 @@ const clean = (list, bans) => slugify(exclude(slugify(list), slugify(bans)))
 @observer export default class TagBar extends Component {
   static defaultProps = {
     banned: [],
-    className: 'tag-bar',
+    className: '',
     onChange: noop,
     readonly: false,
     onRemove: noop,
@@ -66,10 +66,15 @@ const clean = (list, bans) => slugify(exclude(slugify(list), slugify(bans)))
 
   render() {
     const { className, inputSettings, readonly, tags, tagSettings } = this.props
+    const classNames = [
+      'tag-bar',
+      className,
+      readonly ? 'readonly' : '',
+    ].filter(Boolean)
 
     return (
       <TagsInput
-        className={`${className} ${readonly && 'readonly'}`.trim()}
+        className={classNames.join(' ')}
         inputProps={inputSettings}
         onChange={this.handleInputChange}
         onlyUnique

@@ -36,4 +36,9 @@ $sections:
 
     .jsx-parser > p:first-of-type { margin-top: 0; }
   }
+
+  .tag-bar:not(.readonly) {
+    background: darken($color-bg, 5%);
+    box-shadow: 0 3px 3px $palette-gray-light inset;
+  }
 }

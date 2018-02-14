@@ -1,5 +1,4 @@
 .tag-bar {
-  background: $palette-white;
   display: block;
   min-height: 35px;
   padding: 2px;
@@ -9,6 +8,7 @@
   }
 
   .tag-bar-input {
+    background: inherit;
     border: none;
     margin: 0 5px;
   }
