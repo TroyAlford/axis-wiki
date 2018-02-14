@@ -8,14 +8,14 @@ const DEFAULT_TAB = {
   renderContents: () => <div />,
 }
 
-export default ({ activeTabId, onTabClicked = noop, showTabs = true, tabs = [] }) => {
+const TabSet = ({ activeTabId, onTabClicked = noop, showTabs = true, tabs = [] }) => {
   if (tabs.length === 0) tabs.push(DEFAULT_TAB)
 
   const activeId = activeTabId || tabs[0].id
   const activeTab = tabs.find(tab => tab.id === activeId) || tabs[0]
   const className = [
     'tab-set',
-    showTabs && 'no-tabs',
+    !showTabs ? 'no-tabs' : '',
   ].filter(Boolean).join(' ')
 
   return (
@@ -42,3 +42,6 @@ export default ({ activeTabId, onTabClicked = noop, showTabs = true, tabs = [] }
     </div>
   )
 }
+
+TabSet.displayName = 'TabSet'
+export default TabSet

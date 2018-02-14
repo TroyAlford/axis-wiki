@@ -84,7 +84,7 @@ JsxLink.displayName = 'JsxLink'
           />
         </div>
         <TagBar
-          readonly={page.privileges.includes('edit')}
+          readonly={!page.privileges.includes('edit')}
           tags={page.tags}
           onChange={page.setTags}
           onRemove={page.removeTag}
