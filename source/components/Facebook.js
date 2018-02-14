@@ -74,8 +74,8 @@ const COOKIE = `fbsr_${CONFIG.facebook.appId}`
     const { user } = this.props
 
     window.FB.api('/me', { fields: CONFIG.facebook.fields }, (me) => {
-      user.become(me)
       this.updateCookie()
+      user.fetchProfile(me)
     })
   }
 

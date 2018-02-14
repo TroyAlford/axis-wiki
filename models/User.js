@@ -33,13 +33,13 @@ export default types.model('User', {
   get anonymous() { return !self.id },
 })).actions(self => ({
   become(user) { Object.assign(self, user) },
-  fetchProfile: flow(function* () {
+  fetchProfile: flow(function* (fb) {
     const response = yield GET('/api/my/profile')
 
     let profile = ANONYMOUS
     if (response.status === 200) profile = yield response.json()
 
-    self.become(profile)
+    self.become({ ...fb, ...profile })
   }),
   saveProfile: flow(function* () {
     const response = yield POST('/api/my/profile', self.toJSON())
