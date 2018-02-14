@@ -18,9 +18,14 @@
   -o-user-select: none;
   user-select: none;
 
+
+  &[class^="icon-"], &[class*=" icon-"] {
+    &:before, > * {
+      display: inline-grid;
+    }
+  }
   &:before, > * {
     align-content: center;
-    display: inline-grid;
     height: 100%;
     margin: 0;
     padding: 0;
@@ -28,10 +33,6 @@
   }
   > a {
     text-decoration: none;
-
-    &:before {
-      font-size: .8em;
-    }
   }
   .remove {
     cursor: pointer;
