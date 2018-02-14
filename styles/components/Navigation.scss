@@ -70,7 +70,6 @@ ul.navigation {
   }
   ul.navigation { display: none; }
 
-
   .menu-toggle:checked {
     ~ label[for="navigation-menu"] {
       color: $color-text;
