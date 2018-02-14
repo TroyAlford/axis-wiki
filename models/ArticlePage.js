@@ -54,7 +54,7 @@ const ArticlePage = types.model('ArticlePage', {
     afterAttach() {
       userId = self.user.id // eslint-disable-line prefer-destructuring
       autorun(() => {
-        if (self.user.id !== userId) self.load()
+        if (self.user.id !== userId) self.reload()
         userId = self.user.id // eslint-disable-line prefer-destructuring
       })
     },
@@ -68,6 +68,7 @@ const ArticlePage = types.model('ArticlePage', {
           self.loading = false
       }
     }),
+    reload() { self.load(self) },
     removeTag(tag) { self.tags.remove(tag) },
     save: flow(function* () {
       const response = yield POST(`/api/page/${self.slug}`, self.toJSON())
