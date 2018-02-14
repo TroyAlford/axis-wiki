@@ -43,7 +43,9 @@ const ArticlePage = types.model('ArticlePage', {
       self.type,
     ]
   },
-})).actions(self => ({
+  get user() { return getParent(self).user },
+  get readonly() { return self.user.anonymous || !self.privileges.includes('edit') },
+})).actions((self) => {
   /* eslint-disable no-param-reassign */
   load: flow(function* ({ slug }) {
     self.loading = true
