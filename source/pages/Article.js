@@ -48,10 +48,7 @@ JsxLink.displayName = 'JsxLink'
           <TabSet
             activeTabId={this.state.activeTabId}
             onTabClicked={this.handleTabClicked}
-            showTabs={Boolean(
-              page.privileges.includes('edit') ||
-              page.data.characterData
-            )}
+            showTabs={page.data.characterData || !page.readonly}
             tabs={[{
               id: 'reader',
               tab: <Tab caption="Article" icon="read" />,
@@ -84,7 +81,7 @@ JsxLink.displayName = 'JsxLink'
           />
         </div>
         <TagBar
-          readonly={!page.privileges.includes('edit')}
+          readonly={page.readonly}
           tags={page.tags}
           onChange={page.setTags}
           onRemove={page.removeTag}
