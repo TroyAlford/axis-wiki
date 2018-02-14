@@ -82,6 +82,7 @@ ul.navigation {
       position: absolute;
       bottom: 0; left: 0; top: $size-header-y;
       width: $size-left-column-x;
+      z-index: 1;
     }
   }
 }
