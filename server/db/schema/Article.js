@@ -40,7 +40,7 @@ export default class Article extends Document {
   }
 
   parseLinks() {
-    const $parser = $.load(this.html)
+    const $parser = $.load(this.html, { xmlMode: true })
     const links = []
 
     $parser('a').each((index, element) => {
@@ -96,7 +96,7 @@ export default class Article extends Document {
           return Promise.resolve()
         }
 
-        const $article = $.load(article.html)
+        const $article = $.load(article.html, { xmlMode: true })
         lines.push(`<!-- Transcluded from '${from}'. To edit, change the original article. -->`)
 
         const sections = $include.attr('sections')

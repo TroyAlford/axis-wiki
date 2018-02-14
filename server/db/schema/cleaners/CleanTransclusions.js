@@ -4,7 +4,7 @@ import { slugify } from '../../../../utility/Slugs'
 export default function (article = { html: '' }) {
   if (!article || !article.html) return article
 
-  const $parser = $.load(article.html)
+  const $parser = $.load(article.html, { xmlMode: true })
   $parser('include').each((index, element) => {
     const $include = $parser(element)
 
@@ -21,8 +21,8 @@ export default function (article = { html: '' }) {
     let sections = $include.attr('sections') || '*'
     if (sections !== '*') {
       sections = slugify(sections.split(','))
-                  .filter(s => !!s) // Eliminate blank sections
-                  .join(',')
+        .filter(s => !!s) // Eliminate blank sections
+        .join(',')
     }
 
     return $include.attr('sections', sections)
