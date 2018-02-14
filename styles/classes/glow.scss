@@ -1,0 +1,10 @@
+@mixin glow($color: $color-highlight, $size: 1px, $spread: 5px) {
+  box-shadow:
+     #{$size}  #{$size} #{$spread} #{$color},
+    -#{$size}  #{$size} #{$spread} #{$color},
+     #{$size} -#{$size} #{$spread} #{$color},
+    -#{$size} -#{$size} #{$spread} #{$color}
+  ;
+}
+
+.glow { @include glow; }
