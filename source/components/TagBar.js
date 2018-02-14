@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import TagsInput from 'react-tagsinput'
+import isEqual from 'lodash/isEqual'
 import Tag from '@components/Tag'
-import { isEqual } from 'lodash'
 import noop from '@utils/noop'
 import { slugify } from '../../utility/Slugs'
 

@@ -1,4 +1,4 @@
-import { kebabCase, toLower } from 'lodash'
+import kebabCase from 'lodash/kebabCase'
 import unique from './unique'
 
 function strip(string) {
@@ -17,7 +17,7 @@ export function slugify(input) {
     return '' // Return '' for all falsy values, objects and fn's
   }
 
-  const lowercase = toLower(strip(input))
+  const lowercase = strip(input).toLowerCase()
   return lowercase.split('.').map(kebabCase).join('.')
   // Split file.ext and kebab-case each section, then rejoin
 }
@@ -29,10 +29,7 @@ export function extractSlug(input) {
 
   if (typeof input !== 'string') return ''
 
-  return slugify(
-    input.split(/[/\\]/g).pop()
-         .split(/[?#]/g).shift()
-  )
+  return slugify(input.split(/[/\\]/g).pop().split(/[?#]/g).shift())
 }
 export function slugifyUrl(input) {
   if (Array.isArray(input)) {

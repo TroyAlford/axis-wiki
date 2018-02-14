@@ -1,8 +1,7 @@
 import React from 'react'
-import { browserHistory } from 'react-router'
-import { debounce } from 'lodash'
+import debounce from 'lodash/debounce'
 
-const searchFor = debounce(term => browserHistory.push(`/search/${term}`), 500)
+const searchFor = debounce(term => window.routerHistory.push(`/search/${term}`), 500)
 
 export default class SearchBox extends React.Component {
   static defaultProps = {

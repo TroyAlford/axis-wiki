@@ -1,4 +1,4 @@
-import { intersection, pick } from 'lodash'
+import intersection from 'lodash/intersection'
 
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
@@ -27,24 +27,24 @@ function articleForUser(id, slug) {
     User.findOne({ _id: id }).then(user => user || User.create()),
     Article.findOne({ $or: [{ slug }, { aliases: slug }] }),
   ])
-  .then(([user, article]) => {
-    if (!article) {
-      return [
-        Article.create({ _id: slug, slug }),
-        unique([...user.privileges, 'edit']).filter(Boolean),
-        false,
-      ]
-    }
+    .then(([user, article]) => {
+      if (!article) {
+        return [
+          Article.create({ _id: slug, slug }),
+          unique([...user.privileges, 'edit']).filter(Boolean),
+          false,
+        ]
+      }
 
-    const canEdit = (!article || user) && Boolean(
-      intersection(user.privileges, ['admin', 'edit']).length ||
-      intersection(user.articles, [article.slug, ...article.aliases]).length ||
-      intersection(user.tags, article.tags).length
-    )
-    const privileges = unique([...user.privileges, canEdit ? 'edit' : ''].filter(Boolean))
-    const isFavorite = intersection(user.favorites, [article.slug, ...article.aliases]).length
-    return [article, privileges, Boolean(isFavorite)]
-  })
+      const canEdit = (!article || user) && Boolean(
+        intersection(user.privileges, ['admin', 'edit']).length ||
+        intersection(user.articles, [article.slug, ...article.aliases]).length ||
+        intersection(user.tags, article.tags).length
+      )
+      const privileges = unique([...user.privileges, canEdit ? 'edit' : ''].filter(Boolean))
+      const isFavorite = intersection(user.favorites, [article.slug, ...article.aliases]).length
+      return [article, privileges, Boolean(isFavorite)]
+    })
 }
 function renderForUser([article, privileges, isFavorite]) {
   return Article.render(article.slug).then(rendered =>
@@ -56,38 +56,38 @@ export default express()
   .use(bodyParser.json()) // Parses application/json
   .use(bodyParser.urlencoded({ extended: true })) // Parses application/x-www-form-encoded
   .use(cookieParser())
-.get('/:slug', (request, response) => {
-  articleForUser(request.session.id, slugify(request.params.slug))
-    .then(renderForUser)
-    .then(article => response.status(200).send(article))
-    .catch(error => response.status(500).send(error))
-})
-.post('/:slug', NoAnonymous, (request, response) => {
-  articleForUser(request.session.id, slugify(request.params.slug))
-  .then(([article, privileges, isFavorite]) => {
-    const { aliases, data, html, tags, title } = request.body
-    Object.assign(article, { aliases, data, html, tags, title })
-
-    article.save()
-      .then(updated => renderForUser([updated, privileges, isFavorite]))
-      .then(updated => response.status(200).send(updated))
-      .catch(() => response.status(500).send('Unable to save and reload article.'))
+  .get('/:slug', (request, response) => {
+    articleForUser(request.session.id, slugify(request.params.slug))
+      .then(renderForUser)
+      .then(article => response.status(200).send(article))
+      .catch(error => response.status(500).send(error))
   })
-})
-.delete('/:slug', NoAnonymous, (request, response) => {
-  const slug = request.params.slug
-  articleForUser(request.session.id, slug)
-  .then(([article, privileges]) => {
-    if (article.slug !== slug) {
-      return response.status(401).send(`${slug} redirects to ${article.slug}.`)
-    }
+  .post('/:slug', NoAnonymous, (request, response) => {
+    articleForUser(request.session.id, slugify(request.params.slug))
+      .then(([article, privileges, isFavorite]) => {
+        const { aliases, data, html, tags, title } = request.body
+        Object.assign(article, { aliases, data, html, tags, title })
 
-    if (intersection(privileges, ['admin', 'edit']).length === 0) {
-      return response.status(401).send(`You do not have permission to edit ${slug}`)
-    }
-
-    article.delete().then(() =>
-      response.status(410).send(`Article ${slug} has been deleted.`)
-    )
+        article.save()
+          .then(updated => renderForUser([updated, privileges, isFavorite]))
+          .then(updated => response.status(200).send(updated))
+          .catch(() => response.status(500).send('Unable to save and reload article.'))
+      })
   })
-})
+  .delete('/:slug', NoAnonymous, (request, response) => {
+    const { slug } = request.params
+    articleForUser(request.session.id, slug)
+      .then(([article, privileges]) => {
+        if (article.slug !== slug) {
+          return response.status(401).send(`${slug} redirects to ${article.slug}.`)
+        }
+
+        if (intersection(privileges, ['admin', 'edit']).length === 0) {
+          return response.status(401).send(`You do not have permission to edit ${slug}`)
+        }
+
+        return article.delete().then(() =>
+          response.status(410).send(`Article ${slug} has been deleted.`)
+        )
+      })
+  })

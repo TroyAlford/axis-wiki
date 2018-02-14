@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash'
 import { slugify, slugifyUrl } from './Slugs'
 
 jest.unmock('./Slugs')
@@ -11,7 +10,7 @@ describe('slugify()', () => {
     expect(slugify(null)).toEqual(emptyString)
     expect(slugify(false)).toEqual(emptyString)
     expect(slugify(0)).toEqual(emptyString)
-    expect(slugify(() => {})).toEqual(emptyString)
+    expect(slugify(() => { })).toEqual(emptyString)
     expect(slugify({})).toEqual(emptyString)
   })
 
@@ -35,7 +34,7 @@ describe('slugify()', () => {
     const expected = ['empty', 'leading-trailing', 'p-3-14-l']
 
     expect(after.length).toEqual(3) // 3rd should be eliminated entirely
-    expect(isEqual(after, expected)).toBeTruthy()
+    expect(after).toEqual(expected)
   })
 
   it('maintains path correctly', () => {

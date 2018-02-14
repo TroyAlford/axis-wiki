@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { filter, map, uniqBy } from 'lodash'
 import Dropzone from 'react-dropzone'
+import uniqBy from 'lodash/uniqBy'
 
 import { slugify } from '../../utility/Slugs'
 
@@ -9,14 +9,14 @@ export default class UploadPage extends Component {
     super(props)
     this.state = {
       uploading: [],
-      uploaded:  [],
-      failed:    [],
+      uploaded: [],
+      failed: [],
     }
   }
 
   onDrop = (files) => {
     const form = new FormData()
-    const uploading = this.state.uploading
+    const { uploading } = this.state
 
     files.forEach((file) => {
       const { name, preview, size, type, lastModifiedDate } = file
@@ -34,53 +34,55 @@ export default class UploadPage extends Component {
 
     fetch('/media', {
       credentials: 'include',
-      method:      'POST',
-      body:        form,
-    })
-    .then(response => response.json())
-    .then((json) => {
-      const files = map(this.state.uploading, file =>
-        Object.assign({}, json[file.name], file)
-      )
-      const uploading = filter(files, file => !json[file.name])
-      const processed = filter(files, file => json[file.name])
-      const uploaded = filter(processed, file => file.errors.length === 0)
-      const failed = filter(processed, file => file.errors.length !== 0)
+      method: 'POST',
+      body: form,
+    }).then(response => response.json())
+      .then((json) => {
+        const files = this.state.uploading.map(file =>
+          Object.assign({}, json[file.name], file)
+        )
+        const uploading = files.filter(file => !json[file.name])
+        const processed = files.filter(file => json[file.name])
+        const uploaded = processed.filter(file => file.errors.length === 0)
+        const failed = processed.filter(file => file.errors.length !== 0)
 
-      this.setState({
-        uploading,
-        uploaded: uniqBy([...this.state.uploaded, ...uploaded], 'name'),
-        failed:   uniqBy([...this.state.failed, ...failed], 'name'),
+        this.setState({
+          uploading,
+          uploaded: uniqBy([...this.state.uploaded, ...uploaded], 'name'),
+          failed: uniqBy([...this.state.failed, ...failed], 'name'),
+        })
       })
-    })
   }
 
-  renderFiles = (files, actionText, className) => {
-    return (
-      <div className={`message ${className} files`}>
-        <div className="message-header">{actionText}: {files.length} files</div>
-        <div className="message-body">{map(files, (file, index) =>
-          <div key={index} className="file">
-            <span className="name">{file.name}</span>
-            <span className="link">{file.small ? <a href={file.small}>View</a> : null}</span>
-            {!file.errors ? null : map(file.errors, (error, index) =>
-              <div key={index} className="error icon icon-warning">{error}</div>
-            )}
-          </div>
-        )}</div>
+  renderFiles = (files, actionText, className) => (
+    <div className={`message ${className} files`}>
+      <div className="message-header">{actionText}: {files.length} files</div>
+      <div className="message-body">{files.map((file, index) => (
+        <div key={index} className="file">
+          <span className="name">{file.name}</span>
+          <span className="link">{file.small ? <a href={file.small}>View</a> : null}</span>
+          {!file.errors ? null : file.errors.map((error, ix) =>
+            <div key={ix} className="error icon icon-warning">{error}</div>
+          )}
+        </div>
+      ))}
       </div>
-    )
-  }
+    </div>
+  )
 
   render() {
     const { uploading, uploaded, failed } = this.state
 
     return (
       <div className="upload page">
-        <Dropzone onDrop={this.onDrop} style={{}} activeStyle={{}}
-          className="cp-file-dropzone" activeClassName="active">
+        <Dropzone onDrop={this.onDrop}
+          style={{}}
+          activeStyle={{}}
+          className="cp-file-dropzone"
+          activeClassName="active"
+        >
           <span>
-            <b>Click here</b> to browse & upload media files,<br/>
+            <b>Click here</b> to browse & upload media files,<br />
             or drag and drop into this container
           </span>
         </Dropzone>

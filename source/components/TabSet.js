@@ -1,5 +1,4 @@
 import React from 'react'
-import { find } from 'lodash'
 import noop from '@utils/noop'
 
 const renderTab = ({ key, innerHTML, contents }) => {
@@ -17,7 +16,7 @@ export default ({ key = '', tabs = [], onTabClicked = noop, active = null }) => 
   if (tabs.length === 0) { tabs.push({ key: 'blank', innerHTML: '' }) }
 
   const activeKey = active || tabs[0].key
-  const activeTab = find(tabs, { key: activeKey }) || tabs[0]
+  const activeTab = tabs.find(tab => tab.key === activeKey) || tabs[0]
   const renderedTab = renderTab(activeTab)
 
   return (

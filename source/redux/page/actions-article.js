@@ -1,4 +1,4 @@
-import { startCase } from 'lodash'
+import startCase from 'lodash/startCase'
 import { addMessage } from '../messages/actions'
 import { setPage, ARTICLE, FAVORITE, LOADING } from '../page/actions'
 import { extractSlug } from '../../../utility/Slugs'
