@@ -5059,7 +5059,7 @@ mkdirp@0.5.1, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkd
   dependencies:
     minimist "0.0.8"
 
-mobx-react@^4.4.1:
+mobx-react@^4.3.5, mobx-react@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-4.4.1.tgz#7cc793b55bbb7485f1febd18c1913c581c124edc"
   dependencies:
@@ -5069,7 +5069,7 @@ mobx-state-tree@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/mobx-state-tree/-/mobx-state-tree-1.3.1.tgz#9e1ba9b8b6ea183f1a4a2ae1f67bfa8f2bcae4fe"
 
-mobx@^3.5.1:
+mobx@^3.4.1, mobx@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/mobx/-/mobx-3.5.1.tgz#8e682ec535cf44e04005b9e37e2df66acc975a42"
 
@@ -6873,6 +6873,16 @@ shebang-command@^1.2.0:
 shebang-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-1.0.0.tgz#da42f49740c0b42db2ca9728571cb190c98efea3"
+
+sheetforge@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/sheetforge/-/sheetforge-0.1.0.tgz#d0d9ff869d1bdf37637c4c5f273f46c44a95dc1a"
+  dependencies:
+    babel-core "^6.26.0"
+    babel-plugin-transform-runtime "^6.23.0"
+    mobx "^3.4.1"
+    mobx-react "^4.3.5"
+    mobx-state-tree "^1.3.1"
 
 shellwords@^0.1.1:
   version "0.1.1"
