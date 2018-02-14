@@ -4,7 +4,7 @@
   grid-auto-flow: column;
   padding: 5px 0;
 
-  .button {
+  .profile.button, .login.button {
     align-items: center;
     background-color: #2b4170;
     background: -moz-linear-gradient(top, #3b5998, #2b4170);
@@ -36,8 +36,13 @@
       width: 100%;
     }
 
-    &:hover { color: #fff; }
-    > * { color: inherit; }
+    &:hover { @include glow; }
+  }
+
+  .logoff.button {
+    color: $color-text-inverse;
+
+    &:hover { color: $color-danger; }
   }
 }
 

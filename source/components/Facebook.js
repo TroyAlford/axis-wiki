@@ -127,7 +127,7 @@ const COOKIE = `fbsr_${CONFIG.facebook.appId}`
           <img alt="" src={imageSrc} />
           <span className="name">{user.name}</span>
         </Link>
-        <Icon name="logout" onClick={this.logOff} />
+        <Icon className="logoff button" name="logout" onClick={this.logOff} />
       </Fragment>
     )
   }
