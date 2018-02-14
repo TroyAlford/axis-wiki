@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import TagsInput from 'react-tagsinput'
-import { observer, Observer } from 'mobx-react'
+import { observer } from 'mobx-react'
 import isEqual from 'lodash/isEqual'
 import Tag from '@components/Tag'
 import noop from '@utils/noop'
