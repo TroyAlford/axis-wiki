@@ -29,6 +29,7 @@ const HoistPlugin = new webpack.optimize.ModuleConcatenationPlugin()
 const UglifyPlugin = new webpack.optimize.UglifyJsPlugin({ minimize: true, sourceMap: SOURCEMAP })
 
 const bundle = {
+  devtool: SOURCEMAP ? 'source-map' : 'none',
   module: {
     rules: [{
       test: /\.(woff2?|eot|ttf|svg)$/,
@@ -68,7 +69,6 @@ const bundle = {
 module.exports = [{
   ...bundle,
   /* Main JS Bundle */
-  devtool: SOURCEMAP ? 'source-map' : 'none',
   entry: {
     application: `${__dirname}/source/Application.js`,
   },
