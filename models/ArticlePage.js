@@ -84,6 +84,7 @@ const ArticlePage = types.model('ArticlePage', {
         default:
       }
     }),
+    setHTML(html) { self.html = html },
     setTags(tags) { self.tags = tags },
     toggleFavorite: flow(function* () {
       const { slug, isFavorite } = self

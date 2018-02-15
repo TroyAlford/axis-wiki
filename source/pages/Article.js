@@ -81,15 +81,15 @@ JsxLink.displayName = 'JsxLink'
             !page.readonly && {
               id: 'editor',
               tab: <Icon name="html" />,
-              contents: <HtmlEditor html={page.html} />,
+              contents: <HtmlEditor html={page.html} onChange={page.setHTML} />,
             }].filter(Boolean)}
           />
         </div>
         <TagBar
-          readonly={page.readonly}
-          tags={page.tags}
           onChange={page.setTags}
           onRemove={page.removeTag}
+          readonly={page.readonly}
+          tags={page.tags}
         />
       </div>
     )
