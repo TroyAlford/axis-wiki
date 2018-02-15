@@ -2,15 +2,14 @@ import JsxParser from 'react-jsx-parser'
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
-import { Sheet } from 'sheetforge'
-// import Sheet from 'sheetforge/source/components/Sheet'
-// import TinyMCE from 'react-tinymce'
 
 import ArticleChildren from '@components/ArticleChildren'
 // import Editable from '../components/Editable'
+// import TinyMCE from 'react-tinymce'
 import Favorite from '@components/Favorite'
 import Icon from '@components/Icon'
 import HtmlEditor from '@components/HtmlEditor'
+import Sheet from '@components/Sheet'
 import Tab from '@components/Tab'
 import TabSet from '@components/TabSet'
 import TagBar from '@components/TagBar'
@@ -33,6 +32,38 @@ JsxLink.displayName = 'JsxLink'
     this.setState({ activeTabId })
   }
 
+  readerTab = ({ html, children }) => ({
+    id: 'reader',
+    tab: <Tab caption="Article" icon="read" />,
+    contents: (
+      <Fragment>
+        <JsxParser components={{ a: JsxLink }} jsx={html} />
+        <ArticleChildren articles={children} />
+      </Fragment>
+    ),
+  })
+  sheetTab = ({ data }) => {
+    const { characterData: sheet } = data
+
+    if (sheet) {
+      return {
+        id: 'sheet',
+        tab: <Tab caption="Sheet" icon="sheet" onRemoveClick={data.removeCharacterData} removable />,
+        contents: <Sheet character={sheet.toJSON()} onChange={data.setCharacterData} />,
+      }
+    }
+    return { id: 'add-sheet', tab: <Tab icon="add" onClick={this.handleAddSheet} /> }
+  }
+  editorTab = ({ html, setHTML }) => ({
+    id: 'wysiwyg',
+    tab: <Icon name="edit" />,
+    contents: <div />,
+  })
+  htmlTab = ({ html, setHTML }) => ({
+    id: 'html',
+    tab: <Icon name="html" />,
+    contents: <HtmlEditor html={html} onChange={setHTML} />,
+  })
   render() {
     const { page } = this.props
 
@@ -49,40 +80,12 @@ JsxLink.displayName = 'JsxLink'
             activeTabId={this.state.activeTabId}
             onTabClicked={this.handleTabClicked}
             showTabs={page.data.characterData || !page.readonly}
-            tabs={[{
-              id: 'reader',
-              tab: <Tab caption="Article" icon="read" />,
-              contents: (
-                <Fragment>
-                  <JsxParser components={{ a: JsxLink }} jsx={page.html} />
-                  <ArticleChildren articles={page.children} />
-                </Fragment>
-              ),
-            },
-            !page.data.characterData && {
-              id: 'add-sheet',
-              tab: <Tab icon="add" onClick={this.handleAddSheet} />,
-            },
-            page.data.characterData && {
-              id: 'sheet',
-              tab: <Tab
-                caption="Sheet"
-                icon="sheet"
-                onRemoveClick={page.data.removeCharacterData}
-                removable
-              />,
-              contents: (
-                <Sheet
-                  character={page.data.characterData.toJSON()}
-                  onChange={page.data.setCharacterData}
-                />
-              ),
-            },
-            !page.readonly && {
-              id: 'editor',
-              tab: <Icon name="html" />,
-              contents: <HtmlEditor html={page.html} onChange={page.setHTML} />,
-            }].filter(Boolean)}
+            tabs={[
+              this.readerTab(page),
+              this.sheetTab(page),
+              !page.readonly && this.editorTab(page),
+              !page.readonly && this.htmlTab(page),
+            ].filter(Boolean)}
           />
         </div>
         <TagBar
