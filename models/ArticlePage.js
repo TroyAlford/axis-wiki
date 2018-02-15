@@ -48,16 +48,20 @@ const ArticlePage = types.model('ArticlePage', {
   get readonly() { return self.user.anonymous || !self.privileges.includes('edit') },
 })).actions((self) => {
   /* eslint-disable no-param-reassign */
+  let autorunDisposer
   let userId
 
   return {
     afterAttach() {
       userId = self.user.id // eslint-disable-line prefer-destructuring
-      autorun(() => {
-        if (self.user.id !== userId) self.reload()
-        userId = self.user.id // eslint-disable-line prefer-destructuring
+      autorunDisposer = autorun(() => {
+        if (self.user.id !== userId) {
+          userId = self.user.id // eslint-disable-line prefer-destructuring
+          self.reload()
+        }
       })
     },
+    beforeDestroy() { autorunDisposer() },
     load: flow(function* ({ slug }) {
       self.loading = true
       const response = yield GET(`/api/page/${slug}`)
@@ -68,7 +72,7 @@ const ArticlePage = types.model('ArticlePage', {
           self.loading = false
       }
     }),
-    reload() { self.load(self) },
+    reload() { self.load({ slug: self.slug }) },
     removeTag(tag) { self.tags.remove(tag) },
     save: flow(function* () {
       const response = yield POST(`/api/page/${self.slug}`, self.toJSON())
