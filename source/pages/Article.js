@@ -31,6 +31,13 @@ JsxLink.displayName = 'JsxLink'
     this.setState({ activeTabId })
   }
 
+  addSheetButton = () => (
+    <button className="icon-add" onClick={this.handleAddSheet}>Add Sheet</button>
+  )
+  saveButton = page => (
+    <button className="icon-save" onClick={page.save}>Save</button>
+  )
+
   readerTab = ({ html, children }) => ({
     id: 'reader',
     tab: <Tab caption="Article" icon="read" />,
@@ -43,15 +50,13 @@ JsxLink.displayName = 'JsxLink'
   })
   sheetTab = ({ data }) => {
     const { characterData: sheet } = data
+    if (!sheet) return null
 
-    if (sheet) {
-      return {
-        id: 'sheet',
-        tab: <Tab caption="Sheet" icon="sheet" onRemoveClick={data.removeCharacterData} removable />,
-        contents: <Sheet character={sheet.toJSON()} onChange={data.setCharacterData} />,
-      }
+    return {
+      id: 'sheet',
+      tab: <Tab caption="Sheet" icon="sheet" onRemoveClick={data.removeCharacterData} removable />,
+      contents: <Sheet character={sheet.toJSON()} onChange={data.setCharacterData} />,
     }
-    return { id: 'add-sheet', tab: <Tab icon="add" onClick={this.handleAddSheet} /> }
   }
   editorTab = ({ html, setHTML }) => ({
     id: 'wysiwyg',
@@ -63,6 +68,7 @@ JsxLink.displayName = 'JsxLink'
     tab: <Icon name="html" />,
     contents: <HtmlEditor html={html} onChange={setHTML} />,
   })
+
   render() {
     const { page } = this.props
 
@@ -79,6 +85,12 @@ JsxLink.displayName = 'JsxLink'
             activeTabId={this.state.activeTabId}
             onTabClicked={this.handleTabClicked}
             showTabs={page.data.characterData || !page.readonly}
+            buttons={!page.readonly &&
+              <Fragment>
+                {!page.data.characterData && this.addSheetButton()}
+                {this.saveButton(page)}
+              </Fragment>
+            }
             tabs={[
               this.readerTab(page),
               this.sheetTab(page),
@@ -97,25 +109,3 @@ JsxLink.displayName = 'JsxLink'
     )
   }
 }
-// if (!this.props.readonly && window.tinyMCE) {
-//   tabs.push({
-//     key: 'edit',
-//     className: 'right',
-//     caption: <Icon key="icon" name="edit" />,
-//     contents: [
-//       <Editable
-//         key="title"
-//         className="title-editor"
-//         onChange={title => this.setState({ title })}
-//         placeholder="Page Title"
-//         value={this.state.title || this.props.title}
-//       />,
-//       <TinyMCE
-//         key="editor"
-//         config={this.editorConfig}
-//         onClick={interceptEditorLinks}
-//         content={this.state.html || this.props.html}
-//       />,
-//     ],
-//   })
-// }

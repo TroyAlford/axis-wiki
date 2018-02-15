@@ -13,8 +13,12 @@
   }
 
   ul.tabs {
+    align-items: stretch;
     border-bottom: 1px solid $color-border;
+    display: flex;
+    justify-content: flex-start;
     line-height: 1em;
+    margin:  0;
     margin: 0;
     overflow: visible;
     padding: 5px 5px 0 5px;
@@ -45,23 +49,44 @@
       &.is-active {
         background: $color-bg;
         border-color: $color-border;
-        border-bottom: 1px solid transparent;
+        border-bottom: 1px solid $color-bg;
         box-shadow:
           -3px -3px 3px rgba($palette-gray-light, .5),
            3px -3px 3px rgba($palette-gray-light, .5)
         ;
         color: $color-text;
-        padding-top: 9px;
         margin: 0 0 -1px 0;
+        padding-top: 9px;
         z-index: 1;
+      }
+    }
+
+    > .buttons {
+      align-self: center;
+      flex-grow: 1;
+      margin-top: -6px;
+      text-align: right;
+
+      > button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+
+        &:hover {
+          background-color: darken($color-success, 10%);
+          border: initial;
+          border-radius: 5px;
+          color: $color-text-inverse;
+        }
       }
     }
   }
 
   > .tab-contents {
     background-color: $color-bg;
-    padding: 10px;
-    max-width: 100vw;
     box-shadow: 0 -4px 4px $palette-gray-light;
+    max-width: 100vw;
+    padding: 10px;
   }
 }

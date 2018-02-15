@@ -52,3 +52,11 @@ $sections:
     box-shadow: 0 3px 3px $palette-gray-light inset;
   }
 }
+
+@include breakpoint(small) {
+  .tab-set > .tabs {
+    .tab.wysiwyg, .tab.html {
+      display: none;
+    }
+  }
+}
