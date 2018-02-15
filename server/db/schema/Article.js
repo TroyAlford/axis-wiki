@@ -3,12 +3,21 @@ import fs from 'fs-extra'
 import path from 'path'
 import url from 'url'
 import utils from 'fs-utils'
+import { html_beautify as beautify } from 'js-beautify'
 import Document from '../../camo/document'
 import config from '../../../config/server'
 import unique from '../../../utility/unique'
 import { extractSlug } from '../../../utility/Slugs'
 
 import cleaners from './cleaners'
+
+const BEAUTIFY_OPTIONS = {
+  end_with_newline: true,
+  indent_size: 2,
+  indent_char: ' ',
+  preserve_newlines: false,
+  wrap_line_length: 0,
+}
 
 function getFilePaths(slug) {
   const folderPath = path.resolve(config.folders.articles, slug)
@@ -148,7 +157,7 @@ export default class Article extends Document {
         slug: article.slug,
         tags: article.tags,
         title: article.title,
-        html: transcluded.html,
+        html: beautify(transcluded.html, BEAUTIFY_OPTIONS),
         links: [...article.links, ...transcluded.links],
         missing: [...missingLinks, ...transcluded.missing],
         children,
@@ -215,7 +224,7 @@ export default class Article extends Document {
 
     const paths = getFilePaths(this.slug)
     const clean = cleaners.reduce((a, cleaner) => cleaner(a), this)
-    fs.writeFileSync(paths.html, clean.html)
+    fs.writeFileSync(paths.html, beautify(clean.html, BEAUTIFY_OPTIONS))
     fs.writeJSONSync(paths.json, {
       aliases: clean.aliases,
       data: clean.data,
