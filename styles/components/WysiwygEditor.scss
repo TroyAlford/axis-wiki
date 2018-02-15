@@ -1,0 +1,22 @@
+.wysiwyg-editor {
+  display: grid;
+  grid-template-areas:
+    "menubar"
+    "editor"
+  ;
+
+  .menubar {
+    @include dropshadow;
+    background-color: #fff;
+    border: 2px solid $color-border;
+    border-radius: 5px;
+    display: grid;
+    margin-bottom: 5px;
+    overflow: hidden;
+
+    > .mce-tinymce {
+      border-width: 0!important;
+      display: block!important;
+    }
+  }
+}

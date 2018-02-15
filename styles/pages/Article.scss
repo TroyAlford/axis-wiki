@@ -40,6 +40,11 @@ $sections:
       .tab.is-active { background-color: #fff; }
       ~ .tab-contents { padding: 0; }
     }
+    .tab-set > .tabs.wysiwyg {
+      ~ .tab-contents .mce-content-body {
+        outline: none;
+      }
+    }
   }
 
   .tag-bar:not(.readonly) {
