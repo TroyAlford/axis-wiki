@@ -47,7 +47,11 @@ const bundle = {
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },
-  plugins: [ConfigPlugin, HoistPlugin, PRODUCTION && UglifyPlugin].filter(Boolean),
+  plugins: [
+    ConfigPlugin,
+    HoistPlugin,
+    PRODUCTION && UglifyPlugin
+  ].filter(Boolean),
   resolve: {
     extensions: ['.css', '.js', '.scss'],
     alias: {
@@ -65,7 +69,9 @@ module.exports = [{
   ...bundle,
   /* Main JS Bundle */
   devtool: SOURCEMAP ? 'source-map' : 'none',
-  entry: `${__dirname}/source/Application.js`,
+  entry: {
+    application: `${__dirname}/source/Application.js`,
+  },
   externals: {
     'mobx-react': 'MobXReact',
     'mobx-state-tree': 'MST',
@@ -78,9 +84,17 @@ module.exports = [{
   },
   output: {
     ...bundle.output,
-    filename: 'application.js',
+    chunkFilename: 'application.[name].js',
+    filename: '[name].js',
     path: `${__dirname}/build/js`,
+    publicPath: '/js/'
   },
+  plugins: [
+    new webpack.HashedModuleIdsPlugin(),
+    new webpack.optimize.CommonsChunkPlugin({ name: 'application', filename: 'application.js' }),
+    new webpack.optimize.CommonsChunkPlugin({ name: 'manifest' }),
+    ...bundle.plugins
+  ],
 }, {
   ...bundle,
   entry: `${__dirname}/vendor/dependencies.js`,
