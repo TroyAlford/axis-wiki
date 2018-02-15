@@ -21,7 +21,7 @@ const TabSet = ({ activeTabId, onTabClicked = noop, showTabs = true, tabs = [] }
   return (
     <div className={className}>
       {showTabs &&
-        <ul className="tabs">
+        <ul className={`tabs ${activeTabId}`}>
           {tabs.map((tab) => {
             // eslint-disable-next-line no-param-reassign
             if (!tab.onClick) tab.onClick = () => onTabClicked(tab.id)

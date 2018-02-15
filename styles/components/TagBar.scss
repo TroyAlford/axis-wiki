@@ -1,7 +1,18 @@
 .tag-bar {
-  display: block;
+  align-items: center;
+  display: grid;
+  justify-items: flex-start;
   min-height: 35px;
   padding: 2px;
+
+  > span {
+    align-items: center;
+    display: grid;
+    grid-auto-flow: column;
+    justify-items: flex-start;
+    max-width: 100%;
+    overflow: hidden;
+  }
 
   &.readonly {
     background: transparent;

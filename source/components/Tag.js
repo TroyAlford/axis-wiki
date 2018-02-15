@@ -25,7 +25,10 @@ export default class Tag extends Component {
 
     return (
       <span className={classNames.join(' ')}>
-        {linkTo ? <Link to={linkTo}>{tag}</Link> : <span>{tag}</span>}
+        {linkTo
+          ? <Link className="link" to={linkTo}>{tag}</Link>
+          : <span className="text">{tag}</span>
+        }
         {removable && <Icon name="remove" onClick={this.handleClickRemove} />}
       </span>
     )
