@@ -1,5 +1,10 @@
 import React, { Component } from 'react'
-import AceEditor from 'react-ace'
+import Loadable from 'react-loadable'
+
+const AceEditor = Loadable({
+  loader: () => import(/* webpackChunkName: "AceEditor" */ 'react-ace'),
+  loading: () => <div className="loading" />,
+})
 
 export default class HtmlEditor extends Component {
   static defaultProps = {

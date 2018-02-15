@@ -9,8 +9,8 @@ import { Sheet } from 'sheetforge'
 import ArticleChildren from '@components/ArticleChildren'
 // import Editable from '../components/Editable'
 import Favorite from '@components/Favorite'
-// import Icon from '@components/Icon'
-// import HtmlEditor from '../components/HtmlEditor'
+import Icon from '@components/Icon'
+import HtmlEditor from '@components/HtmlEditor'
 import Tab from '@components/Tab'
 import TabSet from '@components/TabSet'
 import TagBar from '@components/TagBar'
@@ -77,6 +77,11 @@ JsxLink.displayName = 'JsxLink'
                   onChange={page.data.setCharacterData}
                 />
               ),
+            },
+            !page.readonly && {
+              id: 'editor',
+              tab: <Icon name="html" />,
+              contents: <HtmlEditor html={page.html} />,
             }].filter(Boolean)}
           />
         </div>
