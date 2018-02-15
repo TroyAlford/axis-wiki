@@ -3,6 +3,7 @@ const dotenv = require('dotenv')
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 dotenv.config()
 
@@ -34,9 +35,21 @@ const bundle = {
     rules: [{
       test: /\.(woff2?|eot|ttf|svg)$/,
       loader: 'url-loader?limit=100000',
+      options: {
+        name: '../css/assets/[name].[ext]',
+      },
+    }, {
+      test: /\.(gif|jpe?g|bmp|png)$/,
+      loader: 'file-loader',
+      options: {
+        name: '../css/assets/[name].[ext]',
+      },
     }, {
       test: /\.s?css$/,
-      use: ['style-loader', 'css-loader', 'sass-loader'],
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: ['css-loader', 'sass-loader'],
+      }),
     }, {
       test: /\.jsx?$/,
       exclude: /node_modules/,
@@ -91,6 +104,7 @@ module.exports = [{
     new webpack.HashedModuleIdsPlugin(),
     new webpack.optimize.CommonsChunkPlugin({ name: 'application', filename: 'application.js' }),
     new webpack.optimize.CommonsChunkPlugin({ name: 'manifest' }),
+    new ExtractTextPlugin({ allChunks: true, filename: '../css/[name].chunks.css' }),
     ...bundle.plugins,
   ],
 }, {
