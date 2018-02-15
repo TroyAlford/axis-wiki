@@ -73,14 +73,12 @@ module.exports = [{
     application: `${__dirname}/source/Application.js`,
   },
   externals: {
-    'mobx-react': 'MobXReact',
-    'mobx-state-tree': 'MST',
-    'mobx': 'MobX',
-    'react-dom': 'ReactDOM',
-    'react-router-dom': 'ReactRouter',
-    'React': 'React',
-    'react': 'React',
-    'ReactDOM': 'ReactDOM',
+    'mobx-react': 'mobx-react',
+    'mobx-state-tree': 'mobx-state-tree',
+    'mobx': 'mobx',
+    'react-dom': 'react-dom',
+    'react-router-dom': 'react-router-dom',
+    'react': 'react',
   },
   output: {
     ...bundle.output,
@@ -93,7 +91,7 @@ module.exports = [{
     new webpack.HashedModuleIdsPlugin(),
     new webpack.optimize.CommonsChunkPlugin({ name: 'application', filename: 'application.js' }),
     new webpack.optimize.CommonsChunkPlugin({ name: 'manifest' }),
-    ...bundle.plugins
+    ...bundle.plugins,
   ],
 }, {
   ...bundle,

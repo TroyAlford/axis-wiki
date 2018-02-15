@@ -1,13 +1,13 @@
-import * as React from 'react'
-import MobX from 'mobx'
-import * as MobXReact from 'mobx-react'
-import * as MST from 'mobx-state-tree'
-import ReactDOM from 'react-dom'
-import * as ReactRouter from 'react-router-dom'
+import * as mobx from 'mobx'
+import * as mobxReact from 'mobx-react'
+import * as mobxStateTree from 'mobx-state-tree'
+import * as react from 'react'
+import * as reactDom from 'react-dom'
+import * as reactRouter from 'react-router-dom'
 
-window.MobX = MobX
-window.MobXReact = MobXReact
-window.MST = MST
-window.React = React
-window.ReactDOM = ReactDOM
-window.ReactRouter = ReactRouter
+window.mobx = mobx
+window.react = react
+window['mobx-react'] = mobxReact
+window['mobx-state-tree'] = mobxStateTree
+window['react-dom'] = reactDom
+window['react-router-dom'] = reactRouter
