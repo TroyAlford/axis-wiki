@@ -47,7 +47,7 @@ const renderLayoutHeader = () => {
       />
       <label className="icon icon-menu" htmlFor="navigation-menu" />
       <HtmlMetadata {...{ author, description, keywords, title: title || displayName }} />
-      <SiteHeader user={appState.user} />
+      <SiteHeader page={appState.page} user={appState.user} />
       <Navigation menuItems={appState.navigation} current={appState.route} />
     </Fragment>
   )
