@@ -1,29 +1,46 @@
+$sections:
+  hits,
+  media,
+  results,
+  title
+;
+
 .search.page {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  display: grid;
+  grid-gap: 10px;
+  padding: 10px;
 
   .result.card {
+    @include dropshadow;
+    display: grid;
+    border: 2px solid $color-border;
     border-radius: 3px;
+    color: $color-text;
     cursor: pointer;
-    margin: 0 0 10px 0;
+    grid-gap: 10px;
+    grid-template-areas:
+      "media title hits"
+      "media results results"
+    ;
+    grid-template-columns: 64px 1fr 40px;
+    grid-template-rows: 1em 1fr;
+    padding: 20px;
+    text-decoration: none;
     width: 100%;
 
-    .media figure > img {
-      margin: auto;
-      height: auto; max-height: 100%;
-      width:  auto; max-width:  100%;
+    @each $section in $sections {
+    .#{$section} { grid-area: #{$section}; }
     }
-    .media-content {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
 
-      height: 64px;
-      overflow: hidden;
-
-      .level { margin: 0; }
+    .media {
+      align-self: center;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      height: 80px; width: 80px;
+      justify-self: center;
     }
+
     .search-match {
       text-overflow: ellipsis;
       overflow: hidden;
