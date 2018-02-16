@@ -13,7 +13,7 @@ const defaults = {
 export default function (article = { html: '' }, whitelist = defaults) {
   if (!article || !article.html || !whitelist) { return article }
 
-  const $parser = $.load(article.html, { xmlMode: true })
+  const $parser = $.load(article.html, { xmlMode: true, decodeEntities: false })
 
   keys(whitelist).forEach(tag => flow([
     tag => $parser(tag).get(),

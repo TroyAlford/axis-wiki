@@ -4,7 +4,7 @@ import { slugify } from '../../../../utility/Slugs'
 export default function (article = { html: '' }) {
   if (!article || !article.html) return article
 
-  const $parser = $.load(article.html, { xmlMode: true })
+  const $parser = $.load(article.html, { xmlMode: true, decodeEntities: false })
   $parser('include').each((index, element) => {
     const $include = $parser(element)
 

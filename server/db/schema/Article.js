@@ -49,7 +49,7 @@ export default class Article extends Document {
   }
 
   parseLinks() {
-    const $parser = $.load(this.html, { xmlMode: true })
+    const $parser = $.load(this.html, { xmlMode: true, decodeEntities: false })
     const links = []
 
     $parser('a').each((index, element) => {
@@ -82,7 +82,7 @@ export default class Article extends Document {
   }
 
   static transclude(html) {
-    const $parser = $.load(html, { xmlMode: true })
+    const $parser = $.load(html, { xmlMode: true, decodeEntities: false })
     const links = []
     const missing = []
 
