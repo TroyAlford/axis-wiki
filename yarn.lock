@@ -6251,9 +6251,9 @@ react-dropzone@^4.2.8:
     attr-accept "^1.0.3"
     prop-types "^15.5.7"
 
-react-jsx-parser@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/react-jsx-parser/-/react-jsx-parser-1.2.4.tgz#726bb3c8281c605fdf4090d03318ae7d363607e3"
+react-jsx-parser@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/react-jsx-parser/-/react-jsx-parser-1.2.5.tgz#402ed54e1a780b8ba247a16e100b38b212bb0b7a"
   dependencies:
     acorn-jsx "^4.1.0"
     react "^16.2.0"
