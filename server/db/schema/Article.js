@@ -99,14 +99,12 @@ export default class Article extends Document {
 
       return Article.findOne({ slug: from }).then((article) => {
         if (!article) {
-          $include.html(`\n<!-- Article '${from}' does not exist -->\n`)
           links.push(from)
           missing.push(from)
           return Promise.resolve()
         }
 
         const $article = $.load(article.html, { xmlMode: true })
-        lines.push(`<!-- Transcluded from '${from}'. To edit, change the original article. -->`)
 
         const sections = $include.attr('sections')
         if (sections === '*' || !sections) {
