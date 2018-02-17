@@ -1,7 +1,7 @@
 {
   "author": "Troy Alford",
   "name": "axis-wiki",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "Node.js Wiki, based on React w/ES6",
   "license": "MIT",
   "repository": {
@@ -98,7 +98,7 @@
     "sourcemap": "SOURCEMAP=true yarn webpack && source-map-explorer ./build/js/application.js",
     "prebuild": "rimraf build/css/* && rimraf build/js/*",
     "preserve": "babel node_modules/camo/lib --out-dir server/camo",
-    "preversion": "yarn build-prod",
+    "preversion": "yarn build-prod && git add -A",
     "serve": "npx babel-node server/server.js",
     "serve-prod": "NODE_ENV=production yarn serve",
     "serve-watched": "babel-watch server/server.js",
