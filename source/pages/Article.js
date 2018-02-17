@@ -113,7 +113,7 @@ JsxLink.displayName = 'JsxLink'
       <div className={classes}>
         <header className="title">
           {page.displayName}
-          {page.readonly && <Favorite value={page.isFavorite} onToggle={page.toggleFavorite} />}
+          {!page.readonly && <Favorite value={page.isFavorite} onToggle={page.toggleFavorite} />}
         </header>
         <div className="contents">
           <TabSet
