@@ -9,10 +9,6 @@
   max-width: 100vw;
   padding: 0;
 
-  &.no-tabs {
-    grid-template-rows: 1fr;
-  }
-
   ul.tabs {
     align-items: stretch;
     border-bottom: 1px solid $color-border;
@@ -76,5 +72,10 @@
     max-width: 100vw;
     overflow-y: auto;
     padding: 10px;
+  }
+
+  &.no-tabs {
+    grid-template-rows: 1fr;
+    > .tab-contents { box-shadow: none; }
   }
 }

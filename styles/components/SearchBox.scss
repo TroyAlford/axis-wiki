@@ -11,6 +11,7 @@
     border: none;
     display: block;
     margin: 5px;
+    max-width: calc(100vw - 135px);
     padding: 5px 5px 5px 25px;
   }
   > .icon {
