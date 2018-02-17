@@ -109,7 +109,7 @@ export default class Article extends Document {
           return Promise.resolve()
         }
 
-        const $article = $.load(article.html, { xmlMode: true })
+        const $article = $.load(article.html, { xmlMode: true, decodeEntities: false })
 
         const sections = $include.attr('sections')
         if (sections === '*' || !sections) {
