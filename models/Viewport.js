@@ -15,6 +15,9 @@ export default types.model('Viewport', {
   size: 'large',
   width: 0,
 }).views(self => ({
+  get isLarge() { return self.size === 'large' },
+  get isMedium() { return self.size === 'medium' },
+  get isSmall() { return self.size === 'small' },
   get showMenu() { return self.width >= 550 || self.menuToggled },
 })).actions(self => ({
   /* eslint-disable no-param-reassign */
