@@ -22,7 +22,7 @@ export default class Tag extends Component {
       className,
       removable ? 'removable' : '',
     ].filter(Boolean)
-    let text = tag.slice(0, 12)
+    let text = tag.slice(0, 10)
     if (text !== tag) text += '…'
 
     return (
