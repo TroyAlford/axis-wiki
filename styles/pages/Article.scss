@@ -30,9 +30,7 @@ $sections:
     border-top: 1px solid $color-border;
     border-bottom: 1px solid $color-border;
     display: grid;
-    grid-template-rows: 1fr;
-    height: 100%;
-    overflow-y: auto;
+    grid-template-rows: 100%;
 
     .jsx-parser > p:first-of-type { margin-top: 0; }
 

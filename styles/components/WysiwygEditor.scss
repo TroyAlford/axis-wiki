@@ -1,15 +1,22 @@
+.tab-set > .tabs.wysiwyg ~ .tab-contents {
+  padding: 0;
+  overflow: inherit;
+}
+
 .wysiwyg-editor {
   display: grid;
   grid-template-areas:
     "menubar"
     "editor"
   ;
+  grid-template-rows: 40px calc(100% - 42px);
+  height: 100%;
 
   .menubar {
     @include dropshadow;
     background-color: #fff;
-    border: 2px solid $color-border;
-    border-radius: 5px;
+    border: solid $color-border;
+    border-width: 0 0 1px 0;
     display: grid;
     margin-bottom: 5px;
     overflow: hidden;
@@ -18,5 +25,10 @@
       border-width: 0!important;
       display: block!important;
     }
+  }
+
+  .mce-content-body {
+    overflow-y: auto;
+    padding: 10px;
   }
 }

@@ -3,10 +3,11 @@
   box-shadow: 0 3px 3px $palette-gray-light inset;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 37px 1fr;
+  grid-template-rows: 37px calc(100% - 37px);
+  height: 100%;
   margin: 0;
-  padding: 0;
   max-width: 100vw;
+  padding: 0;
 
   &.no-tabs {
     grid-template-rows: 1fr;
@@ -87,6 +88,7 @@
     background-color: $color-bg;
     box-shadow: 0 -4px 4px $palette-gray-light;
     max-width: 100vw;
+    overflow-y: auto;
     padding: 10px;
   }
 }
