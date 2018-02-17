@@ -139,71 +139,53 @@ export default class Article extends Document {
       }))
   }
 
-  static render = slug => (
-    Article
-      .findOne({ $or: [{ slug }, { aliases: slug }] })
-      .then((article) => {
-        // eslint-disable-next-line no-param-reassign
-        if (!article) article = Article.create({ _id: slug, slug })
-        return Promise.all([
-          Promise.resolve(article),
-          Article.findMissingLinks(article.links || []),
-          Article.transclude(article.html || ''),
-          Article.find({ tags: article.slug }).then(all => (
-            all.map(({ slug: s, title }) => ({ slug: s, title }))
-          )),
-        ])
+  static render = async (slug) => {
+    const found = await Article.findOne({ $or: [{ slug }, { aliases: slug }] })
+    const article = found || Article.create({ _id: slug, slug })
+
+    const transcluded = await Article.transclude(article.html || '')
+    const links = [...article.links, ...transcluded.links]
+    const missing = await Article.findMissingLinks(links)
+
+    Object.assign(article, {
+      children: await Article.find({ tags: article.slug })
+        .then(all => (all.map(({ slug: s, title }) => ({ slug: s, title })))),
+      html: beautify(transcluded.html, BEAUTIFY_OPTIONS),
+      links,
+      missing,
+    })
+
+    article.parseLinks()
+    return article
+  }
+
+  static reloadAll = async () => {
+    const files = fs.readdirSync(config.folders.articles)
+    const htmlFiles = files.filter(name => name.endsWith('.html'))
+
+    const articles = htmlFiles.map((filename) => {
+      const slug = filename.replace(/\.html$/, '')
+      const paths = getFilePaths(slug)
+      const html = utils.readFileSync(paths.html)
+      const json = utils.readJSONSync(paths.json)
+      const { aliases, data, tags, title } = json
+
+      return Article.create({
+        _initialLoad: true,
+
+        _id: slug,
+        slug,
+        html,
+        aliases,
+        data,
+        tags,
+        title,
       })
-      .then(([article, missingLinks, transcluded, children]) => ({
-        aliases: article.aliases,
-        data: article.data,
-        slug: article.slug,
-        tags: article.tags,
-        title: article.title,
-        html: beautify(transcluded.html, BEAUTIFY_OPTIONS),
-        links: [...article.links, ...transcluded.links],
-        missing: [...missingLinks, ...transcluded.missing],
-        children,
-      }))
-      .catch((error) => {
-        console.log(` ~> ERROR: Article.render(${slug}) failed:`, error)
-        return Promise.reject()
-      })
-  )
+    })
 
-  static reloadAll = () => {
-    const steps = [
-      () => Promise.all(
-        fs.readdirSync(config.folders.articles)
-          .filter(name => name.endsWith('.html'))
-          .map((filename) => {
-            const slug = filename.replace(/\.html$/, '')
-            const paths = getFilePaths(slug)
-            const html = utils.readFileSync(paths.html)
-            const json = utils.readJSONSync(paths.json)
-            const { aliases, data, tags, title } = json
-
-            const article = Article.create({
-              _initialLoad: true,
-
-              _id: slug,
-              slug,
-              html,
-              aliases,
-              data,
-              tags,
-              title,
-            })
-
-            return article.save()
-          })
-      ),
-      () => Article.count().then((count) => {
-        console.log(` ~> DB:LOADED: ${count} article(s)`)
-      }),
-    ]
-
-    steps.reduce((promise, fn) => promise.then(fn), Promise.resolve())
+    Promise.all(articles.map(a => a.save())).then((promises) => {
+      console.log(` ~> DB:LOADED: ${promises.length} article(s)`)
+    })
   }
 
   postDelete() { this.deleteFromDisk() }
