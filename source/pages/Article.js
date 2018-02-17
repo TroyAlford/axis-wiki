@@ -80,7 +80,7 @@ JsxLink.displayName = 'JsxLink'
   )
 
   render() {
-    const { page } = this.props
+    const { page, viewport } = this.props
     const hideTagBar = page.readonly && !page.tags.length
 
     if (page.loading) return <div className="article page loading" />
@@ -109,7 +109,7 @@ JsxLink.displayName = 'JsxLink'
           <TagBar
             onChange={page.setTags}
             onRemove={page.removeTag}
-            readonly={page.readonly}
+            readonly={page.readonly || viewport.size === 'small'}
             tags={page.tags}
           />
         }
