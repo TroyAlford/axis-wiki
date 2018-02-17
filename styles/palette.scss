@@ -15,9 +15,11 @@ $palette-red:         #c44;
 $palette-white:       #fff;
 
 // Colors by purpose
+$color-bg-danger:     lighten($palette-red, 10%);
 $color-bg-inverse:    $palette-blue;
 $color-bg-warning:    $palette-gold;
 $color-bg:            $palette-offwhite;
+$color-bg-button:     darken($color-bg, 5%);
 $color-book:          $palette-blue-light;
 $color-border:        $palette-blue;
 $color-danger:        $palette-red;
@@ -31,4 +33,5 @@ $color-table-bg-even: $palette-white;
 $color-table-bg-odds: $palette-offwhite;
 $color-text-inverse:  $palette-offwhite;
 $color-text:          $palette-gray-dark;
+$color-text-danger:   lighten($palette-red, 50%);
 $color-warning:       $palette-gold-dark;

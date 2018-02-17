@@ -1,0 +1,26 @@
+button {
+  background: $color-bg-button;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+
+  &:hover {
+    background: linear-gradient(lighten($color-bg-button, 10%), darken($color-bg-button, 10%));
+    border: 2px groove $color-bg-button;
+  }
+  &:active {
+    background: linear-gradient(darken($color-bg-button, 10%), lighten($color-bg-button, 10%));
+    border: 2px groove $color-bg-button;
+  }
+  &:focus { outline: none; }
+
+  &.danger, &.success, &.warning {
+    border: 2px solid transparent;
+  }
+  &.danger:hover {
+    background: $color-bg-danger;
+    border: 2px solid $color-bg-danger;
+    color: $color-text-danger;
+  }
+}

@@ -1,5 +1,5 @@
 .tab-set {
-  background-color: darken($color-bg, 5%);
+  background-color: $color-bg-button;
   box-shadow: 0 3px 3px $palette-gray-light inset;
   display: grid;
   grid-template-columns: 1fr;
@@ -67,20 +67,6 @@
       flex-grow: 1;
       margin-top: -6px;
       text-align: right;
-
-      > button {
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-        padding: 5px;
-
-        &:hover {
-          background-color: darken($color-success, 10%);
-          border: initial;
-          border-radius: 5px;
-          color: $color-text-inverse;
-        }
-      }
     }
   }
 
