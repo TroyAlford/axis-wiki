@@ -34,8 +34,11 @@ JsxLink.displayName = 'JsxLink'
   addSheetButton = () => (
     <button className="icon-add" onClick={this.handleAddSheet}>Add Sheet</button>
   )
-  saveButton = page => (
-    <button className="icon-save" onClick={page.save}>Save</button>
+  deleteArticleButton = () => (
+    <button className="danger" onClick={this.props.page.delete}>Delete</button>
+  )
+  saveButton = () => (
+    <button className="icon-save" onClick={this.props.page.save}>Save</button>
   )
 
   readerTab = ({ html, children }) => ({
@@ -68,6 +71,13 @@ JsxLink.displayName = 'JsxLink'
     tab: <Icon name="html" />,
     contents: <HtmlEditor html={html} onChange={setHTML} />,
   })
+  renderButtons = () => (
+    <Fragment>
+      {!this.props.page.data.characterData && this.addSheetButton()}
+      {this.saveButton()}
+      {this.props.page.privileges.includes('admin') && this.deleteArticleButton()}
+    </Fragment>
+  )
 
   render() {
     const { page } = this.props
@@ -85,12 +95,7 @@ JsxLink.displayName = 'JsxLink'
             activeTabId={this.state.activeTabId}
             onTabClicked={this.handleTabClicked}
             showTabs={page.data.characterData || !page.readonly}
-            buttons={!page.readonly &&
-              <Fragment>
-                {!page.data.characterData && this.addSheetButton()}
-                {this.saveButton(page)}
-              </Fragment>
-            }
+            buttons={!page.readonly && this.renderButtons()}
             tabs={[
               this.readerTab(page),
               this.sheetTab(page),

@@ -4,7 +4,7 @@ import titleCase from '@utils/titleCase'
 import ChildArticle from '@models/ChildArticle'
 import PageData from '@models/PageData'
 import { optionalArrayOfStrings } from '@models/commonModels'
-import { GET, POST } from './fetch'
+import { DELETE, GET, POST } from './fetch'
 
 const DEFAULTS = {
   aliases: [],
@@ -62,6 +62,16 @@ const ArticlePage = types.model('ArticlePage', {
       })
     },
     beforeDestroy() { autorunDisposer() },
+    delete: flow(function* () {
+      const response = yield DELETE(`/api/page/${self.slug}`)
+      switch (response.status) {
+        case 410:
+          window.routerHistory.push('/')
+          break
+        default:
+          console.log('lame.')
+      }
+    }),
     load: flow(function* ({ slug }) {
       self.loading = true
       const response = yield GET(`/api/page/${slug}`)
