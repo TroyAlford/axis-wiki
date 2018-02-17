@@ -13,7 +13,7 @@ import { observer } from 'mobx-react'
 
     return (
       <li key={text} className={active ? 'is-current' : ''}>
-        {!url || active ? <b>{text}</b> : <Link to={url}>{text}</Link>}
+        {!url || active ? <b>{text}</b> : <Link to={url} tabIndex="-1">{text}</Link>}
         {children.length ? <ul>{children.map(this.renderMenuItem)}</ul> : ''}
       </li>
     )

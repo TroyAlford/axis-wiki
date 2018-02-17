@@ -114,7 +114,7 @@ const COOKIE = `fbsr_${CONFIG.facebook.appId}`
   }
 
   renderAnonymous = () => (
-    <button onClick={this.logOn} className="login button icon icon-facebook">Log In</button>
+    <button onClick={this.logOn} className="login button icon icon-facebook" tabIndex="-1">Log In</button>
   )
   renderLoggedIn = () => {
     const { user } = this.props
@@ -123,7 +123,7 @@ const COOKIE = `fbsr_${CONFIG.facebook.appId}`
 
     return (
       <Fragment>
-        <Link className="profile button" to="/profile">
+        <Link className="profile button" to="/profile" tabIndex="-1">
           <img alt="" src={imageSrc} />
           <span className="name">{user.name}</span>
         </Link>
