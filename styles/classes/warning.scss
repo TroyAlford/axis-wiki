@@ -1,0 +1,12 @@
+.warning {
+  border: 2px solid $color-bg-warning;
+  border-radius: 5px;
+  color: $color-warning;
+  padding: 5px;
+
+  &:before {
+    content: '';
+    font-family: 'axis-wiki';
+    margin-right: .25em;
+  }
+}

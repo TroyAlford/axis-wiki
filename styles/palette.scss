@@ -15,18 +15,20 @@ $palette-red:         #c44;
 $palette-white:       #fff;
 
 // Colors by purpose
-$color-bg:            $palette-offwhite;
 $color-bg-inverse:    $palette-blue;
-$color-highlight:     $palette-blue-light;
+$color-bg-warning:    $palette-gold;
+$color-bg:            $palette-offwhite;
 $color-book:          $palette-blue-light;
 $color-border:        $palette-blue;
 $color-danger:        $palette-red;
-$color-link:          $palette-blue-royal;
-$color-link-missing:  $palette-red;
+$color-highlight:     $palette-blue-light;
 $color-info:          $palette-blue-light;
+$color-link-missing:  $palette-red;
+$color-link:          $palette-blue-royal;
 $color-success:       $palette-green;
 $color-system:        $palette-beige;
 $color-table-bg-even: $palette-white;
 $color-table-bg-odds: $palette-offwhite;
-$color-text:          $palette-gray-dark;
 $color-text-inverse:  $palette-offwhite;
+$color-text:          $palette-gray-dark;
+$color-warning:       $palette-gold-dark;
