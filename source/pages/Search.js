@@ -11,19 +11,11 @@ import includes from 'lodash/includes'
       results.map((article) => {
         const previews = (article.results || []).map((hit) => {
           const words = hit.text.split(' ')
-          const index = findIndex(words, word => includes(
-            word.toLowerCase(),
-            term.toLowerCase()
-          ))
+          const index = findIndex(words, word => includes(word.toLowerCase(), term.toLowerCase()))
 
-          if (index < 0) { // not found
-            return { html: hit.text, line: hit.line }
-          }
-
-          return {
-            html: hit.text,
-            line: hit.line,
-          }
+          // not found
+          if (index < 0) return { html: hit.text, line: hit.line }
+          return { html: hit.text, line: hit.line }
         }).filter(preview => preview !== null)
 
         return {
@@ -40,10 +32,8 @@ import includes from 'lodash/includes'
   }
 
   renderResult = ({ key, slug, image, title, subtitle, hits, previews }) => {
-    const classes = [
-      'result card',
-      image ? 'has-media' : 'no-media',
-    ].join(' ')
+    const classes = ['result card', image ? 'has-media' : 'no-media'].join(' ')
+
     return (
       <Link className={classes} key={key} to={`/page/${slug}`}>
         {image && <div className="media" style={{ backgroundImage: `url(${image})` }} />}
