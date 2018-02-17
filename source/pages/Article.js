@@ -81,11 +81,12 @@ JsxLink.displayName = 'JsxLink'
 
   render() {
     const { page } = this.props
+    const hideTagBar = page.readonly && !page.tags.length
 
     if (page.loading) return <div className="article page loading" />
 
     return (
-      <div className="article page">
+      <div className={`article page ${hideTagBar ? 'no-tagbar' : ''.trim()}`}>
         <header className="title">
           {page.displayName}
           <Favorite value={page.isFavorite} onToggle={page.toggleFavorite} />
@@ -104,12 +105,14 @@ JsxLink.displayName = 'JsxLink'
             ].filter(Boolean)}
           />
         </div>
-        <TagBar
-          onChange={page.setTags}
-          onRemove={page.removeTag}
-          readonly={page.readonly}
-          tags={page.tags}
-        />
+        {hideTagBar ||
+          <TagBar
+            onChange={page.setTags}
+            onRemove={page.removeTag}
+            readonly={page.readonly}
+            tags={page.tags}
+          />
+        }
       </div>
     )
   }

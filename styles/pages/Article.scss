@@ -45,6 +45,16 @@ $sections:
     }
   }
 
+  &.no-tagbar {
+    grid-template-areas:
+      "title"
+      "content"
+    ;
+    grid-template-rows: 52px calc(100% - 52px);
+
+    .contents { border-bottom: none; }
+  }
+
   .tag-bar:not(.readonly) {
     background: darken($color-bg, 5%);
     box-shadow: 0 3px 3px $palette-gray-light inset;
