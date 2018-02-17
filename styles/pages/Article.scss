@@ -19,6 +19,7 @@ $sections:
   }
 
   header.title {
+    align-items: center;
     display: grid;
     font-size: 2em;
     font-weight: bold;
@@ -62,9 +63,14 @@ $sections:
 }
 
 @include breakpoint(small) {
+  .article.page header.title {
+    font-size: 1em;
+    .favorite { font-size: 1rem; }
+  }
   .tab-set > .tabs {
     .tab.wysiwyg, .tab.html {
       display: none;
     }
   }
+  .buttons button { font-size: .7rem; }
 }
