@@ -98,16 +98,22 @@ JsxLink.displayName = 'JsxLink'
   }
 
   render() {
-    const { page, viewport } = this.props
-    const hideTagBar = page.readonly && !page.tags.length
+    const { page } = this.props
+    const hideTagBar = !page.tags.length && page.readonly
 
     if (page.loading) return <div className="article page loading" />
 
+    const classes = [
+      'article page',
+      hideTagBar ? 'no-tagbar' : '',
+      page.readonly ? 'readonly' : '',
+    ].filter(Boolean).join(' ')
+
     return (
-      <div className={`article page ${hideTagBar ? 'no-tagbar' : ''.trim()}`}>
+      <div className={classes}>
         <header className="title">
           {page.displayName}
-          <Favorite value={page.isFavorite} onToggle={page.toggleFavorite} />
+          {page.readonly && <Favorite value={page.isFavorite} onToggle={page.toggleFavorite} />}
         </header>
         <div className="contents">
           <TabSet
@@ -127,7 +133,7 @@ JsxLink.displayName = 'JsxLink'
           <TagBar
             onChange={page.setTags}
             onRemove={page.removeTag}
-            readonly={page.readonly || viewport.isSmall}
+            readonly={page.readonly}
             tags={page.tags}
           />
         }
