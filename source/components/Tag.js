@@ -22,12 +22,14 @@ export default class Tag extends Component {
       className,
       removable ? 'removable' : '',
     ].filter(Boolean)
+    let text = tag.slice(0, 12)
+    if (text !== tag) text += '…'
 
     return (
       <span className={classNames.join(' ')}>
         {linkTo
-          ? <Link className="link" to={linkTo}>{tag}</Link>
-          : <span className="text">{tag}</span>
+          ? <Link className="link" to={linkTo}>{text}</Link>
+          : <span className="text">{text}</span>
         }
         {removable && <Icon name="remove" onClick={this.handleClickRemove} />}
       </span>

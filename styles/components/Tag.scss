@@ -1,18 +1,18 @@
 .tag {
   align-content: center;
+  align-items: center;
   background-color: $palette-offwhite;
   border-radius: 3px;
   border: 1px solid $palette-blue-royal;
   display: inline-grid;
   font-size: .9em;
   grid-gap: .25em;
-  grid-template-columns: 1.2em auto 1.2em;
-  grid-template-rows: 1fr;
+  grid-template-columns: 1.2em 1fr 1.2em;
+  grid-template-rows: 100%;
   height: 2em;
-  justify-content: center;
   margin: 3px;
   max-width: $size-tag-max-width;
-  padding: 0;
+  padding: 3px;
 
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -20,9 +20,9 @@
   -o-user-select: none;
   user-select: none;
 
-
   &[class^="icon-"], &[class*=" icon-"] {
     &:before, > * {
+      color: $color-link;
       display: inline-grid;
       font-size: .8rem;
     }
@@ -37,7 +37,8 @@
   > .link, > .text {
     display: inline-grid;
     justify-content: flex-start;
-    max-width: calc(#{$size-tag-max-width} - 2.9em);
+    line-height: .7rem;
+    max-width: calc(#{$size-tag-max-width} - 46px);
     overflow: hidden;
     text-decoration: none;
     text-overflow: ellipsis;
