@@ -103,6 +103,7 @@ export default class Article extends Document {
 
       return Article.findOne({ slug: from }).then((article) => {
         if (!article) {
+          $include.html(`\n<div class="warning">Transcluded Article '${from}' does not exist</div>\n`)
           links.push(from)
           missing.push(from)
           return Promise.resolve()
