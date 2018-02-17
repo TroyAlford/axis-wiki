@@ -69,7 +69,6 @@ const ArticlePage = types.model('ArticlePage', {
           window.routerHistory.push('/')
           break
         default:
-          console.log('lame.')
       }
     }),
     load: flow(function* ({ slug }) {
