@@ -20,7 +20,7 @@ const JsxLink = ({ href, ...props }) => <Link to={href} {...props} />
 JsxLink.displayName = 'JsxLink'
 
 @observer export default class Article extends Component {
-  state = { activeTabId: 'read' };
+  state = { activeTabId: 'sheet' };
 
   handleAddSheet = () => {
     this.props.page.data.createCharacterData()
@@ -116,8 +116,8 @@ JsxLink.displayName = 'JsxLink'
             showTabs={page.data.characterData || !page.readonly}
             buttons={!page.readonly && this.renderButtons()}
             tabs={[
-              this.sheetTab(page),
               this.readerTab(page),
+              this.sheetTab(page),
               !page.readonly && this.editorTab(page),
               !page.readonly && this.htmlTab(page),
             ].filter(Boolean)}
