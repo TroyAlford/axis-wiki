@@ -13,6 +13,7 @@ const TYPES = [
 ]
 
 export default class Editable extends React.Component {
+  static displayName = 'Editable'
   static defaultProps = {
     className: '',
     forceEditMode: false,
