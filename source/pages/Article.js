@@ -41,26 +41,6 @@ JsxLink.displayName = 'JsxLink'
     <button className="icon-save" onClick={this.props.page.save}>Save</button>
   )
 
-  readerTab = ({ html, children }) => ({
-    id: 'reader',
-    tab: <Tab caption="Article" icon="read" />,
-    contents: (
-      <Fragment>
-        <JsxParser components={{ a: JsxLink }} jsx={html} />
-        <ArticleChildren articles={children} />
-      </Fragment>
-    ),
-  })
-  sheetTab = ({ data }) => {
-    const { characterData: sheet } = data
-    if (!sheet) return null
-
-    return {
-      id: 'sheet',
-      tab: <Tab caption="Sheet" icon="sheet" onRemoveClick={data.removeCharacterData} removable />,
-      contents: <Sheet character={sheet.toJSON()} onChange={data.setCharacterData} />,
-    }
-  }
   editorTab = ({ html, setHTML }) => ({
     id: 'wysiwyg',
     tab: <Icon name="edit" />,
@@ -71,13 +51,51 @@ JsxLink.displayName = 'JsxLink'
     tab: <Icon name="html" />,
     contents: <HtmlEditor html={html} onChange={setHTML} />,
   })
-  renderButtons = () => (
-    <Fragment>
-      {!this.props.page.data.characterData && this.addSheetButton()}
-      {this.saveButton()}
-      {this.props.page.privileges.includes('admin') && this.deleteArticleButton()}
-    </Fragment>
-  )
+  readerTab = ({ html, children }) => ({
+    id: 'reader',
+    tab: <Tab caption="Article" icon="read" />,
+    contents: (
+      <Fragment>
+        <JsxParser components={{ a: JsxLink }} jsx={html} />
+        <ArticleChildren articles={children} />
+      </Fragment>
+    ),
+  })
+  sheetTab = ({ data, readonly }) => {
+    const { characterData: sheet } = data
+    if (!sheet) return null
+
+    return {
+      id: 'sheet',
+      tab: (
+        <Tab
+          caption="Sheet"
+          icon="sheet"
+          onRemoveClick={data.removeCharacterData}
+          removable={!readonly}
+        />
+      ),
+      contents: (
+        <Sheet
+          character={sheet.toJSON()}
+          onChange={data.setCharacterData}
+          readonly={readonly}
+        />
+      ),
+    }
+  }
+  renderButtons = () => {
+    const { page, viewport } = this.props
+    const { activeTabId } = this.state
+
+    return (
+      <Fragment>
+        {!page.data.characterData && this.addSheetButton()}
+        {(!viewport.isSmall || activeTabId === 'sheet') && this.saveButton()}
+        {page.privileges.includes('admin') && this.deleteArticleButton()}
+      </Fragment>
+    )
+  }
 
   render() {
     const { page, viewport } = this.props
@@ -98,8 +116,8 @@ JsxLink.displayName = 'JsxLink'
             showTabs={page.data.characterData || !page.readonly}
             buttons={!page.readonly && this.renderButtons()}
             tabs={[
-              this.readerTab(page),
               this.sheetTab(page),
+              this.readerTab(page),
               !page.readonly && this.editorTab(page),
               !page.readonly && this.htmlTab(page),
             ].filter(Boolean)}
@@ -109,7 +127,7 @@ JsxLink.displayName = 'JsxLink'
           <TagBar
             onChange={page.setTags}
             onRemove={page.removeTag}
-            readonly={page.readonly || viewport.size === 'small'}
+            readonly={page.readonly || viewport.isSmall}
             tags={page.tags}
           />
         }
