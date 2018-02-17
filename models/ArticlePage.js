@@ -95,6 +95,7 @@ const ArticlePage = types.model('ArticlePage', {
     }),
     setHTML(html) { self.html = html },
     setTags(tags) { self.tags = tags },
+    setTitle(title) { self.title = title },
     toggleFavorite: flow(function* () {
       const { slug, isFavorite } = self
       const response = yield POST('/api/my/favorites', { slug, value: !isFavorite })

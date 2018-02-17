@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 
 import ArticleChildren from '@components/ArticleChildren'
-// import Editable from '../components/Editable'
-// import TinyMCE from 'react-tinymce'
+import Editable from '@components/Editable'
 import Favorite from '@components/Favorite'
 import Icon from '@components/Icon'
 import HtmlEditor from '@components/HtmlEditor'
@@ -112,7 +111,7 @@ JsxLink.displayName = 'JsxLink'
     return (
       <div className={classes}>
         <header className="title">
-          {page.displayName}
+          {<Editable value={page.displayName} onChange={page.setTitle} readonly={page.readonly} />}
           {!page.readonly && <Favorite value={page.isFavorite} onToggle={page.toggleFavorite} />}
         </header>
         <div className="contents">
