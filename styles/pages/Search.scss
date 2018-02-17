@@ -8,6 +8,7 @@ $sections:
 .search.page {
   display: grid;
   grid-gap: 10px;
+  grid-template-columns: 1fr;
   padding: 10px;
 
   .result.card {
@@ -24,10 +25,15 @@ $sections:
     grid-template-rows: 1fr;
     padding: 20px;
     text-decoration: none;
-    width: 100%;
+    width: 100%; max-width: calc(100vw - 20px);
 
     @each $section in $sections {
     .#{$section} { grid-area: #{$section}; }
+    }
+
+    &.no-media {
+      grid-template-areas: "results hits";
+      grid-template-columns: 1fr 60px;
     }
 
     .media {
@@ -44,8 +50,28 @@ $sections:
       overflow: hidden;
       white-space: nowrap;
     }
+
+    .hits { text-align: right; }
   }
   .no-results {
     margin: auto;
+  }
+}
+
+@include breakpoint(small) {
+  .search.page {
+    .result.card {
+      grid-template-columns: 40px 1fr 40px;
+      font-size: .8em;
+      padding: 5px;
+
+      &.no-media {
+        grid-template-columns: 1fr 40px;
+      }
+
+      .media {
+        height: 40px; width: 40px;
+      }
+    }
   }
 }
