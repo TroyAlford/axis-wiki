@@ -16,7 +16,7 @@ describe('format', () => {
       (60 * 60 * 24) * 2 + // 2 days
       (60 * 60) * 8 + // 8 hours
       (60) * 2 + // 2 minutes
-      48                   // 48 seconds
+      48 // 48 seconds
     )).toEqual('2dy, 8hr, 2min, 48sec')
   })
 })
