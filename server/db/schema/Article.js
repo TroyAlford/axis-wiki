@@ -55,11 +55,11 @@ export default class Article extends Document {
     $parser('a').each((index, element) => {
       const $link = $parser(element)
       const href = $link.attr('href') || ''
+      const slug = extractSlug(href)
       const parsedUrl = url.parse(href)
 
       const isInternal = !parsedUrl.hostname
       if (isInternal) {
-        const slug = extractSlug(href)
         if (slug.match(/\.(gif|jpg|png)$/)) {
           $link.attr('href', `/media/${slug}`)
         } else {
@@ -68,6 +68,10 @@ export default class Article extends Document {
         links.push(slug)
       } else {
         $link.attr('target', '_new').addClass('external')
+      }
+
+      if (this.missing.includes(slug)) {
+        $link.addClass('missing')
       }
     })
 
