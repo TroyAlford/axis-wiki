@@ -42,9 +42,8 @@ import includes from 'lodash/includes'
   renderResult = ({ key, slug, image, title, subtitle, hits, previews }) => (
     <Link className="result card" key={key} to={`/page/${slug}`}>
       {image && <div className="media" style={{ backgroundImage: `url(${image})` }} />}
-      <div className="title"><b>{title}</b> <i>{subtitle}</i></div>
-      <div className="hits"><i>{hits} hits</i></div>
       <div className="results">
+        <div className="title"><b>{title}</b> <i>{subtitle}</i></div>
         {previews.slice(0, 3).map((preview, index) => (
           <div key={index} // eslint-disable-line react/no-array-index-key
             className="search-match"
@@ -52,6 +51,7 @@ import includes from 'lodash/includes'
           />
         ))}
       </div>
+      <div className="hits"><i>{hits} hits</i></div>
     </Link>
   )
   renderNoResults = () => (

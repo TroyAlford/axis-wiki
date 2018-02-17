@@ -12,18 +12,16 @@ $sections:
 
   .result.card {
     @include dropshadow;
+    align-items: center;
     display: grid;
     border: 2px solid $color-border;
     border-radius: 3px;
     color: $color-text;
     cursor: pointer;
     grid-gap: 10px;
-    grid-template-areas:
-      "media title hits"
-      "media results results"
-    ;
-    grid-template-columns: 64px 1fr 40px;
-    grid-template-rows: 1em 1fr;
+    grid-template-areas: "media results hits";
+    grid-template-columns: 80px 1fr 60px;
+    grid-template-rows: 1fr;
     padding: 20px;
     text-decoration: none;
     width: 100%;
