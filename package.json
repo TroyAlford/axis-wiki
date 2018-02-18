@@ -43,7 +43,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-tagsinput": "^3.19.0",
-    "sheetforge": "^0.1.7",
+    "sheetforge": "^0.1.8",
     "superchild": "^0.1.10",
     "tinymce": "^4.7.6"
   },
@@ -91,7 +91,7 @@
     "develop": "yarn watch & yarn serve-watched",
     "build": "yarn build-css & yarn preserve & yarn webpack",
     "build-dev": "yarn build",
-    "build-prod": "NODE_ENV=production yarn build",
+    "build-prod": "NODE_ENV=production SOURCEMAP=true yarn build",
     "build-css": "(yarn build-css-app & yarn build-css-dep)",
     "build-css-app": "node-sass styles/application.scss --output-style compressed --source-map true --source-map-embed --importer node_modules/node-sass-glob-importer/dist/cli.js -o build/css",
     "build-css-dep": "node-sass vendor/dependencies.scss --output-style compressed --source-map true --source-map-embed -o build/css",
