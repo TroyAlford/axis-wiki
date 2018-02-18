@@ -6,7 +6,7 @@ const searchFor = debounce(term => window.routerHistory.push(`/search/${term}`),
 export default class SearchBox extends React.Component {
   static defaultProps = {
     className: '',
-    placeholder: 'Search...',
+    placeholder: 'Search... (Ctrl+Shift+F)',
     term: '',
   }
 
