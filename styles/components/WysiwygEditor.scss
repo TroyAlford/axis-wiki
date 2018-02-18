@@ -25,6 +25,12 @@
       border-width: 0!important;
       display: block!important;
     }
+
+    button {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+    }
   }
 
   .mce-content-body {
