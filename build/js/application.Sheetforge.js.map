@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./source/components/dynamic/Sheetforge.js"],"names":[],"mappings":";;;;;;;;;;;;AAAA","file":"application.Sheetforge.js","sourcesContent":["import { Sheet } from 'sheetforge'\n\nexport default Sheet\n\n\n\n// WEBPACK FOOTER //\n// ./source/components/dynamic/Sheetforge.js"],"sourceRoot":""}
