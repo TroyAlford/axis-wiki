@@ -4118,9 +4118,9 @@ var renderLayoutHeader = function renderLayoutHeader() {
     _react2.default.createElement('input', {
       id: 'navigation-menu',
       className: 'icon icon-menu menu-toggle',
+      defaultChecked: showMenu,
       onClick: appState.viewport.toggleMenu,
-      type: 'checkbox',
-      checked: showMenu
+      type: 'checkbox'
     }),
     _react2.default.createElement('label', { className: 'icon icon-menu', htmlFor: 'navigation-menu' }),
     _react2.default.createElement(_HtmlMetadata2.default, { author: author, description: description, keywords: keywords, title: title || displayName }),

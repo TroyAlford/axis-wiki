@@ -41,9 +41,9 @@ const renderLayoutHeader = () => {
       <input
         id="navigation-menu"
         className="icon icon-menu menu-toggle"
+        defaultChecked={showMenu}
         onClick={appState.viewport.toggleMenu}
         type="checkbox"
-        checked={showMenu}
       />
       <label className="icon icon-menu" htmlFor="navigation-menu" />
       <HtmlMetadata {...{ author, description, keywords, title: title || displayName }} />
