@@ -97,7 +97,7 @@ JsxLink.displayName = 'JsxLink'
   }
 
   render() {
-    const { page } = this.props
+    const { page, user } = this.props
     const hideTagBar = !page.tags.length && page.readonly
 
     if (page.loading) return <div className="article page loading" />
@@ -112,7 +112,7 @@ JsxLink.displayName = 'JsxLink'
       <div className={classes}>
         <header className="title">
           {<Editable value={page.displayName} onChange={page.setTitle} readonly={page.readonly} />}
-          {!page.readonly && <Favorite value={page.isFavorite} onToggle={page.toggleFavorite} />}
+          {!user.anonymous && <Favorite value={page.isFavorite} onToggle={page.toggleFavorite} />}
         </header>
         <div className="contents">
           <TabSet
