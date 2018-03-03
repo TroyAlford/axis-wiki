@@ -19,15 +19,13 @@ const JsxLink = ({ href, ...props }) => <Link to={href} {...props} />
 JsxLink.displayName = 'JsxLink'
 
 @observer export default class Article extends Component {
-  state = { activeTabId: 'sheet' };
-
   handleAddSheet = () => {
     this.props.page.data.createCharacterData()
-    this.setState({ activeTabId: 'sheet' })
+    this.props.page.setActiveTabId('sheet')
   }
   handleTabClicked = (activeTabId) => {
     if (activeTabId === 'add-sheet') return
-    this.setState({ activeTabId })
+    this.props.page.setActiveTabId(activeTabId)
   }
 
   addSheetButton = () => (
@@ -85,12 +83,11 @@ JsxLink.displayName = 'JsxLink'
   }
   renderButtons = () => {
     const { page, viewport } = this.props
-    const { activeTabId } = this.state
 
     return (
       <Fragment>
         {!page.data.characterData && this.addSheetButton()}
-        {(!viewport.isSmall || activeTabId === 'sheet') && this.saveButton()}
+        {(!viewport.isSmall || page.activeTabId === 'sheet') && this.saveButton()}
         {page.privileges.includes('admin') && this.deleteArticleButton()}
       </Fragment>
     )
@@ -116,7 +113,7 @@ JsxLink.displayName = 'JsxLink'
         </header>
         <div className="contents">
           <TabSet
-            activeTabId={this.state.activeTabId}
+            activeTabId={page.activeTabId}
             onTabClicked={this.handleTabClicked}
             showTabs={page.data.characterData || !page.readonly}
             buttons={!page.readonly && this.renderButtons()}

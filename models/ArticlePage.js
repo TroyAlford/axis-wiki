@@ -32,6 +32,7 @@ const ArticlePage = types.model('ArticlePage', {
   type: types.optional(types.literal('article'), DEFAULTS.type),
 }).volatile(() => ({
   loading: false,
+  activeTabId: 'sheet',
 })).views(self => ({
   get displayName() { return self.title || titleCase(self.slug) },
   get keywords() {
@@ -93,6 +94,7 @@ const ArticlePage = types.model('ArticlePage', {
         default:
       }
     }),
+    setActiveTabId(tabId) { self.activeTabId = tabId },
     setHTML(html) { self.html = html },
     setTags(tags) { self.tags = tags },
     setTitle(title) { self.title = title },
