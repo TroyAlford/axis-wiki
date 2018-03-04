@@ -24,18 +24,19 @@
   }
   .link-list {
     background-color: lighten($palette-gray-light, 10%);
-    display: grid;
-    grid-auto-flow: row;
-    grid-gap: 5px;
-    grid-template-columns: repeat(4, 1fr);
+    columns: 4;
+    column-fill: balance;
+    column-gap: 10px;
     padding: 10px;
+
+    > a { display: inherit; }
   }
 }
 
 @include breakpoint(medium) {
   .article-children {
     .link-list {
-      grid-template-columns: repeat(3, 1fr);
+      columns: 3;
     }
   }
 }
@@ -43,7 +44,7 @@
 @include breakpoint(small) {
   .article-children {
     .link-list {
-      grid-template-columns: repeat(2, 1fr);
+      columns: 2;
 
       a { @include ellipsis; }
     }
