@@ -22,6 +22,8 @@ export default class User extends Document {
       privileges: [String],
       articles: [String],
       tags: [String],
+
+      lastActivity: { type: Date, default: null },
     })
   }
 
@@ -39,10 +41,12 @@ export default class User extends Document {
       name: this.name,
       email: this.email,
 
+      articles: this.articles,
       favorites: this.favorites,
       privileges: this.privileges,
-      articles: this.articles,
       tags: this.tags,
+
+      lastActivity: this.lastActivity ? this.lastActivity.toUTCString() : '',
     }))
   }
 
@@ -62,10 +66,12 @@ export default class User extends Document {
               name: json.name,
               email: json.email,
 
+              articles: json.articles || [],
               favorites: json.favorites || [],
               privileges: json.privileges || [],
-              articles: json.articles || [],
               tags: json.tags || [],
+
+              lastActivity: json.lastActivity ? new Date(json.lastActivity) : null,
             })
 
             return user.save()
@@ -81,11 +87,15 @@ export default class User extends Document {
 
   static render = user => ({
     id: user._id,
-    articles: user.articles,
+
     email: user.email,
-    favorites: user.favorites,
     name: user.name,
+
+    articles: user.articles,
+    favorites: user.favorites,
     privileges: user.privileges,
     tags: user.tags,
+
+    lastActivity: user.lastActivity,
   })
 }

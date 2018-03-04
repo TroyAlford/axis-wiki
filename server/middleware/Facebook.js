@@ -7,7 +7,7 @@ const PREFIX = 'fbsr_'
 const toHex = byte => ((byte < 16) ? '0' : '') + byte.toString(16)
 const encodeToHex = buffer => buffer.reduce(
   (encoded, byte) => encoded + toHex(byte)
-, '')
+  , '')
 
 export default (req, res, next) => {
   const { appId, appSecret } = config.facebook
@@ -28,8 +28,8 @@ export default (req, res, next) => {
   if (cookie) {
     const chunks = cookie.split('.', 2)
     const rawSignature = chunks[0].replace(/-/g, '+').replace(/_/g, '/')
-    const hexSignature = encodeToHex(new Buffer(rawSignature, 'base64'))
-    const rawToken = new Buffer(chunks[1].replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString()
+    const hexSignature = encodeToHex(Buffer.from(rawSignature, 'base64'))
+    const rawToken = Buffer.from(chunks[1].replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString()
     const token = JSON.parse(rawToken)
 
     hmac.update(chunks[1])
@@ -39,16 +39,16 @@ export default (req, res, next) => {
     if (expectedSignature === hexSignature) {
       User.findOne({ _id: token.user_id }).then((user) => {
         if (user) {
+          user.lastActivity = new Date() // eslint-disable-line no-param-reassign
           req.session = { token, ...User.render(user), anonymous: false }
+          user.save()
         } else {
           req.session = { token, ...User.render(User.create()), anonymous: true }
         }
-      })
-      .catch(error =>
+      }).catch(error =>
         // eslint-disable-next-line no-console
         console.log(`Facebook middleware error: ${JSON.stringify(error)}`)
-      )
-      .then(() => { next() })
+      ).then(() => { next() })
     } else {
       next()
     }
