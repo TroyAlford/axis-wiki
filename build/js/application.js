@@ -2403,7 +2403,6 @@ var _WysiwygEditor2 = _interopRequireDefault(_WysiwygEditor);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// const { tinyMCE } = window
 var JsxLink = function JsxLink(_ref) {
   var href = _ref.href,
       props = (0, _objectWithoutProperties3.default)(_ref, ['href']);
@@ -2428,6 +2427,10 @@ var Article = (0, _mobxReact.observer)(_class = function (_Component) {
     return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref2 = Article.__proto__ || (0, _getPrototypeOf2.default)(Article)).call.apply(_ref2, [this].concat(args))), _this), _this.handleAddSheet = function () {
       _this.props.page.data.createCharacterData();
       _this.props.page.setActiveTabId('sheet');
+    }, _this.handleDeleteArticle = function () {
+      if (window.confirm('Are you sure? Deleting an article is permanent')) {
+        _this.props.page.delete();
+      }
     }, _this.handleTabClicked = function (activeTabId) {
       if (activeTabId === 'add-sheet') return;
       _this.props.page.setActiveTabId(activeTabId);
@@ -2440,7 +2443,7 @@ var Article = (0, _mobxReact.observer)(_class = function (_Component) {
     }, _this.deleteArticleButton = function () {
       return _react2.default.createElement(
         'button',
-        { className: 'danger', onClick: _this.props.page.delete },
+        { className: 'danger', onClick: _this.handleDeleteArticle },
         'Delete'
       );
     }, _this.saveButton = function () {

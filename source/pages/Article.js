@@ -14,7 +14,6 @@ import TabSet from '@components/TabSet'
 import TagBar from '@components/TagBar'
 import WysiwygEditor from '@components/WysiwygEditor'
 
-// const { tinyMCE } = window
 const JsxLink = ({ href, ...props }) => <Link to={href} {...props} />
 JsxLink.displayName = 'JsxLink'
 
@@ -22,6 +21,11 @@ JsxLink.displayName = 'JsxLink'
   handleAddSheet = () => {
     this.props.page.data.createCharacterData()
     this.props.page.setActiveTabId('sheet')
+  }
+  handleDeleteArticle = () => {
+    if (window.confirm('Are you sure? Deleting an article is permanent')) {
+      this.props.page.delete()
+    }
   }
   handleTabClicked = (activeTabId) => {
     if (activeTabId === 'add-sheet') return
@@ -32,7 +36,7 @@ JsxLink.displayName = 'JsxLink'
     <button className="icon-add" onClick={this.handleAddSheet}>Add Sheet</button>
   )
   deleteArticleButton = () => (
-    <button className="danger" onClick={this.props.page.delete}>Delete</button>
+    <button className="danger" onClick={this.handleDeleteArticle}>Delete</button>
   )
   saveButton = () => (
     <button className="icon-save" onClick={this.props.page.save}>Save</button>
