@@ -1,15 +1,16 @@
 a {
   color: $color-link;
+  text-decoration: none;
 
   &.external {
     &:after {
-      content: '\e800';
+      content: '\ea17';
       font-family: axis-wiki;
       font-size: .5rem;
       margin-left: .25rem;
-      margin-top: -.25rem;
       position: relative;
-      top: -3px;
+      text-decoration: none;
+      top: -0.5em;
     }
   }
 

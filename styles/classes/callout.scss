@@ -14,9 +14,12 @@
   border-color: $palette-gray-light;
   border-style: solid;
   border-width: 1px;
+  margin: 1em 0;
   overflow: hidden;
   padding: 5px 5px 5px 30px;
   position: relative;
+
+  &:first-child { margin-top: 0; }
 
   td, th, &:before {
     border-color: $palette-gray-light;

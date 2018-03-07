@@ -1,18 +1,10 @@
 blockquote {
   background: $palette-beige;
   border-color: darken($palette-beige, 20%);
+  border-radius: 5px;
   border-style: solid;
   border-width: 1px 1px 1px 3px;
-  margin: 1em;
-  padding: 0.5em;
+  margin: .75em;
+  padding: 0.25em 0.5em;
   text-align: justify;
-
-  &:before, &:after {
-    color: darken($palette-beige, 20%);
-    font-size: 4em;
-    line-height: 0.1em;
-    vertical-align: -0.4em;
-  }
-  &:before { margin-right: 5px; content: '“'; }
-  &:after  { margin-left:  5px; content: '”'; float: right; }
 }
