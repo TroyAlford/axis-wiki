@@ -6891,9 +6891,9 @@ shebang-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-1.0.0.tgz#da42f49740c0b42db2ca9728571cb190c98efea3"
 
-sheetforge@^0.1.8:
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/sheetforge/-/sheetforge-0.1.8.tgz#94da1f3d52b2ebc7d7ece6de0ff543a0f13243a3"
+sheetforge@^0.1.10:
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/sheetforge/-/sheetforge-0.1.10.tgz#98b659f323a82454d47689c75126835a3c97c2f6"
 
 shellwords@^0.1.1:
   version "0.1.1"

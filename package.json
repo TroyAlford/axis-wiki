@@ -43,7 +43,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-tagsinput": "^3.19.0",
-    "sheetforge": "^0.1.8",
+    "sheetforge": "^0.1.10",
     "superchild": "^0.1.10",
     "tinymce": "^4.7.6"
   },
