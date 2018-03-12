@@ -1,4 +1,4 @@
-webpackJsonpaxis_wiki([5],{
+webpackJsonpaxis_wiki([2],{
 
 /***/ "2Cq2":
 /***/ (function(module, exports, __webpack_require__) {

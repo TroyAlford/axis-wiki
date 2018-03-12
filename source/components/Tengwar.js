@@ -3,7 +3,7 @@ import Loadable from 'react-loadable'
 
 const Tengwar = Loadable({
   loader: () => import(/* webpackChunkName: "Glaemscribe" */ './dynamic/Glaemscribe'),
-  loading: () => <div className="loading" />,
+  loading: () => <i>(loading tengwar)</i>,
   render: ({ default: Glaemscribe }, props) => <Glaemscribe {...props} />,
 })
 

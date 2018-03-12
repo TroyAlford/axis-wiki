@@ -8,7 +8,7 @@
 	else
 		root["axis-wiki"] = factory(root["mobx-state-tree"], root["react"], root["react-router-dom"], root["mobx"], root["mobx-react"], root["react-dom"]);
 })(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_D5HE__, __WEBPACK_EXTERNAL_MODULE_Jmof__, __WEBPACK_EXTERNAL_MODULE_KC3J__, __WEBPACK_EXTERNAL_MODULE_dGoz__, __WEBPACK_EXTERNAL_MODULE_uva0__, __WEBPACK_EXTERNAL_MODULE_wLXD__) {
-return webpackJsonpaxis_wiki([3],{
+return webpackJsonpaxis_wiki([4],{
 
 /***/ "+66z":
 /***/ (function(module, exports) {
@@ -10073,10 +10073,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Tengwar = (0, _reactLoadable2.default)({
   loader: function loader() {
-    return __webpack_require__.e/* import() */(5).then(__webpack_require__.bind(null, "2Cq2"));
+    return __webpack_require__.e/* import() */(2).then(__webpack_require__.bind(null, "2Cq2"));
   },
   loading: function loading() {
-    return _react2.default.createElement('div', { className: 'loading' });
+    return _react2.default.createElement(
+      'i',
+      null,
+      '(loading tengwar)'
+    );
   },
   render: function render(_ref, props) {
     var Glaemscribe = _ref.default;
@@ -12885,7 +12889,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Sheet = (0, _reactLoadable2.default)({
   loader: function loader() {
-    return __webpack_require__.e/* import() */(2).then(__webpack_require__.bind(null, "1eJs"));
+    return __webpack_require__.e/* import() */(3).then(__webpack_require__.bind(null, "1eJs"));
   },
   loading: function loading() {
     return _react2.default.createElement('div', { className: 'loading' });
