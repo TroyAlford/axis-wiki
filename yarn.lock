@@ -3261,6 +3261,10 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
+glaemscribe@TroyAlford/glaemscribe:
+  version "0.0.0"
+  resolved "https://codeload.github.com/TroyAlford/glaemscribe/tar.gz/6d95d65079b2ad887907816ca4fc6cde673d8298"
+
 glob-base@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/glob-base/-/glob-base-0.3.0.tgz#dbb164f6221b1c0b1ccf82aea328b497df0ea3c4"
@@ -6250,6 +6254,12 @@ react-dropzone@^4.2.8:
   dependencies:
     attr-accept "^1.0.3"
     prop-types "^15.5.7"
+
+react-glaemscribe@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/react-glaemscribe/-/react-glaemscribe-0.0.4.tgz#544a477440d4c6ce2f1552f5176cb3d52e48f905"
+  dependencies:
+    glaemscribe TroyAlford/glaemscribe
 
 react-jsx-parser@^1.3.0:
   version "1.3.0"

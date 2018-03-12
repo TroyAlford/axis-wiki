@@ -12,6 +12,7 @@ import Sheet from '@components/Sheet'
 import Tab from '@components/Tab'
 import TabSet from '@components/TabSet'
 import TagBar from '@components/TagBar'
+import Tengwar from '@components/Tengwar'
 import WysiwygEditor from '@components/WysiwygEditor'
 
 const JsxLink = ({ href, ...props }) => <Link to={href} {...props} />
@@ -57,7 +58,13 @@ JsxLink.displayName = 'JsxLink'
     tab: <Tab caption="Article" icon="read" />,
     contents: (
       <Fragment>
-        <JsxParser components={{ a: JsxLink }} jsx={html} />
+        <JsxParser
+          components={{
+            a: JsxLink,
+            Tengwar,
+          }}
+          jsx={html}
+        />
         <ArticleChildren articles={children} />
       </Fragment>
     ),
