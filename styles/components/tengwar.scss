@@ -1,0 +1,22 @@
+tengwar {
+  border-radius: .25em;
+  border: 1px solid;
+  display: inline-flex;
+  font-size: .9em;
+  padding: 0 .25em;
+  vertical-align: top;
+
+  &:before {
+    border-right: 1px solid;
+    content: 'zR5Ì# ';
+    font-family: 'Tengwar Annatar';
+    margin-right: .25em;
+    padding-right: .25em;
+  }
+}
+
+p, span, div {
+  > .glaemscribe {
+    line-height: inherit;
+  }
+}

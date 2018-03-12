@@ -33,7 +33,7 @@ Editor.defaultProps = Object.assign(Editor.defaultProps || {}, {
     convert_fonts_to_spans: true,
     convert_urls: false,
     custom_elements: 'include',
-    extended_valid_elements: 'include[class|from|sections]',
+    extended_valid_elements: 'include[class|from|sections],tengwar',
     fixed_toolbar_container: '.wysiwyg-editor > .menubar',
     formats: {
       aligncenter: {

@@ -61,7 +61,7 @@ JsxLink.displayName = 'JsxLink'
         <JsxParser
           components={{
             a: JsxLink,
-            Tengwar,
+            tengwar: Tengwar,
           }}
           jsx={html}
         />
