@@ -36,9 +36,10 @@
     left: 0; top: 0; height: 100%; width: 24px;
   }
 
+  &[class*="-book"] { @include callout-color($color-book, $image-book); }
+  &[class*="-combo"] { @include callout-color($color-combo, $image-combo); }
+  &[class*="-info"] { @include callout-color($color-info, $image-info); }
   &[class*="-system"] { @include callout-color($color-system, $image-system); }
-  &[class*="-book"]   { @include callout-color($color-book,   $image-book  ); }
-  &[class*="-info"]   { @include callout-color($color-info,   $image-info  ); }
 }
 
 table[class*="callout-"] {
