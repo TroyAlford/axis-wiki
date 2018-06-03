@@ -20,17 +20,13 @@ const ENVIRONMENT = process.env.NODE_ENV
 const PRODUCTION = ENVIRONMENT === 'production'
 const SOURCEMAP = process.env.SOURCEMAP
 
-const ConfigPlugin = new webpack.DefinePlugin({
-  'process.env': VARIABLES.reduce((replacementMap, key) => ({
-    ...replacementMap,
-    [key]: JSON.stringify(process.env[key] || false)
-  }), { NODE_ENV: JSON.stringify(ENVIRONMENT) })
-})
-const HoistPlugin = new webpack.optimize.ModuleConcatenationPlugin()
-const UglifyPlugin = new webpack.optimize.UglifyJsPlugin({ minimize: true, sourceMap: SOURCEMAP })
-
-const bundle = {
+module.exports = {
   devtool: SOURCEMAP ? 'source-map' : 'none',
+  mode: ENVIRONMENT,
+  /* Main JS Bundle */
+  entry: {
+    application: `${__dirname}/source/Application.js`,
+  },
   module: {
     rules: [{
       test: /\.(woff2?|eot|ttf|svg)$/,
@@ -56,16 +52,29 @@ const bundle = {
       loader: 'babel-loader',
     }],
   },
+  optimization: {
+    minimize: PRODUCTION,
+    splitChunks: { chunks: 'async' },
+  },
   output: {
+    chunkFilename: 'application.[name].js',
     library: 'axis-wiki',
     libraryTarget: 'umd',
+    path: `${__dirname}/build/js`,
+    publicPath: '/js/',
     umdNamedDefine: true,
   },
   plugins: [
-    ConfigPlugin,
-    HoistPlugin,
-    PRODUCTION && UglifyPlugin
-  ].filter(Boolean),
+    new webpack.HashedModuleIdsPlugin(),
+    new ExtractTextPlugin({ allChunks: true, filename: '../css/[name].chunks.css' }),
+    new webpack.DefinePlugin({
+      'process.env': VARIABLES.reduce((replacementMap, key) => ({
+        ...replacementMap,
+        [key]: JSON.stringify(process.env[key] || false)
+      }), { NODE_ENV: JSON.stringify(ENVIRONMENT) })
+    }),
+    new webpack.optimize.ModuleConcatenationPlugin()
+  ],
   resolve: {
     extensions: ['.css', '.js', '.scss'],
     alias: {
@@ -76,43 +85,5 @@ const bundle = {
       '@styles': path.resolve(__dirname, 'styles'),
       '@utils': path.resolve(__dirname, 'utility'),
     }
-  }
+  },
 }
-
-module.exports = [{
-  ...bundle,
-  /* Main JS Bundle */
-  entry: {
-    application: `${__dirname}/source/Application.js`,
-  },
-  externals: {
-    'mobx-react': 'mobx-react',
-    'mobx-state-tree': 'mobx-state-tree',
-    'mobx': 'mobx',
-    'react-dom': 'react-dom',
-    'react-router-dom': 'react-router-dom',
-    'react': 'react',
-  },
-  output: {
-    ...bundle.output,
-    chunkFilename: 'application.[name].js',
-    filename: '[name].js',
-    path: `${__dirname}/build/js`,
-    publicPath: '/js/'
-  },
-  plugins: [
-    new webpack.HashedModuleIdsPlugin(),
-    new webpack.optimize.CommonsChunkPlugin({ name: 'application', filename: 'application.js' }),
-    new webpack.optimize.CommonsChunkPlugin({ name: 'manifest' }),
-    new ExtractTextPlugin({ allChunks: true, filename: '../css/[name].chunks.css' }),
-    ...bundle.plugins,
-  ],
-}, {
-  ...bundle,
-  entry: `${__dirname}/vendor/dependencies.js`,
-  output: {
-    ...bundle.output,
-    filename: 'dependencies.js',
-    path: `${__dirname}/build/js`,
-  },
-}]
