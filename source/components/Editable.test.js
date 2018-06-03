@@ -27,7 +27,7 @@ describe('Editable', () => {
   })
 
   it('raises change events properly', () => {
-    const onChange = jest.genMockFunction()
+    const onChange = jest.fn()
 
     render(<Editable value="first" onChange={onChange} />)
     component.handleToggleEditing()
