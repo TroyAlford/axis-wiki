@@ -1,2 +1,2 @@
-(window.webpackJsonpaxis_wiki=window.webpackJsonpaxis_wiki||[]).push([[5],{QoFe:function(e,i,a){"use strict";Object.defineProperty(i,"__esModule",{value:!0});var u,o=a("lufa"),s=(u=o)&&u.__esModule?u:{default:u};a("0Vrv"),i.default=s.default}}]);
+(window.webpackJsonpaxis_wiki=window.webpackJsonpaxis_wiki||[]).push([[5],{QoFe:function(e,a,i){"use strict";Object.defineProperty(a,"__esModule",{value:!0}),a.default=void 0;var u,d=(u=i("lufa"))&&u.__esModule?u:{default:u};i("0Vrv");var o=d.default;a.default=o}}]);
 //# sourceMappingURL=application.Glaemscribe.js.map

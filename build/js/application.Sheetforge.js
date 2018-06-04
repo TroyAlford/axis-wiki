@@ -1,2 +1,2 @@
-(window.webpackJsonpaxis_wiki=window.webpackJsonpaxis_wiki||[]).push([[4],{j42N:function(e,i,o){"use strict";Object.defineProperty(i,"__esModule",{value:!0});var s=o("kovR");i.default=s.Sheet}}]);
+(window.webpackJsonpaxis_wiki=window.webpackJsonpaxis_wiki||[]).push([[4],{j42N:function(e,i,o){"use strict";Object.defineProperty(i,"__esModule",{value:!0}),i.default=void 0;var a=o("kovR").Sheet;i.default=a}}]);
 //# sourceMappingURL=application.Sheetforge.js.map

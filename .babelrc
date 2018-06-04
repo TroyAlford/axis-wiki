@@ -1,16 +1,13 @@
 {
   "plugins": [
-    "syntax-dynamic-import",
-    "transform-decorators-legacy",
-    "transform-class-properties",
-    "transform-object-rest-spread",
-    "transform-runtime"
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/syntax-dynamic-import"
   ],
   "presets": [
-    "env",
-    "react",
-    "stage-3",
-    "jest"
+    "@babel/preset-env",
+    "@babel/preset-react"
   ],
   "comments": true
 }

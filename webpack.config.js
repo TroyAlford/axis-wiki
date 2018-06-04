@@ -16,7 +16,7 @@ const VARIABLES = [
   'MEDIA_PIXELS_SMALL',
 ]
 
-const ENVIRONMENT = process.env.NODE_ENV
+const ENVIRONMENT = process.env.NODE_ENV || 'development'
 const PRODUCTION = ENVIRONMENT === 'production'
 const SOURCEMAP = process.env.SOURCEMAP
 

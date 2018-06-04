@@ -1,13 +1,13 @@
 'use strict';
 
-var assertConnected = function assertConnected(db) {
-    if (db === null || db === undefined) {
-        throw new Error('You must first call \'connect\' before loading/saving documents.');
-    }
+const assertConnected = function (db) {
+  if (db === null || db === undefined) {
+    throw new Error('You must first call \'connect\' before loading/saving documents.');
+  }
 };
 
 exports.getClient = function () {
-    var client = global.CLIENT;
-    assertConnected(client);
-    return client;
+  const client = global.CLIENT;
+  assertConnected(client);
+  return client;
 };

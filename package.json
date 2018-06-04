@@ -9,6 +9,8 @@
     "url": "https://github.com/TroyAlford/axis-wiki.git"
   },
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.0.0-beta.49",
+    "@babel/polyfill": "^7.0.0-beta.49",
     "@tinymce/tinymce-react": "^2.2.5",
     "body-parser": "^1.18.3",
     "camo": "^0.12.3",
@@ -39,7 +41,7 @@
     "react-dom": "^16.4.0",
     "react-dropzone": "^4.2.11",
     "react-glaemscribe": "^0.0.4",
-    "react-jsx-parser": "^1.3.3",
+    "react-jsx-parser": "^1.3.4",
     "react-loadable": "^5.4.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
@@ -49,26 +51,23 @@
     "tinymce": "^4.7.13"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
+    "@babel/cli": "^7.0.0-beta.49",
+    "@babel/core": "^7.0.0-beta.49",
+    "@babel/node": "^7.0.0-beta.49",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.49",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.49",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0-beta.49",
+    "@babel/preset-env": "^7.0.0-beta.49",
+    "@babel/preset-react": "^7.0.0-beta.49",
+    "@babel/runtime": "^7.0.0-beta.49",
+    "babel-7-jest": "^21.3.3",
     "babel-eslint": "^8.2.3",
-    "babel-jest": "^23.0.1",
-    "babel-loader": "^7.1.4",
-    "babel-plugin-syntax-async-functions": "^6.13.0",
-    "babel-plugin-syntax-dynamic-import": "^6.18.0",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-decorators-legacy": "^1.3.5",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-jest": "^23.0.1",
-    "babel-preset-react": "*",
-    "babel-preset-stage-3": "^6.24.1",
-    "babel-watch": "^2.0.7",
+    "babel-loader": "^8.0.0-beta.3",
     "concurrently": "^3.5.1",
     "css-loader": "^0.28.11",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-babel": "^5.1.0",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.9.0",
@@ -100,31 +99,20 @@
     "build-css-dep": "node-sass vendor/dependencies.scss --output-style compressed --source-map true --source-map-embed -o build/css",
     "sourcemap": "SOURCEMAP=true yarn webpack && source-map-explorer ./build/js/application.js",
     "prebuild": "rimraf build/css/* && rimraf build/js/*",
-    "preserve": "babel node_modules/camo/lib --out-dir server/camo",
+    "preserve": "npx babel node_modules/camo/lib --out-dir server/camo",
     "preversion": "yarn build-prod && git add -A",
     "serve": "npx babel-node server/server.js",
     "serve-prod": "NODE_ENV=production yarn serve",
-    "serve-watched": "babel-watch server/server.js",
+    "serve-watched": "nodemon --watch ./server -e js --exec babel-node server/server.js",
     "watch": "yarn prebuild && (yarn watch-css & SOURCEMAP=true yarn webpack --watch)",
     "watch-css": "yarn watch-css-app & yarn watch-css-dep",
     "watch-css-app": "nodemon --watch ./styles -e scss --exec 'yarn build-css-app'",
     "watch-css-dep": "nodemon --watch ./vendor -e scss --exec 'yarn build-css-dep'"
   },
-  "babel": {
-    "plugins": [
-      "syntax-async-functions",
-      "transform-class-properties",
-      "transform-object-rest-spread",
-      "transform-regenerator"
-    ],
-    "presets": [
-      "env",
-      "react",
-      "jest"
-    ],
-    "highlightCode": true
-  },
   "jest": {
+    "transform": {
+      ".js$": "babel-7-jest"
+    },
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react/",
       "<rootDir>/node_modules/react-dom/",

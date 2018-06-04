@@ -1,659 +1,620 @@
 'use strict';
 
-var _promise = require('babel-runtime/core-js/promise');
+const _ = require('lodash');
 
-var _promise2 = _interopRequireDefault(_promise);
+const deprecate = require('depd')('camo');
 
-var _typeof2 = require('babel-runtime/helpers/typeof');
+const DB = require('./clients').getClient;
 
-var _typeof3 = _interopRequireDefault(_typeof2);
+const isSupportedType = require('./validate').isSupportedType;
 
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+const isValidType = require('./validate').isValidType;
 
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+const isEmptyValue = require('./validate').isEmptyValue;
 
-var _createClass2 = require('babel-runtime/helpers/createClass');
+const isInChoices = require('./validate').isInChoices;
 
-var _createClass3 = _interopRequireDefault(_createClass2);
+const isArray = require('./validate').isArray;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+const isDocument = require('./validate').isDocument;
 
-var _ = require('lodash');
-var deprecate = require('depd')('camo');
-var DB = require('./clients').getClient;
-var isSupportedType = require('./validate').isSupportedType;
-var isValidType = require('./validate').isValidType;
-var isEmptyValue = require('./validate').isEmptyValue;
-var isInChoices = require('./validate').isInChoices;
-var isArray = require('./validate').isArray;
-var isDocument = require('./validate').isDocument;
-var isEmbeddedDocument = require('./validate').isEmbeddedDocument;
-var isString = require('./validate').isString;
-var isNumber = require('./validate').isNumber;
-var isDate = require('./validate').isDate;
-var ValidationError = require('./errors').ValidationError;
+const isEmbeddedDocument = require('./validate').isEmbeddedDocument;
 
-var normalizeType = function normalizeType(property) {
-    // TODO: Only copy over stuff we support
+const isString = require('./validate').isString;
 
-    var typeDeclaration = {};
-    if (property.type) {
-        typeDeclaration = property;
-    } else if (isSupportedType(property)) {
-        typeDeclaration.type = property;
-    } else {
-        throw new Error('Unsupported type or bad variable. ' + 'Remember, non-persisted objects must start with an underscore (_). Got:', property);
-    }
+const isNumber = require('./validate').isNumber;
 
-    return typeDeclaration;
+const isDate = require('./validate').isDate;
+
+const ValidationError = require('./errors').ValidationError;
+
+const normalizeType = function (property) {
+  // TODO: Only copy over stuff we support
+  let typeDeclaration = {};
+
+  if (property.type) {
+    typeDeclaration = property;
+  } else if (isSupportedType(property)) {
+    typeDeclaration.type = property;
+  } else {
+    throw new Error('Unsupported type or bad variable. ' + 'Remember, non-persisted objects must start with an underscore (_). Got:', property);
+  }
+
+  return typeDeclaration;
 };
 
-var BaseDocument = function () {
-    function BaseDocument() {
-        (0, _classCallCheck3.default)(this, BaseDocument);
+class BaseDocument {
+  constructor() {
+    this._schema = {
+      // Defines document structure/properties
+      _id: {
+        type: DB().nativeIdType()
+      } // Native ID to backend database
 
-        this._schema = { // Defines document structure/properties
-            _id: { type: DB().nativeIdType() } // Native ID to backend database
-        };
+    };
+    this._id = null;
+  } // TODO: Is there a way to tell if a class is
+  // a subclass of something? Until I find out
+  // how, we'll be lazy use this.
 
-        this._id = null;
+
+  static documentClass() {
+    throw new TypeError('You must override documentClass (static).');
+  }
+
+  documentClass() {
+    throw new TypeError('You must override documentClass.');
+  }
+
+  collectionName() {
+    // DEPRECATED
+    // Getting ready to remove this functionality
+    if (this._meta) {
+      return this._meta.collection;
     }
 
-    // TODO: Is there a way to tell if a class is
-    // a subclass of something? Until I find out
-    // how, we'll be lazy use this.
+    return this.constructor.collectionName();
+  }
+  /**
+   * Get current collection name
+   *
+   * @returns {String}
+   */
 
 
-    (0, _createClass3.default)(BaseDocument, [{
-        key: 'documentClass',
-        value: function documentClass() {
-            throw new TypeError('You must override documentClass.');
-        }
-    }, {
-        key: 'collectionName',
-        value: function collectionName() {
-            // DEPRECATED
-            // Getting ready to remove this functionality
-            if (this._meta) {
-                return this._meta.collection;
+  static collectionName() {
+    // DEPRECATED
+    // Getting ready to remove this functionality
+    let instance = new this();
+
+    if (instance._meta) {
+      return instance._meta.collection;
+    }
+
+    return this.name.toLowerCase() + 's';
+  }
+
+  get id() {
+    deprecate('Document.id - use Document._id instead');
+    return this._id;
+  }
+
+  set id(id) {
+    deprecate('Document.id - use Document._id instead');
+    this._id = id;
+  }
+  /**
+   * set schema
+   * @param {Object} extension
+   */
+
+
+  schema(extension) {
+    const that = this;
+    if (!extension) return;
+
+    _.keys(extension).forEach(function (k) {
+      that[k] = extension[k];
+    });
+  }
+  /*
+   * Pre/post Hooks
+   *
+   * To add a hook, the extending class just needs
+   * to override the appropriate hook method below.
+   */
+
+
+  preValidate() {}
+
+  postValidate() {}
+
+  preSave() {}
+
+  postSave() {}
+
+  preDelete() {}
+
+  postDelete() {}
+  /**
+   * Generate this._schema from fields
+   *
+   * TODO : EMBEDDED
+   * Need to share this with embedded
+   */
+
+
+  generateSchema() {
+    const that = this;
+
+    _.keys(this).forEach(function (k) {
+      // Ignore private variables
+      if (_.startsWith(k, '_')) {
+        return;
+      } // Normalize the type format
+
+
+      that._schema[k] = normalizeType(that[k]); // Assign a default if needed
+
+      if (isArray(that._schema[k].type)) {
+        that[k] = that.getDefault(k) || [];
+      } else {
+        that[k] = that.getDefault(k);
+      }
+    });
+  }
+  /**
+   * Validate current document
+   *
+   * The method throw errors if document has invalid value
+   *
+   * TODO: This is not the right approach. The method needs to collect all
+   * errors in array and return them.
+   */
+
+
+  validate() {
+    const that = this;
+
+    _.keys(that._schema).forEach(function (key) {
+      let value = that[key]; // TODO: This should probably be in Document, not BaseDocument
+
+      if (value !== null && value !== undefined) {
+        if (isEmbeddedDocument(value)) {
+          value.validate();
+          return;
+        } else if (isArray(value) && value.length > 0 && isEmbeddedDocument(value[0])) {
+          value.forEach(function (v) {
+            if (v.validate) {
+              v.validate();
             }
+          });
+          return;
+        }
+      }
 
-            return this.constructor.collectionName();
+      if (!isValidType(value, that._schema[key].type)) {
+        // TODO: Formatting should probably be done somewhere else
+        let typeName = null;
+        let valueName = null;
+
+        if (Array.isArray(that._schema[key].type) && that._schema[key].type.length > 0) {
+          typeName = '[' + that._schema[key].type[0].name + ']';
+        } else if (Array.isArray(that._schema[key].type) && that._schema[key].type.length === 0) {
+          typeName = '[]';
+        } else {
+          typeName = that._schema[key].type.name;
         }
 
-        /**
-         * Get current collection name
-         *
-         * @returns {String}
-         */
+        if (Array.isArray(value)) {
+          // TODO: Not descriptive enough! Strings can look like numbers
+          valueName = '[' + value.toString() + ']';
+        } else {
+          valueName = typeof value;
+        }
 
-    }, {
-        key: 'schema',
+        throw new ValidationError('Value assigned to ' + that.collectionName() + '.' + key + ' should be ' + typeName + ', got ' + valueName);
+      }
+
+      if (that._schema[key].required && isEmptyValue(value)) {
+        throw new ValidationError('Key ' + that.collectionName() + '.' + key + ' is required' + ', but got ' + value);
+      }
+
+      if (that._schema[key].match && isString(value) && !that._schema[key].match.test(value)) {
+        throw new ValidationError('Value assigned to ' + that.collectionName() + '.' + key + ' does not match the regex/string ' + that._schema[key].match.toString() + '. Value was ' + value);
+      }
+
+      if (!isInChoices(that._schema[key].choices, value)) {
+        throw new ValidationError('Value assigned to ' + that.collectionName() + '.' + key + ' should be in choices [' + that._schema[key].choices.join(', ') + '], got ' + value);
+      }
+
+      if (isNumber(that._schema[key].min) && value < that._schema[key].min) {
+        throw new ValidationError('Value assigned to ' + that.collectionName() + '.' + key + ' is less than min, ' + that._schema[key].min + ', got ' + value);
+      }
+
+      if (isNumber(that._schema[key].max) && value > that._schema[key].max) {
+        throw new ValidationError('Value assigned to ' + that.collectionName() + '.' + key + ' is less than max, ' + that._schema[key].max + ', got ' + value);
+      }
+
+      if (typeof that._schema[key].validate === 'function' && !that._schema[key].validate(value)) {
+        throw new ValidationError('Value assigned to ' + that.collectionName() + '.' + key + ' failed custom validator. Value was ' + value);
+      }
+    });
+  }
+  /*
+   * Right now this only canonicalizes dates (integer timestamps
+   * get converted to Date objects), but maybe we should do the
+   * same for strings (UTF, Unicode, ASCII, etc)?
+   */
 
 
-        /**
-         * set schema
-         * @param {Object} extension
-         */
-        value: function schema(extension) {
-            var that = this;
+  canonicalize() {
+    const that = this;
 
-            if (!extension) return;
-            _.keys(extension).forEach(function (k) {
-                that[k] = extension[k];
+    _.keys(that._schema).forEach(function (key) {
+      let value = that[key];
+
+      if (that._schema[key].type === Date && isDate(value)) {
+        that[key] = new Date(value);
+      } else if (value !== null && value !== undefined && value.documentClass && value.documentClass() === 'embedded') {
+        // TODO: This should probably be in Document, not BaseDocument
+        value.canonicalize();
+        return;
+      }
+    });
+  }
+  /**
+   * Create new document from data
+   *
+   * @param {Object} data
+   * @returns {Document}
+   */
+
+
+  static create(data) {
+    this.createIndexes();
+
+    if (typeof data !== 'undefined') {
+      return this._fromData(data);
+    }
+
+    return this._instantiate();
+  }
+
+  static createIndexes() {}
+  /**
+   * Create new document from self
+   *
+   * @returns {BaseDocument}
+   * @private
+   */
+
+
+  static _instantiate() {
+    let instance = new this();
+    instance.generateSchema();
+    return instance;
+  } // TODO: Should probably move some of this to 
+  // Embedded and Document classes since Base shouldn't
+  // need to know about child classes
+
+
+  static _fromData(datas) {
+    const that = this;
+
+    if (!isArray(datas)) {
+      datas = [datas];
+    }
+
+    let documents = [];
+    let embeddedPromises = [];
+    datas.forEach(function (d) {
+      let instance = that._instantiate();
+
+      _.keys(d).forEach(function (key) {
+        let value = null;
+
+        if (d[key] === null) {
+          value = instance.getDefault(key);
+        } else {
+          value = d[key];
+        } // If its not in the schema, we don't care about it... right?
+
+
+        if (key in instance._schema) {
+          let type = instance._schema[key].type;
+
+          if (type.documentClass && type.documentClass() === 'embedded') {
+            // Initialize EmbeddedDocument
+            instance[key] = type._fromData(value);
+          } else if (isArray(type) && type.length > 0 && type[0].documentClass && type[0].documentClass() === 'embedded') {
+            // Initialize array of EmbeddedDocuments
+            instance[key] = [];
+            value.forEach(function (v, i) {
+              instance[key][i] = type[0]._fromData(v);
             });
+          } else {
+            // Initialize primitive or array of primitives
+            instance[key] = value;
+          }
+        } else if (key in instance) {
+          // Handles virtual setters
+          instance[key] = value;
         }
+      });
 
-        /*
-         * Pre/post Hooks
-         *
-         * To add a hook, the extending class just needs
-         * to override the appropriate hook method below.
-         */
+      documents.push(instance);
+    });
 
-    }, {
-        key: 'preValidate',
-        value: function preValidate() {}
-    }, {
-        key: 'postValidate',
-        value: function postValidate() {}
-    }, {
-        key: 'preSave',
-        value: function preSave() {}
-    }, {
-        key: 'postSave',
-        value: function postSave() {}
-    }, {
-        key: 'preDelete',
-        value: function preDelete() {}
-    }, {
-        key: 'postDelete',
-        value: function postDelete() {}
+    if (documents.length === 1) {
+      return documents[0];
+    }
 
-        /**
-         * Generate this._schema from fields
-         *
-         * TODO : EMBEDDED
-         * Need to share this with embedded
-         */
+    return documents;
+  }
 
-    }, {
-        key: 'generateSchema',
-        value: function generateSchema() {
-            var that = this;
+  populate() {
+    return BaseDocument.populate(this);
+  }
+  /**
+   * Populates document references
+   *
+   * TODO : EMBEDDED
+   * @param {Array|Document} docs
+   * @param {Array} fields
+   * @returns {Promise}
+   */
 
-            _.keys(this).forEach(function (k) {
-                // Ignore private variables
-                if (_.startsWith(k, '_')) {
-                    return;
-                }
 
-                // Normalize the type format
-                that._schema[k] = normalizeType(that[k]);
+  static populate(docs, fields) {
+    if (!docs) return Promise.all([]);
+    let documents = null;
 
-                // Assign a default if needed
-                if (isArray(that._schema[k].type)) {
-                    that[k] = that.getDefault(k) || [];
-                } else {
-                    that[k] = that.getDefault(k);
-                }
-            });
+    if (!isArray(docs)) {
+      documents = [docs];
+    } else if (docs.length < 1) {
+      return Promise.all(docs);
+    } else {
+      documents = docs;
+    } // Load all 1-level-deep references
+    // First, find all unique keys needed to be loaded...
+
+
+    let keys = []; // TODO: Bad assumption: Not all documents in the database will have the same schema...
+    // Hmm, if this is true, thats an error on the user. Right?
+
+    let anInstance = documents[0];
+
+    _.keys(anInstance._schema).forEach(function (key) {
+      // Only populate specified fields
+      if (isArray(fields) && fields.indexOf(key) < 0) {
+        return;
+      } // Handle array of references (ex: { type: [MyObject] })
+
+
+      if (isArray(anInstance._schema[key].type) && anInstance._schema[key].type.length > 0 && isDocument(anInstance._schema[key].type[0])) {
+        keys.push(key);
+      } // Handle anInstance[key] being a string id, a native id, or a Document instance
+      else if ((isString(anInstance[key]) || DB().isNativeId(anInstance[key])) && isDocument(anInstance._schema[key].type)) {
+          keys.push(key);
         }
+    }); // ...then get all ids for each type of reference to be loaded...
+    // ids = {
+    //      houses: {
+    //          'abc123': ['ak23lj', '2kajlc', 'ckajl32'],
+    //          'l2jo99': ['28dsa0']
+    //      },
+    //      friends: {
+    //          '1039da': ['lj0adf', 'k2jha']
+    //      }
+    //}
 
-        /**
-         * Validate current document
-         *
-         * The method throw errors if document has invalid value
-         *
-         * TODO: This is not the right approach. The method needs to collect all
-         * errors in array and return them.
-         */
 
-    }, {
-        key: 'validate',
-        value: function validate() {
-            var that = this;
+    let ids = {};
+    keys.forEach(function (k) {
+      ids[k] = {};
+      documents.forEach(function (d) {
+        ids[k][DB().toCanonicalId(d._id)] = [].concat(d[k]); // Handles values and arrays
+        // Also, initialize document member arrays
+        // to assign to later if needed
 
-            _.keys(that._schema).forEach(function (key) {
-                var value = that[key];
-
-                // TODO: This should probably be in Document, not BaseDocument
-                if (value !== null && value !== undefined) {
-                    if (isEmbeddedDocument(value)) {
-                        value.validate();
-                        return;
-                    } else if (isArray(value) && value.length > 0 && isEmbeddedDocument(value[0])) {
-                        value.forEach(function (v) {
-                            if (v.validate) {
-                                v.validate();
-                            }
-                        });
-                        return;
-                    }
-                }
-
-                if (!isValidType(value, that._schema[key].type)) {
-                    // TODO: Formatting should probably be done somewhere else
-                    var typeName = null;
-                    var valueName = null;
-                    if (Array.isArray(that._schema[key].type) && that._schema[key].type.length > 0) {
-                        typeName = '[' + that._schema[key].type[0].name + ']';
-                    } else if (Array.isArray(that._schema[key].type) && that._schema[key].type.length === 0) {
-                        typeName = '[]';
-                    } else {
-                        typeName = that._schema[key].type.name;
-                    }
-
-                    if (Array.isArray(value)) {
-                        // TODO: Not descriptive enough! Strings can look like numbers
-                        valueName = '[' + value.toString() + ']';
-                    } else {
-                        valueName = typeof value === 'undefined' ? 'undefined' : (0, _typeof3.default)(value);
-                    }
-                    throw new ValidationError('Value assigned to ' + that.collectionName() + '.' + key + ' should be ' + typeName + ', got ' + valueName);
-                }
-
-                if (that._schema[key].required && isEmptyValue(value)) {
-                    throw new ValidationError('Key ' + that.collectionName() + '.' + key + ' is required' + ', but got ' + value);
-                }
-
-                if (that._schema[key].match && isString(value) && !that._schema[key].match.test(value)) {
-                    throw new ValidationError('Value assigned to ' + that.collectionName() + '.' + key + ' does not match the regex/string ' + that._schema[key].match.toString() + '. Value was ' + value);
-                }
-
-                if (!isInChoices(that._schema[key].choices, value)) {
-                    throw new ValidationError('Value assigned to ' + that.collectionName() + '.' + key + ' should be in choices [' + that._schema[key].choices.join(', ') + '], got ' + value);
-                }
-
-                if (isNumber(that._schema[key].min) && value < that._schema[key].min) {
-                    throw new ValidationError('Value assigned to ' + that.collectionName() + '.' + key + ' is less than min, ' + that._schema[key].min + ', got ' + value);
-                }
-
-                if (isNumber(that._schema[key].max) && value > that._schema[key].max) {
-                    throw new ValidationError('Value assigned to ' + that.collectionName() + '.' + key + ' is less than max, ' + that._schema[key].max + ', got ' + value);
-                }
-
-                if (typeof that._schema[key].validate === 'function' && !that._schema[key].validate(value)) {
-                    throw new ValidationError('Value assigned to ' + that.collectionName() + '.' + key + ' failed custom validator. Value was ' + value);
-                }
-            });
+        if (isArray(d[k])) {
+          d[k] = [];
         }
+      });
+    }); // TODO: Is this really the most efficient
+    // way to do this? Maybe make a master list
+    // of all objects that need to be loaded (separated
+    // by type), load those, and then search through
+    // ids to see where dereferenced objects should
+    // go?
+    // ...then for each array of ids, load them all...
 
-        /*
-         * Right now this only canonicalizes dates (integer timestamps
-         * get converted to Date objects), but maybe we should do the
-         * same for strings (UTF, Unicode, ASCII, etc)?
-         */
+    let loadPromises = [];
 
-    }, {
-        key: 'canonicalize',
-        value: function canonicalize() {
-            var that = this;
+    _.keys(ids).forEach(function (key) {
+      let keyIds = [];
 
-            _.keys(that._schema).forEach(function (key) {
-                var value = that[key];
+      _.keys(ids[key]).forEach(function (k) {
+        // Before adding to list, we convert id to the
+        // backend database's native ID format.
+        keyIds = keyIds.concat(ids[key][k]);
+      }); // Only want to load each reference once
 
-                if (that._schema[key].type === Date && isDate(value)) {
-                    that[key] = new Date(value);
-                } else if (value !== null && value !== undefined && value.documentClass && value.documentClass() === 'embedded') {
-                    // TODO: This should probably be in Document, not BaseDocument
-                    value.canonicalize();
-                    return;
-                }
-            });
+
+      keyIds = _.unique(keyIds); // Handle array of references (like [MyObject])
+
+      let type = null;
+
+      if (isArray(anInstance._schema[key].type)) {
+        type = anInstance._schema[key].type[0];
+      } else {
+        type = anInstance._schema[key].type;
+      } // Bulk load dereferences
+
+
+      let p = type.find({
+        '_id': {
+          $in: keyIds
         }
+      }, {
+        populate: false
+      }).then(function (dereferences) {
+        // Assign each dereferenced object to parent
+        _.keys(ids[key]).forEach(function (k) {
+          // TODO: Replace with documents.find when able
+          // Find the document to assign the derefs to
+          let doc;
+          documents.forEach(function (d) {
+            if (DB().toCanonicalId(d._id) === k) doc = d;
+          }); // For all ids to be dereferenced, find the
+          // deref and assign or push it
 
-        /**
-         * Create new document from data
-         *
-         * @param {Object} data
-         * @returns {Document}
-         */
-
-    }, {
-        key: 'populate',
-        value: function populate() {
-            return BaseDocument.populate(this);
-        }
-
-        /**
-         * Populates document references
-         *
-         * TODO : EMBEDDED
-         * @param {Array|Document} docs
-         * @param {Array} fields
-         * @returns {Promise}
-         */
-
-    }, {
-        key: 'getDefault',
-
-
-        /**
-         * Get default value
-         *
-         * @param {String} schemaProp Key of current schema
-         * @returns {*}
-         */
-        value: function getDefault(schemaProp) {
-            if (schemaProp in this._schema && 'default' in this._schema[schemaProp]) {
-                var def = this._schema[schemaProp].default;
-                var defVal = typeof def === 'function' ? def() : def;
-                this[schemaProp] = defVal; // TODO: Wait... should we be assigning it here?
-                return defVal;
-            } else if (schemaProp === '_id') {
-                return null;
-            }
-
-            return undefined;
-        }
-
-        /**
-         * For JSON.Stringify
-         *
-         * @returns {*}
-         */
-
-    }, {
-        key: 'toJSON',
-        value: function toJSON() {
-            var values = this._toData({ _id: true });
-            var schema = this._schema;
-            for (var key in schema) {
-                if (schema.hasOwnProperty(key)) {
-                    if (schema[key].private) {
-                        delete values[key];
-                    } else if (values[key] && values[key].toJSON) {
-                        values[key] = values[key].toJSON();
-                    } else if (isArray(values[key])) {
-                        (function () {
-                            var newArray = [];
-                            values[key].forEach(function (i) {
-                                if (i && i.toJSON) {
-                                    newArray.push(i.toJSON());
-                                } else {
-                                    newArray.push(i);
-                                }
-                            });
-                            values[key] = newArray;
-                        })();
-                    }
-                }
-            }
-
-            return values;
-        }
-
-        /**
-         *
-         * @param keep
-         * @returns {{}}
-         * @private
-         */
-
-    }, {
-        key: '_toData',
-        value: function _toData(keep) {
-            var that = this;
-
-            if (keep === undefined || keep === null) {
-                keep = {};
-            } else if (keep._id === undefined) {
-                keep._id = true;
-            }
-
-            var values = {};
-            _.keys(this).forEach(function (k) {
-                if (_.startsWith(k, '_')) {
-                    if (k !== '_id' || !keep._id) {
-                        return;
-                    } else {
-                        values[k] = that[k];
-                    }
-                } else if (isEmbeddedDocument(that[k])) {
-                    values[k] = that[k]._toData();
-                } else if (isArray(that[k]) && that[k].length > 0 && isEmbeddedDocument(that[k][0])) {
-                    values[k] = [];
-                    that[k].forEach(function (v) {
-                        values[k].push(v._toData());
-                    });
-                } else {
-                    values[k] = that[k];
-                }
-            });
-
-            return values;
-        }
-    }, {
-        key: '_getEmbeddeds',
-        value: function _getEmbeddeds() {
-            var that = this;
-
-            var embeddeds = [];
-            _.keys(this._schema).forEach(function (v) {
-                if (isEmbeddedDocument(that._schema[v].type) || isArray(that._schema[v].type) && isEmbeddedDocument(that._schema[v].type[0])) {
-                    embeddeds = embeddeds.concat(that[v]);
-                }
-            });
-            return embeddeds;
-        }
-    }, {
-        key: '_getHookPromises',
-        value: function _getHookPromises(hookName) {
-            var embeddeds = this._getEmbeddeds();
-
-            var hookPromises = [];
-            hookPromises = hookPromises.concat(_.invoke(embeddeds, hookName));
-            hookPromises.push(this[hookName]());
-            return hookPromises;
-        }
-    }, {
-        key: 'id',
-        get: function get() {
-            deprecate('Document.id - use Document._id instead');
-            return this._id;
-        },
-        set: function set(id) {
-            deprecate('Document.id - use Document._id instead');
-            this._id = id;
-        }
-    }], [{
-        key: 'documentClass',
-        value: function documentClass() {
-            throw new TypeError('You must override documentClass (static).');
-        }
-    }, {
-        key: 'collectionName',
-        value: function collectionName() {
-            // DEPRECATED
-            // Getting ready to remove this functionality
-            var instance = new this();
-            if (instance._meta) {
-                return instance._meta.collection;
-            }
-
-            return this.name.toLowerCase() + 's';
-        }
-    }, {
-        key: 'create',
-        value: function create(data) {
-            this.createIndexes();
-
-            if (typeof data !== 'undefined') {
-                return this._fromData(data);
-            }
-
-            return this._instantiate();
-        }
-    }, {
-        key: 'createIndexes',
-        value: function createIndexes() {}
-
-        /**
-         * Create new document from self
-         *
-         * @returns {BaseDocument}
-         * @private
-         */
-
-    }, {
-        key: '_instantiate',
-        value: function _instantiate() {
-            var instance = new this();
-            instance.generateSchema();
-            return instance;
-        }
-
-        // TODO: Should probably move some of this to 
-        // Embedded and Document classes since Base shouldn't
-        // need to know about child classes
-
-    }, {
-        key: '_fromData',
-        value: function _fromData(datas) {
-            var that = this;
-
-            if (!isArray(datas)) {
-                datas = [datas];
-            }
-
-            var documents = [];
-            var embeddedPromises = [];
-            datas.forEach(function (d) {
-                var instance = that._instantiate();
-                _.keys(d).forEach(function (key) {
-                    var value = null;
-                    if (d[key] === null) {
-                        value = instance.getDefault(key);
-                    } else {
-                        value = d[key];
-                    }
-
-                    // If its not in the schema, we don't care about it... right?
-                    if (key in instance._schema) {
-
-                        var type = instance._schema[key].type;
-
-                        if (type.documentClass && type.documentClass() === 'embedded') {
-                            // Initialize EmbeddedDocument
-                            instance[key] = type._fromData(value);
-                        } else if (isArray(type) && type.length > 0 && type[0].documentClass && type[0].documentClass() === 'embedded') {
-                            // Initialize array of EmbeddedDocuments
-                            instance[key] = [];
-                            value.forEach(function (v, i) {
-                                instance[key][i] = type[0]._fromData(v);
-                            });
-                        } else {
-                            // Initialize primitive or array of primitives
-                            instance[key] = value;
-                        }
-                    } else if (key in instance) {
-                        // Handles virtual setters
-                        instance[key] = value;
-                    }
-                });
-
-                documents.push(instance);
+          ids[key][k].forEach(function (id) {
+            // TODO: Replace with dereferences.find when able
+            // Find the right dereference
+            let deref;
+            dereferences.forEach(function (d) {
+              if (DB().toCanonicalId(d._id) === DB().toCanonicalId(id)) deref = d;
             });
 
-            if (documents.length === 1) {
-                return documents[0];
-            }
-            return documents;
-        }
-    }, {
-        key: 'populate',
-        value: function populate(docs, fields) {
-            if (!docs) return _promise2.default.all([]);
-
-            var documents = null;
-
-            if (!isArray(docs)) {
-                documents = [docs];
-            } else if (docs.length < 1) {
-                return _promise2.default.all(docs);
+            if (isArray(anInstance._schema[key].type)) {
+              doc[key].push(deref);
             } else {
-                documents = docs;
+              doc[key] = deref;
             }
+          });
+        });
+      });
+      loadPromises.push(p);
+    }); // ...and finally execute all promises and return our
+    // fully loaded documents.
 
-            // Load all 1-level-deep references
-            // First, find all unique keys needed to be loaded...
-            var keys = [];
 
-            // TODO: Bad assumption: Not all documents in the database will have the same schema...
-            // Hmm, if this is true, thats an error on the user. Right?
-            var anInstance = documents[0];
+    return Promise.all(loadPromises).then(function () {
+      return docs;
+    });
+  }
+  /**
+   * Get default value
+   *
+   * @param {String} schemaProp Key of current schema
+   * @returns {*}
+   */
 
-            _.keys(anInstance._schema).forEach(function (key) {
-                // Only populate specified fields
-                if (isArray(fields) && fields.indexOf(key) < 0) {
-                    return;
-                }
 
-                // Handle array of references (ex: { type: [MyObject] })
-                if (isArray(anInstance._schema[key].type) && anInstance._schema[key].type.length > 0 && isDocument(anInstance._schema[key].type[0])) {
-                    keys.push(key);
-                }
-                // Handle anInstance[key] being a string id, a native id, or a Document instance
-                else if ((isString(anInstance[key]) || DB().isNativeId(anInstance[key])) && isDocument(anInstance._schema[key].type)) {
-                        keys.push(key);
-                    }
-            });
+  getDefault(schemaProp) {
+    if (schemaProp in this._schema && 'default' in this._schema[schemaProp]) {
+      let def = this._schema[schemaProp].default;
+      let defVal = typeof def === 'function' ? def() : def;
+      this[schemaProp] = defVal; // TODO: Wait... should we be assigning it here?
 
-            // ...then get all ids for each type of reference to be loaded...
-            // ids = {
-            //      houses: {
-            //          'abc123': ['ak23lj', '2kajlc', 'ckajl32'],
-            //          'l2jo99': ['28dsa0']
-            //      },
-            //      friends: {
-            //          '1039da': ['lj0adf', 'k2jha']
-            //      }
-            //}
-            var ids = {};
-            keys.forEach(function (k) {
-                ids[k] = {};
-                documents.forEach(function (d) {
-                    ids[k][DB().toCanonicalId(d._id)] = [].concat(d[k]); // Handles values and arrays
+      return defVal;
+    } else if (schemaProp === '_id') {
+      return null;
+    }
 
-                    // Also, initialize document member arrays
-                    // to assign to later if needed
-                    if (isArray(d[k])) {
-                        d[k] = [];
-                    }
-                });
-            });
+    return undefined;
+  }
+  /**
+   * For JSON.Stringify
+   *
+   * @returns {*}
+   */
 
-            // TODO: Is this really the most efficient
-            // way to do this? Maybe make a master list
-            // of all objects that need to be loaded (separated
-            // by type), load those, and then search through
-            // ids to see where dereferenced objects should
-            // go?
 
-            // ...then for each array of ids, load them all...
-            var loadPromises = [];
-            _.keys(ids).forEach(function (key) {
-                var keyIds = [];
-                _.keys(ids[key]).forEach(function (k) {
-                    // Before adding to list, we convert id to the
-                    // backend database's native ID format.
-                    keyIds = keyIds.concat(ids[key][k]);
-                });
+  toJSON() {
+    let values = this._toData({
+      _id: true
+    });
 
-                // Only want to load each reference once
-                keyIds = _.unique(keyIds);
+    let schema = this._schema;
 
-                // Handle array of references (like [MyObject])
-                var type = null;
-                if (isArray(anInstance._schema[key].type)) {
-                    type = anInstance._schema[key].type[0];
-                } else {
-                    type = anInstance._schema[key].type;
-                }
-
-                // Bulk load dereferences
-                var p = type.find({ '_id': { $in: keyIds } }, { populate: false }).then(function (dereferences) {
-                    // Assign each dereferenced object to parent
-
-                    _.keys(ids[key]).forEach(function (k) {
-                        // TODO: Replace with documents.find when able
-                        // Find the document to assign the derefs to
-                        var doc = void 0;
-                        documents.forEach(function (d) {
-                            if (DB().toCanonicalId(d._id) === k) doc = d;
-                        });
-
-                        // For all ids to be dereferenced, find the
-                        // deref and assign or push it
-                        ids[key][k].forEach(function (id) {
-                            // TODO: Replace with dereferences.find when able
-                            // Find the right dereference
-                            var deref = void 0;
-                            dereferences.forEach(function (d) {
-                                if (DB().toCanonicalId(d._id) === DB().toCanonicalId(id)) deref = d;
-                            });
-
-                            if (isArray(anInstance._schema[key].type)) {
-                                doc[key].push(deref);
-                            } else {
-                                doc[key] = deref;
-                            }
-                        });
-                    });
-                });
-
-                loadPromises.push(p);
-            });
-
-            // ...and finally execute all promises and return our
-            // fully loaded documents.
-            return _promise2.default.all(loadPromises).then(function () {
-                return docs;
-            });
+    for (let key in schema) {
+      if (schema.hasOwnProperty(key)) {
+        if (schema[key].private) {
+          delete values[key];
+        } else if (values[key] && values[key].toJSON) {
+          values[key] = values[key].toJSON();
+        } else if (isArray(values[key])) {
+          let newArray = [];
+          values[key].forEach(function (i) {
+            if (i && i.toJSON) {
+              newArray.push(i.toJSON());
+            } else {
+              newArray.push(i);
+            }
+          });
+          values[key] = newArray;
         }
-    }]);
-    return BaseDocument;
-}();
+      }
+    }
+
+    return values;
+  }
+  /**
+   *
+   * @param keep
+   * @returns {{}}
+   * @private
+   */
+
+
+  _toData(keep) {
+    const that = this;
+
+    if (keep === undefined || keep === null) {
+      keep = {};
+    } else if (keep._id === undefined) {
+      keep._id = true;
+    }
+
+    let values = {};
+
+    _.keys(this).forEach(function (k) {
+      if (_.startsWith(k, '_')) {
+        if (k !== '_id' || !keep._id) {
+          return;
+        } else {
+          values[k] = that[k];
+        }
+      } else if (isEmbeddedDocument(that[k])) {
+        values[k] = that[k]._toData();
+      } else if (isArray(that[k]) && that[k].length > 0 && isEmbeddedDocument(that[k][0])) {
+        values[k] = [];
+        that[k].forEach(function (v) {
+          values[k].push(v._toData());
+        });
+      } else {
+        values[k] = that[k];
+      }
+    });
+
+    return values;
+  }
+
+  _getEmbeddeds() {
+    const that = this;
+    let embeddeds = [];
+
+    _.keys(this._schema).forEach(function (v) {
+      if (isEmbeddedDocument(that._schema[v].type) || isArray(that._schema[v].type) && isEmbeddedDocument(that._schema[v].type[0])) {
+        embeddeds = embeddeds.concat(that[v]);
+      }
+    });
+
+    return embeddeds;
+  }
+
+  _getHookPromises(hookName) {
+    let embeddeds = this._getEmbeddeds();
+
+    let hookPromises = [];
+    hookPromises = hookPromises.concat(_.invoke(embeddeds, hookName));
+    hookPromises.push(this[hookName]());
+    return hookPromises;
+  }
+
+}
 
 module.exports = BaseDocument;

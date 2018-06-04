@@ -17,6 +17,7 @@ $palette-white:       #fff;
 // Colors by purpose
 $color-bg-danger:     lighten($palette-red, 10%);
 $color-bg-inverse:    $palette-blue;
+$color-bg-modal:      transparentize($palette-offwhite, 0.25);
 $color-bg-warning:    $palette-gold;
 $color-bg:            $palette-offwhite;
 $color-bg-button:     darken($color-bg, 5%);
